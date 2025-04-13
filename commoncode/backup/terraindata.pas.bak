@@ -122,8 +122,7 @@ function TTileList.initxy( x, y : integer;
     end
    else
     begin
-      sethxy( h, x, y );
-      h.TileSz := tilesz;
+      sethxy( h, x, y, tilesz );
       result := TTerTile.create( h );
       atinsert( i, result );
     end;

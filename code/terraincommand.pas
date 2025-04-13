@@ -7,7 +7,7 @@ uses Classes, SysUtils, Collect, castleterrain,
      BaseThread,
      TerServerCommon, CastleClientServer,
      TerrainParams, TerrainData,
-     watergrid;
+     watergrid, debug;
 
 type TCommandCallback = procedure( msg : string ) of object;
 
@@ -34,12 +34,15 @@ type TCommandCallback = procedure( msg : string ) of object;
 
     TTaskItem = class
 
+       Client : TClientConnection;
+
+       constructor create( const iClient : TClientConnection );
+
        function runtask : boolean; virtual;
 
      end;
 
     TTask_SendTile = class( TTaskItem )
-        Client : TClientConnection;
         Tile   : TTerTile;
         LOD    : dword;
         constructor create( const iClient : TClientConnection;
@@ -51,7 +54,8 @@ type TCommandCallback = procedure( msg : string ) of object;
     TTask_BuildTile = class( TTaskItem )
             Tile   : TTerTile;
             tileparams : TTerrainParams;
-            constructor create( iTile : TTerTile;
+            constructor create( const iClient : TClientConnection;
+                                iTile : TTerTile;
                                 iParams : tTerrainparams );
             function runtask : boolean; override;
           end;
@@ -60,6 +64,9 @@ procedure SendClientMsgHeader( AClient : TClientConnection;
                                msgtype : TMsgType;
                                msglen  : dword = 0;
                                requestid : dword = 0 );
+
+procedure removeclient( const AClient : TClientConnection );
+
 
 const GCmdList : TCmdList = nil;
 var GTaskList : array of TTaskItem;
@@ -90,20 +97,42 @@ const version : string = 'xisterra0.1a';
    end;
 
   function UpdateTile( const tileparams : TTerrainParams;
-                             TileX, TileY : integer ) : TTerTile;
+                             TileX, TileY : integer;
+                       var ATile : TTerTile ) : boolean;
+  { returns true if creaated }
    var tileix : integer;
        tileinfo : TTileHeader;
    begin
-     if GTileList.findtile( TileX, TileY, tileix ) then
-        result := TTerTile( GTileList.at( tileix ))
-     else
+     result := not GTileList.findtile( TileX, TileY, tileix );
+     if result then
       begin { not found, create }
         sethxy( tileinfo, TileX, TileY, GDefGridCellCount );
-        result := TTerTile.create( tileinfo );
-        Result.UpdateTerrainGridFromSource( TileParams.Noise );
-        GTileList.atinsert( tileix, result );
-      end;
+        ATile := TTerTile.create( tileinfo );
+        GTileList.atinsert( tileix, ATile );
+      end
+     else
+        ATile := TTerTile( GTileList.at( tileix ))
    end;
+
+   procedure removeclient( const AClient : TClientConnection );
+    var i, l : integer;
+        item : TTaskItem;
+    begin
+      l := length( GTaskList );
+      i := 0;
+      while i < l do
+       begin
+         item := GTaskList[i];
+         if item.Client.Context = AClient.Context then
+          begin
+            delete( GTaskList, i, 1 );
+            item.free;
+            dec( l );
+          end
+         else
+            inc( i );
+       end;
+    end;
 
 procedure SendClientMsgHeader( AClient : TClientConnection;
                                msgtype : TMsgType;
@@ -117,7 +146,7 @@ procedure SendClientMsgHeader( AClient : TClientConnection;
    AClient.Send( h, sizeof( h ));
  end;
 
-procedure AddTask( ATask : TTAskItem );
+ procedure AddTask( ATask : TTAskItem );
  var len : integer;
  begin
    len := length( GTaskList );
@@ -125,27 +154,40 @@ procedure AddTask( ATask : TTAskItem );
    GTaskList[len] := ATask;
  end;
 
+//----------------------------
+
+constructor TTaskItem.create( const iClient : TClientConnection );
+ begin
+   inherited create;
+   Client := iClient;
+ end;
+
 function TTaskItem.runtask : boolean;
  begin
-   result := false;
+   result := assigned( Client.Context.Connection );
  end;
+
 
 //-----------------------------------
 
-constructor TTask_BuildTile.create( iTile : TTerTile;
+constructor TTask_BuildTile.create( const iClient : TClientConnection;
+                                    iTile : TTerTile;
                                     iParams : tterrainparams );
 
  begin
-   inherited create;
+   inherited create( iClient );
    Tile   := iTile;
    tileparams := iParams;
  end;
 
 function TTask_BuildTile.runtask : boolean;
  begin
-   result := true;
-   assert( assigned( tile ) and assigned( tileparams ));
-   Tile.UpdateTerrainGridFromSource( TileParams.Noise );
+   result := inherited runtask;
+   if result then
+    begin
+      assert( assigned( tile ) and assigned( tileparams ));
+      Tile.UpdateTerrainGridFromSource( TileParams.Noise );
+    end;
  end;
 
 //-------------------------------------
@@ -154,8 +196,7 @@ constructor TTask_SendTile.create( const iClient : TClientConnection;
                                    iTile : TTerTile;
                                    iLOD : dword );
  begin
-   inherited create;
-   Client := iClient;
+   inherited create( iClient );
    Tile := iTile;
    LOD := iLOD;
  end;
@@ -166,6 +207,9 @@ function TTask_SendTile.RunTask : boolean;
      TerGrid : TSingleGrid;
      bufptr : ^single;
  begin
+   result := inherited Runtask;
+   if not result then
+      exit;
    loddiv := divOfLOD( LOD );
    tilesz := GDefGridCellCount div loddiv;
    Tile.info.tilesz := tilesz;
@@ -189,6 +233,9 @@ function TTask_SendTile.RunTask : boolean;
    SendClientMsgHeader( client, msg_Tile, buflen + sizeof( TTileHeader ));
    client.Send( Tile.Info, sizeof( TTileHeader ));
    client.SendBuffer( buffer, buflen );
+
+   dbgwriteln( 'Send Tile['+inttostr( tile.info.tilex )+','+inttostr(tile.info.tiley)+']' );
+
    result := true;
  end;
 
@@ -279,60 +326,52 @@ function intofstr( astr : string ) : integer;
    val( AStr, result, code );
  end;
 
-procedure SendTile( client : TClientConnection;
-                    Tile  : TTerTile;
-                    LOD : dword = 0 );
- var task : TTask_SendTile;
- begin
-   task := TTask_SendTile.create( client, Tile, LOD );
-   AddTask( task );
- end;
-
 procedure buildArea( client : TClientConnection;
                      CenterX, CenterY : integer;
                      Radius : integer;
                      const Params : TTerrainParams;
                      callback : TCommandCallback);
- procedure SendATile( tx, ty : integer; LOD : dword );
+ procedure SendATile( tx, ty : integer );
   var Tile : TTerTile;
+      task : TTaskItem;
+      LOD : dword;
   begin
-    Tile := UpdateTile( Params, tx, ty );
-    Sendtile( Client, Tile, LOD );
-    Callback( 'Send Tile['+inttostr( tx )+','+inttostr(ty)+','+inttostr(LOD)+']' );
+    LOD := trunc(sqrt( sqr( tx - CenterX ) + sqr( ty - CenterY )));
+    if UpdateTile( Params, tx, ty, tile ) then { if the tile was created then we have to add a task to build it }
+       AddTask( TTask_BuildTile.create( client, Tile, Params ) );
+    AddTask( TTask_SendTile.create( client, Tile, LOD ) );
+    Callback('');
   end;
 
  var TileY, TileY2 : Integer;
      i, r : integer;
-     LOD : dword;
  begin
-   LOD := 0;
-   SendATile( CenterX, CenterY, LOD );
+   SendATile( CenterX, CenterY );
    for r := 1 to radius do
     begin
       TileY := CenterY - r;
       TileY2 := CenterY + r;
       { do long end top and bottom }
-      SendATile( CenterX, TileY, LOD );
-      SendATile( CenterX, CenterY + r, LOD );
+      SendATile( CenterX, TileY );
+      SendATile( CenterX, CenterY + r );
       { do sides left, right }
-      SendATile( CenterX - r, CenterY, LOD );
-      SendATile( CenterX + r, CenterY, LOD );
+      SendATile( CenterX - r, CenterY );
+      SendATile( CenterX + r, CenterY );
       for i := 1 to r - 1 do
         begin
-          SendATile( CenterX - i, TileY, LOD );
-          SendATile( CenterX + i, TileY, LOD );
-          SendATile( CenterX - i, TileY2, LOD );
-          SendATile( CenterX + i, TileY2, LOD );
-          SendATile( CenterX - r, CenterY - i, LOD );
-          SendATile( CenterX - r, CenterY + i, LOD );
-          SendATile( CenterX + r, CenterY - i, LOD );
-          SendATile( CenterX + r, CenterY + i, LOD );
+          SendATile( CenterX - i, TileY );
+          SendATile( CenterX + i, TileY );
+          SendATile( CenterX - i, TileY2 );
+          SendATile( CenterX + i, TileY2 );
+          SendATile( CenterX - r, CenterY - i );
+          SendATile( CenterX - r, CenterY + i );
+          SendATile( CenterX + r, CenterY - i );
+          SendATile( CenterX + r, CenterY + i );
         end;
-      SendATile( CenterX - r, CenterY - r, LOD );
-      SendATile( CenterX - r, CenterY + r, LOD );
-      SendATile( CenterX + r, CenterY - r, LOD );
-      SendATile( CenterX + r, CenterY + r, LOD );
-      inc(LOD);
+      SendATile( CenterX - r, CenterY - r );
+      SendATile( CenterX - r, CenterY + r );
+      SendATile( CenterX + r, CenterY - r );
+      SendATile( CenterX + r, CenterY + r );
     end;
  end;
 

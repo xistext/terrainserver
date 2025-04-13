@@ -84,13 +84,12 @@ function TTileList.keyof( item : pointer ) : pointer;
 
 function TTileList.compare( item1, item2 : pointer ) : integer;
  var h1, h2 : TTileHeader;
-     result2 : integer;
  begin
    h1 := PTileHeader( item1 )^;
    h2 := PTileHeader( item2 )^;
-   result2 := compareint( h1.TileY, h2.TileY );
-   if result2 = 0 then
-      result2 := compareint( h1.TileX, h2.TileX );
+   result := compareint( h1.TileY, h2.TileY );
+   if result = 0 then
+      result := compareint( h1.TileX, h2.TileX );
  end;
 
 function TTileList.findtile( x, y : integer;

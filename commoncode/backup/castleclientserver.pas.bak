@@ -197,7 +197,6 @@ type
     property OnConnected: TClientConnectionEvent read FOnConnected write FOnConnected;
     property OnDisconnected: TClientConnectionEvent read FOnDisconnected write FOnDisconnected;
     property OnMessageReceived: TClientMessageReceivedEvent read FOnMessageReceived write FOnMessageReceived;
-    {$ifdef FPC} property OnMessageRecieved: TClientMessageReceivedEvent read FOnMessageReceived write FOnMessageReceived; deprecated 'use OnMessageReceived'; {$endif}
   end;
 
   TCastleTCPClient = class(TCastleSocket)
@@ -484,32 +483,47 @@ end;
 
 procedure TClientConnection.SendString(const AStr: String);
 begin
+  try
   {$ifdef ANDROID}
     FTCPConnectionService.SendMessage(AMessage, AClient);
   {$else}
-    Context.Connection.IOHandler.WriteLn(AStr);
+  if assigned( Context.Connection ) then
+     Context.Connection.IOHandler.WriteLn(AStr);
   {$endif}
+  except
+     exit;
+  end;
 end;
 
 procedure TClientConnection.SendBuffer(const Buffer : TIdBytes; ALength : integer);
  begin
+   try
    {$ifdef ANDROID}
      {!!!}FTCPConnectionService.SendMessage(AMessage, AClient);
    {$else}
-     Context.Connection.IOHandler.Write(Buffer, ALength );
+     if assigned( Context.Connection ) then
+       Context.Connection.IOHandler.Write(Buffer, ALength );
    {$endif}
+   except
+      exit;
+   end;
  end;
 
 procedure TClientConnection.Send(const Buffer; BufLength : integer);
  var bbuffer : TIdBytes;
  begin
+   try
    {$ifdef ANDROID}
      {!!!}FTCPConnectionService.SendMessage(AMessage, AClient);
    {$else}
      setlength( bbuffer, buflength );
      move(Buffer, bbuffer[0], BufLength);
-     Context.Connection.IOHandler.Write(bbuffer, BufLength );
+     if assigned( Context.Connection ) then
+        Context.Connection.IOHandler.Write(bbuffer, BufLength );
    {$endif}
+   except
+      exit;
+   end;
  end;
 
 

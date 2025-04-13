@@ -38,7 +38,6 @@ uses
 
 type
   TClientConnection = record
-  private
     {$ifndef ANDROID}
       Context: TIdContext;
     {$else}
@@ -483,32 +482,47 @@ end;
 
 procedure TClientConnection.SendString(const AStr: String);
 begin
+  try
   {$ifdef ANDROID}
     FTCPConnectionService.SendMessage(AMessage, AClient);
   {$else}
-    Context.Connection.IOHandler.WriteLn(AStr);
+  if assigned( Context.Connection ) then
+     Context.Connection.IOHandler.WriteLn(AStr);
   {$endif}
+  except
+     exit;
+  end;
 end;
 
 procedure TClientConnection.SendBuffer(const Buffer : TIdBytes; ALength : integer);
  begin
+   try
    {$ifdef ANDROID}
      {!!!}FTCPConnectionService.SendMessage(AMessage, AClient);
    {$else}
-     Context.Connection.IOHandler.Write(Buffer, ALength );
+     if assigned( Context.Connection ) then
+       Context.Connection.IOHandler.Write(Buffer, ALength );
    {$endif}
+   except
+      exit;
+   end;
  end;
 
 procedure TClientConnection.Send(const Buffer; BufLength : integer);
  var bbuffer : TIdBytes;
  begin
+   try
    {$ifdef ANDROID}
      {!!!}FTCPConnectionService.SendMessage(AMessage, AClient);
    {$else}
      setlength( bbuffer, buflength );
      move(Buffer, bbuffer[0], BufLength);
-     Context.Connection.IOHandler.Write(bbuffer, BufLength );
+     if assigned( Context.Connection ) then
+        Context.Connection.IOHandler.Write(bbuffer, BufLength );
    {$endif}
+   except
+      exit;
+   end;
  end;
 
 

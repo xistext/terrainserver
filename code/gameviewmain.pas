@@ -155,6 +155,7 @@ end;
 procedure TViewMain.HandleDisconnected(AClient: TClientConnection);
 begin
   Notification('Client disconnected');
+  removeclient( AClient ); { remove any tasks queued by the client }
 end;
 
 procedure TViewMain.HandleMessageReceived(const AMessage: String; AClient: TClientConnection);
@@ -166,7 +167,8 @@ end;
 
 procedure TViewMain.HandleCommandCallback( Msg : string );
  begin
-   dbgwriteln( Msg );
+   if msg <> '' then
+     dbgwriteln( Msg );
    Application.ProcessAllMessages;
  end;
 

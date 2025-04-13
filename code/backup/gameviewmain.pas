@@ -143,6 +143,7 @@ procedure TViewMain.Update(const SecondsPassed: Single; var HandleInput: Boolean
      task.RunTask;
      task.Free;
      delete( GTaskList, 0, 1 );
+     dec( tasklistlen );
    end;
 end;
 
@@ -154,6 +155,7 @@ end;
 procedure TViewMain.HandleDisconnected(AClient: TClientConnection);
 begin
   Notification('Client disconnected');
+  removeclient( AClient ); { remove any tasks queued by the client }
 end;
 
 procedure TViewMain.HandleMessageReceived(const AMessage: String; AClient: TClientConnection);
