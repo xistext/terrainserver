@@ -8,13 +8,18 @@ uses SysUtils, Collect, TerServerCommon, terrainparams,
 type TTerTile = class; { forward }
 
      TTileList = class( tsortedCollection )
-        function keyof( item : pointer ) : pointer; override;
-        function compare( item1, item2 : pointer ) : integer; override;
-        function createtile( const iInfo : TTileHeader ) : TTerTile; virtual;
+
         function tilexy( x, y : integer ) : TTerTile;
+        function findtile( x, y : integer;
+                           var ix : integer ) : boolean;
         function initxy( x, y : integer;
                          tilesz : integer ) : TTerTile;
         function getinittile( const tileinfo : TTileHeader ) : TTerTile;
+
+
+        function keyof( item : pointer ) : pointer; override;
+        function compare( item1, item2 : pointer ) : integer; override;
+
       end;
 
      TDataLayer = class
@@ -37,8 +42,6 @@ type TTerTile = class; { forward }
 
         public
         {$ifdef terserver}
-        QueryOffset : TVector2;
-        Dirty       : boolean;
         datalayers : TDataLayers;
         procedure UpdateTerrainGridFromSource( Source : TCastleTerrainNoise );
 
@@ -51,17 +54,19 @@ type TTerTile = class; { forward }
         {$endif}
       end;
 
+procedure sethxy( var h : TTileHeader; x, y : smallint; sz : word = 1 );
 
 const GTileList : TTileList = nil;
 
 implementation
 
-procedure sethxy( var h : TTileHeader; x, y : smallint ); inline;
+procedure sethxy( var h : TTileHeader; x, y : smallint; sz : word = 1 ); inline;
  begin
    with h do
     begin
       tilex := x;
       tiley := y;
+      tilesz := sz;
     end;
  end;
 
@@ -88,13 +93,19 @@ function TTileList.compare( item1, item2 : pointer ) : integer;
       result2 := compareint( h1.TileX, h2.TileX );
  end;
 
+function TTileList.findtile( x, y : integer;
+                             var ix : integer ) : boolean;
+ var h : ttileheader;
+ begin
+   sethxy( h, x, y );
+   result := search( @h, ix );
+ end;
+
 function TTileList.tilexy( x, y : integer ) : TTerTile;
- var h : TTileHeader;
-     i : integer;
+ var i : integer;
  begin
    result := nil;
-   sethxy( h, x, y );
-   if search( @h, i ) then
+   if findtile( x, y, i ) then
       result := TTerTile( at( i ));
  end;
 
@@ -104,38 +115,33 @@ function TTileList.initxy( x, y : integer;
      i : integer;
  begin
    result := nil;
-   sethxy( h, x, y );
-   if search( @h, i ) then
+   if findtile( x, y, i ) then
     begin
       result := TTerTile( at( i ));
       result.Info.TileSz := tilesz;
     end
    else
     begin
+      sethxy( h, x, y );
       h.TileSz := tilesz;
-      result := createtile( h );
+      result := TTerTile.create( h );
       atinsert( i, result );
     end;
  end;
 
 function TTileList.getinittile( const tileinfo : TTileHeader ) : TTerTile;
-   var i : integer;
-   begin
-     if search( @tileinfo, i ) then
-      begin
-        result := TTerTile( at( i ));
-        result.Info := tileinfo;
-      end
-     else
-      begin
-        result := createtile( tileinfo );
-        atinsert( i, result );
-      end;
-   end;
-
-function TTileList.createtile( const iInfo : TTileHeader ) : TTerTile;
+ var i : integer;
  begin
-   result := TTerTile.Create( iInfo );
+   if search( @tileinfo, i ) then
+    begin
+      result := TTerTile( at( i ));
+      result.Info := tileinfo;
+    end
+   else
+    begin
+      result := TTerTile.create( tileinfo );
+      atinsert( i, result );
+    end;
  end;
 
 //-------------------------------
@@ -153,18 +159,14 @@ function TDataLayer.gridsz : dword;
 
 //-------------------------------
 constructor TTerTile.create( const iInfo : TTileHeader );
- var TileSize : single;
-     layer : TDataLayer;
+ var layer : TDataLayer;
  begin
    Info := iInfo;
    {$ifdef terserver}
-   Dirty := true;
    SetLength( datalayers, 1 );
    layer := TDataLayer.create;
    layer.initgrid( Info.TileSz );
    datalayers[0] := layer;
-   TileSize := getWorldSize;
-   QueryOffset := Vector2( Info.TileX * TileSize, Info.TileY * TileSize );
    {$else}
    Graphics := nil;
    {$endif}
@@ -173,6 +175,7 @@ constructor TTerTile.create( const iInfo : TTileHeader );
 destructor TTerTile.destroy;
  {$ifdef terserver}var i : integer;{$endif}
  begin
+   inherited;
    {$ifdef terserver}
    for i := 0 to length( datalayers ) - 1 do
       datalayers[i].Free;
@@ -204,10 +207,14 @@ procedure TTerTile.UpdateTerrainGridFromSource( Source : TCastleTerrainNoise );
      pos : TVector2;
      h0 : single;
      Grid : TSingleGrid;
+     QueryOffset : TVector2;
+     tilesize : single;
  begin
    assert( assigned( source ));
    sz2 := getWorldSize * 0.5;
    factor := GDefGridCellCount div Info.TileSz;
+   tilesize := getWorldSize;
+   QueryOffset := Vector2( Info.TileX * tilesize, Info.TileY * tilesize);
    pos := Vector2( queryoffset.x-sz2, queryoffset.y-sz2 );
    step := GridStep * factor;
    Grid := TerrainGrid;
@@ -222,8 +229,7 @@ procedure TTerTile.UpdateTerrainGridFromSource( Source : TCastleTerrainNoise );
        end;
       pos := vector2( queryoffset.x-sz2, pos.y + step );
     end;
-   dirty := false;
- end;
+end;
 {$endif}
 
 initialization

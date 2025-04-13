@@ -22,7 +22,8 @@ uses Classes,
   idGlobal,
   CastleVectors, CastleWindow, CastleComponentSerialize, CastleUIControls, CastleControls,
   CastleKeysMouse, CastleClientServer, CastleNotifications,
-  TerServerCommon, TerrainData, TerrainCommand;
+  TerServerCommon, TerrainData, TerrainCommand,
+  debug;
 
 type
   { Main view, where most of the application logic takes place. }
@@ -95,6 +96,8 @@ end;
 
 procedure TViewMain.Update(const SecondsPassed: Single; var HandleInput: Boolean);
  var connected : boolean;
+     task : TTaskItem;
+     tasklistlen : integer;
  const connectstatus : integer = -1;
        clientcount   : integer = -1;
  begin
@@ -133,6 +136,14 @@ procedure TViewMain.Update(const SecondsPassed: Single; var HandleInput: Boolean
       clientcount := 0;
       ClientsLabel.Caption := IntToStr( clientcount ) + '0 clients';
     end;
+  tasklistlen := length( GTaskList );
+  while tasklistlen > 0 do
+   begin
+     task := GTaskList[0];
+     task.RunTask;
+     task.Free;
+     delete( GTaskList, 0, 1 );
+   end;
 end;
 
 procedure TViewMain.HandleConnected(AClient: TClientConnection);
@@ -149,11 +160,12 @@ procedure TViewMain.HandleMessageReceived(const AMessage: String; AClient: TClie
 begin
   Notification('Client cmd: ' + AMessage);
   { prcess command }
-  GCmdList.executecommand( AClient, AMessage );
+  GCmdList.executecommand( AClient, AMessage, {$ifdef FPC}@{$endif}HandleCommandCallback );
 end;
 
 procedure TViewMain.HandleCommandCallback( Msg : string );
  begin
+   dbgwriteln( Msg );
    Application.ProcessAllMessages;
  end;
 
