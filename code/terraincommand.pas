@@ -30,19 +30,31 @@ type TCommandCallback = procedure( msg : string ) of object;
                                  callback : TCommandCallback ) : integer;
       end;
 
-
-
     TTaskItem = class
+      function runtask : boolean; virtual;
+    end;
+
+    TClientTaskItem = class( TTaskItem )
 
        Client : TClientConnection;
 
        constructor create( const iClient : TClientConnection );
-
-       function runtask : boolean; virtual;
+       function runtask : boolean; override;
 
      end;
 
-    TTask_SendTile = class( TTaskItem )
+    TTaskList = class
+       items : array of TTaskItem;
+       function count: integer;
+       function pop : TTaskItem;
+       function item( i : integer ) : TTaskItem;
+       procedure remove( ix, len : integer );
+       procedure removeclient( const AClient : TClientConnection );
+       procedure AddTask( ATask : TTaskItem );
+       procedure AddTasks( iTaskList : TTaskList );
+     end;
+
+    TTask_SendTile = class( TClientTaskItem )
         Tile   : TTerTile;
         LOD    : dword;
         constructor create( const iClient : TClientConnection;
@@ -51,7 +63,7 @@ type TCommandCallback = procedure( msg : string ) of object;
         function runtask : boolean; override;
       end;
 
-    TTask_BuildTile = class( TTaskItem )
+    TTask_BuildTile = class( TClientTaskItem )
             Tile   : TTerTile;
             tileparams : TTerrainParams;
             constructor create( const iClient : TClientConnection;
@@ -60,16 +72,18 @@ type TCommandCallback = procedure( msg : string ) of object;
             function runtask : boolean; override;
           end;
 
+    TTask_SaveTiles = class( TTaskItem )
+        function runtask : boolean; override;
+     end;
+
 procedure SendClientMsgHeader( AClient : TClientConnection;
                                msgtype : TMsgType;
                                msglen  : dword = 0;
                                requestid : dword = 0 );
 
-procedure removeclient( const AClient : TClientConnection );
-
 
 const GCmdList : TCmdList = nil;
-var GTaskList : array of TTaskItem;
+      GTaskList : TTaskList = nil;
 
 implementation
 
@@ -114,26 +128,6 @@ const version : string = 'xisterra0.1a';
         ATile := TTerTile( GTileList.at( tileix ))
    end;
 
-   procedure removeclient( const AClient : TClientConnection );
-    var i, l : integer;
-        item : TTaskItem;
-    begin
-      l := length( GTaskList );
-      i := 0;
-      while i < l do
-       begin
-         item := GTaskList[i];
-         if item.Client.Context = AClient.Context then
-          begin
-            delete( GTaskList, i, 1 );
-            item.free;
-            dec( l );
-          end
-         else
-            inc( i );
-       end;
-    end;
-
 procedure SendClientMsgHeader( AClient : TClientConnection;
                                msgtype : TMsgType;
                                msglen  : dword = 0;
@@ -146,27 +140,97 @@ procedure SendClientMsgHeader( AClient : TClientConnection;
    AClient.Send( h, sizeof( h ));
  end;
 
- procedure AddTask( ATask : TTAskItem );
+//----------------------------
+
+function TTaskList.count: integer;
+ begin
+   result := length( items );
+ end;
+
+function TTaskList.pop : TTaskItem;
+ begin
+   result := nil;
+   if count > 0 then
+    begin
+      result := items[0];
+      delete( items, 0, 1 );
+    end;
+ end;
+
+function TTaskList.item( i : integer ) : TTaskItem;
+ begin
+   result := items[i];
+ end;
+
+procedure TTaskList.remove( ix, len : integer );
+ begin
+   delete( items, ix, len );
+ end;
+
+procedure TTaskList.AddTask( ATask : TTaskItem );
  var len : integer;
  begin
-   len := length( GTaskList );
-   setlength( GTaskList, len + 1 );
-   GTaskList[len] := ATask;
+   len := count;
+   setlength( items, len + 1 );
+   items[len] := ATask;
+ end;
+
+procedure TTaskList.AddTasks( iTaskList : TTaskList );
+ var newlist : TTaskList;
+     item1, item2 : TTaskItem;
+ begin
+   newlist := ttasklist.create;
+   repeat
+      item1 := pop;
+      if assigned( item1 ) then
+         newlist.AddTask( item1 );
+      item2 := itasklist.pop;
+      if assigned( item2 ) then
+         newlist.AddTask( item2 );
+   until not assigned( item1 ) and not assigned( item2 );
+   items := newlist.items;
+   newlist.free;
+ end;
+
+procedure TTaskList.removeclient( const AClient : TClientConnection );
+ var i, l : integer;
+     it : TTaskItem;
+ begin
+   l := count;
+   i := 0;
+   while i < l do
+    begin
+      it := items[i];
+      if ( it is TClientTaskItem ) and ( TClientTaskItem( it ).Client.Context = AClient.Context ) then
+       begin
+         remove( i, 1 );
+         it.free;
+         dec( l );
+       end
+      else
+         inc( i );
+    end;
  end;
 
 //----------------------------
 
-constructor TTaskItem.create( const iClient : TClientConnection );
+function TTaskItem.runtask : boolean;
+ begin
+   result := true;
+ end;
+
+
+//-----------------------------------
+constructor TClientTaskItem.create( const iClient : TClientConnection );
  begin
    inherited create;
    Client := iClient;
  end;
 
-function TTaskItem.runtask : boolean;
+function TClientTaskItem.runtask : boolean;
  begin
    result := assigned( Client.Context.Connection );
  end;
-
 
 //-----------------------------------
 
@@ -186,7 +250,9 @@ function TTask_BuildTile.runtask : boolean;
    if result then
     begin
       assert( assigned( tile ) and assigned( tileparams ));
-      Tile.UpdateTerrainGridFromSource( TileParams.Noise );
+
+      if not tile.loadfromfile then
+         Tile.UpdateTerrainGridFromSource( TileParams.Noise );
     end;
  end;
 
@@ -206,37 +272,104 @@ function TTask_SendTile.RunTask : boolean;
      buffer : TIdBytes;
      TerGrid : TSingleGrid;
      bufptr : ^single;
+     resulttileinfo : TTileHeader;
+     h : single;
+     neighbor : TTerTile;
  begin
    result := inherited Runtask;
    if not result then
       exit;
    loddiv := divOfLOD( LOD );
+   resulttileinfo := Tile.info;
+
    tilesz := GDefGridCellCount div loddiv;
-   Tile.info.tilesz := tilesz;
-   buflen := tilesz * tilesz * sizeof( single ) ;
+   resulttileinfo.tilesz := tilesz + 1;
+   buflen := resulttileinfo.tilesz * resulttileinfo.tilesz * sizeof( single ) ;
 
    TerGrid := Tile.TerrainGrid;
    setlength( buffer, buflen );
+   bufptr := @buffer[0];
+   neighbor := GTileList.getneighbor( tile, 0, 1 );
+   h := 0;
    if loddiv = 1 then { full resolution }
-      move( TerGrid.depthptr^, buffer[0], buflen )
-   else
-    begin { reduced sample }
-      bufptr := @buffer[0];
-      for x := 0 to tilesz - 1 do for y := 0 to tilesz - 1 do
+    begin
+      for x := 0 to tilesz - 1 do
        begin
-         bufptr^ := TerGrid.samplemax(x * loddiv, y * loddiv, loddiv, loddiv);
+         move( TerGrid.ptrxy(x,0)^, bufptr^, tilesz * sizeof( single ));
+         { last point in line }
+         if assigned( neighbor ) then
+            h := neighbor.TerrainGrid.valuexy(x,0)
+         else
+            h := 0;
+         inc( bufptr, tilesz );
+         bufptr^ := h;
          inc( bufptr );
        end;
+      { last row }
+      neighbor := GTileList.getNeighbor( tile, 1, 0 );
+      if assigned( neighbor ) then
+         move( neighbor.TerrainGrid.ptrxy(0,0)^, bufptr^, tilesz * sizeof( single ));
+      inc( bufptr, tilesz );
+      neighbor := GTileList.getNeighbor( tile, 1, 1 );
+      if assigned( neighbor ) then
+         bufptr^ := neighbor.TerrainGrid.valuexy( 0, 0 );
+    end
+   else
+    begin { reduced sample }
+      for x := 0 to tilesz - 1 do
+       begin
+         for y := 0 to tilesz - 1 do
+          begin
+            bufptr^ := TerGrid.samplemax(x * loddiv, y * loddiv, loddiv, loddiv);
+            inc( bufptr );
+          end;
+         { last point in from neighbor grid }
+         if assigned( neighbor ) then
+            h := neighbor.TerrainGrid.valuexy(x * loddiv,0)
+         else
+            h := 0;
+         bufptr^ := h;
+         inc( bufptr );
+       end;
+      { last line from neighbor grid }
+      neighbor := GTileList.getNeighbor( tile, 1, 0 );
+      if assigned( neighbor ) then
+       begin
+         for y := 0 to tilesz - 1 do
+          begin
+            bufptr^ := neighbor.TerrainGrid.valuexy(0, y * loddiv );
+            inc( bufptr );
+          end;
+       end
+      else
+         inc( bufptr, tilesz );
+      { corner point from neighbor grid }
+      neighbor := GTileList.getNeighbor( tile, 1, 1 );
+      if assigned( neighbor ) then
+         bufptr^ := neighbor.TerrainGrid.valuexy( 0, 0 );
     end;
 
    { send message + tile headers }
    SendClientMsgHeader( client, msg_Tile, buflen + sizeof( TTileHeader ));
-   client.Send( Tile.Info, sizeof( TTileHeader ));
+   client.Send( resulttileinfo, sizeof( TTileHeader ));
    client.SendBuffer( buffer, buflen );
 
-   dbgwriteln( 'Send Tile['+inttostr( tile.info.tilex )+','+inttostr(tile.info.tiley)+']' );
+   dbgwrite( 'Send '+tile.tileid+'.   ' );
 
    result := true;
+ end;
+
+//---------------------------------
+
+function TTask_SaveTiles.runtask : boolean;
+ var i : integer;
+ begin
+   result := inherited runtask;
+   if result then
+      for i := 0 to GTilelist.count - 1 do
+       begin
+         ttertile( GTilelist.at(i)).SaveToFile;
+       end;
  end;
 
 //-----------------------------
@@ -326,26 +459,30 @@ function intofstr( astr : string ) : integer;
    val( AStr, result, code );
  end;
 
+
 procedure buildArea( client : TClientConnection;
                      CenterX, CenterY : integer;
                      Radius : integer;
                      const Params : TTerrainParams;
                      callback : TCommandCallback);
+ var atasklist : TTasklist;
+
  procedure SendATile( tx, ty : integer );
   var Tile : TTerTile;
-      task : TTaskItem;
+//      task : TTaskItem;
       LOD : dword;
   begin
     LOD := trunc(sqrt( sqr( tx - CenterX ) + sqr( ty - CenterY )));
     if UpdateTile( Params, tx, ty, tile ) then { if the tile was created then we have to add a task to build it }
-       AddTask( TTask_BuildTile.create( client, Tile, Params ) );
-    AddTask( TTask_SendTile.create( client, Tile, LOD ) );
+       GTaskList.AddTask( TTask_BuildTile.create( client, Tile, Params ) );
+    GTaskList.AddTask( TTask_SendTile.create( client, Tile, LOD ) );
     Callback('');
   end;
 
  var TileY, TileY2 : Integer;
      i, r : integer;
  begin
+   atasklist := ttasklist.create;
    SendATile( CenterX, CenterY );
    for r := 1 to radius do
     begin
@@ -373,8 +510,10 @@ procedure buildArea( client : TClientConnection;
       SendATile( CenterX + r, CenterY - r );
       SendATile( CenterX + r, CenterY + r );
     end;
+   GTaskList.AddTask( TTask_SaveTiles.create );
+{   gtasklist.AddTasks(aTaskList);
+   aTaskList.Free;}
  end;
-
 
 function cmdBuildTile( client : TClientConnection;
                        params : string;
@@ -412,8 +551,11 @@ function cmdBuildTile( client : TClientConnection;
 
 initialization
   GCmdList := TCmdList.Create;
+  GTaskList := TTaskList.Create;
   GCmdList.RegisterCmd( 'version', @cmdVersion );
   GCmdList.RegisterCmd( 'build', @cmdBuildTile );
+//  GCmdList.RegisterCmd( 'save', @cmdSave );
 finalization
   GCmdList.Free;
+  GTaskList.Free;
 end.

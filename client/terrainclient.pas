@@ -195,65 +195,41 @@ begin
   Result := LinkedTile.GridStep;
 end;
 
+procedure buildvertexlistsfromgrid( grid : TSingleGrid;
+                                    gridcount : integer;
+                                    Vertices : TVector3List;
+                                    TexCoords: TVector2List );
+var i, j, c, posy : integer;
+    VertexPtr : ^TVector3;
+    TexPtr : ^TVector2;
+    TexturePos : TVector2;
+    hptr : PSingle;
+ begin
+   VertexPtr := Vertices.Ptr(0);  { starting vertex pointer }
+   TexPtr := TexCoords.Ptr(0);       { starting texture pointer }
+   TexturePos := Vector2(0,0);
+   posy := 0;
+   c := GridCount;
+   for i := c - 1 downto 0 do
+    begin
+      hptr := grid.ptrix( posy );
+      for j := c - 1 downto 0 do
+       begin
+         VertexPtr^.Y := hptr^;
+         inc( VertexPtr );
+         TexPtr^ := TexturePos;
+         inc( TexPtr );
+         inc( hptr, grid.wh );
+       end;
+      inc( posy );
+    end;
+ end;
 
 procedure TTerrainMesh.updatefromgrid( TerrainGrid : TSingleGrid );
-var TerrainAndWater : single;
-   i, j, ix, pstep, lstep : integer;
-   pos : TPoint;
-   VertexPtr : ^TVector3;
-   TexPtr : ^TVector2;
-   TexturePos : TVector2;
-   h : single;
-   hptr : PSingle;
-   c : integer;
- procedure setYandTex( y : single; const tex : TVector2 );
-  begin
-    VertexPtr^.Y := y;
-    TexPtr^ := tex;
-    inc( VertexPtr );
-    inc( TexPtr );
-  end;
- procedure setYandTexLast( y : single; const tex : TVector2 );
-  begin
-    VertexPtr^.Y := y;
-    TexPtr^ := tex;
-  end;
-var fLod : integer;
 begin
-  fLod := 1;
-  pos := point(0,0);
-  pstep := fLOD; { pointstep for walking ptr }
-  lstep := pstep * terraingrid.w;    { linestep for walking ptr }
-  VertexPtr := CoordinateNode.FdPoint.Items.Ptr(0);  { starting vertex pointer }
-  TexPtr := TexCoordNode.FdPoint.Items.Ptr(0);       { starting texture pointer }
-  TexturePos := Vector2( 0, 0 );{!!!}
-  c := GridCount;
-  for i := c - 2 downto 0 do
-   begin
-     hptr := TerrainGrid.ptrix( pos.y );
-     { do rest except last }
-     for j := c - 2 downto 0 do
-      begin
-        setYandTex( hptr^, TexturePos );
-        inc( hptr, lstep );
-      end;
-     h := 0; //getneighborvalues( neighbors[2], point( 0, pos.y ), h );
-     { do last cell in row x = fGridCount - 1 from x+1 neighboring grid }
-     setYandTex( h, TexturePos );
-     inc( pos.y, pstep );
-   end;
-  { do the last line of y = fGridCount - 1 from y+1 neighboring grid }
-  pos.x := 0;
-  ix := pos.y - pstep; { step back get edge terrainheights from last line }
-  for j := c - 2 downto 0 do
-   begin
-     h := TerrainGrid.valueix( ix ); { get last terrain height }
-     setYandTex( h , TexturePos );
-     inc( ix, lstep );
-     inc( pos.x, pstep );
-   end;
-  { do last cell of x = fGridCount - 1 from x+1 y+1 neighboring grid }
-  setYandTexLast( h , TexturePos );
+  buildvertexlistsfromgrid( TerrainGrid, GridCount,
+                            CoordinateNode.FdPoint.Items,
+                            TexCoordNode.FdPoint.Items );
   TexCoordNode.FdPoint.changed; { trigger mesh to rebuild }
 //  dirty := false;
 end;

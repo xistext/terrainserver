@@ -97,7 +97,6 @@ end;
 procedure TViewMain.Update(const SecondsPassed: Single; var HandleInput: Boolean);
  var connected : boolean;
      task : TTaskItem;
-     tasklistlen : integer;
  const connectstatus : integer = -1;
        clientcount   : integer = -1;
  begin
@@ -136,14 +135,12 @@ procedure TViewMain.Update(const SecondsPassed: Single; var HandleInput: Boolean
       clientcount := 0;
       ClientsLabel.Caption := IntToStr( clientcount ) + '0 clients';
     end;
-  tasklistlen := length( GTaskList );
-  while tasklistlen > 0 do
+  task := GTaskList.Pop;
+  while assigned( task ) do
    begin
-     task := GTaskList[0];
      task.RunTask;
-     task.Free;
-     delete( GTaskList, 0, 1 );
-     dec( tasklistlen );
+     Application.ProcessMessage( false, false );
+     task := GTaskList.Pop;
    end;
 end;
 
@@ -155,7 +152,7 @@ end;
 procedure TViewMain.HandleDisconnected(AClient: TClientConnection);
 begin
   Notification('Client disconnected');
-  removeclient( AClient ); { remove any tasks queued by the client }
+  GTaskList.removeclient( AClient ); { remove any tasks queued by the client }
 end;
 
 procedure TViewMain.HandleMessageReceived(const AMessage: String; AClient: TClientConnection);
@@ -167,8 +164,9 @@ end;
 
 procedure TViewMain.HandleCommandCallback( Msg : string );
  begin
-   dbgwriteln( Msg );
-   Application.ProcessAllMessages;
+   if msg <> '' then
+     dbgwrite( Msg +'. ' );
+   Application.ProcessMessage( false, false );
  end;
 
 procedure TViewMain.SendStringToClient( AMessage : string;

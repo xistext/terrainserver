@@ -12,7 +12,7 @@ const msg_undefined = 0;
       msg_binary    = 3;
       msg_tile      = 4;
 
-type TMsgHeader = packed record
+type TMsgHeader = record
         requestid : dword; { id of the request this message is a response to }
         msgtype   : tmsgtype; { type of the message }
         msglen    : dword; { length of the message data }
@@ -20,9 +20,16 @@ type TMsgHeader = packed record
 
      PTileHeader = ^TTileHeader;
      TTileHeader = packed record
-        TileX, TileY : smallint; { position of tile within world }
+        TileX, TileY : smallint; { position of tile within world grid }
         TileSz       : word;     { dimensions of tile in 'cells' }
       end;
+
+    { in memory status of tile }
+    TTileStatus = record
+       built  : boolean; { tile not built }
+       dirty  : boolean; { changes not saved to disk }
+       locked : boolean;
+     end;
 
 implementation
 

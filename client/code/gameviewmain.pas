@@ -116,20 +116,22 @@ procedure TViewMain.Update(const SecondsPassed: Single; var HandleInput: Boolean
 begin
   inherited;
   MainNavigation.MouseLook := {( GActiveDrag = self ) and} ( buttonMiddle in Container.MousePressed );
-
-  ButtonCreateClient.Enabled := FClient = nil;
-  ButtonDestroyClient.Enabled := FClient <> nil;
-  ButtonSend.Enabled := FClient <> nil;
 end;
 
 procedure TViewMain.HandleConnected;
 begin
   DbgWriteln('Connected to server');
+  ButtonCreateClient.Enabled := FClient = nil;
+  ButtonDestroyClient.Enabled := FClient <> nil;
+  ButtonSend.Enabled := FClient <> nil;
 end;
 
 procedure TViewMain.HandleDisconnected;
 begin
   DbgWriteln('Disconnected from server');
+  ButtonCreateClient.Enabled := true;
+  ButtonDestroyClient.Enabled := false;
+  ButtonSend.Enabled := false;
 end;
 
 procedure TViewMain.HandleMessageReceived(const AMessage: String);

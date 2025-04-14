@@ -2,8 +2,13 @@ unit TerrainData;
 
 interface
 
-uses SysUtils, Collect, TerServerCommon, terrainparams,
-     CastleVectors, CastleTerrain, watergrid;
+uses Classes, SysUtils, Collect, TerServerCommon, terrainparams,
+     CastleVectors, CastleTerrain, watergrid,
+     debug;
+
+const terrainpath = 'data\terrain\';
+      terrainext  = '.ter';
+      rootpath = 'e:\terrainserver\';
 
 type TTerTile = class; { forward }
 
@@ -20,6 +25,8 @@ type TTerTile = class; { forward }
         function keyof( item : pointer ) : pointer; override;
         function compare( item1, item2 : pointer ) : integer; override;
 
+        function getneighbor( tile : TTerTile;
+                              dx, dy : integer ) : TTerTile;
       end;
 
      TDataLayer = class
@@ -32,18 +39,25 @@ type TTerTile = class; { forward }
 
      TTerTile = class
 
-        Info        : TTileHeader;
+        Info   : TTileHeader;
+        {$ifdef terserver}
+        Status : TTileStatus;
+        {$endif}
 
         constructor create( const iInfo : TTileHeader );
         destructor destroy; override;
 
         function getWorldSize : single;
         function gridStep : single;
+        function tileid : string;
 
         public
         {$ifdef terserver}
         datalayers : TDataLayers;
         procedure UpdateTerrainGridFromSource( Source : TCastleTerrainNoise );
+
+        function SaveToFile : boolean;
+        function LoadFromFile : boolean;
 
         private
         function getTerrainGrid : TSingleGrid;
@@ -142,6 +156,18 @@ function TTileList.getinittile( const tileinfo : TTileHeader ) : TTerTile;
     end;
  end;
 
+function TTileList.getneighbor( tile : TTerTile;
+                                dx, dy : integer ) : TTerTile;
+ var ix : integer;
+     x, y : integer;
+ begin
+   result := nil;
+   x := tile.Info.TileX + dx;
+   y := tile.Info.TileY + dy;
+   if findtile( x, y, ix ) then
+      result := TTerTile( at( ix ));
+ end;
+
 //-------------------------------
 
 procedure TDataLayer.initgrid( igridsz : dword );
@@ -152,7 +178,7 @@ procedure TDataLayer.initgrid( igridsz : dword );
 function TDataLayer.gridsz : dword;
  begin
    assert( assigned( datagrid ));
-   result := datagrid.w;
+   result := datagrid.wh;
  end;
 
 //-------------------------------
@@ -165,6 +191,7 @@ constructor TTerTile.create( const iInfo : TTileHeader );
    layer := TDataLayer.create;
    layer.initgrid( Info.TileSz );
    datalayers[0] := layer;
+   status := 0;
    {$else}
    Graphics := nil;
    {$endif}
@@ -181,10 +208,32 @@ destructor TTerTile.destroy;
    {$endif}
  end;
 
+function zeropad( value : integer; len : integer  = 2 ) : string;
+ var l, i : integer;
+ begin
+   result := Inttostr( value );
+   if length( result ) < len then
+      insert( '0', result, 0 );
+ end;
+
+function TTerTile.tileid : string;
+ var token1, token2 : string;
+ begin
+   if info.TileX < 0 then
+      token1 := 'W'+zeropad( abs( info.Tilex ))
+   else
+      token1 := 'E'+zeropad( info.tilex );
+   if info.TileY < 0 then
+      token2 := 'S'+zeropad( abs( info.Tiley ))
+   else
+      token2 := 'N'+zeropad( info.tiley );
+   result := token1+token2;
+ end;
+
 function TTerTile.gridStep : single;
  var loddiv : integer;
  begin
-   loddiv := GDefGridCellCount div Info.TileSz;
+   loddiv := GDefGridCellCount div ( Info.TileSz{$ifndef terserver}-1{$endif} );
    result := GDefGridStep * loddiv;
  end;
 
@@ -217,9 +266,9 @@ procedure TTerTile.UpdateTerrainGridFromSource( Source : TCastleTerrainNoise );
    step := GridStep * factor;
    Grid := TerrainGrid;
 
-   for y := 0 to Grid.h - 1 do
+   for y := 0 to Grid.wh - 1 do
     begin
-      for x := 0 to Grid.w - 1 do
+      for x := 0 to Grid.wh - 1 do
        begin
          h0 := Source.Height( pos, pos );
          Grid.SetValuexy( x, y, h0 );
@@ -227,7 +276,48 @@ procedure TTerTile.UpdateTerrainGridFromSource( Source : TCastleTerrainNoise );
        end;
       pos := vector2( queryoffset.x-sz2, pos.y + step );
     end;
+   status := status or tile_built or tile_dirty;
 end;
+
+function TTerTile.SaveToFile : boolean;
+ var filename : string;
+     stream : TStream;
+     datagrid : TSingleGrid;
+     dirty : boolean;
+ begin
+   filename := rootpath + terrainpath + tileid + terrainext;
+   dirty := ( status and tile_dirty > 0 );
+   if dirty or not fileexists( filename ) then
+    begin
+      datagrid := getTerrainGrid;
+      stream := TFileStream.Create(filename, fmCreate );
+      stream.Write( datagrid.Data^, datagrid.datasz);
+      stream.Free;
+      dbgwrite( 'Saved '+tileid+'.  ' );
+      if dirty then
+         status := status xor tile_dirty;
+    end;
+   result := true;
+ end;
+
+function TTerTile.LoadfromFile : boolean;
+ var filename : string;
+     stream : TStream;
+     datagrid : TSingleGrid;
+ begin
+   filename := rootpath + terrainpath + tileid + terrainext;
+   result := fileexists( filename );
+   if result then
+    begin
+      datagrid := getTerrainGrid;
+      stream := TFileStream.Create(filename, fmOpenRead);
+      stream.Read( datagrid.Data^, datagrid.datasz);
+      stream.Free;
+      if status and tile_dirty > 0 then
+         status := status xor tile_dirty;
+    end;
+ end;
+
 {$endif}
 
 initialization
