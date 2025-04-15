@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<CONFIG>
-  <Compiler Value="C:\lazarus\fpc\3.2.2\bin\i386-win32\fpc.exe" Date="1488545472"/>
-  <Params Value=" -MObjFPC -Scaghi -CirotR -O1 -gw3 -gl -Xg -l -vewnibq -vh- -FiE:\TerrainServer\code -FiE:\TerrainServer\build\server -Fie:\cge\src\common_includes -Fie:\wyrdforest\code -Fle:\cge\src\files\indy -FuE:\TerrainServer\code -FuC:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core -FuC:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\System -Fue:\cge\src\files\indy -Fue:\cge\src\common_includes -FuE:\TerrainServer\commoncode -Fue:\wyrdforest\code\lib\edjlib -Fue:\wyrdforest\code\elib -Fue:\wyrdforest\code -Fue:\code\elib -FuE:\cge\packages\lib\castle_window\i386-win32 -FuE:\cge\packages\lib\castle_base\i386-win32 -FuC:\lazarus\packager\units\i386-win32 -FuE:\TerrainServer\ -FUE:\TerrainServer\build\server\ -FEE:\TerrainServer\ -oE:\TerrainServer\terserver.exe -dDEBUG -dterserver server_standalone.dpr"/>
-</CONFIG>
