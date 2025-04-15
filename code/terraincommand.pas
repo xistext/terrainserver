@@ -93,20 +93,20 @@ const version : string = 'xisterra0.1a';
    begin
      result := 60;
      case LOD of
-        0, 1, 2 : result := 1;
-        3 : result := 2;
-        4 : result := 3;
-        5 : result := 4;
-        6 : result := 5;
-        7 : result := 6;
-        8 : result := 8;
-        9 : result := 10;
-        10 : result := 12;
-        11 : result := 15;
-        12 : result := 20;
-        13 : result := 24;
-        14 : result := 30;
-        15 : result := 40;
+        0, 1 : result := 1;
+        2 : result := 2;
+        3 : result := 3;
+        4 : result := 4;
+        5 : result := 5;
+        6 : result := 6;
+        7 : result := 8;
+        8 : result := 10;
+        9 : result := 12;
+        10 : result := 15;
+        11 : result := 20;
+        12 : result := 24;
+        13 : result := 30;
+        14 : result := 40;
       end;
    end;
 
@@ -320,7 +320,8 @@ function TTask_SendTile.RunTask : boolean;
        begin
          for y := 0 to tilesz - 1 do
           begin
-            bufptr^ := TerGrid.samplemax(x * loddiv, y * loddiv, loddiv, loddiv);
+//            bufptr^ := TerGrid.samplemax(x * loddiv, y * loddiv, loddiv, loddiv);
+            bufptr^ := TerGrid.valuexy(x * loddiv, y * loddiv);
             inc( bufptr );
           end;
          { last point in from neighbor grid }
@@ -469,10 +470,9 @@ procedure buildArea( client : TClientConnection;
 
  procedure SendATile( tx, ty : integer );
   var Tile : TTerTile;
-//      task : TTaskItem;
       LOD : dword;
   begin
-    LOD := trunc(sqrt( sqr( tx - CenterX ) + sqr( ty - CenterY )));
+    LOD := trunc(sqrt( sqr( tx - CenterX ) + sqr( ty - CenterY ))*0.5);
     if UpdateTile( Params, tx, ty, tile ) then { if the tile was created then we have to add a task to build it }
        GTaskList.AddTask( TTask_BuildTile.create( client, Tile, Params ) );
     GTaskList.AddTask( TTask_SendTile.create( client, Tile, LOD ) );

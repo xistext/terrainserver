@@ -54,39 +54,13 @@
               "VerticalAnchorSelf" : "vpMiddle"
             },
             {
-              "$$ClassName" : "TCastleButton",
-              "Caption" : "Disconnect",
-              "CustomBackgroundDisabled" : {
-                "$$ClassName" : "TCastleImagePersistent"
-              },
-              "CustomBackgroundFocused" : {
-                "$$ClassName" : "TCastleImagePersistent"
-              },
-              "CustomBackgroundNormal" : {
-                "$$ClassName" : "TCastleImagePersistent"
-              },
-              "CustomBackgroundPressed" : {
-                "$$ClassName" : "TCastleImagePersistent"
-              },
-              "Image" : {
-                "$$ClassName" : "TCastleImagePersistent"
-              },
-              "Name" : "ButtonDestroyClient",
-              "TranslationPersistent" : {
-                "$$ClassName" : "TCastleVector2Persistent",
-                "X" : 1.1300000000000000E+002
-              },
-              "VerticalAnchorParent" : "vpMiddle",
-              "VerticalAnchorSelf" : "vpMiddle"
-            },
-            {
               "$$ClassName" : "TCastleEdit",
               "AutoOnScreenKeyboard" : true,
               "CaptureAllInput" : false,
               "Name" : "EditSend",
               "TranslationPersistent" : {
                 "$$ClassName" : "TCastleVector2Persistent",
-                "X" : 2.5400000000000000E+002
+                "X" : 1.1300000000000000E+002
               },
               "VerticalAnchorParent" : "vpMiddle",
               "VerticalAnchorSelf" : "vpMiddle",
@@ -114,7 +88,7 @@
               "Name" : "ButtonSend",
               "TranslationPersistent" : {
                 "$$ClassName" : "TCastleVector2Persistent",
-                "X" : 4.5400000000000000E+002
+                "X" : 3.1300000000000000E+002
               },
               "VerticalAnchorParent" : "vpMiddle",
               "VerticalAnchorSelf" : "vpMiddle"
@@ -164,14 +138,14 @@
                   "$$ClassName" : "TCastleVector3Persistent",
                   "Z" : 0.0000000000000000E+000
                 },
-                "Intensity" : 1.0000000000000000E+001,
+                "Intensity" : 5.0000000000000000E+000,
                 "Name" : "PointLight1",
-                "Radius" : 1.0000000000000000E+003,
+                "Radius" : 2.0000000000000000E+004,
                 "TranslationPersistent" : {
                   "$$ClassName" : "TCastleVector3Persistent",
                   "X" : 4.0000000000000000E+000,
-                  "Y" : 5.0000000000000000E+001,
-                  "Z" : 1.0000000000000000E+000
+                  "Y" : 1.0000000000000000E+004,
+                  "Z" : 1.0000000000000000E+004
                 }
               },
               {
@@ -256,6 +230,42 @@
             "Exists" : false,
             "Name" : ""
           }
+        },
+        {
+          "$$ClassName" : "TCastleHorizontalGroup",
+          "Name" : "HorizontalGroup4",
+          "Spacing" : 1.0000000000000000E+001,
+          "TranslationPersistent" : {
+            "$$ClassName" : "TCastleVector2Persistent",
+            "X" : 1.0000000000000000E+001,
+            "Y" : -7.0900000000000000E+002
+          },
+          "VerticalAnchorParent" : "vpTop",
+          "VerticalAnchorSelf" : "vpTop",
+          "$Children" : [
+            {
+              "$$ClassName" : "TCastleButton",
+              "Caption" : "Elevation 5m",
+              "CustomBackgroundDisabled" : {
+                "$$ClassName" : "TCastleImagePersistent"
+              },
+              "CustomBackgroundFocused" : {
+                "$$ClassName" : "TCastleImagePersistent"
+              },
+              "CustomBackgroundNormal" : {
+                "$$ClassName" : "TCastleImagePersistent"
+              },
+              "CustomBackgroundPressed" : {
+                "$$ClassName" : "TCastleImagePersistent"
+              },
+              "Image" : {
+                "$$ClassName" : "TCastleImagePersistent"
+              },
+              "Name" : "ButtonChangeViewMode",
+              "VerticalAnchorParent" : "vpMiddle",
+              "VerticalAnchorSelf" : "vpMiddle"
+            }
+          ]
         }
       ]
     }

@@ -23,7 +23,7 @@ uses Classes,
   CastleVectors, CastleComponentSerialize, CastleUIControls, CastleControls,
   CastleKeysMouse, CastleClientServer, CastleTerrain,
   CastleViewport, CastleCameras, CastleTransform,
-  TerServerCommon, TerrainData, TerrainParams,
+  TerServerCommon, TerrainData, TerrainParams, TerrainShader,
   watergrid, BaseMesh, TerrainClient,
   debug;
 
@@ -45,7 +45,7 @@ type
     EditHostname: TCastleEdit;
     EditPort: TCastleIntegerEdit;
     ButtonCreateClient: TCastleButton;
-    ButtonDestroyClient: TCastleButton;
+    ButtonChangeViewMode: TCastleButton;
     EditSend: TCastleEdit;
     ButtonSend: TCastleButton;
     Viewport1 : TCastleViewport;
@@ -60,7 +60,7 @@ type
                                         tile  : TTerTile;
                                   const tilemesh : TTerrainMesh );
     procedure ClickCreateClient(Sender: TObject);
-    procedure ClickDestroyClient(Sender: TObject);
+    procedure ClickTest(Sender: TObject);
     procedure ClickSend(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
@@ -102,8 +102,9 @@ procedure TViewMain.Start;
 begin
   inherited;
   ButtonCreateClient.OnClick := {$ifdef FPC}@{$endif} ClickCreateClient;
-  ButtonDestroyClient.OnClick := {$ifdef FPC}@{$endif} ClickDestroyClient;
+  ButtonChangeViewMode.OnClick := {$ifdef FPC}@{$endif} ClickTest;
   ButtonSend.OnClick := {$ifdef FPC}@{$endif} ClickSend;
+  ClickCreateClient( self );
 end;
 
 procedure TViewMain.Stop;
@@ -121,17 +122,15 @@ end;
 procedure TViewMain.HandleConnected;
 begin
   DbgWriteln('Connected to server');
-  ButtonCreateClient.Enabled := FClient = nil;
-  ButtonDestroyClient.Enabled := FClient <> nil;
+  ButtonCreateClient.Caption := 'Disconnect';
   ButtonSend.Enabled := FClient <> nil;
 end;
 
 procedure TViewMain.HandleDisconnected;
 begin
   DbgWriteln('Disconnected from server');
-  ButtonCreateClient.Enabled := FClient = nil;
-  ButtonDestroyClient.Enabled := FClient <> nil;
-  ButtonSend.Enabled := FClient <> nil;
+  ButtonCreateClient.Caption := 'Connect';
+  ButtonSend.Enabled := false;
 end;
 
 procedure TViewMain.HandleMessageReceived(const AMessage: String);
@@ -154,28 +153,52 @@ procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
 
 procedure TViewMain.ClickCreateClient(Sender: TObject);
 begin
-  FClient := TTerClient.Create;
-  FClient.Hostname := 'localhost';
-  FClient.Port := 10244;
-
-  FClient.OnConnected := {$ifdef FPC}@{$endif} HandleConnected;
-  FClient.OnDisconnected := {$ifdef FPC}@{$endif} HandleDisconnected;
-  FClient.OnMessageReceived := {$ifdef FPC}@{$endif} HandleMessageReceived;
-  FClient.fOnTileReceived :=  {$ifdef FPC}@{$endif}HandleTileReceived;
-
-  MainNavigation.Input_Jump.Assign(keyNone);
-  MainNavigation.Input_Crouch.Assign(keyNone);
-
-  FClient.Connect;
-end;
-
-procedure TViewMain.ClickDestroyClient(Sender: TObject);
-begin
   if FClient <> nil then
   begin
     FClient.Disconnect;
     FreeAndNil(FClient);
-  end;
+  end
+  else
+   begin
+     FClient := TTerClient.Create;
+     FClient.Hostname := 'localhost';
+     FClient.Port := 10244;
+
+     FClient.OnConnected := {$ifdef FPC}@{$endif} HandleConnected;
+     FClient.OnDisconnected := {$ifdef FPC}@{$endif} HandleDisconnected;
+     FClient.OnMessageReceived := {$ifdef FPC}@{$endif} HandleMessageReceived;
+     FClient.fOnTileReceived :=  {$ifdef FPC}@{$endif}HandleTileReceived;
+
+     MainNavigation.Input_Jump.Assign(keyNone);
+     MainNavigation.Input_Crouch.Assign(keyNone);
+
+     FClient.Connect;
+   end;
+end;
+
+
+procedure TViewMain.ClickTest(Sender: TObject);
+ var tile : TTerTile;
+
+ var i : integer;
+     shader : TTileShader;
+     shadername : string;
+begin
+  gshaderid := ( gshaderid + 1 ) mod 7;
+  { test }
+  shadername := '';
+  for i := 0 to gtilelist.Count - 1 do
+   begin
+     Tile := TTerTile( gTileList.At( i ));
+     if assigned( Tile.graphics ) then
+      begin
+        shader := gettileshader( tile, shaderix );
+        shadername := shader.name;
+        TTerrainMesh( Tile.graphics ).updateshader( shader );
+        shader.free;
+      end;
+   end;
+  ButtonChangeViewMode.Caption := shadername;
 end;
 
 procedure TViewMain.ClickSend(Sender: TObject);

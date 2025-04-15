@@ -5,8 +5,8 @@ interface
 uses Classes, Generics.Collections,
      Collect, TerServerCommon, terrainparams, idGlobal,
      CastleClientServer,
-     CastleVectors, watergrid,
-     TerrainData, BaseMesh, x3dnodes,
+     CastleVectors, watergrid, CastleRenderOptions,
+     TerrainData, BaseMesh, x3dnodes, TerrainShader,
      IDTCPClient;
 
 type TTerrainMesh = class( TAbstractTextureMesh )
@@ -16,6 +16,8 @@ type TTerrainMesh = class( TAbstractTextureMesh )
         procedure UpdateSize;
 //        procedure updategraphics; override;
         procedure updatefromgrid( TerrainGrid : TSingleGrid );
+        procedure updateshader( shader : ttileshader );
+        function InitAppearance : TAppearanceNode; override;
         public
         LinkedTile : TTerTile;
 
@@ -63,7 +65,26 @@ type TTerrainMesh = class( TAbstractTextureMesh )
         property OnTileReceived: TTileReceivedEvent read FOnTileReceived write FOnTileReceived;
       end;
 
+const GShaderId : integer = 0;
+  function gettileshader( Tile : ttertile;
+                          shaderid : integer ) : TTileShader;
+
 implementation
+
+function gettileshader( Tile : ttertile;
+                        shaderid : integer ) : TTileShader;
+ begin
+     case shaderid of
+       0 : result := TElevationShader.create('Elev 5m',1);
+       1 : result := TElevationShader.create('Elev 1m',5);
+       2 : result := TGridShader.create( 'Grid 1m', Tile.Info.TileSz - 1, 300 );
+       3 : result := TGridShader.create( 'Grid 5m', Tile.Info.TileSz - 1, 60 );
+       4 : result := TGridShader.create( 'Grid 50m', Tile.Info.TileSz - 1, 6 );
+       5 : result := TGridShader.create( 'Grid 500m', Tile.Info.TileSz - 1, 0.6 );
+       6 : result := TGridShader.create( 'Grid 1km', Tile.Info.TileSz - 1, 0.3 );
+    end;
+ end;
+
 
 constructor TTerClientThread.Create(const AClient: TIdTCPClient;
         const AOnMessageReceived, AOnConnected, AOnDisconnected: TProcedureObject);
@@ -166,13 +187,13 @@ var offsetx, offsety : single;
    LinkedTile := iLinkedTile;
    if assigned( LinkedTile ) then with LinkedTile do
     begin
-      //Graphics := self;
       UpdateSize;
       sz := GDefGridCellCount * GDefGridStep;
       offsetx := Info.TileX * sz;
       offsety := Info.TileY * sz;
       position := vector3( offsetx, 0, offsety );
     end;
+   self.RenderOptions.WireframeEffect := weSilhouette;
  end;
 
 procedure TTerrainMesh.UpdateSize;
@@ -195,44 +216,95 @@ begin
   Result := LinkedTile.GridStep;
 end;
 
+function TTerrainMesh.InitAppearance : TAppearanceNode;
+ begin
+   Result := inherited;
+   result.Texture := initTexture( 'castle-data:/grid2.png' );
+ end;
+
 procedure buildvertexlistsfromgrid( grid : TSingleGrid;
                                     gridcount : integer;
                                     Vertices : TVector3List;
-                                    TexCoords: TVector2List );
+                                    TexCoords: TVector2List;
+                                    shader : TTileShader );
 var i, j, c, posy : integer;
     VertexPtr : ^TVector3;
     TexPtr : ^TVector2;
-    TexturePos : TVector2;
     hptr : PSingle;
  begin
    VertexPtr := Vertices.Ptr(0);  { starting vertex pointer }
    TexPtr := TexCoords.Ptr(0);       { starting texture pointer }
-   TexturePos := Vector2(0,0);
    posy := 0;
    c := GridCount;
+   shader := televationshader.create( '', 1/5 );
    for i := c - 1 downto 0 do
     begin
-      hptr := Grid.ptrix( posy );
+      hptr := grid.ptrix( posy );
       for j := c - 1 downto 0 do
        begin
          VertexPtr^.Y := hptr^;
          inc( VertexPtr );
-         TexPtr^ := TexturePos;
+
+         shader.sety( hptr^ );
+         TexPtr^ := shader.TexturePos;
+
          inc( TexPtr );
          inc( hptr, grid.wh );
+         shader.nextx;
        end;
+      shader.nexty;
       inc( posy );
     end;
  end;
 
+procedure updatetexturemapping( gridcount : integer;
+                                Vertices : TVector3List;
+                                Texcoords : TVector2List;
+                                shader : ttileshader );
+var i, j, c : integer;
+    VertexPtr : ^TVector3;
+    TexPtr : ^TVector2;
+    hptr : PSingle;
+ begin
+   VertexPtr := Vertices.Ptr(0);  { starting vertex pointer }
+   TexPtr := TexCoords.Ptr(0);       { starting texture pointer }
+   c := GridCount;
+   for i := c - 1 downto 0 do
+    begin
+      for j := c - 1 downto 0 do
+       begin
+         shader.sety( VertexPtr^.Y );
+         inc( VertexPtr );
+         TexPtr^ := shader.TexturePos;
+
+         inc( TexPtr );
+         shader.nextx;
+       end;
+      shader.nexty;
+    end;
+ end;
+
 procedure TTerrainMesh.updatefromgrid( TerrainGrid : TSingleGrid );
+var shader : TTileShader;
 begin
+  shader := gettileshader( LinkedTile, GShaderId );
   buildvertexlistsfromgrid( TerrainGrid, GridCount,
                             CoordinateNode.FdPoint.Items,
-                            TexCoordNode.FdPoint.Items );
+                            TexCoordNode.FdPoint.Items, shader );
+  shader.free;
   TexCoordNode.FdPoint.changed; { trigger mesh to rebuild }
 //  dirty := false;
 end;
+
+procedure TTerrainMesh.updateshader( shader : ttileshader );
+begin
+  updatetexturemapping( GridCount,
+                        CoordinateNode.FdPoint.Items,
+                        TexCoordNode.FdPoint.Items, shader );
+  TexCoordNode.FdPoint.changed; { trigger mesh to rebuild }
+//  dirty := false;
+end;
+
 
 
 
