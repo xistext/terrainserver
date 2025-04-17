@@ -110,14 +110,14 @@ var Body: TCastleRigidBody;
    tilerec.tilemesh.UpdateFromGrid( AGrid );
    AGrid.Free;
 
-(*   Body := TCastleRigidBody.Create(tilerec.tilemesh);
+   Body := TCastleRigidBody.Create(tilerec.tilemesh);
    tilerec.tilemesh.AddBehavior(Body);
 
 
    MyCollider := TCastleMeshCollider.Create(tilerec.tilemesh);
    MyCollider.Mesh := tilerec.tilemesh;
    MyCollider.Restitution := 0.3;
-   tilerec.tilemesh.AddBehavior(MyCollider);*)
+   tilerec.tilemesh.AddBehavior(MyCollider);
 
    FTileList.Add( tilerec );
    Queue(FOnTileReceived);

@@ -4,7 +4,7 @@ interface
 
 uses
   Classes, SysUtils,
-  CastleUtils, CastleVectors, CastleScene,
+  CastleUtils, CastleVectors, CastleScene, CastleTriangles,
   x3dNodes;
 
 type
@@ -44,6 +44,9 @@ TAbstractMesh = class( TCastleScene )
    property CellCount : integer read getCellCount;
 
    procedure UpdateGraphics; virtual; abstract;
+
+   function ElevationAtPos( Pos : TVector2;
+                            var Elev : single ) : boolean;
 
  end;
 
@@ -125,6 +128,58 @@ function TAbstractMesh.initindexes : TInt32List;
       Add( c * ( Z - 1 ) + X - 1 );
       Add( c * Z + X - 1 );
     end;
+ end;
+
+function TAbstractMesh.ElevationAtPos( Pos : TVector2;
+                                       var Elev : single ) : boolean;
+ var IndexedTriangleSetNode : TIndexedTriangleSetNode;
+     ix : integer;
+     p1, p2, p3 : tvector3;
+     intersection : TVector3;
+ const zero : single = 0.01;
+ begin
+   elev := 0;
+   result := false;
+   IndexedTriangleSetNode := TIndexedTriangleSetNode( rootnode.FindNode( TIndexedTriangleSetNode, false ));
+   ix := 0;
+   while ix < IndexedTriangleSetNode.FdIndex.Count do
+    begin
+      p1 := CoordinateNode.FdPoint.Items[IndexedTriangleSetNode.FdIndex.Items[ix]];
+      inc( ix );
+      p2 := CoordinateNode.FdPoint.Items[IndexedTriangleSetNode.FdIndex.Items[ix]];
+      inc( ix );
+      p3 := CoordinateNode.FdPoint.Items[IndexedTriangleSetNode.FdIndex.Items[ix]];
+      inc( ix );
+
+      result := (abs( p1.x - pos.x )<=zero) and (abs( p1.z -pos.y )<=zero);
+      if result then
+       begin
+         elev := p1.y;
+         exit;
+       end;
+      result := (abs( p2.x - pos.x )<=zero) and (abs( p2.z -pos.y )<=zero);
+      if result then
+       begin
+         elev := p2.y;
+         exit;
+       end;
+      result := (abs( p3.x - pos.x )<=zero) and (abs( p3.z -pos.y )<=zero);
+      if result then
+       begin
+         elev := p3.y;
+         exit;
+       end;
+      result := TryTriangleRayCollision( Intersection,
+                                         Triangle3( p1, p2, p3 ),
+                                         TrianglePlane( p1,p2,p3),
+                                         vector3( pos.x, 100, pos.y ), vector3( 0, -1, 0 ));
+      if result then
+       begin
+         elev := intersection.y;
+         exit;
+       end
+    end;
+
  end;
 
 function TAbstractMesh.InitAppearance : TAppearanceNode;
@@ -256,7 +311,7 @@ procedure TAbstractTextureMesh.InitVertices;
       vertex.z := vertex.z + step;
     end;
    CoordinateNode.SetPoint( Vertices );
-   TexCoordNode.SetPoint(TexCoords);
+   TexCoordNode.SetPoint( TexCoords );
    Vertices.Free;
    TexCoords.Free;
  end;

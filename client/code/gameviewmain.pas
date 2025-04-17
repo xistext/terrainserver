@@ -230,7 +230,7 @@ procedure TViewMain.TerrainHeight( const pos : tvector3; var h : single );
    h := -1;
    if gtilelist.findtileatlocation( Vector2(Pos.X,Pos.Z), atile ) and assigned( atile.Graphics ) then
     begin
-      coll := (*TTerrainMesh( atile.graphics ).internalraycollision( Vector3( Pos.X, 100, Pos.Z ),
+(*      coll := (*TTerrainMesh( atile.graphics ).internalraycollision( Vector3( Pos.X, 100, Pos.Z ),
                                 vector3(0,-1,0));*)
 //                   TTerrainMesh( atile.graphics )
         (*            TerrainLayer.internalraycollision( Vector3( Pos.X, 100, Pos.Z), vector3(0,-1,0) );*)
@@ -238,7 +238,8 @@ procedure TViewMain.TerrainHeight( const pos : tvector3; var h : single );
       if coll.hit then
        begin
          h := coll.Point.y;
-       end;
+       end;*)
+      TTerrainMesh( atile.graphics ).Elevationatpos( vector2( pos.x, pos.y ), h );
     end;
  (*
    if assigned( atile ) then
