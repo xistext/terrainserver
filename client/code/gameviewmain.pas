@@ -136,12 +136,40 @@ begin
   DbgWriteln('Disconnected from server');
   ButtonCreateClient.Caption := 'Connect';
   ButtonSend.Enabled := false;
+  if assigned( fclient ) then
+     FreeAndNil( fClient );
 end;
 
 procedure TViewMain.HandleMessageReceived(const AMessage: String);
 begin
   DbgWriteln('Received message: ' + AMessage);
 end;
+
+procedure TViewMain.ClickCreateClient(Sender: TObject);
+begin
+  if FClient <> nil then
+  begin
+    FClient.Disconnect;
+    FreeAndNil(FClient);
+  end
+  else
+   begin
+     FClient := TTerClient.Create;
+     FClient.Hostname := 'localhost';
+     FClient.Port := 10244;
+
+     FClient.OnConnected := {$ifdef FPC}@{$endif} HandleConnected;
+     FClient.OnDisconnected := {$ifdef FPC}@{$endif} HandleDisconnected;
+     FClient.OnMessageReceived := {$ifdef FPC}@{$endif} HandleMessageReceived;
+     FClient.fOnTileReceived :=  {$ifdef FPC}@{$endif}HandleTileReceived;
+     try
+       FClient.Connect;
+     except
+       FreeAndNil( FClient );
+     end;
+   end;
+end;
+
 
 procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
                                               tile : TTerTile;
@@ -161,28 +189,6 @@ procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
 
    Viewport1.Items.Add( tilemesh );
  end;
-
-procedure TViewMain.ClickCreateClient(Sender: TObject);
-begin
-  if FClient <> nil then
-  begin
-    FClient.Disconnect;
-    FreeAndNil(FClient);
-  end
-  else
-   begin
-     FClient := TTerClient.Create;
-     FClient.Hostname := 'localhost';
-     FClient.Port := 10244;
-
-     FClient.OnConnected := {$ifdef FPC}@{$endif} HandleConnected;
-     FClient.OnDisconnected := {$ifdef FPC}@{$endif} HandleDisconnected;
-     FClient.OnMessageReceived := {$ifdef FPC}@{$endif} HandleMessageReceived;
-     FClient.fOnTileReceived :=  {$ifdef FPC}@{$endif}HandleTileReceived;
-
-     FClient.Connect;
-   end;
-end;
 
 
 procedure TViewMain.ClickTest(Sender: TObject);
