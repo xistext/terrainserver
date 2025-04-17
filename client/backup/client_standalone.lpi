@@ -101,7 +101,7 @@
       <Filename Value="terclient"/>
     </Target>
     <SearchPaths>
-      <IncludeFiles Value="code;$(ProjOutDir);e:/cge/src/common_includes/;../commoncode;e:/wyrdforest/code/"/>
+      <IncludeFiles Value="code;$(ProjOutDir);../../cge/src/common_includes"/>
       <OtherUnitFiles Value="code;C:/Users/erik/AppData/Local/lazarus/onlinepackagemanager/packages/Indy10/Core/;C:/Users/erik/AppData/Local/lazarus/onlinepackagemanager/packages/Indy10/System/;e:/cge/src/common_includes/;../commoncode;e:/wyrdforest/code/lib/edjlib/;e:/wyrdforest/code/elib/;e:/code/elib/;e:/wyrdforest/code/"/>
       <UnitOutputDirectory Value="E:/TerrainServer/build/client"/>
     </SearchPaths>
