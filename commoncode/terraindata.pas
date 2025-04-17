@@ -4,6 +4,7 @@ interface
 
 uses Classes, SysUtils, Collect, TerServerCommon, terrainparams,
      CastleVectors, CastleTerrain, watergrid,
+     math, castletransform,
      debug;
 
 const terrainpath = 'data\terrain\';
@@ -27,6 +28,12 @@ type TTerTile = class; { forward }
 
         function getneighbor( tile : TTerTile;
                               dx, dy : integer ) : TTerTile;
+
+        function CalculateTileOffset( Pos : TVector2 ) : TPoint;
+
+        function findtileatlocation( const Pos : TVector2;
+                                     var tile : TTerTile ) : boolean;
+
       end;
 
      TDataLayer = class
@@ -64,7 +71,7 @@ type TTerTile = class; { forward }
         public
         property TerrainGrid : TSingleGrid read getTerrainGrid;
         {$else}
-        Graphics : pointer;
+        Graphics : TCastleTransform;
         {$endif}
       end;
 
@@ -168,6 +175,24 @@ function TTileList.getneighbor( tile : TTerTile;
       result := TTerTile( at( ix ));
  end;
 
+function TTileList.CalculateTileOffset( Pos : TVector2 ) : TPoint;
+ var sizefactor : single;
+ begin
+   sizefactor := 1/(GDefGridCellCount * GDefGridStep);
+   Result := Point( floor( Pos.X * SizeFactor + 0.5 ),
+                    floor( Pos.Y * SizeFactor + 0.5 ));
+ end;
+
+function TTileList.findtileatlocation( const Pos : TVector2;
+                                        var tile : TTerTile ) : boolean;
+ var pt : TPoint;
+ begin
+   tile := nil;
+   pt := CalculateTileOffset( Pos );
+   tile := tilexy( pt.x, pt.y );
+   result := assigned( tile );
+ end;
+
 //-------------------------------
 
 procedure TDataLayer.initgrid( igridsz : dword );
@@ -209,7 +234,6 @@ destructor TTerTile.destroy;
  end;
 
 function zeropad( value : integer; len : integer  = 2 ) : string;
- var l, i : integer;
  begin
    result := Inttostr( value );
    if length( result ) < len then

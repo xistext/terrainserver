@@ -472,7 +472,7 @@ procedure buildArea( client : TClientConnection;
   var Tile : TTerTile;
       LOD : dword;
   begin
-    LOD := trunc(sqrt( sqr( tx - CenterX ) + sqr( ty - CenterY ))*0.5);
+    LOD := trunc(sqrt( sqr( tx - CenterX ) + sqr( ty - CenterY )));
     if UpdateTile( Params, tx, ty, tile ) then { if the tile was created then we have to add a task to build it }
        GTaskList.AddTask( TTask_BuildTile.create( client, Tile, Params ) );
     GTaskList.AddTask( TTask_SendTile.create( client, Tile, LOD ) );

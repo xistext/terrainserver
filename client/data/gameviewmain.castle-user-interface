@@ -58,6 +58,7 @@
               "AutoOnScreenKeyboard" : true,
               "CaptureAllInput" : false,
               "Name" : "EditSend",
+              "Text" : "build 0,0,10",
               "TranslationPersistent" : {
                 "$$ClassName" : "TCastleVector2Persistent",
                 "X" : 1.1300000000000000E+002
@@ -115,6 +116,8 @@
             "$Children" : [
               {
                 "$$ClassName" : "TCastleCamera",
+                "CastShadows" : false,
+                "Collides" : false,
                 "Name" : "MainCamera",
                 "Orthographic" : {
                   "$$ClassName" : "TCastleOrthographic"
@@ -138,26 +141,25 @@
                   "$$ClassName" : "TCastleVector3Persistent",
                   "Z" : 0.0000000000000000E+000
                 },
+                "CastShadows" : false,
                 "Intensity" : 5.0000000000000000E+000,
                 "Name" : "PointLight1",
-                "Radius" : 2.0000000000000000E+004,
+                "Pickable" : false,
+                "Radius" : 2.0000000000000000E+003,
                 "TranslationPersistent" : {
                   "$$ClassName" : "TCastleVector3Persistent",
-                  "X" : 4.0000000000000000E+000,
-                  "Y" : 1.0000000000000000E+004,
-                  "Z" : 1.0000000000000000E+004
+                  "Y" : 1.0000000000000000E+003,
+                  "Z" : 1.0000000000000000E+003
                 }
               },
               {
-                "$$ClassName" : "TCastlePlane",
-                "Name" : "Plane1",
+                "$$ClassName" : "TCastleScene",
+                "ExposeTransforms" : [
+                ],
+                "Name" : "Scene1",
                 "RenderOptions" : {
-                  "$$ClassName" : "TCastleScene.TSceneRenderOptions"
-                },
-                "SizePersistent" : {
-                  "$$ClassName" : "TCastleVector2Persistent",
-                  "X" : 5.0000000000000000E+001,
-                  "Y" : 5.0000000000000000E+001
+                  "$$ClassName" : "TCastleScene.TSceneRenderOptions",
+                  "BlendingSort" : "bs2D"
                 }
               }
             ]

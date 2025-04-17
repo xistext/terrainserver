@@ -95,9 +95,9 @@
       <Filename Value="terserver"/>
     </Target>
     <SearchPaths>
-      <IncludeFiles Value="code;$(ProjOutDir);e:/cge/src/common_includes/;e:/wyrdforest/code/"/>
-      <Libraries Value="e:/cge/src/files/indy/"/>
-      <OtherUnitFiles Value="code;C:/Users/erik/AppData/Local/lazarus/onlinepackagemanager/packages/Indy10/Core/;C:/Users/erik/AppData/Local/lazarus/onlinepackagemanager/packages/Indy10/System/;e:/cge/src/files/indy/;e:/cge/src/common_includes/;commoncode;e:/wyrdforest/code/lib/edjlib/;e:/wyrdforest/code/elib/;e:/wyrdforest/code/;e:/code/elib/"/>
+      <IncludeFiles Value="code;$(ProjOutDir);../cge/src/common_includes"/>
+      <Libraries Value="../cge/src/files/indy"/>
+      <OtherUnitFiles Value="code;C:/Users/erik/AppData/Local/lazarus/onlinepackagemanager/packages/Indy10/Core/;C:/Users/erik/AppData/Local/lazarus/onlinepackagemanager/packages/Indy10/System/;../cge/src/files/indy;../cge/src/common_includes;commoncode;e:/wyrdforest/code/"/>
       <UnitOutputDirectory Value="build/server"/>
     </SearchPaths>
     <Parsing>

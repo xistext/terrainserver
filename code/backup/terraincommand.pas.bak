@@ -93,7 +93,7 @@ const version : string = 'xisterra0.1a';
    begin
      result := 60;
      case LOD of
-        0, 1, result := 1;
+        0, 1 : result := 1;
         2 : result := 2;
         3 : result := 3;
         4 : result := 4;

@@ -40,6 +40,8 @@
 *.rsm
 *.tds
 *.dcu
+*.ppu
+*.dbg
 *.lib
 *.a
 *.o

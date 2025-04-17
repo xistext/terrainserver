@@ -21,9 +21,9 @@ interface
 uses Classes,
   idGlobal,
   CastleVectors, CastleComponentSerialize, CastleUIControls, CastleControls,
-  CastleKeysMouse, CastleClientServer, CastleTerrain,
+  CastleKeysMouse, CastleClientServer, CastleTerrain, CastleScene,
   CastleViewport, CastleCameras, CastleTransform,
-  TerServerCommon, TerrainData, TerrainParams, TerrainShader,
+  TerServerCommon, TerrainData, TerrainParams, TerrainShader, TerrainMesh,
   watergrid, BaseMesh, TerrainClient,
   debug;
 
@@ -69,6 +69,7 @@ type
     procedure Update(const SecondsPassed: Single; var HandleInput: Boolean); override;
     procedure mousewheel( direction : integer );
     function Press(const Event: TInputPressRelease): boolean; override;
+    procedure TerrainHeight( const pos : tvector3; var h : single );
   end;
 
 var
@@ -101,10 +102,13 @@ end;
 procedure TViewMain.Start;
 begin
   inherited;
+  GParentComponent := Viewport1.Items;
   ButtonCreateClient.OnClick := {$ifdef FPC}@{$endif} ClickCreateClient;
   ButtonChangeViewMode.OnClick := {$ifdef FPC}@{$endif} ClickTest;
   ButtonSend.OnClick := {$ifdef FPC}@{$endif} ClickSend;
   ClickCreateClient( self );
+  MainNavigation.Input_Jump.Assign(keyNone);
+  MainNavigation.Input_Crouch.Assign(keyNone);
 end;
 
 procedure TViewMain.Stop;
@@ -122,6 +126,7 @@ end;
 procedure TViewMain.HandleConnected;
 begin
   DbgWriteln('Connected to server');
+  ClickSend( self );
   ButtonCreateClient.Caption := 'Disconnect';
   ButtonSend.Enabled := FClient <> nil;
 end;
@@ -141,14 +146,20 @@ end;
 procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
                                               tile : TTerTile;
                                         const tilemesh : TTerrainMesh );
- var Mesh : TTerrainMesh;
+ var c : TCastleCollider;
  begin
-   Mesh := TTerrainMesh( Tile.Graphics );
-   if assigned( Mesh ) then
-      Mesh.Free;
+   if assigned( Tile.Graphics ) then
+    begin
+      Viewport1.Items.Remove( TTerrainMesh( Tile.Graphics ));
+      TTerrainMesh( Tile.Graphics ).Free;
+    end;
    { update tile graphics }
    Tile.Graphics := tilemesh;
-   Viewport1.items.Add( tilemesh );
+(*         C := tilemesh.FindBehavior(TCastleCollider) as TCastleCollider;
+       if C <> nil then
+         C.InternalTransformChanged(tilemesh);*)
+
+   Viewport1.Items.Add( tilemesh );
  end;
 
 procedure TViewMain.ClickCreateClient(Sender: TObject);
@@ -168,9 +179,6 @@ begin
      FClient.OnDisconnected := {$ifdef FPC}@{$endif} HandleDisconnected;
      FClient.OnMessageReceived := {$ifdef FPC}@{$endif} HandleMessageReceived;
      FClient.fOnTileReceived :=  {$ifdef FPC}@{$endif}HandleTileReceived;
-
-     MainNavigation.Input_Jump.Assign(keyNone);
-     MainNavigation.Input_Crouch.Assign(keyNone);
 
      FClient.Connect;
    end;
@@ -206,25 +214,57 @@ begin
   FClient.Send(EditSend.Text);
 end;
 
+procedure TViewMain.TerrainHeight( const pos : tvector3; var h : single );
+ var collision : traycollision;
+     coll : TPhysicsRayCastResult;
+     node : traycollisionnode;
+     i : integer;
+     atile : ttertile;
+ begin
+   h := -1;
+   if gtilelist.findtileatlocation( Vector2(Pos.X,Pos.Z), atile ) and assigned( atile.Graphics ) then
+    begin
+      coll := (*TTerrainMesh( atile.graphics ).internalraycollision( Vector3( Pos.X, 100, Pos.Z ),
+                                vector3(0,-1,0));*)
+//                   TTerrainMesh( atile.graphics )
+        (*            TerrainLayer.internalraycollision( Vector3( Pos.X, 100, Pos.Z), vector3(0,-1,0) );*)
+                   Viewport1.Items.PhysicsRayCast( Vector3( Pos.X, 100, Pos.Z ), vector3(0,-1,0));
+      if coll.hit then
+       begin
+         h := coll.Point.y;
+       end;
+    end;
+ (*
+   if assigned( atile ) then
+      Y := aTile.Data.Height( Pos2, Vector2(0,0));
+   else
+    begin
+      {!!! if no tile then use the tterrainnoise }
+    end;     *)
+ end;
+
 procedure TViewMain.Mousewheel( direction : integer );
  var h, amt : single;
      delta : single;
      pos : TVector3;
      TerrainH : single;
+     tri : pointer;
  begin
 (*   if altdown or ( ToolEvent = GDefaultTool ) or not ToolEvent.mousewheel( direction ) then
     begin*)
       h := MainCamera.translation.y;
       pos := Vector3( MainCamera.Translation.X, h, MainCamera.Translation.Z );
-      (*HeightAboveTerrain( Pos, TerrainH, ht_road );
+      TerrainHeight( Pos, TerrainH );
       if h - MainNavigation.radius < TerrainH then
        begin
          pos.y := TerrainH + MainNavigation.radius + 0.01 ;
          MainNavigation.MoveHorizontalSpeed := 0.1;
        end
       else
-       begin*)
+       begin
          amt := h - TerrainH;
+         if amt < 1 then
+            amt := 1;
          { if no tools are taking mousewheel then use it to change view height }
          delta := direction/3 * amt;
          h := h + delta;
@@ -232,9 +272,9 @@ procedure TViewMain.Mousewheel( direction : integer );
          pos.Y := h;
          MainNavigation.MoveHorizontalSpeed := sqrt(amt);
 (*       end;*)
-      MainCamera.Translation := pos;
 //      ViewUpdated;
-(*    end;*)
+     end;
+    MainCamera.Translation := pos;
  end;
 
 function TViewMain.Press(const Event: TInputPressRelease): boolean;

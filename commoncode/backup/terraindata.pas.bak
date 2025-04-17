@@ -4,6 +4,7 @@ interface
 
 uses Classes, SysUtils, Collect, TerServerCommon, terrainparams,
      CastleVectors, CastleTerrain, watergrid,
+     math, castletransform,
      debug;
 
 const terrainpath = 'data\terrain\';
@@ -27,6 +28,12 @@ type TTerTile = class; { forward }
 
         function getneighbor( tile : TTerTile;
                               dx, dy : integer ) : TTerTile;
+
+        function CalculateTileOffset( Pos : TVector2 ) : TPoint;
+
+        function findtileatlocation( const Pos : TVector2;
+                                     var tile : TTerTile ) : boolean;
+
       end;
 
      TDataLayer = class
@@ -64,7 +71,7 @@ type TTerTile = class; { forward }
         public
         property TerrainGrid : TSingleGrid read getTerrainGrid;
         {$else}
-        Graphics : pointer;
+        Graphics : TCastleTransform;
         {$endif}
       end;
 
@@ -159,8 +166,6 @@ function TTileList.getinittile( const tileinfo : TTileHeader ) : TTerTile;
 function TTileList.getneighbor( tile : TTerTile;
                                 dx, dy : integer ) : TTerTile;
  var ix : integer;
-     newtile : TTerTile;
-     h : TTileHeader;
      x, y : integer;
  begin
    result := nil;
@@ -168,14 +173,24 @@ function TTileList.getneighbor( tile : TTerTile;
    y := tile.Info.TileY + dy;
    if findtile( x, y, ix ) then
       result := TTerTile( at( ix ));
-   else
-    begin
-      h := tile.info;
-      h.TileX := x;
-      x.TileY := y;
-      newtile := TTerTile.create( h );
+ end;
 
-    end;
+function TTileList.CalculateTileOffset( Pos : TVector2 ) : TPoint;
+ var sizefactor : single;
+ begin
+   sizefactor := 1/(GDefGridCellCount * GDefGridStep);
+   Result := Point( floor( Pos.X * SizeFactor + 0.5 ),
+                    floor( Pos.Y * SizeFactor + 0.5 ));
+ end;
+
+function TTileList.findtileatlocation( const Pos : TVector2;
+                                        var tile : TTerTile ) : boolean;
+ var pt : TPoint;
+ begin
+   tile := nil;
+   pt := CalculateTileOffset( Pos );
+   tile := tilexy( pt.x, pt.y );
+   result := assigned( tile );
  end;
 
 //-------------------------------
