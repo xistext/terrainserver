@@ -120,11 +120,13 @@ end;
 
 procedure TViewMain.Update(const SecondsPassed: Single; var HandleInput: Boolean);
 var terrainh : single;
+    agl : single;
 begin
   inherited;
   MainNavigation.MouseLook := {( GActiveDrag = self ) and} ( buttonMiddle in Container.MousePressed );
   TerrainHeight( MainCamera.Translation, terrainh );
-  PosLabel.Caption := Format( '(%f, %f) %f/%f', [MainCamera.Translation.X, MainCamera.Translation.Z, MainCamera.Translation.Y, TerrainH] );
+  agl := MainCamera.Translation.Y - terrainh;
+  PosLabel.Caption := Format( '(%f, %f) %f/%f', [MainCamera.Translation.X, MainCamera.Translation.Z, agl, TerrainH] );
 end;
 
 procedure TViewMain.HandleConnected;
@@ -225,26 +227,11 @@ begin
 end;
 
 procedure TViewMain.TerrainHeight( const pos : tvector3; var h : single );
- var collision : traycollision;
-     coll : TPhysicsRayCastResult;
-     node : traycollisionnode;
-     i : integer;
-     atile : ttertile;
+ var atile : ttertile;
  begin
    h := -1;
    if gtilelist.findtileatlocation( Vector2(Pos.X,Pos.Z), atile ) and assigned( atile.Graphics ) then
-    begin
-(*      coll := (*TTerrainMesh( atile.graphics ).internalraycollision( Vector3( Pos.X, 100, Pos.Z ),
-                                vector3(0,-1,0));*)
-//                   TTerrainMesh( atile.graphics )
-        (*            TerrainLayer.internalraycollision( Vector3( Pos.X, 100, Pos.Z), vector3(0,-1,0) );*)
-                   Viewport1.Items.PhysicsRayCast( Vector3( Pos.X, 100, Pos.Z ), vector3(0,-1,0));
-      if coll.hit then
-       begin
-         h := coll.Point.y;
-       end;*)
       TTerrainMesh( atile.graphics ).Elevationatpos( vector2( pos.x, pos.z ), h );
-    end;
  (*
    if assigned( atile ) then
       Y := aTile.Data.Height( Pos2, Vector2(0,0));
@@ -259,7 +246,6 @@ procedure TViewMain.Mousewheel( direction : integer );
      delta : single;
      pos : TVector3;
      TerrainH : single;
-     tri : pointer;
  begin
 (*   if altdown or ( ToolEvent = GDefaultTool ) or not ToolEvent.mousewheel( direction ) then
     begin*)

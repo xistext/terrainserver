@@ -61,10 +61,6 @@ TAbstractTextureMesh = class( TAbstractMesh )
 
    procedure InitVertices; override;
 
-   protected
-
-   TexCoordNode   : TTextureCoordinateNode;
-
 end;
 
 
@@ -152,7 +148,7 @@ function TAbstractMesh.ElevationAtPos( Pos : TVector2;
       result := TryTriangleRayCollision( Intersection,
                                          Triangle,
                                          Triangle.Plane,
-                                         vector3( pos.x, 1000, pos.y ), vector3( 0, -1, 0 ));
+                                         vector3( pos.x, 100, pos.y ), vector3( 0, -1, 0 ));
       if result then
          elev := Intersection.y;
     end;
@@ -253,7 +249,6 @@ procedure TAbstractTextureMesh.initializedata;
      Shape : TShapeNode;
  begin
    inherited;
-   TexCoordNode := TTextureCoordinateNode.Create;
 
    Triangles := initTriangles;
    initvertices;
@@ -266,9 +261,6 @@ procedure TAbstractTextureMesh.initializedata;
 
    Root := TX3DRootNode.Create;
    Root.AddChildren( Shape );
-
-   { texture }
-   Triangles.TexCoord := TexCoordNode;
 
    Load(Root, true );
    UpdateMeshProperties;
@@ -286,7 +278,6 @@ procedure TAbstractTextureMesh.InitVertices;
      i, j, vcount : integer;
      VertexPtr : ^TVector3;
      Vertex : TVector3;
-     TexCoords : TVector2List;
      GCount : integer;
  begin
    step := gridstep;
@@ -295,8 +286,6 @@ procedure TAbstractTextureMesh.InitVertices;
    vcount := GCount * GCount;
    Vertices.Count := vcount;
    VertexPtr := Vertices.Ptr(0);
-   TexCoords := TVector2List.Create;
-   TexCoords.Capacity := vcount;
    sz2 := CellCount * Step * 0.5;
    vertex.y := 0;
    vertex.z := -sz2;
@@ -307,15 +296,12 @@ procedure TAbstractTextureMesh.InitVertices;
        begin
          VertexPtr^ := Vertex;
          vertex.x := vertex.x + step;
-         TexCoords.Add(Vector2(0,0));
          inc( vertexptr );
        end;
       vertex.z := vertex.z + step;
     end;
    CoordinateNode.SetPoint( Vertices );
-   TexCoordNode.SetPoint( TexCoords );
    Vertices.Free;
-   TexCoords.Free;
  end;
 
 //---------------------------------
