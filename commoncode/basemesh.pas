@@ -19,7 +19,7 @@ TAbstractMesh = class( TCastleScene )
 
    protected
 
-   CoordinateNode : TCoordinateNode;  { maintain refererence to CoordinateNode }
+   fCoordinateNode : TCoordinateNode;  { maintain refererence to CoordinateNode }
 
    function initindexes : TInt32List;
    function inittriangles : TIndexedTriangleSetNode;
@@ -34,6 +34,8 @@ TAbstractMesh = class( TCastleScene )
    function getGridStep : single; dynamic; abstract;
 
    function getcellcount : integer;
+
+   function CoordinateNode : TCoordinateNode;
 
    public
 
@@ -104,7 +106,7 @@ implementation
 constructor TAbstractMesh.create( aowner : TComponent );
  begin
    inherited create( aowner );
-   CoordinateNode := nil;
+   fCoordinateNode := nil;
  end;
 
 function TAbstractMesh.getcellcount : integer;
@@ -130,54 +132,54 @@ function TAbstractMesh.initindexes : TInt32List;
     end;
  end;
 
+function TAbstractMesh.CoordinateNode : TCoordinateNode;
+ begin
+   result := fCoordinateNode;
+ end;
+
 function TAbstractMesh.ElevationAtPos( Pos : TVector2;
                                        var Elev : single ) : boolean;
+   function checkpoint( const p : tvector3 ) : boolean;
+    const zero : single = 0.01;
+    begin
+      result := (abs( p.x - pos.x )<=zero) and (abs( p.z -pos.y )<=zero);
+      if result then
+         elev := p.y;
+    end;
+   function checktriangle( const triangle : TTriangle3 ) : boolean;
+    var intersection : tvector3;
+    begin
+      result := TryTriangleRayCollision( Intersection,
+                                         Triangle,
+                                         Triangle.Plane,
+                                         vector3( pos.x, 1000, pos.y ), vector3( 0, -1, 0 ));
+      if result then
+         elev := Intersection.y;
+    end;
  var IndexedTriangleSetNode : TIndexedTriangleSetNode;
      ix : integer;
-     p1, p2, p3 : tvector3;
-     intersection : TVector3;
- const zero : single = 0.01;
+     p0, p1, p2 : tvector3;
+     Coord : TCoordinateNode;
  begin
    elev := 0;
    result := false;
    IndexedTriangleSetNode := TIndexedTriangleSetNode( rootnode.FindNode( TIndexedTriangleSetNode, false ));
+   Coord := TCoordinateNode( IndexedTriangleSetNode.Coord );
    ix := 0;
    while ix < IndexedTriangleSetNode.FdIndex.Count do
     begin
-      p1 := CoordinateNode.FdPoint.Items[IndexedTriangleSetNode.FdIndex.Items[ix]];
+      p0 := Coord.FdPoint.Items[IndexedTriangleSetNode.FdIndex.Items[ix]];
       inc( ix );
-      p2 := CoordinateNode.FdPoint.Items[IndexedTriangleSetNode.FdIndex.Items[ix]];
+      p1 := Coord.FdPoint.Items[IndexedTriangleSetNode.FdIndex.Items[ix]];
       inc( ix );
-      p3 := CoordinateNode.FdPoint.Items[IndexedTriangleSetNode.FdIndex.Items[ix]];
+      p2 := Coord.FdPoint.Items[IndexedTriangleSetNode.FdIndex.Items[ix]];
       inc( ix );
-
-      result := (abs( p1.x - pos.x )<=zero) and (abs( p1.z -pos.y )<=zero);
+      result := checkpoint( p0 ) or
+                checkpoint( p1 ) or
+                checkpoint( p2 ) or
+                checktriangle( Triangle3( p0, p1, p2 ));
       if result then
-       begin
-         elev := p1.y;
          exit;
-       end;
-      result := (abs( p2.x - pos.x )<=zero) and (abs( p2.z -pos.y )<=zero);
-      if result then
-       begin
-         elev := p2.y;
-         exit;
-       end;
-      result := (abs( p3.x - pos.x )<=zero) and (abs( p3.z -pos.y )<=zero);
-      if result then
-       begin
-         elev := p3.y;
-         exit;
-       end;
-      result := TryTriangleRayCollision( Intersection,
-                                         Triangle3( p1, p2, p3 ),
-                                         TrianglePlane( p1,p2,p3),
-                                         vector3( pos.x, 100, pos.y ), vector3( 0, -1, 0 ));
-      if result then
-       begin
-         elev := intersection.y;
-         exit;
-       end
     end;
 
  end;
@@ -196,7 +198,7 @@ function TAbstractMesh.initmaterial : TPhysicalMaterialNode;
 
 procedure TAbstractMesh.initializedata;
  begin
-   CoordinateNode := TCoordinateNode.Create;
+   fCoordinateNode := TCoordinateNode.Create;
  end;
 
 function TAbstractMesh.inittriangles : TIndexedTriangleSetNode;

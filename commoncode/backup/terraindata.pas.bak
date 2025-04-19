@@ -234,7 +234,6 @@ destructor TTerTile.destroy;
  end;
 
 function zeropad( value : integer; len : integer  = 2 ) : string;
- var l, i : integer;
  begin
    result := Inttostr( value );
    if length( result ) < len then

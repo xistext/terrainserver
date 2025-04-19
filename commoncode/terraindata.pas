@@ -38,7 +38,7 @@ type TTerTile = class; { forward }
 
      TDataLayer = class
         DataGrid : TBaseDataGrid;
-        procedure initgrid( igridsz : dword ); virtual;
+        procedure initgrid( igridsz : dword ); dynamic;
         function gridsz : dword;
       end;
 
