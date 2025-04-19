@@ -51,6 +51,7 @@ type
     Viewport1 : TCastleViewport;
     MainNavigation : TCastleWalkNavigation;
     MainCamera : TCastleCamera;
+    PosLabel : TCastleLabel;
   private
     FClient: TTerClient;
     procedure HandleConnected;
@@ -118,9 +119,12 @@ begin
 end;
 
 procedure TViewMain.Update(const SecondsPassed: Single; var HandleInput: Boolean);
+var terrainh : single;
 begin
   inherited;
   MainNavigation.MouseLook := {( GActiveDrag = self ) and} ( buttonMiddle in Container.MousePressed );
+  TerrainHeight( MainCamera.Translation, terrainh );
+  PosLabel.Caption := Format( '(%f, %f) %f/%f', [MainCamera.Translation.X, MainCamera.Translation.Z, MainCamera.Translation.Y, TerrainH] );
 end;
 
 procedure TViewMain.HandleConnected;
@@ -239,7 +243,7 @@ procedure TViewMain.TerrainHeight( const pos : tvector3; var h : single );
        begin
          h := coll.Point.y;
        end;*)
-      TTerrainMesh( atile.graphics ).Elevationatpos( vector2( pos.x, pos.y ), h );
+      TTerrainMesh( atile.graphics ).Elevationatpos( vector2( pos.x, pos.z ), h );
     end;
  (*
    if assigned( atile ) then
@@ -262,25 +266,20 @@ procedure TViewMain.Mousewheel( direction : integer );
       h := MainCamera.translation.y;
       pos := Vector3( MainCamera.Translation.X, h, MainCamera.Translation.Z );
       TerrainHeight( Pos, TerrainH );
+      amt := h - TerrainH;
+      if amt < 1 then
+         amt := 1;
+      { if no tools are taking mousewheel then use it to change view height }
+      delta := direction/3 * amt;
+      h := h + delta;
       if h - MainNavigation.radius < TerrainH then
        begin
-         pos.y := TerrainH + MainNavigation.radius + 0.01 ;
+         h := MainNavigation.radius + TerrainH;
          MainNavigation.MoveHorizontalSpeed := 0.1;
-       end
-      else
-       begin
-         amt := h - TerrainH;
-         if amt < 1 then
-            amt := 1;
-         { if no tools are taking mousewheel then use it to change view height }
-         delta := direction/3 * amt;
-         h := h + delta;
-         //limitmax( h, MaxHeight );
-         pos.Y := h;
-         MainNavigation.MoveHorizontalSpeed := sqrt(amt);
-(*       end;*)
+       end;
+      pos.Y := h;
+      MainNavigation.MoveHorizontalSpeed := sqrt(amt);
 //      ViewUpdated;
-     end;
     MainCamera.Translation := pos;
  end;
 

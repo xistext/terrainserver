@@ -189,6 +189,19 @@
               "MoveSpeed" : 1.0000000000000000E+001,
               "Name" : "MainNavigation",
               "PreferredHeight" : 8.0000000000000000E+000
+            },
+            {
+              "$$ClassName" : "TCastleLabel",
+              "ColorPersistent" : {
+                "$$ClassName" : "TCastleColorPersistent",
+                "Blue" : 1.0000000000000000E+000,
+                "Green" : 1.0000000000000000E+000,
+                "Red" : 1.0000000000000000E+000
+              },
+              "Name" : "PosLabel",
+              "Text" : [
+                "PosLabel"
+              ]
             }
           ],
           "InternalDesignCamera" : {
