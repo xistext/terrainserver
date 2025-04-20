@@ -214,7 +214,7 @@ begin
       begin
         shader := gettileshader( tile, gshaderid );
         shadername := shader.name;
-        TTerrainMesh( Tile.graphics ).updateshader( shader );
+        TTerrainMesh( Tile.graphics ).UpdateAppearance( shader );
         shader.free;
       end;
    end;

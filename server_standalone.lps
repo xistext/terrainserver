@@ -3,8 +3,8 @@
   <ProjectSession>
     <PathDelim Value="\"/>
     <Version Value="12"/>
-    <BuildModes Active="Debug"/>
-    <Units Count="22">
+    <BuildModes Active="Release"/>
+    <Units Count="18">
       <Unit0>
         <Filename Value="server_standalone.dpr"/>
         <IsPartOfProject Value="True"/>
@@ -38,128 +38,106 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="2580"/>
         <CursorPos Y="2649"/>
-        <UsageCount Value="103"/>
+        <UsageCount Value="102"/>
       </Unit4>
       <Unit5>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\System\IdGlobal.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="3039"/>
         <CursorPos Y="3077"/>
-        <UsageCount Value="26"/>
+        <UsageCount Value="24"/>
       </Unit5>
       <Unit6>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\System\IdWinsock2.pas"/>
-        <IsVisibleTab Value="True"/>
-        <TopLine Value="6028"/>
-        <CursorPos Y="6067"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="5992"/>
+        <CursorPos X="45" Y="6031"/>
         <UsageCount Value="105"/>
-        <Loaded Value="True"/>
       </Unit6>
       <Unit7>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdContext.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="82"/>
         <CursorPos X="26" Y="95"/>
-        <UsageCount Value="17"/>
+        <UsageCount Value="15"/>
       </Unit7>
       <Unit8>
         <Filename Value="commoncode\terservercommon.pas"/>
         <EditorIndex Value="-1"/>
         <CursorPos Y="2"/>
-        <UsageCount Value="135"/>
+        <UsageCount Value="133"/>
       </Unit8>
       <Unit9>
         <Filename Value="commoncode\castleclientserver.pas"/>
         <UnitName Value="CastleClientServer"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="45" Y="4"/>
-        <UsageCount Value="106"/>
+        <UsageCount Value="104"/>
       </Unit9>
       <Unit10>
         <Filename Value="code\terraincommand.pas"/>
         <UnitName Value="TerrainCommand"/>
-        <EditorIndex Value="-1"/>
-        <CursorPos X="6" Y="7"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="437"/>
+        <CursorPos X="17" Y="476"/>
         <UsageCount Value="101"/>
+        <Loaded Value="True"/>
       </Unit10>
       <Unit11>
-        <Filename Value="E:\wyrdforest\code\lib\edjlib\collect.pas"/>
-        <UnitName Value="Collect"/>
-        <EditorIndex Value="-1"/>
-        <CursorPos X="25" Y="21"/>
-        <UsageCount Value="1"/>
-      </Unit11>
-      <Unit12>
         <Filename Value="E:\cge\src\scene\castleterrain.pas"/>
         <UnitName Value="CastleTerrain"/>
         <EditorIndex Value="-1"/>
         <WindowIndex Value="-1"/>
         <CursorPos Y="3"/>
-        <UsageCount Value="137"/>
-      </Unit12>
-      <Unit13>
+        <UsageCount Value="135"/>
+      </Unit11>
+      <Unit12>
         <Filename Value="E:\wyrdforest\code\baseterrain.pas"/>
         <UnitName Value="BaseTerrain"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="221"/>
         <CursorPos X="14" Y="291"/>
-        <UsageCount Value="54"/>
-      </Unit13>
-      <Unit14>
+        <UsageCount Value="52"/>
+      </Unit12>
+      <Unit13>
         <Filename Value="E:\wyrdforest\code\watergrid.pas"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="3" Y="12"/>
-        <UsageCount Value="91"/>
-      </Unit14>
-      <Unit15>
+        <UsageCount Value="89"/>
+      </Unit13>
+      <Unit14>
         <Filename Value="commoncode\terraindata.pas"/>
         <UnitName Value="TerrainData"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="28" Y="5"/>
-        <UsageCount Value="97"/>
-      </Unit15>
-      <Unit16>
+        <UsageCount Value="95"/>
+      </Unit14>
+      <Unit15>
         <Filename Value="commoncode\terrainparams.pas"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="39" Y="11"/>
-        <UsageCount Value="73"/>
-      </Unit16>
-      <Unit17>
+        <UsageCount Value="71"/>
+      </Unit15>
+      <Unit16>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdTask.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="52"/>
         <CursorPos X="3" Y="39"/>
-        <UsageCount Value="17"/>
-      </Unit17>
-      <Unit18>
+        <UsageCount Value="15"/>
+      </Unit16>
+      <Unit17>
         <Filename Value="E:\cge\src\scene\x3d\x3dnodes_standard_texturing.inc"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="3" Y="323"/>
-        <UsageCount Value="66"/>
-      </Unit18>
-      <Unit19>
-        <Filename Value="commoncode\debug.pas"/>
-        <UnitName Value="Debug"/>
-        <EditorIndex Value="-1"/>
-        <CursorPos Y="18"/>
-        <UsageCount Value="1"/>
-      </Unit19>
-      <Unit20>
-        <Filename Value="commoncode\nobjects.pas"/>
-        <UnitName Value="NObjects"/>
-        <EditorIndex Value="-1"/>
-        <CursorPos Y="19"/>
-        <UsageCount Value="1"/>
-      </Unit20>
-      <Unit21>
-        <Filename Value="commoncode\collect.pas"/>
-        <UnitName Value="Collect"/>
-        <EditorIndex Value="-1"/>
-        <CursorPos X="59" Y="13"/>
-        <UsageCount Value="1"/>
-      </Unit21>
+        <UsageCount Value="64"/>
+      </Unit17>
     </Units>
-    <JumpHistory HistoryIndex="-1"/>
+    <JumpHistory Count="1">
+      <Position1>
+        <Filename Value="code\terraincommand.pas"/>
+        <Caret Line="482" TopLine="442"/>
+      </Position1>
+    </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
       <Modes ActiveMode=""/>

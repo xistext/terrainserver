@@ -88,12 +88,10 @@ function TTerClientThread.ProcessMessage( const msgheader : TmsgHeader;
 procedure TTerClientThread.SendTile( const msgheader : TMsgHeader;
                                      const Buffer : TIdBytes;
                                            BufLen : dword );
-var Body: TCastleRigidBody;
  var tilerec : TTileRec;
      hdsz : integer;
      agrid : tSingleGrid;
      tileinfo : TTileHeader;
-     mycollider : TCastleMeshCollider;
  begin
    hdsz := sizeof(tmsgheader) + sizeof(ttileheader);
    assert( BufLen > hdsz );
@@ -109,16 +107,7 @@ var Body: TCastleRigidBody;
    tilerec.tilemesh := TTerrainMesh.create2( GParentComponent, tilerec.Tile );
    tilerec.tilemesh.UpdateFromGrid( AGrid );
    AGrid.Free;
-            (*
-   Body := TCastleRigidBody.Create(tilerec.tilemesh);
-   tilerec.tilemesh.AddBehavior(Body);
 
-
-   MyCollider := TCastleMeshCollider.Create(tilerec.tilemesh);
-   MyCollider.Mesh := tilerec.tilemesh;
-   MyCollider.Restitution := 0.3;
-   tilerec.tilemesh.AddBehavior(MyCollider);
-              *)
    FTileList.Add( tilerec );
    Queue(FOnTileReceived);
  end;

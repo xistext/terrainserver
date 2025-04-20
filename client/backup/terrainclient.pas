@@ -109,7 +109,7 @@ var Body: TCastleRigidBody;
    tilerec.tilemesh := TTerrainMesh.create2( GParentComponent, tilerec.Tile );
    tilerec.tilemesh.UpdateFromGrid( AGrid );
    AGrid.Free;
-
+            (*
    Body := TCastleRigidBody.Create(tilerec.tilemesh);
    tilerec.tilemesh.AddBehavior(Body);
 
@@ -118,7 +118,7 @@ var Body: TCastleRigidBody;
    MyCollider.Mesh := tilerec.tilemesh;
    MyCollider.Restitution := 0.3;
    tilerec.tilemesh.AddBehavior(MyCollider);
-
+              *)
    FTileList.Add( tilerec );
    Queue(FOnTileReceived);
  end;

@@ -57,8 +57,6 @@ TAbstractTextureMesh = class( TAbstractMesh )
 
    procedure InitializeData; override;
 
-   function inittexture( TextureUrl : string ) : TImageTextureNode;
-
    procedure InitVertices; override;
 
 end;
@@ -264,12 +262,6 @@ procedure TAbstractTextureMesh.initializedata;
 
    Load(Root, true );
    UpdateMeshProperties;
- end;
-
-function TAbstractTextureMesh.inittexture( TextureUrl : string ) : TImageTextureNode;
- begin
-   Result := TImageTextureNode.Create;
-   Result.SetUrl([TextureUrl]);
  end;
 
 procedure TAbstractTextureMesh.InitVertices;
