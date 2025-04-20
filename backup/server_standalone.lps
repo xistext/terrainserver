@@ -3,7 +3,7 @@
   <ProjectSession>
     <PathDelim Value="\"/>
     <Version Value="12"/>
-    <BuildModes Active="Debug"/>
+    <BuildModes Active="Release"/>
     <Units Count="18">
       <Unit0>
         <Filename Value="server_standalone.dpr"/>
@@ -78,8 +78,8 @@
         <Filename Value="code\terraincommand.pas"/>
         <UnitName Value="TerrainCommand"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="442"/>
-        <CursorPos Y="482"/>
+        <TopLine Value="437"/>
+        <CursorPos X="17" Y="476"/>
         <UsageCount Value="101"/>
         <Loaded Value="True"/>
       </Unit10>
