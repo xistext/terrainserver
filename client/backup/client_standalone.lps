@@ -28,8 +28,9 @@
         <Filename Value="code\gameviewmain.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="GameViewMain"/>
-        <TopLine Value="149"/>
-        <CursorPos Y="179"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="178"/>
+        <CursorPos X="68" Y="201"/>
         <UsageCount Value="203"/>
         <Loaded Value="True"/>
       </Unit3>
@@ -194,10 +195,9 @@
       </Unit25>
       <Unit26>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="9"/>
-        <TopLine Value="79"/>
-        <CursorPos X="87" Y="114"/>
+        <TopLine Value="170"/>
+        <CursorPos X="70" Y="103"/>
         <UsageCount Value="103"/>
         <Loaded Value="True"/>
       </Unit26>
@@ -290,7 +290,7 @@
         <UnitName Value="CastleCameras"/>
         <EditorIndex Value="1"/>
         <CursorPos X="39" Y="16"/>
-        <UsageCount Value="28"/>
+        <UsageCount Value="29"/>
         <Loaded Value="True"/>
       </Unit39>
       <Unit40>

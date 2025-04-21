@@ -251,7 +251,7 @@ procedure TViewMain.TerrainHeight( const pos : tvector3; var h : single );
    pos2 := Vector2(Pos.X,Pos.Z);
    if gtilelist.findtileatlocation( pos2, atile ) and assigned( atile.Graphics ) then
     begin
-      dbgwriteln( inttostr( atile.Info.TileX )+','+inttostr( atile.Info.TileY ));
+//      dbgwriteln( inttostr( atile.Info.TileX )+','+inttostr( atile.Info.TileY ));
       TTerrainMesh( atile.graphics ).Elevationatpos( pos2, h );
     end;
  (*
