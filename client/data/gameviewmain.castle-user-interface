@@ -183,13 +183,13 @@
           "$Children" : [
             {
               "$$ClassName" : "TCastleWalkNavigation",
-              "CheckCollisions" : false,
               "CrouchHeight" : 1.0000000000000000E+000,
               "Gravity" : false,
               "MouseDragMode" : "mdNone",
               "MoveSpeed" : 1.0000000000000000E+001,
               "Name" : "MainNavigation",
-              "PreferredHeight" : 8.0000000000000000E+000
+              "PreferredHeight" : 8.0000000000000000E+000,
+              "Radius" : 2.0000000298023224E-001
             },
             {
               "$$ClassName" : "TCastleLabel",
