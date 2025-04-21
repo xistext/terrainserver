@@ -14,15 +14,15 @@ type
 
      TTileRec = record
         msginfo : TMsgHeader;
-        tile     : TTerTile;
-        tilemesh : TTerrainMesh;
+        tileinfo : TTileHeader;
+        tilegrid : TSingleGrid;
       end;
 
      TSynchronisedTileList = {$ifdef FPC}specialize{$endif} TThreadList<TTileRec>;
 
      TTileReceivedEvent = procedure( const msginfo : TMsgHeader;
-                                           tile : TTerTile;
-                                     const tilemesh : TTerrainMesh ) of object;
+                                     const tileinfo : TTileHeader;
+                                           tilegrid : TSingleGrid ) of object;
 
      TTerClientThread = class( TCastleTCPClientThread )
         constructor Create(const AClient: TIdTCPClient;
@@ -90,24 +90,15 @@ procedure TTerClientThread.SendTile( const msgheader : TMsgHeader;
                                            BufLen : dword );
  var tilerec : TTileRec;
      hdsz : integer;
-     agrid : tSingleGrid;
-     tileinfo : TTileHeader;
  begin
    hdsz := sizeof(tmsgheader) + sizeof(ttileheader);
    assert( BufLen > hdsz );
    BufLen := BufLen - hdsz;
    tilerec.msginfo := msgheader;
-   Move( buffer[sizeof(tmsgheader)], tileinfo, sizeof( ttileheader ));
-   AGrid := TSingleGrid.createsize(tileinfo.TileSz );
-   Move( buffer[hdsz], AGrid.Data^ , BufLen );
-
-   tilerec.Tile := GTileList.GetInitTile( tileinfo );
-
+   Move( buffer[sizeof(tmsgheader)], tilerec.tileinfo, sizeof( ttileheader ));
+   tilerec.tileGrid := TSingleGrid.createsize(tilerec.tileinfo.TileSz );
+   Move( buffer[hdsz], tilerec.tileGrid.data^, BufLen );
    { make a new mesh if we can't figure out how to reuse existing mesh if same size }
-   tilerec.tilemesh := TTerrainMesh.create2( GParentComponent, tilerec.Tile );
-   tilerec.tilemesh.UpdateFromGrid( AGrid );
-   AGrid.Free;
-
    FTileList.Add( tilerec );
    Queue(FOnTileReceived);
  end;
@@ -128,7 +119,7 @@ procedure TTerClient.ClientOnTileReceived;
     begin
       for TileRec in TTerClientThread( FClientThread ).fTileList.LockList do
        begin
-         FOnTileReceived( tilerec.msginfo, tilerec.tile, tilerec.tilemesh );
+         FOnTileReceived( tilerec.msginfo, tilerec.tileinfo, tilerec.tilegrid );
 
        end;
       TTerClientThread( FClientThread ).fTileList.Clear;

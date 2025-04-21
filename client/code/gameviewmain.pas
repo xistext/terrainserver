@@ -54,8 +54,8 @@ type
     procedure HandleDisconnected;
     procedure HandleMessageReceived(const AMessage: String);
     procedure HandleTileReceived( const msginfo : TMsgHeader;
-                                        tile  : TTerTile;
-                                  const tilemesh : TTerrainMesh );
+                                  const tileinfo : TTileHeader;
+                                  tilegrid : TSingleGrid );
     procedure ClickCreateClient(Sender: TObject);
     procedure ClickTest(Sender: TObject);
     procedure ClickSend(Sender: TObject);
@@ -171,21 +171,23 @@ end;
 
 
 procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
-                                              tile : TTerTile;
-                                        const tilemesh : TTerrainMesh );
- var c : TCastleCollider;
+                                        const tileinfo : TTileHeader;
+                                        tilegrid : TSingleGrid );
+ var tile : TTerTile;
+     tilemesh : TTerrainMesh;
  begin
+   Tile := GTileList.GetInitTile( tileinfo );
    if assigned( Tile.Graphics ) then
     begin
-      Viewport1.Items.Remove( TTerrainMesh( Tile.Graphics ));
-      TTerrainMesh( Tile.Graphics ).Free;
+      Viewport1.Items.Remove( Tile.Graphics );
+      Tile.Graphics.Free;
     end;
    { update tile graphics }
-   Tile.Graphics := tilemesh;
-(*         C := tilemesh.FindBehavior(TCastleCollider) as TCastleCollider;
-       if C <> nil then
-         C.InternalTransformChanged(tilemesh);*)
+   tilemesh := TTerrainMesh.create2( Viewport1, Tile );
+   tilemesh.UpdateFromGrid( TileGrid );
+   TileGrid.Free;
 
+   Tile.Graphics := tilemesh;
    Viewport1.Items.Add( tilemesh );
  end;
 
