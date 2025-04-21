@@ -28,13 +28,6 @@ uses Classes,
   debug;
 
 type
-     TTerData = class( TCastleTerrainData )
-
-       procedure DataModified;
-       function Height(const Coord, TexCoord: TVector2): Single; override;
-
-     end;
-
 
   { Main view, where most of the application logic takes place. }
   TViewMain = class(TCastleView)
@@ -45,13 +38,16 @@ type
     EditHostname: TCastleEdit;
     EditPort: TCastleIntegerEdit;
     ButtonCreateClient: TCastleButton;
-    ButtonChangeViewMode: TCastleButton;
     EditSend: TCastleEdit;
     ButtonSend: TCastleButton;
     Viewport1 : TCastleViewport;
     MainNavigation : TCastleWalkNavigation;
     MainCamera : TCastleCamera;
     PosLabel : TCastleLabel;
+    ButtonContour : TCastleButton;
+    ButtonGrid    : TCastleButton;
+    LabelGridScale : TCastleLabel;
+    LabelContourScale : TCastleLabel;
   private
     FClient: TTerClient;
     procedure HandleConnected;
@@ -71,6 +67,10 @@ type
     procedure mousewheel( direction : integer );
     function Press(const Event: TInputPressRelease): boolean; override;
     procedure TerrainHeight( const pos : tvector3; var h : single );
+    function MoveAllowed(const Sender: TCastleNavigation;
+                         const OldPos, ProposedNewPos: TVector3; out NewPos: TVector3;
+                         const Radius: Single; const BecauseOfGravity: Boolean): boolean;
+
   end;
 
 var
@@ -80,17 +80,6 @@ implementation
 
 uses SysUtils,
   CastleUtils;
-
-procedure TTerData.DataModified;
- begin
-   DoChange;
- end;
-
-function TTerData.Height(const Coord, TexCoord: TVector2): Single;
- begin
-   result := 0;
-
- end;
 
 { TViewMain ----------------------------------------------------------------- }
 
@@ -105,11 +94,15 @@ begin
   inherited;
   GParentComponent := Viewport1.Items;
   ButtonCreateClient.OnClick := {$ifdef FPC}@{$endif} ClickCreateClient;
-  ButtonChangeViewMode.OnClick := {$ifdef FPC}@{$endif} ClickTest;
+  ButtonGrid.OnClick := {$ifdef FPC}@{$endif} ClickTest;
+  ButtonContour.OnClick := {$ifdef FPC}@{$endif} ClickTest;
   ButtonSend.OnClick := {$ifdef FPC}@{$endif} ClickSend;
   ClickCreateClient( self );
   MainNavigation.Input_Jump.Assign(keyNone);
   MainNavigation.Input_Crouch.Assign(keyNone);
+  MainNavigation.OnMoveAllowed := {$ifdef FPC}@{$endif} MoveAllowed;
+  LabelContourScale.Caption := '';
+  LabelGridScale.Caption := '';
 end;
 
 procedure TViewMain.Stop;
@@ -198,28 +191,50 @@ procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
 
 
 procedure TViewMain.ClickTest(Sender: TObject);
+ var button : TCastleButton;
  var tile : TTerTile;
-
- var i : integer;
-     shader : TTileShader;
-     shadername : string;
-begin
-  gshaderid := ( gshaderid + 1 ) mod 7;
+var i : integer;
+   shader : TTileShader;
+ begin
+   button := TCastleButton( Sender );
+   Button.Pressed := not Button.Pressed;
+   if button = buttongrid then
+    begin
+      GShowGrid := Button.Pressed;
+      if GShowGrid then
+       begin
+         LabelGridScale.Caption := FormatFloat( '0.#', 1/GGridScale * 5 )+'m';
+         Button.CustomBackground := false;
+       end
+      else
+       begin
+         LabelGridScale.Caption := '';
+         Button.CustomBackground := true;
+       end;
+    end
+   else
+   if button = buttoncontour then
+    begin
+      GShowContour := Button.Pressed;
+      if GShowContour then
+       begin
+         LabelContourScale.Caption := FormatFloat( '0.#', 1/GContourScale * 5 )+'m';
+         Button.CustomBackground := false;
+       end
+      else
+       begin
+         LabelContourScale.Caption := '';
+         Button.CustomBackground := true;
+       end;
+    end;
   { test }
-  shadername := '';
   for i := 0 to gtilelist.Count - 1 do
    begin
      Tile := TTerTile( gTileList.At( i ));
      if assigned( Tile.graphics ) then
-      begin
-        shader := gettileshader( tile, gshaderid );
-        shadername := shader.name;
-        TTerrainMesh( Tile.graphics ).UpdateAppearance( shader );
-        shader.free;
-      end;
+        TTerrainMesh( Tile.graphics ).UpdateAppearance;
    end;
-  ButtonChangeViewMode.Caption := shadername;
-end;
+ end;
 
 procedure TViewMain.ClickSend(Sender: TObject);
 begin
@@ -228,10 +243,15 @@ end;
 
 procedure TViewMain.TerrainHeight( const pos : tvector3; var h : single );
  var atile : ttertile;
+     pos2 : tvector2;
  begin
    h := -1;
-   if gtilelist.findtileatlocation( Vector2(Pos.X,Pos.Z), atile ) and assigned( atile.Graphics ) then
-      TTerrainMesh( atile.graphics ).Elevationatpos( vector2( pos.x, pos.z ), h );
+   pos2 := Vector2(Pos.X,Pos.Z);
+   if gtilelist.findtileatlocation( pos2, atile ) and assigned( atile.Graphics ) then
+    begin
+      dbgwriteln( inttostr( atile.Info.TileX )+','+inttostr( atile.Info.TileY ));
+      TTerrainMesh( atile.graphics ).Elevationatpos( pos2, h );
+    end;
  (*
    if assigned( atile ) then
       Y := aTile.Data.Height( Pos2, Vector2(0,0));
@@ -239,6 +259,20 @@ procedure TViewMain.TerrainHeight( const pos : tvector3; var h : single );
     begin
       {!!! if no tile then use the tterrainnoise }
     end;     *)
+ end;
+
+function TViewMain.MoveAllowed(const Sender: TCastleNavigation;
+                               const OldPos, ProposedNewPos: TVector3; out NewPos: TVector3;
+                               const Radius: Single; const BecauseOfGravity: Boolean): boolean;
+ var h : single;
+     terrainh : single;
+ begin
+   h := ProposedNewPos.Y;
+   TerrainHeight( ProposedNewPos, TerrainH );
+   NewPos := ProposedNewPos;
+   if h - radius < Terrainh then
+      NewPos := Vector3(ProposedNewPos.X, TerrainH + radius, ProposedNewPos.Z );
+   result := true;
  end;
 
 procedure TViewMain.Mousewheel( direction : integer );

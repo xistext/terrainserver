@@ -143,12 +143,19 @@ function TAbstractMesh.ElevationAtPos( Pos : TVector2;
    function checktriangle( const triangle : TTriangle3 ) : boolean;
     var intersection : tvector3;
     begin
-      result := TryTriangleRayCollision( Intersection,
-                                         Triangle,
-                                         Triangle.Plane,
-                                         vector3( pos.x, 100, pos.y ), vector3( 0, -1, 0 ));
+      {why does this only work on the center tile???}
+      result := IsPointWithinTriangle2D( Pos, triangle2( vector2( triangle[0].x, triangle[0].z ),
+                                                  vector2( triangle[1].x, triangle[1].z ),
+                                                  vector2( triangle[2].x, triangle[2].z )));
       if result then
-         elev := Intersection.y;
+       begin
+         result := TryTriangleRayCollision( Intersection,
+                                            Triangle,
+                                            Triangle.Plane,
+                                            vector3( pos.x, 100, pos.y ), vector3( 0, -1, 0 ));
+         if result then
+            elev := Intersection.y;
+       end;
     end;
  var IndexedTriangleSetNode : TIndexedTriangleSetNode;
      ix : integer;

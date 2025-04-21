@@ -177,8 +177,10 @@ function TTileList.getneighbor( tile : TTerTile;
 
 function TTileList.CalculateTileOffset( Pos : TVector2 ) : TPoint;
  var sizefactor : single;
+     tilesz : single;
  begin
-   sizefactor := 1/(GDefGridCellCount * GDefGridStep);
+   tilesz := GDefGridCellCount * GDefGridStep;
+   sizefactor := 1/tilesz;
    Result := Point( floor( Pos.X * SizeFactor + 0.5 ),
                     floor( Pos.Y * SizeFactor + 0.5 ));
  end;
