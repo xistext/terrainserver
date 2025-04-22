@@ -145,11 +145,11 @@
                 "Intensity" : 5.0000000000000000E+000,
                 "Name" : "PointLight1",
                 "Pickable" : false,
-                "Radius" : 2.0000000000000000E+003,
+                "Radius" : 4.0000000000000000E+003,
                 "TranslationPersistent" : {
                   "$$ClassName" : "TCastleVector3Persistent",
-                  "Y" : 1.0000000000000000E+003,
-                  "Z" : 1.0000000000000000E+003
+                  "Y" : 2.0000000000000000E+003,
+                  "Z" : 2.0000000000000000E+003
                 }
               },
               {
