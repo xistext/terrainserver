@@ -46,8 +46,8 @@
         <IsPartOfProject Value="True"/>
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="5"/>
-        <TopLine Value="198"/>
-        <CursorPos X="47" Y="218"/>
+        <TopLine Value="321"/>
+        <CursorPos X="57" Y="351"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
       </Unit5>
@@ -77,7 +77,7 @@
         <EditorIndex Value="3"/>
         <TopLine Value="95"/>
         <CursorPos X="51" Y="237"/>
-        <UsageCount Value="89"/>
+        <UsageCount Value="91"/>
         <Loaded Value="True"/>
       </Unit9>
       <Unit10>
@@ -198,7 +198,7 @@
         <EditorIndex Value="6"/>
         <TopLine Value="407"/>
         <CursorPos X="10" Y="444"/>
-        <UsageCount Value="14"/>
+        <UsageCount Value="16"/>
         <Loaded Value="True"/>
       </Unit26>
       <Unit27>
@@ -206,7 +206,7 @@
         <EditorIndex Value="14"/>
         <TopLine Value="13"/>
         <CursorPos X="5" Y="26"/>
-        <UsageCount Value="16"/>
+        <UsageCount Value="17"/>
         <Loaded Value="True"/>
       </Unit27>
       <Unit28>
@@ -248,7 +248,7 @@
         <EditorIndex Value="16"/>
         <TopLine Value="1028"/>
         <CursorPos X="53" Y="1027"/>
-        <UsageCount Value="30"/>
+        <UsageCount Value="32"/>
         <Loaded Value="True"/>
       </Unit33>
       <Unit34>
@@ -278,14 +278,14 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="1180"/>
         <CursorPos X="99" Y="1246"/>
-        <UsageCount Value="2"/>
+        <UsageCount Value="1"/>
       </Unit37>
       <Unit38>
         <Filename Value="E:\cge\src\scene\x3d\castlefields_x3dsinglefield_descendants.inc"/>
         <EditorIndex Value="13"/>
         <TopLine Value="298"/>
         <CursorPos X="34" Y="333"/>
-        <UsageCount Value="35"/>
+        <UsageCount Value="37"/>
         <Loaded Value="True"/>
       </Unit38>
       <Unit39>
@@ -293,14 +293,14 @@
         <UnitName Value="CastleCameras"/>
         <EditorIndex Value="1"/>
         <CursorPos X="78" Y="12"/>
-        <UsageCount Value="36"/>
+        <UsageCount Value="38"/>
         <Loaded Value="True"/>
       </Unit39>
       <Unit40>
         <Filename Value="E:\cge\src\scene\x3d\x3dnodes_sfnode.inc"/>
         <EditorIndex Value="17"/>
         <CursorPos X="63" Y="50"/>
-        <UsageCount Value="30"/>
+        <UsageCount Value="32"/>
         <Loaded Value="True"/>
       </Unit40>
       <Unit41>
@@ -341,7 +341,7 @@
         <EditorIndex Value="21"/>
         <TopLine Value="1592"/>
         <CursorPos X="15" Y="1611"/>
-        <UsageCount Value="34"/>
+        <UsageCount Value="36"/>
         <Loaded Value="True"/>
       </Unit45>
       <Unit46>
@@ -357,7 +357,7 @@
         <EditorIndex Value="20"/>
         <TopLine Value="497"/>
         <CursorPos X="19" Y="558"/>
-        <UsageCount Value="34"/>
+        <UsageCount Value="36"/>
         <Loaded Value="True"/>
       </Unit47>
       <Unit48>
@@ -371,7 +371,7 @@
         <EditorIndex Value="19"/>
         <TopLine Value="1045"/>
         <CursorPos X="100" Y="1082"/>
-        <UsageCount Value="16"/>
+        <UsageCount Value="18"/>
         <Loaded Value="True"/>
       </Unit49>
       <Unit50>
@@ -379,20 +379,20 @@
         <EditorIndex Value="18"/>
         <TopLine Value="47"/>
         <CursorPos X="13" Y="85"/>
-        <UsageCount Value="16"/>
+        <UsageCount Value="18"/>
         <Loaded Value="True"/>
       </Unit50>
       <Unit51>
         <Filename Value="E:\cge\src\scene\glsl\generated-pascal\tone_mapping.fs.inc"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="25" Y="11"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="8"/>
       </Unit51>
       <Unit52>
         <Filename Value="E:\cge\src\scene\x3d\castlefields_x3dsinglefield.inc"/>
         <EditorIndex Value="15"/>
         <CursorPos X="41" Y="22"/>
-        <UsageCount Value="16"/>
+        <UsageCount Value="17"/>
         <Loaded Value="True"/>
       </Unit52>
       <Unit53>
@@ -401,7 +401,7 @@
         <EditorIndex Value="12"/>
         <TopLine Value="57"/>
         <CursorPos X="3" Y="95"/>
-        <UsageCount Value="14"/>
+        <UsageCount Value="16"/>
         <Loaded Value="True"/>
       </Unit53>
       <Unit54>
@@ -409,7 +409,7 @@
         <UnitName Value="GameViewMain"/>
         <EditorIndex Value="11"/>
         <CursorPos X="50" Y="21"/>
-        <UsageCount Value="14"/>
+        <UsageCount Value="16"/>
         <Loaded Value="True"/>
       </Unit54>
       <Unit55>
@@ -418,7 +418,7 @@
         <EditorIndex Value="9"/>
         <TopLine Value="1724"/>
         <CursorPos X="41" Y="1761"/>
-        <UsageCount Value="14"/>
+        <UsageCount Value="16"/>
         <Loaded Value="True"/>
       </Unit55>
       <Unit56>
@@ -426,7 +426,7 @@
         <UnitName Value="CastleInternalGeometryArrays"/>
         <EditorIndex Value="10"/>
         <CursorPos X="34" Y="17"/>
-        <UsageCount Value="14"/>
+        <UsageCount Value="16"/>
         <Loaded Value="True"/>
       </Unit56>
       <Unit57>
@@ -434,7 +434,7 @@
         <EditorIndex Value="7"/>
         <TopLine Value="147"/>
         <CursorPos X="35" Y="184"/>
-        <UsageCount Value="14"/>
+        <UsageCount Value="15"/>
         <Loaded Value="True"/>
       </Unit57>
       <Unit58>
@@ -442,130 +442,130 @@
         <EditorIndex Value="8"/>
         <TopLine Value="11"/>
         <CursorPos Y="71"/>
-        <UsageCount Value="14"/>
+        <UsageCount Value="15"/>
         <Loaded Value="True"/>
       </Unit58>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="E:\cge\src\scene\castleinternalarraysgenerator.pas"/>
-        <Caret Line="1661" Column="90" TopLine="1595"/>
+        <Filename Value="code\terrainmesh.pas"/>
+        <Caret Line="218" Column="11" TopLine="179"/>
       </Position1>
       <Position2>
         <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="214" Column="94" TopLine="180"/>
+        <Caret Line="213" Column="98" TopLine="176"/>
       </Position2>
       <Position3>
-        <Filename Value="E:\cge\src\scene\castleinternalarraysgenerator.pas"/>
-        <Caret Line="1761" Column="41" TopLine="1724"/>
+        <Filename Value="code\terrainmesh.pas"/>
+        <Caret Line="214" Column="68" TopLine="176"/>
       </Position3>
       <Position4>
-        <Filename Value="E:\cge\src\scene\x3d\castlefields_x3dsimplemultfield_descendants.inc"/>
-        <Caret Line="444" Column="10" TopLine="407"/>
+        <Filename Value="code\terrainmesh.pas"/>
+        <Caret Line="215" Column="18" TopLine="177"/>
       </Position4>
       <Position5>
-        <Filename Value="E:\cge\src\scene\x3d\x3dnodes_standard_cadgeometry.inc"/>
-        <Caret Line="184" Column="35" TopLine="147"/>
+        <Filename Value="code\terrainmesh.pas"/>
+        <Caret Line="195" Column="19" TopLine="178"/>
       </Position5>
       <Position6>
         <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="216" Column="14" TopLine="180"/>
+        <Caret Line="216" Column="16" TopLine="158"/>
       </Position6>
       <Position7>
-        <Filename Value="E:\cge\src\scene\x3d\auto_generated_node_helpers\x3dnodes_abstractvrml1indexed_1.inc"/>
-        <Caret Line="65" Column="32" TopLine="11"/>
+        <Filename Value="E:\cge\src\scene\x3d\castlefields_x3dsimplemultfield.inc"/>
+        <Caret Line="53" Column="29" TopLine="13"/>
       </Position7>
       <Position8>
-        <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="217" TopLine="180"/>
+        <Filename Value="E:\cge\src\scene\x3d\castlefields_x3dsimplemultfield.inc"/>
+        <Caret Line="26" Column="5" TopLine="13"/>
       </Position8>
       <Position9>
         <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="213" Column="27" TopLine="179"/>
+        <Caret Line="216" TopLine="158"/>
       </Position9>
       <Position10>
         <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="218" Column="11" TopLine="179"/>
+        <Caret Line="214" Column="3" TopLine="177"/>
       </Position10>
       <Position11>
         <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="213" Column="98" TopLine="176"/>
+        <Caret Line="221" Column="23" TopLine="178"/>
       </Position11>
       <Position12>
         <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="214" Column="68" TopLine="176"/>
+        <Caret Line="224" Column="11" TopLine="178"/>
       </Position12>
       <Position13>
         <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="215" Column="18" TopLine="177"/>
+        <Caret Line="216" Column="29" TopLine="179"/>
       </Position13>
       <Position14>
         <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="195" Column="19" TopLine="178"/>
+        <Caret Line="204" Column="27" TopLine="179"/>
       </Position14>
       <Position15>
         <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="216" Column="16" TopLine="158"/>
+        <Caret Line="217" Column="21" TopLine="186"/>
       </Position15>
       <Position16>
-        <Filename Value="E:\cge\src\scene\x3d\castlefields_x3dsimplemultfield.inc"/>
-        <Caret Line="53" Column="29" TopLine="13"/>
+        <Filename Value="code\terrainmesh.pas"/>
+        <Caret Line="214" TopLine="159"/>
       </Position16>
       <Position17>
-        <Filename Value="E:\cge\src\scene\x3d\castlefields_x3dsimplemultfield.inc"/>
-        <Caret Line="26" Column="5" TopLine="13"/>
+        <Filename Value="code\terrainmesh.pas"/>
+        <Caret Line="186" Column="36" TopLine="177"/>
       </Position17>
       <Position18>
         <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="216" TopLine="158"/>
+        <Caret Line="202" Column="14" TopLine="165"/>
       </Position18>
       <Position19>
         <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="214" Column="3" TopLine="177"/>
+        <Caret Line="216" TopLine="178"/>
       </Position19>
       <Position20>
         <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="221" Column="23" TopLine="178"/>
+        <Caret Line="200" Column="37" TopLine="177"/>
       </Position20>
       <Position21>
         <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="224" Column="11" TopLine="178"/>
+        <Caret Line="215" Column="16" TopLine="178"/>
       </Position21>
       <Position22>
         <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="216" Column="29" TopLine="179"/>
+        <Caret Column="37"/>
       </Position22>
       <Position23>
         <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="204" Column="27" TopLine="179"/>
+        <Caret Line="376" TopLine="307"/>
       </Position23>
       <Position24>
         <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="217" Column="21" TopLine="186"/>
+        <Caret Line="65" Column="35" TopLine="28"/>
       </Position24>
       <Position25>
         <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="214" TopLine="159"/>
+        <Caret Line="381" Column="49" TopLine="307"/>
       </Position25>
       <Position26>
         <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="186" Column="36" TopLine="177"/>
+        <Caret Line="338" Column="10" TopLine="301"/>
       </Position26>
       <Position27>
         <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="202" Column="14" TopLine="165"/>
+        <Caret Line="383" Column="27" TopLine="313"/>
       </Position27>
       <Position28>
         <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="216" TopLine="178"/>
+        <Caret Line="198" Column="58" TopLine="185"/>
       </Position28>
       <Position29>
         <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="200" Column="37" TopLine="177"/>
+        <Caret Line="241" Column="4" TopLine="200"/>
       </Position29>
       <Position30>
         <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="215" Column="16" TopLine="178"/>
+        <Caret Line="240" Column="33" TopLine="202"/>
       </Position30>
     </JumpHistory>
     <RunParams>
