@@ -46,8 +46,8 @@
         <IsPartOfProject Value="True"/>
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="5"/>
-        <TopLine Value="195"/>
-        <CursorPos X="47" Y="238"/>
+        <TopLine Value="199"/>
+        <CursorPos X="52" Y="229"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
       </Unit5>
@@ -56,20 +56,20 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="1638"/>
         <CursorPos X="63" Y="1664"/>
-        <UsageCount Value="27"/>
+        <UsageCount Value="26"/>
       </Unit6>
       <Unit7>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdTCPConnection.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="471"/>
         <CursorPos Y="503"/>
-        <UsageCount Value="34"/>
+        <UsageCount Value="33"/>
       </Unit7>
       <Unit8>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\System\IdStack.pas"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="13" Y="942"/>
-        <UsageCount Value="36"/>
+        <UsageCount Value="35"/>
       </Unit8>
       <Unit9>
         <Filename Value="..\commoncode\castleclientserver.pas"/>
@@ -77,7 +77,7 @@
         <EditorIndex Value="3"/>
         <TopLine Value="95"/>
         <CursorPos X="51" Y="237"/>
-        <UsageCount Value="87"/>
+        <UsageCount Value="89"/>
         <Loaded Value="True"/>
       </Unit9>
       <Unit10>
@@ -85,20 +85,20 @@
         <UnitName Value="TileTools"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="75" Y="9"/>
-        <UsageCount Value="53"/>
+        <UsageCount Value="52"/>
       </Unit10>
       <Unit11>
         <Filename Value="..\commoncode\terservercommon.pas"/>
         <EditorIndex Value="-1"/>
         <CursorPos Y="9"/>
-        <UsageCount Value="94"/>
+        <UsageCount Value="93"/>
       </Unit11>
       <Unit12>
         <Filename Value="E:\wyrdforest\code\lib\edjlib\basemesh.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="165"/>
         <CursorPos Y="218"/>
-        <UsageCount Value="87"/>
+        <UsageCount Value="86"/>
       </Unit12>
       <Unit13>
         <Filename Value="terrainclient.pas"/>
@@ -123,60 +123,60 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="528"/>
         <CursorPos Y="561"/>
-        <UsageCount Value="85"/>
+        <UsageCount Value="84"/>
       </Unit15>
       <Unit16>
         <Filename Value="E:\wyrdforest\code\watergrid.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="77"/>
         <CursorPos X="104" Y="84"/>
-        <UsageCount Value="82"/>
+        <UsageCount Value="81"/>
       </Unit16>
       <Unit17>
         <Filename Value="..\commoncode\terrainparams.pas"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="56" Y="21"/>
-        <UsageCount Value="88"/>
+        <UsageCount Value="87"/>
       </Unit17>
       <Unit18>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\System\IdWinsock2.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="6035"/>
         <CursorPos Y="6067"/>
-        <UsageCount Value="4"/>
+        <UsageCount Value="3"/>
       </Unit18>
       <Unit19>
         <Filename Value="E:\cge\src\scene\castleviewport.pas"/>
         <UnitName Value="CastleViewport"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="30"/>
-        <UsageCount Value="77"/>
+        <UsageCount Value="76"/>
       </Unit19>
       <Unit20>
         <Filename Value="E:\cge\src\base\castlerenderoptions_globals.inc"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="17" Y="242"/>
-        <UsageCount Value="55"/>
+        <UsageCount Value="54"/>
       </Unit20>
       <Unit21>
         <Filename Value="E:\cge\src\transform\castletransform_transform.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="61"/>
         <CursorPos X="3" Y="50"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit21>
       <Unit22>
         <Filename Value="E:\cge\src\transform\castletransform_physics.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="575"/>
         <CursorPos X="29" Y="590"/>
-        <UsageCount Value="6"/>
+        <UsageCount Value="5"/>
       </Unit22>
       <Unit23>
         <Filename Value="E:\cge\src\transform\castletransform_abstractroottransform.inc"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="3" Y="22"/>
-        <UsageCount Value="6"/>
+        <UsageCount Value="5"/>
       </Unit23>
       <Unit24>
         <Filename Value="..\commoncode\basemesh.pas"/>
@@ -191,14 +191,14 @@
         <UnitName Value="CastleSceneCore"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="33" Y="360"/>
-        <UsageCount Value="52"/>
+        <UsageCount Value="51"/>
       </Unit25>
       <Unit26>
         <Filename Value="E:\cge\src\scene\x3d\castlefields_x3dsimplemultfield_descendants.inc"/>
         <EditorIndex Value="6"/>
         <TopLine Value="407"/>
         <CursorPos X="10" Y="444"/>
-        <UsageCount Value="12"/>
+        <UsageCount Value="14"/>
         <Loaded Value="True"/>
       </Unit26>
       <Unit27>
@@ -206,7 +206,7 @@
         <EditorIndex Value="14"/>
         <TopLine Value="13"/>
         <CursorPos X="5" Y="26"/>
-        <UsageCount Value="14"/>
+        <UsageCount Value="16"/>
         <Loaded Value="True"/>
       </Unit27>
       <Unit28>
@@ -215,40 +215,40 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="433"/>
         <CursorPos Y="501"/>
-        <UsageCount Value="26"/>
+        <UsageCount Value="25"/>
       </Unit28>
       <Unit29>
         <Filename Value="..\commoncode\terrain.fs.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="11"/>
         <CursorPos X="92" Y="17"/>
-        <UsageCount Value="19"/>
+        <UsageCount Value="18"/>
       </Unit29>
       <Unit30>
         <Filename Value="..\commoncode\terrain.vs.inc"/>
         <EditorIndex Value="-1"/>
-        <UsageCount Value="19"/>
+        <UsageCount Value="18"/>
       </Unit30>
       <Unit31>
         <Filename Value="E:\cge\src\scene\x3d\x3dnodes_castle.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="313"/>
         <CursorPos X="13" Y="350"/>
-        <UsageCount Value="24"/>
+        <UsageCount Value="23"/>
       </Unit31>
       <Unit32>
         <Filename Value="E:\cge\src\scene\x3d\x3dnodes_x3dnode.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="18"/>
         <CursorPos X="49" Y="77"/>
-        <UsageCount Value="3"/>
+        <UsageCount Value="2"/>
       </Unit32>
       <Unit33>
         <Filename Value="E:\cge\src\scene\x3d\castlefields_x3dfield.inc"/>
         <EditorIndex Value="16"/>
         <TopLine Value="1028"/>
         <CursorPos X="53" Y="1027"/>
-        <UsageCount Value="28"/>
+        <UsageCount Value="30"/>
         <Loaded Value="True"/>
       </Unit33>
       <Unit34>
@@ -256,14 +256,14 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="127"/>
         <CursorPos X="36" Y="164"/>
-        <UsageCount Value="3"/>
+        <UsageCount Value="2"/>
       </Unit34>
       <Unit35>
         <Filename Value="E:\cge\src\scene\x3d\x3dnodes_mfnode.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="49"/>
         <CursorPos X="3" Y="38"/>
-        <UsageCount Value="3"/>
+        <UsageCount Value="2"/>
       </Unit35>
       <Unit36>
         <Filename Value="E:\cge\src\scene\castlescene.pas"/>
@@ -285,7 +285,7 @@
         <EditorIndex Value="13"/>
         <TopLine Value="298"/>
         <CursorPos X="34" Y="333"/>
-        <UsageCount Value="33"/>
+        <UsageCount Value="35"/>
         <Loaded Value="True"/>
       </Unit38>
       <Unit39>
@@ -293,14 +293,14 @@
         <UnitName Value="CastleCameras"/>
         <EditorIndex Value="1"/>
         <CursorPos X="78" Y="12"/>
-        <UsageCount Value="34"/>
+        <UsageCount Value="36"/>
         <Loaded Value="True"/>
       </Unit39>
       <Unit40>
         <Filename Value="E:\cge\src\scene\x3d\x3dnodes_sfnode.inc"/>
         <EditorIndex Value="17"/>
         <CursorPos X="63" Y="50"/>
-        <UsageCount Value="28"/>
+        <UsageCount Value="30"/>
         <Loaded Value="True"/>
       </Unit40>
       <Unit41>
@@ -309,7 +309,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="91"/>
         <CursorPos X="26" Y="128"/>
-        <UsageCount Value="7"/>
+        <UsageCount Value="6"/>
       </Unit41>
       <Unit42>
         <Filename Value="E:\cge\examples\viewport_and_scenes\projector\code\gameviewmain.pas"/>
@@ -317,7 +317,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="6"/>
         <CursorPos X="15" Y="73"/>
-        <UsageCount Value="7"/>
+        <UsageCount Value="6"/>
       </Unit42>
       <Unit43>
         <Filename Value="E:\cge\examples\viewport_and_scenes\shader_effects\code\gameviewmain.pas"/>
@@ -325,7 +325,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="90"/>
         <CursorPos X="15" Y="126"/>
-        <UsageCount Value="7"/>
+        <UsageCount Value="6"/>
       </Unit43>
       <Unit44>
         <Filename Value="E:\cge\examples\viewport_and_scenes\shader_effects_on_texture\code\gameviewmain.pas"/>
@@ -333,7 +333,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="23"/>
         <CursorPos X="13" Y="72"/>
-        <UsageCount Value="24"/>
+        <UsageCount Value="23"/>
       </Unit44>
       <Unit45>
         <Filename Value="E:\cge\src\scene\castleterrain.pas"/>
@@ -341,7 +341,7 @@
         <EditorIndex Value="21"/>
         <TopLine Value="1592"/>
         <CursorPos X="15" Y="1611"/>
-        <UsageCount Value="32"/>
+        <UsageCount Value="34"/>
         <Loaded Value="True"/>
       </Unit45>
       <Unit46>
@@ -349,7 +349,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="62"/>
         <CursorPos X="11" Y="115"/>
-        <UsageCount Value="24"/>
+        <UsageCount Value="23"/>
       </Unit46>
       <Unit47>
         <Filename Value="E:\wyrdforest\code\baseterrain.pas"/>
@@ -357,21 +357,21 @@
         <EditorIndex Value="20"/>
         <TopLine Value="497"/>
         <CursorPos X="19" Y="558"/>
-        <UsageCount Value="32"/>
+        <UsageCount Value="34"/>
         <Loaded Value="True"/>
       </Unit47>
       <Unit48>
         <Filename Value="E:\cge\src\scene\x3d\x3dnodes_eventsengine.inc"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="33" Y="33"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="8"/>
       </Unit48>
       <Unit49>
         <Filename Value="E:\cge\src\scene\x3d\x3dnodes_standard_texturing.inc"/>
         <EditorIndex Value="19"/>
         <TopLine Value="1045"/>
         <CursorPos X="100" Y="1082"/>
-        <UsageCount Value="14"/>
+        <UsageCount Value="16"/>
         <Loaded Value="True"/>
       </Unit49>
       <Unit50>
@@ -379,7 +379,7 @@
         <EditorIndex Value="18"/>
         <TopLine Value="47"/>
         <CursorPos X="13" Y="85"/>
-        <UsageCount Value="14"/>
+        <UsageCount Value="16"/>
         <Loaded Value="True"/>
       </Unit50>
       <Unit51>
@@ -392,7 +392,7 @@
         <Filename Value="E:\cge\src\scene\x3d\castlefields_x3dsinglefield.inc"/>
         <EditorIndex Value="15"/>
         <CursorPos X="41" Y="22"/>
-        <UsageCount Value="14"/>
+        <UsageCount Value="16"/>
         <Loaded Value="True"/>
       </Unit52>
       <Unit53>
@@ -401,7 +401,7 @@
         <EditorIndex Value="12"/>
         <TopLine Value="57"/>
         <CursorPos X="3" Y="95"/>
-        <UsageCount Value="12"/>
+        <UsageCount Value="14"/>
         <Loaded Value="True"/>
       </Unit53>
       <Unit54>
@@ -409,7 +409,7 @@
         <UnitName Value="GameViewMain"/>
         <EditorIndex Value="11"/>
         <CursorPos X="50" Y="21"/>
-        <UsageCount Value="12"/>
+        <UsageCount Value="14"/>
         <Loaded Value="True"/>
       </Unit54>
       <Unit55>
@@ -418,7 +418,7 @@
         <EditorIndex Value="9"/>
         <TopLine Value="1724"/>
         <CursorPos X="41" Y="1761"/>
-        <UsageCount Value="12"/>
+        <UsageCount Value="14"/>
         <Loaded Value="True"/>
       </Unit55>
       <Unit56>
@@ -426,7 +426,7 @@
         <UnitName Value="CastleInternalGeometryArrays"/>
         <EditorIndex Value="10"/>
         <CursorPos X="34" Y="17"/>
-        <UsageCount Value="12"/>
+        <UsageCount Value="14"/>
         <Loaded Value="True"/>
       </Unit56>
       <Unit57>
@@ -434,7 +434,7 @@
         <EditorIndex Value="7"/>
         <TopLine Value="147"/>
         <CursorPos X="35" Y="184"/>
-        <UsageCount Value="12"/>
+        <UsageCount Value="14"/>
         <Loaded Value="True"/>
       </Unit57>
       <Unit58>
@@ -442,7 +442,7 @@
         <EditorIndex Value="8"/>
         <TopLine Value="11"/>
         <CursorPos Y="71"/>
-        <UsageCount Value="12"/>
+        <UsageCount Value="14"/>
         <Loaded Value="True"/>
       </Unit58>
     </Units>
