@@ -42,6 +42,10 @@ type TTerTile = class; { forward }
         function gridsz : dword;
       end;
 
+     TIntLayer = class( TDataLayer )
+        procedure initgrid( igridsz : dword ); override;
+      end;
+
      TDataLayers = array of TDataLayer;
 
      TTerTile = class
@@ -209,15 +213,29 @@ function TDataLayer.gridsz : dword;
  end;
 
 //-------------------------------
+
+procedure TIntLayer.initgrid( igridsz : dword );
+ begin
+   DataGrid := tintgrid.create( 0, igridsz );
+
+ end;
+
+//-------------------------------
 constructor TTerTile.create( const iInfo : TTileHeader );
  var layer : TDataLayer;
  begin
    Info := iInfo;
    {$ifdef terserver}
-   SetLength( datalayers, 1 );
+   SetLength( datalayers, 2 );
+   { intialize terrain layer }
    layer := TDataLayer.create;
    layer.initgrid( Info.TileSz );
    datalayers[0] := layer;
+   { initialize splat layer }
+   layer := TIntLayer.create;
+   layer.initgrid( Info.TileSz );
+   datalayers[1] := layer;
+
    status := 0;
    {$else}
    Graphics := nil;

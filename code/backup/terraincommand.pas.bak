@@ -267,14 +267,92 @@ constructor TTask_SendTile.create( const iClient : TClientConnection;
    LOD := iLOD;
  end;
 
-function TTask_SendTile.RunTask : boolean;
+
+function BuildResultGrid( tile : ttertile;
+                          const resultinfo : TTileHeader;
+                          LOD : dword) : TIdBytes;
  var buflen, x, y, tilesz, LODDiv : integer;
      buffer : TIdBytes;
      TerGrid : TSingleGrid;
      bufptr : ^single;
-     resulttileinfo : TTileHeader;
      h : single;
      neighbor : TTerTile;
+ begin
+   loddiv := divOfLOD( LOD );
+    buflen := resultinfo.tilesz * resultinfo.tilesz * sizeof( single ) ;
+    tilesz := Tile.info.tilesz;
+
+    TerGrid := Tile.TerrainGrid;
+    setlength( buffer, buflen );
+    bufptr := @buffer[0];
+    neighbor := GTileList.getneighbor( tile, 0, 1 );
+    h := 0;
+    if loddiv = 1 then { full resolution }
+     begin
+       for x := 0 to tilesz - 1 do
+        begin
+          move( TerGrid.ptrxy(x,0)^, bufptr^, tilesz * sizeof( single ));
+          { last point in line }
+          if assigned( neighbor ) then
+             h := neighbor.TerrainGrid.valuexy(x,0)
+          else
+             h := 0;
+          inc( bufptr, tilesz );
+          bufptr^ := h;
+          inc( bufptr );
+        end;
+       { last row }
+       neighbor := GTileList.getNeighbor( tile, 1, 0 );
+       if assigned( neighbor ) then
+          move( neighbor.TerrainGrid.ptrxy(0,0)^, bufptr^, tilesz * sizeof( single ));
+       inc( bufptr, tilesz );
+       neighbor := GTileList.getNeighbor( tile, 1, 1 );
+       if assigned( neighbor ) then
+          bufptr^ := neighbor.TerrainGrid.valuexy( 0, 0 );
+     end
+    else
+     begin { reduced sample }
+       for x := 0 to tilesz - 1 do
+        begin
+          for y := 0 to tilesz - 1 do
+           begin
+   //            bufptr^ := TerGrid.samplemax(x * loddiv, y * loddiv, loddiv, loddiv);
+             bufptr^ := TerGrid.valuexy(x * loddiv, y * loddiv);
+             inc( bufptr );
+           end;
+          { last point in from neighbor grid }
+          if assigned( neighbor ) then
+             h := neighbor.TerrainGrid.valuexy(x * loddiv,0)
+          else
+             h := 0;
+          bufptr^ := h;
+          inc( bufptr );
+        end;
+       { last line from neighbor grid }
+       neighbor := GTileList.getNeighbor( tile, 1, 0 );
+       if assigned( neighbor ) then
+        begin
+          for y := 0 to tilesz - 1 do
+           begin
+             bufptr^ := neighbor.TerrainGrid.valuexy(0, y * loddiv );
+             inc( bufptr );
+           end;
+        end
+       else
+          inc( bufptr, tilesz );
+       { corner point from neighbor grid }
+       neighbor := GTileList.getNeighbor( tile, 1, 1 );
+       if assigned( neighbor ) then
+          bufptr^ := neighbor.TerrainGrid.valuexy( 0, 0 );
+    end;
+   result := buffer;
+ end;
+
+function TTask_SendTile.RunTask : boolean;
+ var buffer : TIdBytes;
+     resulttileinfo : TTileHeader;
+     buflen : integer;
+     tilesz, loddiv : integer;
  begin
    result := inherited Runtask;
    if not result then
@@ -284,71 +362,8 @@ function TTask_SendTile.RunTask : boolean;
 
    tilesz := GDefGridCellCount div loddiv;
    resulttileinfo.tilesz := tilesz + 1;
-   buflen := resulttileinfo.tilesz * resulttileinfo.tilesz * sizeof( single ) ;
-
-   TerGrid := Tile.TerrainGrid;
-   setlength( buffer, buflen );
-   bufptr := @buffer[0];
-   neighbor := GTileList.getneighbor( tile, 0, 1 );
-   h := 0;
-   if loddiv = 1 then { full resolution }
-    begin
-      for x := 0 to tilesz - 1 do
-       begin
-         move( TerGrid.ptrxy(x,0)^, bufptr^, tilesz * sizeof( single ));
-         { last point in line }
-         if assigned( neighbor ) then
-            h := neighbor.TerrainGrid.valuexy(x,0)
-         else
-            h := 0;
-         inc( bufptr, tilesz );
-         bufptr^ := h;
-         inc( bufptr );
-       end;
-      { last row }
-      neighbor := GTileList.getNeighbor( tile, 1, 0 );
-      if assigned( neighbor ) then
-         move( neighbor.TerrainGrid.ptrxy(0,0)^, bufptr^, tilesz * sizeof( single ));
-      inc( bufptr, tilesz );
-      neighbor := GTileList.getNeighbor( tile, 1, 1 );
-      if assigned( neighbor ) then
-         bufptr^ := neighbor.TerrainGrid.valuexy( 0, 0 );
-    end
-   else
-    begin { reduced sample }
-      for x := 0 to tilesz - 1 do
-       begin
-         for y := 0 to tilesz - 1 do
-          begin
-//            bufptr^ := TerGrid.samplemax(x * loddiv, y * loddiv, loddiv, loddiv);
-            bufptr^ := TerGrid.valuexy(x * loddiv, y * loddiv);
-            inc( bufptr );
-          end;
-         { last point in from neighbor grid }
-         if assigned( neighbor ) then
-            h := neighbor.TerrainGrid.valuexy(x * loddiv,0)
-         else
-            h := 0;
-         bufptr^ := h;
-         inc( bufptr );
-       end;
-      { last line from neighbor grid }
-      neighbor := GTileList.getNeighbor( tile, 1, 0 );
-      if assigned( neighbor ) then
-       begin
-         for y := 0 to tilesz - 1 do
-          begin
-            bufptr^ := neighbor.TerrainGrid.valuexy(0, y * loddiv );
-            inc( bufptr );
-          end;
-       end
-      else
-         inc( bufptr, tilesz );
-      { corner point from neighbor grid }
-      neighbor := GTileList.getNeighbor( tile, 1, 1 );
-      if assigned( neighbor ) then
-         bufptr^ := neighbor.TerrainGrid.valuexy( 0, 0 );
-    end;
+   buffer := BuildResultGrid( tile, resulttileinfo, LOD );
+   buflen := length( buffer );
 
    { send message + tile headers }
    SendClientMsgHeader( client, msg_Tile, buflen + sizeof( TTileHeader ));
@@ -473,7 +488,7 @@ procedure buildArea( client : TClientConnection;
       LOD : dword;
   begin
     LOD := trunc(sqrt( sqr( tx - CenterX ) + sqr( ty - CenterY )));
-    if LOD <= Rasdius then
+    if LOD <= Radius then
      begin
        if UpdateTile( Params, tx, ty, tile ) then { if the tile was created then we have to add a task to build it }
           GTaskList.AddTask( TTask_BuildTile.create( client, Tile, Params ) );
@@ -518,6 +533,20 @@ procedure buildArea( client : TClientConnection;
    aTaskList.Free;}
  end;
 
+function parseTileXY( var params : string;
+                       var TileX, TileY : integer ) : boolean;
+ var param : string;
+ begin
+   result := nextparam( params, param );
+   if result then
+    begin
+      TileX := intofstr( param );
+      result := nextparam( params, param );
+      if result then
+         TileY := intofstr( param );
+    end;
+ end;
+
 function cmdBuildTile( client : TClientConnection;
                        params : string;
                        callback : TCommandCallback) : integer;
@@ -532,25 +561,13 @@ function cmdBuildTile( client : TClientConnection;
       TileX := 0;
       TileY := 0;
       Radius := 0;
-      if nextparam( params, param ) then
-       begin
-         TileX := intofstr( param );
-         if nextparam( params, param ) then
-          begin
-            TileY := intofstr( param );
-            if nextparam( params, param ) then
-               Radius := intofstr( param );
-          end
-         else
-          begin
-            Radius := TileX;
-            TileX := 0;
-            tileY := 0;
-          end;
-       end;
+      if parsetilexy( params, tilex, tiley ) and nextparam( params, param ) then
+         Radius := intofstr( param );
       buildArea( client, TileX, TileY, Radius, tileParams, callback );
     end;
  end;
+
+
 
 initialization
   GCmdList := TCmdList.Create;

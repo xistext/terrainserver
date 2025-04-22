@@ -129,6 +129,22 @@ TYPE { never instantiated, used to typecase pointer }
 
      end;
 
+     tintgrid = class( tsinglegrid )
+
+       constructor create( initialValue : integer = 0;
+                           initialSize : dword = defaultsize );
+
+       procedure setvaluexy( x, y : dword;
+                             v : integer); overload;
+       procedure setvaluexy( x, y : dword;
+                             v : integer;
+                             var len : dword ); overload;
+       function valueix( ix : dword ) : integer;
+       function valuexy( x, y : dword ) : integer;
+
+     end;
+
+
 implementation //===============================================================
 
 //-----------------------------------
@@ -560,6 +576,52 @@ function tdepthgrid.valuexy( x, y : dword ) : single;
  begin
    result := inherited valuexy( x, y ) * iscalefactor;
  end;
+
+//-------------------------------------
+
+constructor tintgrid.create( initialValue : integer = 0;
+                             initialSize : dword = defaultsize );
+ begin
+   inherited create( initialValue );
+ end;
+
+type pinteger = ^integer;
+
+procedure tintgrid.setvaluexy( x, y : dword;
+                                 v : integer);
+ begin
+   pinteger( ptrxy( x, y ))^ := v;
+ end;
+
+
+procedure tintgrid.setvaluexy( x, y : dword;
+                                 v : integer;
+                                 var len : dword );
+ var ptr : ^integer;
+     i : dword;
+     fitlen : boolean;
+ begin
+   fitlen := x + len >= wh;
+   len := ord( not fitlen ) * len + ord( fitlen ) * ( wh - x );
+   ptr := pinteger( ptrxy( x, y ));
+   for i := len - 1 downto 0 do
+    begin
+      ptr^ := v;
+      inc( ptr );
+    end;
+ end;
+
+function tintgrid.valueix( ix : dword ) : integer;
+ begin
+   result := integer( depth^[ix] );
+ end;
+
+function tintgrid.valuexy( x, y : dword ) : integer;
+ begin
+   assert(( x < wh ) and ( y < wh ));
+   result := pinteger( ptrxy( x, y ))^;
+ end;
+
 
 end.
 

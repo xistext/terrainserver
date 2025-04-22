@@ -427,11 +427,11 @@
           "TranslationPersistent" : {
             "$$ClassName" : "TCastleVector2Persistent",
             "X" : 1.0000000000000000E+001,
-            "Y" : -7.0900006103515625E+002
+            "Y" : -7.0900000000000000E+002
           },
           "VerticalAnchorParent" : "vpTop",
           "VerticalAnchorSelf" : "vpTop",
-          "Width" : 3.0000000000000000E+002,
+          "Width" : 2.0000000000000000E+002,
           "$Children" : [
             {
               "$$ClassName" : "TCastleShape",
@@ -483,14 +483,54 @@
                 "ColorPersistent" : {
                   "$$ClassName" : "TCastleColorPersistent",
                   "Blue" : 0.0000000000000000E+000,
-                  "Green" : 0.0000000000000000E+000
+                  "Green" : 0.0000000000000000E+000,
+                  "Red" : 4.9803921580314636E-001
                 },
                 "URL" : "castle-data:/grid.png"
               },
-              "DisplayValue" : false,
+              "FontSize" : 8.0000000000000000E+000,
               "Height" : 1.0000000000000000E+001,
               "Max" : 15,
               "Name" : "RedSlider",
+              "TextColorPersistent" : {
+                "$$ClassName" : "TCastleColorPersistent",
+                "Blue" : 1.0000000000000000E+000,
+                "Green" : 1.0000000000000000E+000,
+                "Red" : 1.0000000000000000E+000
+              },
+              "Thumb" : {
+                "$$ClassName" : "TCastleImagePersistent"
+              },
+              "TranslationPersistent" : {
+                "$$ClassName" : "TCastleVector2Persistent",
+                "X" : 8.0000000000000000E+001
+              },
+              "VerticalAnchorParent" : "vpTop",
+              "VerticalAnchorSelf" : "vpTop",
+              "Width" : 1.0000000000000000E+002
+            },
+            {
+              "$$ClassName" : "TCastleIntegerSlider",
+              "Background" : {
+                "$$ClassName" : "TCastleImagePersistent",
+                "ColorPersistent" : {
+                  "$$ClassName" : "TCastleColorPersistent",
+                  "Blue" : 0.0000000000000000E+000,
+                  "Green" : 4.9803921580314636E-001,
+                  "Red" : 0.0000000000000000E+000
+                },
+                "URL" : "castle-data:/grid.png"
+              },
+              "FontSize" : 8.0000000000000000E+000,
+              "Height" : 1.0000000000000000E+001,
+              "Max" : 15,
+              "Name" : "GreenSlider",
+              "TextColorPersistent" : {
+                "$$ClassName" : "TCastleColorPersistent",
+                "Blue" : 1.0000000000000000E+000,
+                "Green" : 1.0000000000000000E+000,
+                "Red" : 1.0000000000000000E+000
+              },
               "Thumb" : {
                 "$$ClassName" : "TCastleImagePersistent"
               },
@@ -501,7 +541,7 @@
               },
               "VerticalAnchorParent" : "vpTop",
               "VerticalAnchorSelf" : "vpTop",
-              "Width" : 1.9000000000000000E+002
+              "Width" : 1.0000000000000000E+002
             },
             {
               "$$ClassName" : "TCastleIntegerSlider",
@@ -509,53 +549,33 @@
                 "$$ClassName" : "TCastleImagePersistent",
                 "ColorPersistent" : {
                   "$$ClassName" : "TCastleColorPersistent",
-                  "Blue" : 0.0000000000000000E+000,
-                  "Red" : 0.0000000000000000E+000
-                },
-                "URL" : "castle-data:/grid.png"
-              },
-              "DisplayValue" : false,
-              "Height" : 1.0000000000000000E+001,
-              "Max" : 15,
-              "Name" : "GreenSlider",
-              "Thumb" : {
-                "$$ClassName" : "TCastleImagePersistent"
-              },
-              "TranslationPersistent" : {
-                "$$ClassName" : "TCastleVector2Persistent",
-                "X" : 8.0000000000000000E+001,
-                "Y" : -1.9384147644042969E+001
-              },
-              "VerticalAnchorParent" : "vpTop",
-              "VerticalAnchorSelf" : "vpTop",
-              "Width" : 1.9000000000000000E+002
-            },
-            {
-              "$$ClassName" : "TCastleIntegerSlider",
-              "Background" : {
-                "$$ClassName" : "TCastleImagePersistent",
-                "ColorPersistent" : {
-                  "$$ClassName" : "TCastleColorPersistent",
+                  "Blue" : 4.9803921580314636E-001,
                   "Green" : 0.0000000000000000E+000,
                   "Red" : 0.0000000000000000E+000
                 },
                 "URL" : "castle-data:/grid.png"
               },
-              "DisplayValue" : false,
+              "FontSize" : 8.0000000000000000E+000,
               "Height" : 1.0000000000000000E+001,
               "Max" : 15,
               "Name" : "BlueSlider",
+              "TextColorPersistent" : {
+                "$$ClassName" : "TCastleColorPersistent",
+                "Blue" : 1.0000000000000000E+000,
+                "Green" : 1.0000000000000000E+000,
+                "Red" : 1.0000000000000000E+000
+              },
               "Thumb" : {
                 "$$ClassName" : "TCastleImagePersistent"
               },
               "TranslationPersistent" : {
                 "$$ClassName" : "TCastleVector2Persistent",
                 "X" : 8.0000000000000000E+001,
-                "Y" : -2.9384147644042969E+001
+                "Y" : -2.0000000000000000E+001
               },
               "VerticalAnchorParent" : "vpTop",
               "VerticalAnchorSelf" : "vpTop",
-              "Width" : 1.9000000000000000E+002
+              "Width" : 1.0000000000000000E+002
             },
             {
               "$$ClassName" : "TCastleIntegerSlider",
@@ -571,21 +591,27 @@
                 },
                 "URL" : "castle-data:/grid.png"
               },
-              "DisplayValue" : false,
+              "FontSize" : 8.0000000000000000E+000,
               "Height" : 1.0000000000000000E+001,
               "Max" : 15,
               "Name" : "AlphaSlider",
+              "TextColorPersistent" : {
+                "$$ClassName" : "TCastleColorPersistent",
+                "Blue" : 1.0000000000000000E+000,
+                "Green" : 1.0000000000000000E+000,
+                "Red" : 1.0000000000000000E+000
+              },
               "Thumb" : {
                 "$$ClassName" : "TCastleImagePersistent"
               },
               "TranslationPersistent" : {
                 "$$ClassName" : "TCastleVector2Persistent",
-                "X" : 8.0000022888183594E+001,
-                "Y" : -3.9384143829345703E+001
+                "X" : 8.0000000000000000E+001,
+                "Y" : -3.0000000000000000E+001
               },
               "VerticalAnchorParent" : "vpTop",
               "VerticalAnchorSelf" : "vpTop",
-              "Width" : 1.9000000000000000E+002
+              "Width" : 1.0000000000000000E+002
             }
           ]
         }

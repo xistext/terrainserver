@@ -94,48 +94,6 @@ PROCEDURE DBGDispose( S: String );
   {$endif}
  END;
 
-{---------------------------}
-{ CPU timing }
-VAR GStartLo  : DWORD;
-    GEndLo    : DWord;
-    GCPUTotal : DWord;
-    GCPUCount : DWord;
-CONST CPUOverHead : DWORD = 0;
-
-PROCEDURE StartCPUClock;
- {!!! ONLY WORKS ON TRUE PENTIUM CPU}
- BEGIN
- (*  asm { cpu timing start }
-   DB 0FH
-   DB 031H
-   mov GStartLo,eax
-   end;*)
- END;
-
-FUNCTION EndCPUClock : DWORD;
- {!!! ONLY WORKS ON TRUE PENTIUM CPU}
- BEGIN
-(*   asm { cpu timing end }
-   DB 0FH
-   DB 031H
-   mov GEndLo,eax
-   end;
-   Result := GEndLo - GStartLo - CPUOverhead;
-   INC( GCPUCount );
-   GCPUTotal := GCPUTotal + Result;*)
- END;
-
-PROCEDURE CalcCPUOverhead;
- { !!! pentium only }
- BEGIN
-   CPUOverhead := 0;
-   StartCPUClock;
-   EndCPUClock;
-   CPUOverhead := GEndLo - GStartLo;
-   GCPUTotal := 0;
-   GCPUCount := 0;
- END;
-
 INITIALIZATION
  {$ifdef viewdebug}
  AllocConsole;

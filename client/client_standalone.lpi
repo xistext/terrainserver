@@ -133,7 +133,7 @@
     </Other>
   </CompilerOptions>
   <Debugging>
-    <Exceptions Count="9">
+    <Exceptions Count="10">
       <Item1>
         <Name Value="EAbort"/>
       </Item1>
@@ -161,6 +161,9 @@
       <Item9>
         <Name Value="EIdSocketError"/>
       </Item9>
+      <Item10>
+        <Name Value="EGLSLProgramLinkError"/>
+      </Item10>
     </Exceptions>
   </Debugging>
 </CONFIG>
