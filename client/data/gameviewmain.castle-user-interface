@@ -145,7 +145,7 @@
                 "Intensity" : 5.0000000000000000E+000,
                 "Name" : "PointLight1",
                 "Pickable" : false,
-                "Radius" : 4.0000000000000000E+003,
+                "Radius" : 5.0000000000000000E+003,
                 "TranslationPersistent" : {
                   "$$ClassName" : "TCastleVector3Persistent",
                   "Y" : 2.0000000000000000E+003,
@@ -393,9 +393,9 @@
             },
             "TranslationPersistent" : {
               "$$ClassName" : "TCastleVector3Persistent",
-              "X" : -1.4264987945556641E+001,
-              "Y" : 2.5921511650085449E+000,
-              "Z" : -1.9224802017211914E+001
+              "X" : 3.1854797363281250E+001,
+              "Y" : 4.3867292404174805E+000,
+              "Z" : 3.7939834594726562E+001
             }
           },
           "InternalDesignNavigations[dnFly]" : {
@@ -412,6 +412,182 @@
             "Exists" : false,
             "Name" : ""
           }
+        },
+        {
+          "$$ClassName" : "TCastleShape",
+          "ColorPersistent" : {
+            "$$ClassName" : "TCastleColorPersistent",
+            "Alpha" : 0.0000000000000000E+000,
+            "Blue" : 0.0000000000000000E+000,
+            "Green" : 0.0000000000000000E+000,
+            "Red" : 0.0000000000000000E+000
+          },
+          "Height" : 8.0000000000000000E+001,
+          "Name" : "Shape1",
+          "TranslationPersistent" : {
+            "$$ClassName" : "TCastleVector2Persistent",
+            "X" : 1.0000000000000000E+001,
+            "Y" : -7.0900006103515625E+002
+          },
+          "VerticalAnchorParent" : "vpTop",
+          "VerticalAnchorSelf" : "vpTop",
+          "Width" : 3.0000000000000000E+002,
+          "$Children" : [
+            {
+              "$$ClassName" : "TCastleShape",
+              "ClipChildren" : true,
+              "Height" : 8.0000000000000000E+001,
+              "Name" : "Shape2",
+              "Width" : 8.0000000000000000E+001,
+              "$Children" : [
+                {
+                  "$$ClassName" : "TCastleImageControl",
+                  "ClipChildren" : true,
+                  "Content" : {
+                    "$$ClassName" : "TCastleImagePersistent",
+                    "Clip" : true,
+                    "URL" : "castle-data:/grid.png"
+                  },
+                  "FullSize" : true,
+                  "HeightFraction" : 5.0000000000000000E+001,
+                  "Name" : "ImageControl1",
+                  "ProportionalScaling" : "psEnclose",
+                  "Stretch" : true,
+                  "Width" : 5.0000000000000000E+001,
+                  "WidthFraction" : 5.0000000000000000E+001,
+                  "$Children" : [
+                    {
+                      "$$ClassName" : "TCastleShape",
+                      "ColorPersistent" : {
+                        "$$ClassName" : "TCastleColorPersistent",
+                        "Blue" : 8.0000001192092896E-001,
+                        "Green" : 9.3333333730697632E-001
+                      },
+                      "Height" : 6.0000000000000000E+001,
+                      "Name" : "ColorPreview",
+                      "TranslationPersistent" : {
+                        "$$ClassName" : "TCastleVector2Persistent",
+                        "X" : 1.0000000000000000E+001,
+                        "Y" : 1.0000000000000000E+001
+                      },
+                      "Width" : 6.0000000000000000E+001
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "$$ClassName" : "TCastleIntegerSlider",
+              "Background" : {
+                "$$ClassName" : "TCastleImagePersistent",
+                "ColorPersistent" : {
+                  "$$ClassName" : "TCastleColorPersistent",
+                  "Blue" : 0.0000000000000000E+000,
+                  "Green" : 0.0000000000000000E+000
+                },
+                "URL" : "castle-data:/grid.png"
+              },
+              "DisplayValue" : false,
+              "Height" : 1.0000000000000000E+001,
+              "Max" : 15,
+              "Name" : "RedSlider",
+              "Thumb" : {
+                "$$ClassName" : "TCastleImagePersistent"
+              },
+              "TranslationPersistent" : {
+                "$$ClassName" : "TCastleVector2Persistent",
+                "X" : 8.0000000000000000E+001,
+                "Y" : -1.0000000000000000E+001
+              },
+              "VerticalAnchorParent" : "vpTop",
+              "VerticalAnchorSelf" : "vpTop",
+              "Width" : 1.9000000000000000E+002
+            },
+            {
+              "$$ClassName" : "TCastleIntegerSlider",
+              "Background" : {
+                "$$ClassName" : "TCastleImagePersistent",
+                "ColorPersistent" : {
+                  "$$ClassName" : "TCastleColorPersistent",
+                  "Blue" : 0.0000000000000000E+000,
+                  "Red" : 0.0000000000000000E+000
+                },
+                "URL" : "castle-data:/grid.png"
+              },
+              "DisplayValue" : false,
+              "Height" : 1.0000000000000000E+001,
+              "Max" : 15,
+              "Name" : "GreenSlider",
+              "Thumb" : {
+                "$$ClassName" : "TCastleImagePersistent"
+              },
+              "TranslationPersistent" : {
+                "$$ClassName" : "TCastleVector2Persistent",
+                "X" : 8.0000000000000000E+001,
+                "Y" : -1.9384147644042969E+001
+              },
+              "VerticalAnchorParent" : "vpTop",
+              "VerticalAnchorSelf" : "vpTop",
+              "Width" : 1.9000000000000000E+002
+            },
+            {
+              "$$ClassName" : "TCastleIntegerSlider",
+              "Background" : {
+                "$$ClassName" : "TCastleImagePersistent",
+                "ColorPersistent" : {
+                  "$$ClassName" : "TCastleColorPersistent",
+                  "Green" : 0.0000000000000000E+000,
+                  "Red" : 0.0000000000000000E+000
+                },
+                "URL" : "castle-data:/grid.png"
+              },
+              "DisplayValue" : false,
+              "Height" : 1.0000000000000000E+001,
+              "Max" : 15,
+              "Name" : "BlueSlider",
+              "Thumb" : {
+                "$$ClassName" : "TCastleImagePersistent"
+              },
+              "TranslationPersistent" : {
+                "$$ClassName" : "TCastleVector2Persistent",
+                "X" : 8.0000000000000000E+001,
+                "Y" : -2.9384147644042969E+001
+              },
+              "VerticalAnchorParent" : "vpTop",
+              "VerticalAnchorSelf" : "vpTop",
+              "Width" : 1.9000000000000000E+002
+            },
+            {
+              "$$ClassName" : "TCastleIntegerSlider",
+              "Background" : {
+                "$$ClassName" : "TCastleImagePersistent",
+                "Clip" : true,
+                "ColorPersistent" : {
+                  "$$ClassName" : "TCastleColorPersistent",
+                  "Alpha" : 4.3529412150382996E-001,
+                  "Blue" : 4.3529412150382996E-001,
+                  "Green" : 4.3529412150382996E-001,
+                  "Red" : 4.3529412150382996E-001
+                },
+                "URL" : "castle-data:/grid.png"
+              },
+              "DisplayValue" : false,
+              "Height" : 1.0000000000000000E+001,
+              "Max" : 15,
+              "Name" : "AlphaSlider",
+              "Thumb" : {
+                "$$ClassName" : "TCastleImagePersistent"
+              },
+              "TranslationPersistent" : {
+                "$$ClassName" : "TCastleVector2Persistent",
+                "X" : 8.0000022888183594E+001,
+                "Y" : -3.9384143829345703E+001
+              },
+              "VerticalAnchorParent" : "vpTop",
+              "VerticalAnchorSelf" : "vpTop",
+              "Width" : 1.9000000000000000E+002
+            }
+          ]
         }
       ]
     }

@@ -48,6 +48,13 @@ type
     ButtonGrid    : TCastleButton;
     LabelGridScale : TCastleLabel;
     LabelContourScale : TCastleLabel;
+
+    ColorPreview : TCastleShape;
+    RedSlider : TCastleIntegerSlider;
+    GreenSlider : TCastleIntegerSlider;
+    BlueSlider : TCastleIntegerSlider;
+    AlphaSlider : TCastleIntegerSlider;
+
   private
     FClient: TTerClient;
     procedure HandleConnected;
@@ -59,6 +66,7 @@ type
     procedure ClickCreateClient(Sender: TObject);
     procedure ClickTest(Sender: TObject);
     procedure ClickSend(Sender: TObject);
+    procedure ColorSliderChange( sender : TObject );
   public
     constructor Create(AOwner: TComponent); override;
     procedure Start; override;
@@ -70,7 +78,6 @@ type
     function MoveAllowed(const Sender: TCastleNavigation;
                          const OldPos, ProposedNewPos: TVector3; out NewPos: TVector3;
                          const Radius: Single; const BecauseOfGravity: Boolean): boolean;
-
   end;
 
 var
@@ -97,6 +104,17 @@ begin
   ButtonGrid.OnClick := {$ifdef FPC}@{$endif} ClickTest;
   ButtonContour.OnClick := {$ifdef FPC}@{$endif} ClickTest;
   ButtonSend.OnClick := {$ifdef FPC}@{$endif} ClickSend;
+
+  RedSlider.OnChange := {$ifdef FPC}@{$endif} ColorSliderChange;
+  BlueSlider.OnChange := {$ifdef FPC}@{$endif} ColorSliderChange;
+  GreenSlider.OnChange := {$ifdef FPC}@{$endif} ColorSliderChange;
+  AlphaSlider.OnChange := {$ifdef FPC}@{$endif} ColorSliderChange;
+
+  RedSlider.Value := trunc(ColorPreview.Color.X *15);
+  GreenSlider.Value := trunc(ColorPreview.Color.Y *15);
+  BlueSlider.Value := trunc(ColorPreview.Color.Z *15);
+  AlphaSlider.Value := trunc(ColorPreview.Color.W *15);
+
   ClickCreateClient( self );
   MainNavigation.Input_Jump.Assign(keyNone);
   MainNavigation.Input_Crouch.Assign(keyNone);
@@ -242,6 +260,14 @@ procedure TViewMain.ClickSend(Sender: TObject);
 begin
   FClient.Send(EditSend.Text);
 end;
+
+procedure TViewMain.ColorSliderChange( sender : TObject );
+ var factor : single;
+ begin
+   factor := 1/15;
+   ColorPreview.Color := vector4( RedSlider.Value * factor, GreenSlider.Value * factor, BlueSlider.Value * factor, AlphaSlider.Value * factor );
+
+ end;
 
 procedure TViewMain.TerrainHeight( const pos : tvector3; var h : single );
  var atile : ttertile;
