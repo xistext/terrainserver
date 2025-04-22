@@ -46,8 +46,8 @@
         <IsPartOfProject Value="True"/>
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="5"/>
-        <TopLine Value="231"/>
-        <CursorPos X="28" Y="268"/>
+        <TopLine Value="183"/>
+        <CursorPos X="59" Y="209"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
       </Unit5>
@@ -265,7 +265,7 @@
         <UnitName Value="CastleCameras"/>
         <EditorIndex Value="1"/>
         <CursorPos X="78" Y="12"/>
-        <UsageCount Value="50"/>
+        <UsageCount Value="51"/>
         <Loaded Value="True"/>
       </Unit35>
       <Unit36>
@@ -343,7 +343,7 @@
         <EditorIndex Value="19"/>
         <TopLine Value="1045"/>
         <CursorPos X="100" Y="1082"/>
-        <UsageCount Value="30"/>
+        <UsageCount Value="31"/>
         <Loaded Value="True"/>
       </Unit45>
       <Unit46>
@@ -373,7 +373,7 @@
         <EditorIndex Value="12"/>
         <TopLine Value="57"/>
         <CursorPos X="3" Y="95"/>
-        <UsageCount Value="28"/>
+        <UsageCount Value="29"/>
         <Loaded Value="True"/>
       </Unit49>
       <Unit50>
@@ -381,7 +381,7 @@
         <UnitName Value="GameViewMain"/>
         <EditorIndex Value="11"/>
         <CursorPos X="50" Y="21"/>
-        <UsageCount Value="28"/>
+        <UsageCount Value="29"/>
         <Loaded Value="True"/>
       </Unit50>
       <Unit51>

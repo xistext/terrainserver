@@ -46,8 +46,8 @@
         <IsPartOfProject Value="True"/>
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="5"/>
-        <TopLine Value="232"/>
-        <CursorPos X="31" Y="268"/>
+        <TopLine Value="231"/>
+        <CursorPos X="28" Y="268"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
       </Unit5>
@@ -537,7 +537,7 @@
       </Position29>
       <Position30>
         <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="268" Column="30" TopLine="213"/>
+        <Caret Line="268" Column="31" TopLine="232"/>
       </Position30>
     </JumpHistory>
     <RunParams>
