@@ -368,8 +368,8 @@
         <Filename Value="data\terrain\textures\terrain.fs"/>
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="76"/>
-        <CursorPos X="31" Y="201"/>
+        <TopLine Value="38"/>
+        <CursorPos X="77" Y="77"/>
         <UsageCount Value="11"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="C++"/>

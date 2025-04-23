@@ -74,13 +74,12 @@ void drawgrid( inout vec3 terrain_color, vec2 uv )
    if ( !doline )
     { grid_liner = 0.015 * grid_scale;
       g = uv * grid_scale;
-      doline = ( absroundfract( g.x ) < grid_liner ) || ( absroundfract( g.x ) < grid_liner );
-      gcolor = grid10_color;
+      doline = ( absroundfract( g.x ) < grid_liner ) || ( absroundfract( g.y ) < grid_liner );
+      gcolor = grid_color;
      }
    if ( doline )
     { terrain_color = mix( terrain_color, gcolor.rgb, gcolor.a ); }
   }
-
 
 void drawcontourline( inout vec3 terrain_color,
                       float h )

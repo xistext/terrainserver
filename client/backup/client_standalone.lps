@@ -30,7 +30,7 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="GameViewMain"/>
         <TopLine Value="380"/>
-        <CursorPos X="81" Y="403"/>
+        <CursorPos X="28" Y="403"/>
         <UsageCount Value="203"/>
         <Loaded Value="True"/>
       </Unit3>
@@ -38,7 +38,7 @@
         <Filename Value="code\terrainshader.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="9"/>
-        <CursorPos X="23" Y="8"/>
+        <CursorPos X="15" Y="8"/>
         <UsageCount Value="201"/>
         <Loaded Value="True"/>
       </Unit4>
@@ -75,8 +75,8 @@
         <Filename Value="..\commoncode\castleclientserver.pas"/>
         <UnitName Value="CastleClientServer"/>
         <EditorIndex Value="3"/>
-        <TopLine Value="95"/>
-        <CursorPos X="51" Y="237"/>
+        <TopLine Value="163"/>
+        <CursorPos X="15" Y="237"/>
         <UsageCount Value="102"/>
         <Loaded Value="True"/>
       </Unit9>
@@ -104,7 +104,7 @@
         <Filename Value="terrainclient.pas"/>
         <UnitName Value="TerrainClient"/>
         <EditorIndex Value="1"/>
-        <CursorPos X="80" Y="10"/>
+        <CursorPos X="18" Y="10"/>
         <UsageCount Value="110"/>
         <Loaded Value="True"/>
       </Unit13>
@@ -113,7 +113,7 @@
         <UnitName Value="TerrainData"/>
         <EditorIndex Value="4"/>
         <TopLine Value="38"/>
-        <CursorPos X="23" Y="38"/>
+        <CursorPos Y="38"/>
         <UsageCount Value="107"/>
         <Loaded Value="True"/>
       </Unit14>
@@ -269,7 +269,7 @@
         <UnitName Value="CastleTerrain"/>
         <EditorIndex Value="8"/>
         <TopLine Value="1592"/>
-        <CursorPos X="121" Y="1603"/>
+        <CursorPos X="55" Y="1603"/>
         <UsageCount Value="74"/>
         <Loaded Value="True"/>
       </Unit36>
@@ -368,10 +368,11 @@
         <Filename Value="data\terrain\textures\terrain.fs"/>
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
-        <CursorPos X="22" Y="38"/>
+        <TopLine Value="38"/>
+        <CursorPos X="20" Y="78"/>
         <UsageCount Value="11"/>
         <Loaded Value="True"/>
-        <DefaultSyntaxHighlighter Value="None"/>
+        <DefaultSyntaxHighlighter Value="C++"/>
       </Unit50>
     </Units>
     <JumpHistory Count="29" HistoryIndex="28">
