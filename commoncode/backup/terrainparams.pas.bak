@@ -8,10 +8,10 @@ uses classes, collect, sysutils,
 const buildradius : integer = 4; //4
       disablewater : boolean = false;
 
-      GDefGridCellCount : integer = 100;
-      GDefGridStep : single = 0.5;
+      GDefGridCellCount : integer = 120;
+      GDefGridStep : single = 0.1;
 
-      GSteepEmphasis : single = 10;
+    //  GSteepEmphasis : single = 10;
       GTerrainSeed   : integer = 0;
          (*
 const transitionsize = 20; { how many base grid cells to use as transition zone

@@ -40,6 +40,7 @@ type
     VerticalGroup2 : TCastleVerticalGroup;
     ConnectedIndicator : TCastleShape;
     ClientsLabel : TCastleLabel;
+    TilesLabel : TCastleLabel;
   private
     FServer: TCastleTCPServer;
     procedure HandleConnected(AClient: TClientConnection);
@@ -102,6 +103,7 @@ procedure TViewMain.Update(const SecondsPassed: Single; var HandleInput: Boolean
  begin
   inherited;
   { This virtual method is executed every frame (many times per second). }
+  TilesLabel.Caption := IntToStr( GTileList.Count )+' tiles';
   connected := FServer <> nil;
   if ord( connected ) <> connectstatus then
    begin

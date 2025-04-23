@@ -11,7 +11,7 @@ const buildradius : integer = 4; //4
       GDefGridCellCount : integer = 120;
       GDefGridStep : single = 0.5;
 
-      GSteepEmphasis : single = 10;
+    //  GSteepEmphasis : single = 10;
       GTerrainSeed   : integer = 0;
          (*
 const transitionsize = 20; { how many base grid cells to use as transition zone

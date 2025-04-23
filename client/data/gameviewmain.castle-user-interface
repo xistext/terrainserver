@@ -448,6 +448,7 @@
                   "Content" : {
                     "$$ClassName" : "TCastleImagePersistent",
                     "Clip" : true,
+                    "SmoothScaling" : false,
                     "URL" : "castle-data:/grid.png"
                   },
                   "FullSize" : true,

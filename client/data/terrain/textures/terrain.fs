@@ -42,6 +42,24 @@ int contour_mode = 1;
 vec4 castle_texture_color_to_linear(const in vec4 srgbIn);
 #endif
 
+vec3 rgb2hsv(vec3 c)
+{
+    vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
+    vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));
+    vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));
+
+    float d = q.x - min(q.w, q.y);
+    float e = 1.0e-10;
+    return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
+}
+
+vec3 hsv2rgb(vec3 c)
+{
+    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+}
+
 float factor = 1.0/15.0;
 
 vec4 decodecolor( int c, out int texid, out float texalpha )
@@ -76,9 +94,9 @@ void drawgrid( inout vec3 terrain_color, vec2 uv )
       g = uv * grid_scale;
       doline = ( absroundfract( g.x ) < grid_liner ) || ( absroundfract( g.y ) < grid_liner );
       gcolor = grid_color;
+      gcolor.a = gcolor.a * int( doline );
      }
-   if ( doline )
-    { terrain_color = mix( terrain_color, gcolor.rgb, gcolor.a ); }
+   terrain_color = mix( terrain_color, gcolor.rgb, gcolor.a );
   }
 
 void drawcontourline( inout vec3 terrain_color,
@@ -97,7 +115,13 @@ void drawcontourstripe( inout vec3 terrain_color,
  {
    float gy = h * contour_scale;
    if ( int( floor( mod( gy, 2 ))) == 1 )
-      { terrain_color = mix( terrain_color, contour_color.rgb, 0.2 ); }
+      {
+        //terrain_color = mix( terrain_color, contour_color.rgb, 0.2 );
+        vec3 hsv = rgb2hsv( terrain_color );
+        //hsv.y = 1 - ( 1 - hsv.y ) / 2;
+        hsv.y = hsv.y * 0.5;
+        terrain_color = hsv2rgb( hsv );
+        }
   }
 
 void PLUG_main_texture_apply(inout vec4 fragment_color, const in vec3 normal)
@@ -127,12 +151,12 @@ void PLUG_main_texture_apply(inout vec4 fragment_color, const in vec3 normal)
   vec3 modified_color = mix(steep_color, flat_color, pow(normal_slope, steep_emphasize));
   vec3 terrain_color = mix(fragment_color.rgb, modified_color, layers_influence);
 
-  int texid = 0;
-  float texalpha = 0.0;
-  
-  // splat map 
-  if ( splat_sz > 0 ) {
-     float dim = 120/splat_sz; 
+  // splat map
+  if ( splat_sz > 0 )
+   {
+     int texid = 0;
+     float texalpha = 0;
+     float dim = 120/splat_sz;
      float idim = 1/dim;
      vec2 splatpos = vec2( uv.x, uv.y ) * idim;
      // calculate 2d index into splatmap
@@ -149,36 +173,40 @@ void PLUG_main_texture_apply(inout vec4 fragment_color, const in vec3 normal)
      if ( blur )
       {
 	vec2 posincell = vec2( mod(uv.x, dim), mod( uv.y, dim )) * idim;
-	float shadepct = 0.50;
+	float shadepct = 0.33;
 	float ishadepct = 1/shadepct;
 	if (( ax < splat_sz - 1 ) && ( posincell.x > ( 1 - shadepct )))
 	 {
-           vec4 c1 = getsplatcolor( ax + 1, ay );
-  	   float alpha1 = c1.a/2 * ( posincell.x - ( 1 - shadepct )) * ishadepct;
-           splatcolor = mix( splatcolor, c1.rgb, alpha1);
+           vec4 c1 = getsplatcolor( ax + 1, ay, texid, texalpha );
+  	   float alpha1 = c1.a * ( posincell.x - ( 1 - shadepct )) * ishadepct;
+           splatcolor = mix( splatcolor, tex[texid], texalpha * 0.5 );
+           splatcolor = mix( splatcolor, c1.rgb, alpha1 * 0.5 );
 	  }
 	if (( ax > 0 ) && ( posincell.x < shadepct ))
 	 {
-            vec4 c1 = getsplatcolor( ax - 1, ay );
-  	    float alpha1 = c1.a/2 * (shadepct - posincell.x ) * ishadepct;
-            splatcolor = mix( splatcolor, c1.rgb, alpha1 );
+            vec4 c1 = getsplatcolor( ax - 1, ay, texid, texalpha );
+  	    float alpha1 = c1.a * (shadepct - posincell.x ) * ishadepct;
+            splatcolor = mix( splatcolor, tex[texid], texalpha * 0.5 );
+            splatcolor = mix( splatcolor, c1.rgb, alpha1 * 0.5 );
 	  }
-	 
 	if (( ay < splat_sz - 1 ) && ( posincell.y > ( 1 - shadepct )))
-	 { vec4 c1 = getsplatcolor( ax, ay + 1 );
-  	   float alpha1 = c1.a/2 * ( posincell.y - ( 1 - shadepct )) * ishadepct;
-           splatcolor = mix( splatcolor, c1.rgb, alpha1 );
+	 {
+           vec4 c1 = getsplatcolor( ax, ay + 1, texid, texalpha );
+  	   float alpha1 = c1.a * ( posincell.y - ( 1 - shadepct )) * ishadepct;
+           splatcolor = mix( splatcolor, tex[texid], texalpha * 0.5 );
+           splatcolor = mix( splatcolor, c1.rgb, alpha1 * 0.5 );
 	  }
-
         if (( ay > 0 ) && ( posincell.y < shadepct ))
-	 { vec4 c1 = getsplatcolor( ax, ay - 1 );
-  	   float alpha1 = c1.a/2 * (shadepct - posincell.y ) * ishadepct;
-           splatcolor = mix( splatcolor, c1.rgb, alpha1 );
+	 {
+           vec4 c1 = getsplatcolor( ax, ay - 1, texid, texalpha );
+  	   float alpha1 = c1.a * (shadepct - posincell.y ) * ishadepct;
+           splatcolor = mix( splatcolor, tex[texid], texalpha * 0.5 );
+           splatcolor = mix( splatcolor, c1.rgb, alpha1* 0.5 );
 	  }
 	   /*
 	 if (( ax < splat_sz - 1 ) && ( ay < splat_sz - 1 ) && ( posincell.y > ( 1 - shadepct )) && ( posincell.x > ( 1 - shadepct )))
 	  { vec4 c1 = getsplatcolor( ax + 1, ay + 1 );
-  	    float alpha1 = alpha1/2 * ( posincell.y - ( 1 - shadepct )) * ishadepct * ( posincell.x - ( 1 - shadepct )) * ishadepct;
+  	    float alpha1 = alpha1 * 0.5 * ( posincell.y - ( 1 - shadepct )) * ishadepct * ( posincell.x - ( 1 - shadepct )) * ishadepct;
 		splatcolor = mix( splatcolor, c1.rgb, alpha1 );
 	   } 
 	 
@@ -195,7 +223,7 @@ void PLUG_main_texture_apply(inout vec4 fragment_color, const in vec3 normal)
 		splatcolor = mix( splatcolor, c1.rgb, alpha1 );
 	   } 
 	 	 
-         if (( ax > 0 ) && ( ay > 0 ) && ( posincell.y <  shadepct ) && ( posincell.x > ( 1 - shadepct )))
+      if (( ax > 0 ) && ( ay > 0 ) && ( posincell.y <  shadepct ) && ( posincell.x > ( 1 - shadepct )))
 	  { vec4 c1 = getsplatcolor( ax - 1, ax + 1 ));
   	    float alpha1 = c1.a/2 * ( shadepct - posincell.y ) * ishadepct * ( posincell.x - ( 1 - shadepct )) * ishadepct;
 		splatcolor = mix( splatcolor, c1.rgb, alpha1 );
