@@ -194,6 +194,7 @@ function TAbstractMesh.ElevationAtPos( Pos : TVector2;
       result := ElevationAtPos_InternalRayCollision( Pos, Elev )
    else
     begin
+      {!!! why doesn't this work on anything but the center tile?!?!?}
       result := false;
       IndexedTriangleSetNode := TIndexedTriangleSetNode( rootnode.FindNode( TIndexedTriangleSetNode, false ));
       Coord := TCoordinateNode( IndexedTriangleSetNode.Coord );

@@ -35,14 +35,17 @@ uniform float steep_emphasize;
 varying vec3 terrain_position;
 varying vec3 terrain_normal;
 
+int contour_mode = 1;
+
 // avoid redeclaring when no "separate compilation units" available (OpenGLES)
 #ifndef GL_ES
 vec4 castle_texture_color_to_linear(const in vec4 srgbIn);
 #endif
 
+float factor = 1.0/15.0;
+
 vec4 decodecolor( int c, out int texid, out float texalpha )
- { float factor = 1.0/15.0;
-   texid = ( c >> 16 ) & 15;
+ { texid = ( c >> 16 ) & 15;
    texalpha = (( c >> 20 ) & 15 ) * factor;
    return vec4( c & 15, ( c >> 4 ) & 15, ( c >> 8 ) & 15, ( c >> 12 ) & 15 ) * factor; 
   }
@@ -56,7 +59,48 @@ vec4 getsplatcolor( int ax, int ay )
  { int texid;
    float texalpha;  
    return decodecolor( splatmap[( ax * splat_sz ) + ay], texid, texalpha ); }
- 
+
+float absroundfract( float v )
+ { return abs( v - round( v )); }
+
+void drawgrid( inout vec3 terrain_color, vec2 uv )
+ {
+   float grid10_scale = grid_scale * 0.1;
+   float grid_liner = 0.015 * grid10_scale;
+   vec2 g = uv * grid10_scale;
+   vec4 gcolor = grid10_color;
+
+   bool doline = ( absroundfract( g.x ) < grid_liner ) || ( absroundfract( g.y ) < grid_liner );
+   if ( !doline )
+    { grid_liner = 0.015 * grid_scale;
+      g = uv * grid_scale;
+      doline = ( absroundfract( g.x ) < grid_liner ) || ( absroundfract( g.x ) < grid_liner );
+      gcolor = grid10_color;
+     }
+   if ( doline )
+    { terrain_color = mix( terrain_color, gcolor.rgb, gcolor.a ); }
+  }
+
+
+void drawcontourline( inout vec3 terrain_color,
+                      float h )
+ {
+   float gy = h * contour_scale;
+   float grid_Posy = absroundfract( gy );
+   float contour_liner = 0.02 * contour_scale;
+   if ( grid_Posy < contour_liner ) {
+      terrain_color = mix( terrain_color, contour_color.rgb, ( 1 - grid_Posy / contour_liner ) * contour_color.a );
+    }
+  }
+
+void drawcontourstripe( inout vec3 terrain_color,
+                        float h )
+ {
+   float gy = h * contour_scale;
+   if ( int( floor( mod( gy, 2 ))) == 1 )
+      { terrain_color = mix( terrain_color, contour_color.rgb, 0.2 ); }
+  }
+
 void PLUG_main_texture_apply(inout vec4 fragment_color, const in vec3 normal)
 {
   float h = terrain_position.y;
@@ -74,11 +118,9 @@ void PLUG_main_texture_apply(inout vec4 fragment_color, const in vec3 normal)
   // terrain textures
   vec3 tex[4] = vec3[4]( castle_texture_color_to_linear(texture2D(tex_1, uv * uv_scale.x)).rgb,
                          castle_texture_color_to_linear(texture2D(tex_2, uv * uv_scale.y)).rgb,
-  					     castle_texture_color_to_linear(texture2D(tex_3, uv * uv_scale.z)).rgb,
-				   	     castle_texture_color_to_linear(texture2D(tex_4, uv * uv_scale.w)).rgb  );
-  //!!! add tex index to the encoded palette entry integer
-  
-  
+  			 castle_texture_color_to_linear(texture2D(tex_3, uv * uv_scale.z)).rgb,
+			 castle_texture_color_to_linear(texture2D(tex_4, uv * uv_scale.w)).rgb  );
+
   // default castle terrain mixing calculation
   float height_mix = smoothstep(height_1, height_2, h);
   vec3 flat_color = mix(tex[0].rgb, tex[2].rgb, height_mix);
@@ -92,46 +134,48 @@ void PLUG_main_texture_apply(inout vec4 fragment_color, const in vec3 normal)
   // splat map 
   if ( splat_sz > 0 ) {
      float dim = 120/splat_sz; 
-	 float idim = 1/dim;
-	 vec2 splatpos = vec2( uv.x, uv.y ) * idim;
-	 // calculate 2d index into splatmap
+     float idim = 1/dim;
+     vec2 splatpos = vec2( uv.x, uv.y ) * idim;
+     // calculate 2d index into splatmap
      int ax = int( floor( mod( splatpos.x, splat_sz )));
      int ay = int( floor( mod( splatpos.y, splat_sz )));
      vec4 c = getsplatcolor( ax, ay, texid, texalpha );
-	 vec3 splatcolor = c.rgb;
-	 float alpha = c.a;
-	 if ( texalpha > 0 )
-	  { splatcolor = mix( tex[texid], splatcolor, alpha ); 
-	    alpha = texalpha; 	 
-	   }
+     vec3 splatcolor = c.rgb;
+     float alpha = c.a;
+     if ( texalpha > 0 )
+      { splatcolor = mix( tex[texid], splatcolor, alpha );
+        alpha = texalpha;
+       }
 
      if ( blur )
-	  {
-	 vec2 posincell = vec2( mod(uv.x, dim), mod( uv.y, dim )) * idim;
-	 float shadepct = 0.50;
-	 float ishadepct = 1/shadepct;
-	 if (( ax < splat_sz - 1 ) && ( posincell.x > ( 1 - shadepct )))
-	  { vec4 c1 = getsplatcolor( ax + 1, ay );
-  	    float alpha1 = c1.a/2 * ( posincell.x - ( 1 - shadepct )) * ishadepct;
-        splatcolor = mix( splatcolor, c1.rgb, alpha1);
-	   } 
-	 if (( ax > 0 ) && ( posincell.x < shadepct ))
-	  { vec4 c1 = getsplatcolor( ax - 1, ay );
+      {
+	vec2 posincell = vec2( mod(uv.x, dim), mod( uv.y, dim )) * idim;
+	float shadepct = 0.50;
+	float ishadepct = 1/shadepct;
+	if (( ax < splat_sz - 1 ) && ( posincell.x > ( 1 - shadepct )))
+	 {
+           vec4 c1 = getsplatcolor( ax + 1, ay );
+  	   float alpha1 = c1.a/2 * ( posincell.x - ( 1 - shadepct )) * ishadepct;
+           splatcolor = mix( splatcolor, c1.rgb, alpha1);
+	  }
+	if (( ax > 0 ) && ( posincell.x < shadepct ))
+	 {
+            vec4 c1 = getsplatcolor( ax - 1, ay );
   	    float alpha1 = c1.a/2 * (shadepct - posincell.x ) * ishadepct;
-        splatcolor = mix( splatcolor, c1.rgb, alpha1 );
-	   } 
+            splatcolor = mix( splatcolor, c1.rgb, alpha1 );
+	  }
 	 
-	 if (( ay < splat_sz - 1 ) && ( posincell.y > ( 1 - shadepct )))
-	  { vec4 c1 = getsplatcolor( ax, ay + 1 );
-  	    float alpha1 = c1.a/2 * ( posincell.y - ( 1 - shadepct )) * ishadepct;
-        splatcolor = mix( splatcolor, c1.rgb, alpha1 );
-	   } 
+	if (( ay < splat_sz - 1 ) && ( posincell.y > ( 1 - shadepct )))
+	 { vec4 c1 = getsplatcolor( ax, ay + 1 );
+  	   float alpha1 = c1.a/2 * ( posincell.y - ( 1 - shadepct )) * ishadepct;
+           splatcolor = mix( splatcolor, c1.rgb, alpha1 );
+	  }
 
-     if (( ay > 0 ) && ( posincell.y < shadepct ))
-	  { vec4 c1 = getsplatcolor( ax, ay - 1 );
-  	    float alpha1 = c1.a/2 * (shadepct - posincell.y ) * ishadepct;
-        splatcolor = mix( splatcolor, c1.rgb, alpha1 );
-	   } 
+        if (( ay > 0 ) && ( posincell.y < shadepct ))
+	 { vec4 c1 = getsplatcolor( ax, ay - 1 );
+  	   float alpha1 = c1.a/2 * (shadepct - posincell.y ) * ishadepct;
+           splatcolor = mix( splatcolor, c1.rgb, alpha1 );
+	  }
 	   /*
 	 if (( ax < splat_sz - 1 ) && ( ay < splat_sz - 1 ) && ( posincell.y > ( 1 - shadepct )) && ( posincell.x > ( 1 - shadepct )))
 	  { vec4 c1 = getsplatcolor( ax + 1, ay + 1 );
@@ -152,7 +196,7 @@ void PLUG_main_texture_apply(inout vec4 fragment_color, const in vec3 normal)
 		splatcolor = mix( splatcolor, c1.rgb, alpha1 );
 	   } 
 	 	 
-    if (( ax > 0 ) && ( ay > 0 ) && ( posincell.y <  shadepct ) && ( posincell.x > ( 1 - shadepct )))
+         if (( ax > 0 ) && ( ay > 0 ) && ( posincell.y <  shadepct ) && ( posincell.x > ( 1 - shadepct )))
 	  { vec4 c1 = getsplatcolor( ax - 1, ax + 1 ));
   	    float alpha1 = c1.a/2 * ( shadepct - posincell.y ) * ishadepct * ( posincell.x - ( 1 - shadepct )) * ishadepct;
 		splatcolor = mix( splatcolor, c1.rgb, alpha1 );
@@ -165,35 +209,18 @@ void PLUG_main_texture_apply(inout vec4 fragment_color, const in vec3 normal)
 	
   // grid
   if ( grid_scale > 0 )
-   { float grid10_scale = grid_scale * 0.1;
-	 float grid_liner = 0.015 * grid10_scale;
-	 vec2 g = uv * grid10_scale;
-	 vec4 gcolor = grid10_color;
-	 // major red line
-	 bool doline = (( abs( g.x - round( g.x )) < grid_liner ) || ( abs( g.y - round( g.y )) < grid_liner ));
-	 if ( !doline )
-      { grid_liner = 0.015 * grid_scale; 
-   	    g = uv * grid_scale;
-	    doline = (( abs( g.x - round( g.x )) < grid_liner ) || ( abs( g.y - round( g.y )) < grid_liner ));
-	   }  
-	 if ( doline )  
-	   { terrain_color = mix( terrain_color, grid_color.rgb, grid_color.a ); }
-    }
-  // contouro	
+   { drawgrid( terrain_color, uv ); }
+
+  // contour
   if ( contour_scale > 0 )
-   { 
-     float gy = terrain_position.y * contour_scale;
-	 float grid_Posy = abs( gy - round( gy )); 
-     float contour_liner = 0.02 * contour_scale; 
-    /* if ( grid_Posy < contour_liner ) 
-      { terrain_color = mix( terrain_color, contour_color.rgb, ( 1 - grid_Posy / contour_liner ) * contour_color.a ); }
-	 else*/
-     if ( int( floor( mod( gy, 2 )))== 1 ) 
-      { terrain_color = mix( terrain_color, contour_color.rgb, 0.2 ); }
-      	 
-   }	  
-  
-  fragment_color.rgb = terrain_color; 
+   { switch ( contour_mode ) {
+       case 0 : drawcontourline( terrain_color, h );
+                break;
+       case 1 : drawcontourstripe( terrain_color, h );
+                break;
+    }
+  }	
+  fragment_color.rgb = terrain_color;
 }
 
 void PLUG_material_metallic_roughness(inout float metallic_final, inout float roughness_final)
