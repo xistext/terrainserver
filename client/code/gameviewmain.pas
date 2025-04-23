@@ -78,6 +78,7 @@ type
     function MoveAllowed(const Sender: TCastleNavigation;
                          const OldPos, ProposedNewPos: TVector3; out NewPos: TVector3;
                          const Radius: Single; const BecauseOfGravity: Boolean): boolean;
+    procedure HandleMotion(const Sender: TCastleUserInterface; const Event: TInputMotion; var Handled: Boolean);
   end;
 
 var
@@ -114,6 +115,8 @@ begin
   GreenSlider.Value := trunc(ColorPreview.Color.Y *15);
   BlueSlider.Value := trunc(ColorPreview.Color.Z *15);
   AlphaSlider.Value := trunc(ColorPreview.Color.W *15);
+
+  Viewport1.OnMotion := {$ifdef FPC}@{$endif} HandleMotion;
 
   ClickCreateClient( self );
   MainNavigation.Input_Jump.Assign(keyNone);
@@ -301,6 +304,37 @@ function TViewMain.MoveAllowed(const Sender: TCastleNavigation;
    if h - radius < Terrainh then
       NewPos := Vector3(ProposedNewPos.X, TerrainH + radius, ProposedNewPos.Z );
    result := true;
+ end;
+
+procedure TViewMain.HandleMotion(const Sender: TCastleUserInterface;
+                                 const Event: TInputMotion;
+                                 var Handled: Boolean);
+ var rayitems : TRayCollision;
+     node : TRayCollisionNode;
+     c, i : integer;
+     ItemHit : TCastleTransform;
+     TerMesh : TTerrainMesh;
+     tri : TTriangle;
+ begin
+   rayitems := Viewport1.MouseRayHit;
+   if assigned( rayitems ) then
+     begin
+      c := RayItems.Count;
+      for i := c - 1 downto 0 do
+       begin
+         node := RayItems[i];
+         ItemHit := node.Item;
+         if ItemHit is TTerrainMesh then
+          begin
+            TerMesh := TTerrainMesh( ItemHit );
+            tri := node.triangle;
+
+//             poslabel.Caption := Format( '(%f, %f) %f' , [node.Point.X, node.point.z, node.point.y] );
+
+            break;
+          end;
+       end;
+     end;
  end;
 
 procedure TViewMain.Mousewheel( direction : integer );

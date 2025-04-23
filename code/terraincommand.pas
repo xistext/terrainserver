@@ -271,48 +271,41 @@ constructor TTask_SendTile.create( const iClient : TClientConnection;
 function BuildResultGrid( tile : ttertile;
                           const resultinfo : TTileHeader;
                           LOD : dword) : TIdBytes;
- var buflen, x, y, tilesz, LODDiv : integer;
+ var tilesz, LODDiv : integer;
      buffer : TIdBytes;
      TerGrid : TSingleGrid;
      bufptr : ^single;
-     h : single;
      neighbor : TTerTile;
- begin
-   loddiv := divOfLOD( LOD );
-    buflen := resultinfo.tilesz * resultinfo.tilesz * sizeof( single ) ;
-    tilesz := Tile.info.tilesz div loddiv;
-
-    TerGrid := Tile.TerrainGrid;
-    setlength( buffer, buflen );
-    bufptr := @buffer[0];
-    neighbor := GTileList.getneighbor( tile, 0, 1 );
-    h := 0;
-    if loddiv = 1 then { full resolution }
-     begin
-       for x := 0 to tilesz - 1 do
-        begin
-          move( TerGrid.ptrxy(x,0)^, bufptr^, tilesz * sizeof( single ));
-          { last point in line }
-          if assigned( neighbor ) then
-             h := neighbor.TerrainGrid.valuexy(x,0)
-          else
-             h := 0;
-          inc( bufptr, tilesz );
-          bufptr^ := h;
-          inc( bufptr );
-        end;
-       { last row }
-       neighbor := GTileList.getNeighbor( tile, 1, 0 );
-       if assigned( neighbor ) then
-          move( neighbor.TerrainGrid.ptrxy(0,0)^, bufptr^, tilesz * sizeof( single ));
-       inc( bufptr, tilesz );
-       neighbor := GTileList.getNeighbor( tile, 1, 1 );
-       if assigned( neighbor ) then
-          bufptr^ := neighbor.TerrainGrid.valuexy( 0, 0 );
-     end
-    else
-     begin { reduced sample }
-       for x := 0 to tilesz - 1 do
+  procedure fullresolutionsample;
+   var x, y : integer;
+       h : single;
+   begin
+     for x := 0 to tilesz - 1 do
+      begin
+        move( TerGrid.ptrxy(x,0)^, bufptr^, tilesz * sizeof( single ));
+        { last point in line }
+        if assigned( neighbor ) then
+           h := neighbor.TerrainGrid.valuexy(x,0)
+        else
+           h := 0;
+        inc( bufptr, tilesz );
+        bufptr^ := h;
+        inc( bufptr );
+      end;
+     { last row }
+     neighbor := GTileList.getNeighbor( tile, 1, 0 );
+     if assigned( neighbor ) then
+        move( neighbor.TerrainGrid.ptrxy(0,0)^, bufptr^, tilesz * sizeof( single ));
+     inc( bufptr, tilesz );
+     neighbor := GTileList.getNeighbor( tile, 1, 1 );
+     if assigned( neighbor ) then
+        bufptr^ := neighbor.TerrainGrid.valuexy( 0, 0 );
+   end;
+  procedure reducedresolutionsample;
+   var x, y : integer;
+       h : single;
+   begin
+      for x := 0 to tilesz - 1 do
         begin
           for y := 0 to tilesz - 1 do
            begin
@@ -344,7 +337,21 @@ function BuildResultGrid( tile : ttertile;
        neighbor := GTileList.getNeighbor( tile, 1, 1 );
        if assigned( neighbor ) then
           bufptr^ := neighbor.TerrainGrid.valuexy( 0, 0 );
-    end;
+   end;
+ var buflen : integer;
+ begin
+   loddiv := divOfLOD( LOD );
+    buflen := resultinfo.tilesz * resultinfo.tilesz * sizeof( single ) ;
+    tilesz := Tile.info.tilesz div loddiv;
+
+    TerGrid := Tile.TerrainGrid;
+    setlength( buffer, buflen );
+    bufptr := @buffer[0];
+    neighbor := GTileList.getneighbor( tile, 0, 1 );
+    if loddiv = 1 then { full resolution }
+       fullresolutionsample
+    else
+       reducedresolutionsample;
    result := buffer;
  end;
 

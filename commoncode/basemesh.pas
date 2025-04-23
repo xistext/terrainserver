@@ -4,8 +4,8 @@ interface
 
 uses
   Classes, SysUtils,
-  CastleUtils, CastleVectors, CastleScene, CastleTriangles,
-  x3dNodes;
+  CastleUtils, CastleVectors, CastleTransform, CastleScene, CastleTriangles,
+  x3dNodes, debug;
 
 type
 
@@ -133,7 +133,7 @@ function TAbstractMesh.CoordinateNode : TCoordinateNode;
 
 function TAbstractMesh.ElevationAtPos( Pos : TVector2;
                                        var Elev : single ) : boolean;
-   function checkpoint( const p : tvector3 ) : boolean;
+(*   function checkpoint( const p : tvector3 ) : boolean;
     const zero : single = 0.01;
     begin
       result := (abs( p.x - pos.x )<=zero) and (abs( p.z -pos.y )<=zero);
@@ -156,14 +156,34 @@ function TAbstractMesh.ElevationAtPos( Pos : TVector2;
          if result then
             elev := Intersection.y;
        end;
-    end;
- var IndexedTriangleSetNode : TIndexedTriangleSetNode;
+    end;*)
+ var (*IndexedTriangleSetNode : TIndexedTriangleSetNode;
      ix : integer;
      p0, p1, p2 : tvector3;
-     Coord : TCoordinateNode;
+     Coord : TCoordinateNode;*)
+     Collision : TRayCollision;
+     i : integer;
+
  begin
    elev := 0;
    result := false;
+
+   collision := self.InternalRayCollision( vector3( pos.x, 100, pos.y ), vector3( 0, -1, 0 ));
+   result := assigned( collision );
+    if result then
+      begin
+        for i := 0 to collision.count - 1 do with collision[i] do
+         begin
+           if item = self then
+            begin
+              elev := Point.Y;
+              break;
+            end;
+         end;
+        collision.free;
+    end;
+
+(*
    IndexedTriangleSetNode := TIndexedTriangleSetNode( rootnode.FindNode( TIndexedTriangleSetNode, false ));
    Coord := TCoordinateNode( IndexedTriangleSetNode.Coord );
    ix := 0;
@@ -181,7 +201,7 @@ function TAbstractMesh.ElevationAtPos( Pos : TVector2;
                 checktriangle( Triangle3( p0, p1, p2 ));
       if result then
          exit;
-    end;
+    end;*)
 
  end;
 
