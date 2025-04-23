@@ -50,6 +50,11 @@ TAbstractMesh = class( TCastleScene )
    function ElevationAtPos( Pos : TVector2;
                             var Elev : single ) : boolean;
 
+   private
+
+   function ElevationAtPos_InternalRayCollision( pos  : TVector2;
+                                                 var Elev : single ) : boolean;
+
  end;
 
 TAbstractTextureMesh = class( TAbstractMesh )
@@ -131,9 +136,31 @@ function TAbstractMesh.CoordinateNode : TCoordinateNode;
    result := fCoordinateNode;
  end;
 
+
+function TAbstractMesh.ElevationAtPos_InternalRayCollision( pos  : TVector2;
+                                                            var Elev : single ) : boolean;
+ var Collision : TRayCollision;
+     i : integer;
+ begin
+   collision := InternalRayCollision( vector3( pos.x, 100, pos.y ), vector3( 0, -1, 0 ));
+   result := assigned( collision );
+   if result then
+     begin
+       for i := 0 to collision.count - 1 do with collision[i] do
+        begin
+          if item = self then
+           begin
+             elev := Point.Y;
+             break;
+           end;
+        end;
+       collision.free;
+    end;
+ end;
+
 function TAbstractMesh.ElevationAtPos( Pos : TVector2;
                                        var Elev : single ) : boolean;
-(*   function checkpoint( const p : tvector3 ) : boolean;
+   function checkpoint( const p : tvector3 ) : boolean;
     const zero : single = 0.01;
     begin
       result := (abs( p.x - pos.x )<=zero) and (abs( p.z -pos.y )<=zero);
@@ -156,53 +183,37 @@ function TAbstractMesh.ElevationAtPos( Pos : TVector2;
          if result then
             elev := Intersection.y;
        end;
-    end;*)
- var (*IndexedTriangleSetNode : TIndexedTriangleSetNode;
+    end;
+ var IndexedTriangleSetNode : TIndexedTriangleSetNode;
      ix : integer;
      p0, p1, p2 : tvector3;
-     Coord : TCoordinateNode;*)
-     Collision : TRayCollision;
-     i : integer;
-
+     Coord : TCoordinateNode;
  begin
    elev := 0;
-   result := false;
-
-   collision := self.InternalRayCollision( vector3( pos.x, 100, pos.y ), vector3( 0, -1, 0 ));
-   result := assigned( collision );
-    if result then
-      begin
-        for i := 0 to collision.count - 1 do with collision[i] do
-         begin
-           if item = self then
-            begin
-              elev := Point.Y;
-              break;
-            end;
-         end;
-        collision.free;
-    end;
-
-(*
-   IndexedTriangleSetNode := TIndexedTriangleSetNode( rootnode.FindNode( TIndexedTriangleSetNode, false ));
-   Coord := TCoordinateNode( IndexedTriangleSetNode.Coord );
-   ix := 0;
-   while ix < IndexedTriangleSetNode.FdIndex.Count do
+   if precisecollisions then
+      result := ElevationAtPos_InternalRayCollision( Pos, Elev )
+   else
     begin
-      p0 := Coord.FdPoint.Items[IndexedTriangleSetNode.FdIndex.Items[ix]];
-      inc( ix );
-      p1 := Coord.FdPoint.Items[IndexedTriangleSetNode.FdIndex.Items[ix]];
-      inc( ix );
-      p2 := Coord.FdPoint.Items[IndexedTriangleSetNode.FdIndex.Items[ix]];
-      inc( ix );
-      result := checkpoint( p0 ) or
-                checkpoint( p1 ) or
-                checkpoint( p2 ) or
-                checktriangle( Triangle3( p0, p1, p2 ));
-      if result then
-         exit;
-    end;*)
-
+      result := false;
+      IndexedTriangleSetNode := TIndexedTriangleSetNode( rootnode.FindNode( TIndexedTriangleSetNode, false ));
+      Coord := TCoordinateNode( IndexedTriangleSetNode.Coord );
+      ix := 0;
+      while ix < IndexedTriangleSetNode.FdIndex.Count do
+       begin
+         p0 := Coord.FdPoint.Items[IndexedTriangleSetNode.FdIndex.Items[ix]];
+         inc( ix );
+         p1 := Coord.FdPoint.Items[IndexedTriangleSetNode.FdIndex.Items[ix]];
+         inc( ix );
+         p2 := Coord.FdPoint.Items[IndexedTriangleSetNode.FdIndex.Items[ix]];
+         inc( ix );
+         result := checkpoint( p0 ) or
+                   checkpoint( p1 ) or
+                   checkpoint( p2 ) or
+                   checktriangle( Triangle3( p0, p1, p2 ));
+         if result then
+            exit;
+       end;
+    end;
  end;
 
 function TAbstractMesh.InitAppearance : TAppearanceNode;

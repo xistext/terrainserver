@@ -314,7 +314,6 @@ procedure TViewMain.HandleMotion(const Sender: TCastleUserInterface;
      c, i : integer;
      ItemHit : TCastleTransform;
      TerMesh : TTerrainMesh;
-     tri : TTriangle;
  begin
    rayitems := Viewport1.MouseRayHit;
    if assigned( rayitems ) then
@@ -327,7 +326,6 @@ procedure TViewMain.HandleMotion(const Sender: TCastleUserInterface;
          if ItemHit is TTerrainMesh then
           begin
             TerMesh := TTerrainMesh( ItemHit );
-            tri := node.triangle;
 
 //             poslabel.Caption := Format( '(%f, %f) %f' , [node.Point.X, node.point.z, node.point.y] );
 
