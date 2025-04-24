@@ -17,6 +17,8 @@ TAbstractMesh = class( TCastleScene )
    procedure InitializeData; dynamic;
    procedure UpdateMeshProperties; dynamic;
 
+   function offset : TVector2; dynamic;
+
    protected
 
    fCoordinateNode : TCoordinateNode;  { maintain refererence to CoordinateNode }
@@ -36,7 +38,6 @@ TAbstractMesh = class( TCastleScene )
    function getcellcount : integer;
 
    function CoordinateNode : TCoordinateNode;
-
    public
 
    procedure InitVertices; dynamic; abstract;
@@ -113,6 +114,11 @@ function TAbstractMesh.getcellcount : integer;
    result := GridCount - 1;
  end;
 
+function TAbstractMesh.offset : TVector2;
+ begin
+   result := vector2(0,0);
+ end;
+
 function TAbstractMesh.initindexes : TInt32List;
  var X, Z, c : integer;
  begin
@@ -185,7 +191,7 @@ function TAbstractMesh.ElevationAtPos( Pos : TVector2;
        end;
     end;
  var IndexedTriangleSetNode : TIndexedTriangleSetNode;
-     ix : integer;
+     c, ix : integer;
      p0, p1, p2 : tvector3;
      Coord : TCoordinateNode;
  begin
@@ -198,14 +204,15 @@ function TAbstractMesh.ElevationAtPos( Pos : TVector2;
       result := false;
       IndexedTriangleSetNode := TIndexedTriangleSetNode( rootnode.FindNode( TIndexedTriangleSetNode, false ));
       Coord := TCoordinateNode( IndexedTriangleSetNode.Coord );
+      c := IndexedTriangleSetNode.FdIndex.Count;
       ix := 0;
-      while ix < IndexedTriangleSetNode.FdIndex.Count do
+      while ix < c do
        begin
-         p0 := Coord.FdPoint.Items[IndexedTriangleSetNode.FdIndex.Items[ix]];
+         p0 := translation + Coord.FdPoint.Items[IndexedTriangleSetNode.FdIndex.Items[ix]];
          inc( ix );
-         p1 := Coord.FdPoint.Items[IndexedTriangleSetNode.FdIndex.Items[ix]];
+         p1 := translation + Coord.FdPoint.Items[IndexedTriangleSetNode.FdIndex.Items[ix]];
          inc( ix );
-         p2 := Coord.FdPoint.Items[IndexedTriangleSetNode.FdIndex.Items[ix]];
+         p2 := translation + Coord.FdPoint.Items[IndexedTriangleSetNode.FdIndex.Items[ix]];
          inc( ix );
          result := checkpoint( p0 ) or
                    checkpoint( p1 ) or
@@ -310,7 +317,9 @@ procedure TAbstractTextureMesh.InitVertices;
      VertexPtr : ^TVector3;
      Vertex : TVector3;
      GCount : integer;
+     aOffset : TVector2;
  begin
+   aoffset := offset;
    step := gridstep;
    GCount := GridCount;
    Vertices := TVector3List.Create;
@@ -319,10 +328,10 @@ procedure TAbstractTextureMesh.InitVertices;
    VertexPtr := Vertices.Ptr(0);
    sz2 := CellCount * Step * 0.5;
    vertex.y := 0;
-   vertex.z := -sz2;
+   vertex.z := aoffset.y-sz2;
    for i := 0 to GCount - 1 do
     begin
-      Vertex.x := -sz2; { world x offset to align tiles }
+      Vertex.x := aoffset.x-sz2; { world x offset to align tiles }
       for j := 0 to GCount - 1 do
        begin
          VertexPtr^ := Vertex;

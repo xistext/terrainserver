@@ -69,6 +69,7 @@ type TTerTile = class; { forward }
         function getWorldSize : single;
         function gridStep : single;
         function tileid : string;
+        function offset : TVector2;
 
         public
         {$ifdef terserver}
@@ -217,7 +218,7 @@ function parsetilepos( tilestr : string ) : tpoint;
     end;
  end;
 
-{$ifdefterserver}
+{$ifdef terserver}
 procedure TTilelist.FoundTerFile( const FileInfo : TFileInfo; var StopSearch : boolean );
  var filename : string;
      dotpos : integer;
@@ -238,7 +239,7 @@ function TTileList.ReadAllTerrainFiles( path : string ) : integer;
  begin
    result :=FindFiles( Path, '*.ter', false, {$ifdef fpc}@{$endif} FoundTerFile, [ffReadAllFirst] );
  end;
-{$enfif}
+{$endif}
 
 //-------------------------------
 

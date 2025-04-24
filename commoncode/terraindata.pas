@@ -69,6 +69,7 @@ type TTerTile = class; { forward }
         function getWorldSize : single;
         function gridStep : single;
         function tileid : string;
+//        function offset : TVector2;
 
         public
         {$ifdef terserver}
