@@ -45,21 +45,21 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="2580"/>
         <CursorPos Y="2649"/>
-        <UsageCount Value="83"/>
+        <UsageCount Value="82"/>
       </Unit5>
       <Unit6>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\System\IdGlobal.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="3039"/>
         <CursorPos Y="3077"/>
-        <UsageCount Value="5"/>
+        <UsageCount Value="4"/>
       </Unit6>
       <Unit7>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\System\IdWinsock2.pas"/>
         <EditorIndex Value="2"/>
         <TopLine Value="6008"/>
         <CursorPos X="14" Y="6060"/>
-        <UsageCount Value="94"/>
+        <UsageCount Value="95"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit7>
@@ -67,7 +67,7 @@
         <Filename Value="commoncode\terservercommon.pas"/>
         <EditorIndex Value="-1"/>
         <CursorPos Y="2"/>
-        <UsageCount Value="114"/>
+        <UsageCount Value="113"/>
       </Unit8>
       <Unit9>
         <Filename Value="commoncode\castleclientserver.pas"/>
@@ -91,7 +91,7 @@
         <EditorIndex Value="-1"/>
         <WindowIndex Value="-1"/>
         <CursorPos Y="3"/>
-        <UsageCount Value="116"/>
+        <UsageCount Value="115"/>
       </Unit11>
       <Unit12>
         <Filename Value="E:\wyrdforest\code\baseterrain.pas"/>
@@ -99,13 +99,13 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="221"/>
         <CursorPos X="14" Y="291"/>
-        <UsageCount Value="33"/>
+        <UsageCount Value="32"/>
       </Unit12>
       <Unit13>
         <Filename Value="E:\wyrdforest\code\watergrid.pas"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="3" Y="12"/>
-        <UsageCount Value="70"/>
+        <UsageCount Value="69"/>
       </Unit13>
       <Unit14>
         <Filename Value="commoncode\terraindata.pas"/>
@@ -113,7 +113,7 @@
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="5"/>
         <TopLine Value="177"/>
-        <CursorPos X="55" Y="215"/>
+        <CursorPos Y="212"/>
         <UsageCount Value="142"/>
         <Loaded Value="True"/>
       </Unit14>
@@ -128,14 +128,14 @@
         <Filename Value="E:\cge\src\scene\x3d\x3dnodes_standard_texturing.inc"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="3" Y="323"/>
-        <UsageCount Value="45"/>
+        <UsageCount Value="44"/>
       </Unit16>
       <Unit17>
         <Filename Value="commoncode\watergrid.pas"/>
         <EditorIndex Value="8"/>
         <TopLine Value="233"/>
         <CursorPos Y="272"/>
-        <UsageCount Value="89"/>
+        <UsageCount Value="90"/>
         <Loaded Value="True"/>
       </Unit17>
       <Unit18>
@@ -143,7 +143,7 @@
         <UnitName Value="Debug"/>
         <EditorIndex Value="4"/>
         <CursorPos X="36" Y="47"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="39"/>
         <Loaded Value="True"/>
       </Unit18>
       <Unit19>
@@ -291,13 +291,6 @@
         <WatchKind Value="wpkWrite"/>
         <Source Value="E:\wyrdforest\code\watergrid.pas"/>
         <Line Value="145"/>
-      </Item>
-      <Item>
-        <Kind Value="bpkSource"/>
-        <WatchScope Value="wpsLocal"/>
-        <WatchKind Value="wpkWrite"/>
-        <Source Value="commoncode\terraindata.pas"/>
-        <Line Value="212"/>
       </Item>
     </BreakPoints>
   </Debugging>

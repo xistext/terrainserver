@@ -46,8 +46,8 @@
         <Filename Value="code\terrainmesh.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="5"/>
-        <TopLine Value="215"/>
-        <CursorPos X="115" Y="221"/>
+        <TopLine Value="216"/>
+        <CursorPos X="122" Y="269"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
       </Unit5>
@@ -111,10 +111,9 @@
       <Unit14>
         <Filename Value="..\commoncode\terraindata.pas"/>
         <UnitName Value="TerrainData"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="4"/>
-        <TopLine Value="184"/>
-        <CursorPos X="6" Y="241"/>
+        <TopLine Value="139"/>
+        <CursorPos X="34" Y="205"/>
         <UsageCount Value="107"/>
         <Loaded Value="True"/>
       </Unit14>
@@ -137,7 +136,7 @@
         <Filename Value="..\commoncode\terrainparams.pas"/>
         <EditorIndex Value="6"/>
         <CursorPos X="54" Y="11"/>
-        <UsageCount Value="87"/>
+        <UsageCount Value="88"/>
         <Loaded Value="True"/>
       </Unit17>
       <Unit18>
@@ -356,10 +355,11 @@
       </Unit47>
       <Unit48>
         <Filename Value="data\terrain\textures\terrain.fs"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="77"/>
-        <CursorPos X="53" Y="102"/>
-        <UsageCount Value="19"/>
+        <TopLine Value="176"/>
+        <CursorPos X="14" Y="229"/>
+        <UsageCount Value="20"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="C++"/>
       </Unit48>
