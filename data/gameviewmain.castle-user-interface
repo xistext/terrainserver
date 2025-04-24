@@ -4,27 +4,21 @@
   "Name" : "RootGroup",
   "$Children" : [
     {
-      "$$ClassName" : "TCastleRectangleControl",
-      "ColorPersistent" : {
-        "$$ClassName" : "TCastleColorPersistent",
-        "Blue" : 5.8823529630899429E-002,
-        "Green" : 5.8823529630899429E-002,
-        "Red" : 5.8823529630899429E-002
-      },
-      "FullSize" : true,
-      "Name" : "RectangleControl1"
-    },
-    {
       "$$ClassName" : "TCastleVerticalGroup",
+      "AutoSizeHeight" : false,
+      "AutoSizeWidth" : false,
       "Name" : "VerticalGroup1",
       "Padding" : 1.0000000000000000E+001,
       "Spacing" : 1.0000000000000000E+001,
       "VerticalAnchorParent" : "vpTop",
       "VerticalAnchorSelf" : "vpTop",
-      "Width" : 6.1000000000000000E+002,
+      "Width" : 6.2000000000000000E+002,
       "$Children" : [
         {
           "$$ClassName" : "TCastleHorizontalGroup",
+          "AutoSizeHeight" : false,
+          "AutoSizeToChildren" : true,
+          "Height" : 4.0000000000000000E+001,
           "Name" : "HorizontalGroup1",
           "Spacing" : 1.0000000000000000E+001,
           "TranslationPersistent" : {
@@ -43,7 +37,8 @@
                 "Green" : 1.0000000000000000E+000,
                 "Red" : 1.0000000000000000E+000
               },
-              "FontSize" : 1.0000000000000000E+001,
+              "FontScale" : 0.0000000000000000E+000,
+              "FontSize" : 8.0000000000000000E+000,
               "Name" : "LabelPort",
               "Text" : [
                 "Port:"
@@ -55,11 +50,13 @@
               "$$ClassName" : "TCastleIntegerEdit",
               "AutoOnScreenKeyboard" : true,
               "CaptureAllInput" : false,
+              "FontScale" : 0.0000000000000000E+000,
+              "FontSize" : 1.0000000000000000E+001,
               "Min" : 1,
               "Name" : "EditPort",
               "TranslationPersistent" : {
                 "$$ClassName" : "TCastleVector2Persistent",
-                "X" : 3.3500000000000000E+001
+                "X" : 7.6431098937988281E+001
               },
               "Value" : 10244,
               "VerticalAnchorParent" : "vpMiddle",
@@ -81,6 +78,7 @@
               "CustomBackgroundPressed" : {
                 "$$ClassName" : "TCastleImagePersistent"
               },
+              "FontScale" : 0.0000000000000000E+000,
               "FontSize" : 1.0000000000000000E+001,
               "Image" : {
                 "$$ClassName" : "TCastleImagePersistent"
@@ -88,7 +86,7 @@
               "Name" : "ButtonCreateServer",
               "TranslationPersistent" : {
                 "$$ClassName" : "TCastleVector2Persistent",
-                "X" : 1.3350000000000000E+002
+                "X" : 1.7643109130859375E+002
               },
               "VerticalAnchorParent" : "vpMiddle",
               "VerticalAnchorSelf" : "vpMiddle"
@@ -108,6 +106,7 @@
               "CustomBackgroundPressed" : {
                 "$$ClassName" : "TCastleImagePersistent"
               },
+              "FontScale" : 0.0000000000000000E+000,
               "FontSize" : 1.0000000000000000E+001,
               "Image" : {
                 "$$ClassName" : "TCastleImagePersistent"
@@ -115,7 +114,7 @@
               "Name" : "ButtonDestroyServer",
               "TranslationPersistent" : {
                 "$$ClassName" : "TCastleVector2Persistent",
-                "X" : 1.8800000000000000E+002
+                "X" : 2.7568905639648438E+002
               },
               "VerticalAnchorParent" : "vpMiddle",
               "VerticalAnchorSelf" : "vpMiddle"
@@ -124,10 +123,11 @@
               "$$ClassName" : "TCastleEdit",
               "AutoOnScreenKeyboard" : true,
               "CaptureAllInput" : false,
+              "FontScale" : 0.0000000000000000E+000,
               "Name" : "EditSend",
               "TranslationPersistent" : {
                 "$$ClassName" : "TCastleVector2Persistent",
-                "X" : 2.4100000000000000E+002
+                "X" : 3.7070672607421875E+002
               },
               "VerticalAnchorParent" : "vpMiddle",
               "VerticalAnchorSelf" : "vpMiddle",
@@ -149,6 +149,7 @@
                 "$$ClassName" : "TCastleImagePersistent"
               },
               "Enabled" : false,
+              "FontScale" : 0.0000000000000000E+000,
               "FontSize" : 1.0000000000000000E+001,
               "Image" : {
                 "$$ClassName" : "TCastleImagePersistent"
@@ -156,7 +157,7 @@
               "Name" : "ButtonSend",
               "TranslationPersistent" : {
                 "$$ClassName" : "TCastleVector2Persistent",
-                "X" : 4.3100000000000000E+002
+                "X" : 5.6070672607421875E+002
               },
               "VerticalAnchorParent" : "vpMiddle",
               "VerticalAnchorSelf" : "vpMiddle"
@@ -165,12 +166,15 @@
         },
         {
           "$$ClassName" : "TCastleHorizontalGroup",
+          "AutoSizeHeight" : false,
+          "AutoSizeToChildren" : true,
+          "Height" : 2.0000000000000000E+001,
           "Name" : "HorizontalGroup3",
           "Spacing" : 1.0000000000000000E+001,
           "TranslationPersistent" : {
             "$$ClassName" : "TCastleVector2Persistent",
             "X" : 1.0000000000000000E+001,
-            "Y" : -5.1000000000000000E+001
+            "Y" : -6.0000000000000000E+001
           },
           "VerticalAnchorParent" : "vpTop",
           "VerticalAnchorSelf" : "vpTop",
@@ -195,6 +199,7 @@
                     "Green" : 1.0000000000000000E+000,
                     "Red" : 1.0000000000000000E+000
                   },
+                  "FontScale" : 0.0000000000000000E+000,
                   "Name" : "ClientsLabel",
                   "Text" : [
                     "ClientsLabel"
@@ -221,7 +226,7 @@
               "Name" : "TilesIndicator",
               "TranslationPersistent" : {
                 "$$ClassName" : "TCastleVector2Persistent",
-                "X" : 1.4300000000000000E+002
+                "X" : 1.9385159301757812E+002
               },
               "VerticalAnchorParent" : "vpMiddle",
               "VerticalAnchorSelf" : "vpMiddle",
@@ -234,6 +239,7 @@
                     "Green" : 1.0000000000000000E+000,
                     "Red" : 1.0000000000000000E+000
                   },
+                  "FontScale" : 0.0000000000000000E+000,
                   "Height" : 1.0000000000000000E+001,
                   "Name" : "TilesLabel",
                   "Text" : [
@@ -277,6 +283,7 @@
             "$Children" : [
               {
                 "$$ClassName" : "TCastleVerticalGroup",
+                "AutoSizeHeight" : false,
                 "AutoSizeToChildren" : true,
                 "FullSize" : true,
                 "Name" : "VerticalGroup2"
@@ -294,7 +301,7 @@
           "TranslationPersistent" : {
             "$$ClassName" : "TCastleVector2Persistent",
             "X" : 1.0000000000000000E+001,
-            "Y" : -8.5000000000000000E+001
+            "Y" : -9.0000000000000000E+001
           },
           "VerticalAnchorParent" : "vpTop",
           "VerticalAnchorSelf" : "vpTop",

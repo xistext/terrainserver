@@ -91,7 +91,11 @@ end;
 
 procedure TViewMain.Stop;
 begin
-  FreeAndNil(FServer);
+(*  if assigned( fserver ) then
+   begin
+  //   FServer.Stop;
+     FreeAndNil(FServer);
+   end;*)
   inherited;
 end;
 

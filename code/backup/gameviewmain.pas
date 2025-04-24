@@ -91,7 +91,11 @@ end;
 
 procedure TViewMain.Stop;
 begin
-  FreeAndNil(FServer);
+  if assigned( fserver ) then
+   begin
+  //   FServer.Stop;
+     FreeAndNil(FServer);
+   end;
   inherited;
 end;
 
@@ -193,7 +197,7 @@ begin
   FServer.OnMessageReceived := {$ifdef FPC}@{$endif} HandleMessageReceived;
 
   FServer.Start;
-  FileCount := GTerTiles.ReadAllTerrainFiles( 'castle-data:/terrain' );
+  FileCount := GTileList.ReadAllTerrainFiles( 'castle-data:/terrain' );
   dbgwriteln( inttostr( filecount )+' tiles read' );
 
   Notification( 'Started' );

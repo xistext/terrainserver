@@ -9,8 +9,14 @@ uses Classes, SysUtils, Collect, TerServerCommon, terrainparams,
      debug;
 
 const terrainpath = 'data\terrain\';
-      terrainext  = '.ter';
+      terrainext  = '.is.terra';
+      waterext    = '.is.water';
+      splatext    = '.is.splat';
       rootpath = 'e:\terrainserver\';
+
+      layer_terrain = 0;
+      layer_splat   = 1;
+      layer_water   = 2;
 
 type TTerTile = class; { forward }
 
@@ -69,7 +75,7 @@ type TTerTile = class; { forward }
         function getWorldSize : single;
         function gridStep : single;
         function tileid : string;
-        function offset : TVector2;
+//        function offset : TVector2;
 
         public
         {$ifdef terserver}
@@ -81,8 +87,11 @@ type TTerTile = class; { forward }
 
         private
         function getTerrainGrid : TSingleGrid;
+        function getWaterGrid : TSingleGrid;
+        function getSplatGrid : TIntGrid;
         public
         property TerrainGrid : TSingleGrid read getTerrainGrid;
+        property WaterGrid : TSingleGrid read getWaterGrid;
         {$else}
         Graphics : TCastleTransform;
         {$endif}
@@ -268,15 +277,20 @@ constructor TTerTile.create( const iInfo : TTileHeader );
  begin
    Info := iInfo;
    {$ifdef terserver}
-   SetLength( datalayers, 2 );
+   SetLength( datalayers, 3 );
    { intialize terrain layer }
    layer := TDataLayer.create;
    layer.initgrid( Info.TileSz );
-   datalayers[0] := layer;
+   datalayers[layer_terrain] := layer;
    { initialize splat layer }
    layer := TIntLayer.create;
    layer.initgrid( Info.TileSz );
-   datalayers[1] := layer;
+   datalayers[layer_splat] := layer;
+   { initialize water layer }
+   layer := TDataLayer.create;
+   layer.initgrid( Info.TileSz );
+   datalayers[layer_water] := layer;
+
 
    status := 0;
    {$else}
@@ -331,7 +345,17 @@ function TTerTile.getWorldSize : single;
 {$ifdef terserver}
 function TTerTile.getTerrainGrid : TSingleGrid;
  begin
-   Result := TSingleGrid( datalayers[0].DataGrid );
+   Result := TSingleGrid( datalayers[layer_terrain].DataGrid );
+ end;
+
+function TTerTile.getWaterGrid : TSingleGrid;
+ begin
+   Result := TSingleGrid( datalayers[layer_water].DataGrid );
+ end;
+
+function TTerTile.getSplatGrid : TIntGrid;
+ begin
+   Result := TIntGrid( datalayers[layer_splat].DataGrid );
  end;
 
 procedure TTerTile.UpdateTerrainGridFromSource( Source : TCastleTerrainNoise );
@@ -366,19 +390,39 @@ procedure TTerTile.UpdateTerrainGridFromSource( Source : TCastleTerrainNoise );
 end;
 
 function TTerTile.SaveToFile : boolean;
- var filename : string;
+ var filename, fileroot : string;
      stream : TStream;
      datagrid : TSingleGrid;
      dirty : boolean;
  begin
-   filename := rootpath + terrainpath + tileid + terrainext;
+   fileroot := rootpath + terrainpath + tileid;
    dirty := ( status and tile_dirty > 0 );
-   if dirty or not fileexists( filename ) then
+   if dirty then
     begin
-      datagrid := getTerrainGrid;
-      stream := TFileStream.Create(filename, fmCreate );
-      stream.Write( datagrid.Data^, datagrid.datasz);
-      stream.Free;
+      filename := fileroot + terrainext;
+      if not fileexists( filename ) then
+       begin
+         datagrid := getTerrainGrid;
+         stream := TFileStream.Create(filename, fmCreate );
+         stream.Write( datagrid.Data^, datagrid.datasz);
+         stream.Free;
+       end;
+      filename := fileroot + waterext;
+      if not fileexists( filename ) then
+       begin
+         datagrid := getWaterGrid;
+         stream := TFileStream.Create(filename, fmCreate );
+         stream.Write( datagrid.Data^, datagrid.datasz);
+         stream.Free;
+       end;
+      filename := fileroot + splatext;
+      if not fileexists( filename ) then
+       begin
+         datagrid := getSplatGrid;
+         stream := TFileStream.Create(filename, fmCreate );
+         stream.Write( datagrid.Data^, datagrid.datasz);
+         stream.Free;
+       end;
       dbgwrite( 'Saved '+tileid+'.  ' );
       if dirty then
          status := status xor tile_dirty;
@@ -387,11 +431,12 @@ function TTerTile.SaveToFile : boolean;
  end;
 
 function TTerTile.LoadfromFile : boolean;
- var filename : string;
+ var filename, fileroot : string;
      stream : TStream;
      datagrid : TSingleGrid;
  begin
-   filename := rootpath + terrainpath + tileid + terrainext;
+   fileroot := rootpath + terrainpath + tileid;
+   filename := fileroot + terrainext;
    result := fileexists( filename );
    if result then
     begin
