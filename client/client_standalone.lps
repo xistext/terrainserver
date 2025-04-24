@@ -46,8 +46,8 @@
         <Filename Value="code\terrainmesh.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="5"/>
-        <TopLine Value="95"/>
-        <CursorPos Y="165"/>
+        <TopLine Value="100"/>
+        <CursorPos X="26" Y="165"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
       </Unit5>
@@ -111,7 +111,6 @@
       <Unit14>
         <Filename Value="..\commoncode\terraindata.pas"/>
         <UnitName Value="TerrainData"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="4"/>
         <TopLine Value="35"/>
         <CursorPos X="3" Y="72"/>
@@ -169,9 +168,10 @@
       </Unit21>
       <Unit22>
         <Filename Value="..\commoncode\basemesh.pas"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="11"/>
-        <TopLine Value="261"/>
-        <CursorPos X="7" Y="329"/>
+        <TopLine Value="260"/>
+        <CursorPos X="18" Y="331"/>
         <UsageCount Value="103"/>
         <Loaded Value="True"/>
       </Unit22>
@@ -180,7 +180,7 @@
         <UnitName Value="CastleSceneCore"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="33" Y="360"/>
-        <UsageCount Value="39"/>
+        <UsageCount Value="38"/>
       </Unit23>
       <Unit24>
         <Filename Value="E:\cge\src\scene\x3d\castlefields_x3dsimplemultfield_descendants.inc"/>
@@ -250,7 +250,7 @@
         <UnitName Value="CastleCameras"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="78" Y="12"/>
-        <UsageCount Value="71"/>
+        <UsageCount Value="70"/>
       </Unit33>
       <Unit34>
         <Filename Value="E:\cge\src\scene\x3d\x3dnodes_sfnode.inc"/>
@@ -367,123 +367,123 @@
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="96" Column="26" TopLine="38"/>
+        <Caret Line="320" Column="13" TopLine="253"/>
       </Position1>
       <Position2>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="298" Column="16" TopLine="231"/>
+        <Caret Line="322" Column="21" TopLine="255"/>
       </Position2>
       <Position3>
-        <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="41"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="331" Column="23" TopLine="264"/>
       </Position3>
       <Position4>
-        <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="162" Column="34" TopLine="97"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="334" Column="26" TopLine="267"/>
       </Position4>
       <Position5>
         <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="159" Column="13" TopLine="122"/>
+        <Caret Line="165" TopLine="95"/>
       </Position5>
       <Position6>
         <Filename Value="..\commoncode\terraindata.pas"/>
-        <Caret Column="35"/>
+        <Caret Line="72" Column="3" TopLine="35"/>
       </Position6>
       <Position7>
-        <Filename Value="..\commoncode\terraindata.pas"/>
-        <Caret Line="33" Column="37"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="241" TopLine="204"/>
       </Position7>
       <Position8>
-        <Filename Value="..\commoncode\terraindata.pas"/>
-        <Caret Line="190" Column="39" TopLine="123"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="138" TopLine="101"/>
       </Position8>
       <Position9>
-        <Filename Value="..\commoncode\terraindata.pas"/>
-        <Caret Line="205" Column="29" TopLine="138"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="218" Column="32" TopLine="161"/>
       </Position9>
       <Position10>
-        <Filename Value="..\commoncode\terraindata.pas"/>
-        <Caret Line="342" Column="17" TopLine="275"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="205" TopLine="161"/>
       </Position10>
       <Position11>
-        <Filename Value="..\commoncode\terraindata.pas"/>
-        <Caret Line="349" Column="15" TopLine="282"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="206" TopLine="161"/>
       </Position11>
       <Position12>
-        <Filename Value="..\commoncode\terraindata.pas"/>
-        <Caret Column="31"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="207" TopLine="161"/>
       </Position12>
       <Position13>
-        <Filename Value="..\commoncode\terraindata.pas"/>
-        <Caret Line="33" Column="37"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="208" TopLine="161"/>
       </Position13>
       <Position14>
-        <Filename Value="..\commoncode\terraindata.pas"/>
-        <Caret Column="39"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="209" TopLine="161"/>
       </Position14>
       <Position15>
-        <Filename Value="..\commoncode\terraindata.pas"/>
-        <Caret Line="33" Column="37"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="211" TopLine="161"/>
       </Position15>
       <Position16>
-        <Filename Value="..\commoncode\terraindata.pas"/>
-        <Caret Line="190" Column="39" TopLine="123"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="212" TopLine="161"/>
       </Position16>
       <Position17>
-        <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="22" Column="62"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="213" TopLine="161"/>
       </Position17>
       <Position18>
-        <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="40" Column="21"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="214" TopLine="161"/>
       </Position18>
       <Position19>
-        <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="157" Column="29" TopLine="90"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="215" TopLine="161"/>
       </Position19>
       <Position20>
-        <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="160" Column="34" TopLine="93"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="216" TopLine="161"/>
       </Position20>
       <Position21>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="277" Column="101" TopLine="271"/>
+        <Caret Line="217" TopLine="161"/>
       </Position21>
       <Position22>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="320" Column="13" TopLine="271"/>
+        <Caret Line="218" TopLine="161"/>
       </Position22>
       <Position23>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Column="31"/>
+        <Caret Line="219" TopLine="161"/>
       </Position23>
       <Position24>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="20" Column="19"/>
+        <Caret Line="220" TopLine="161"/>
       </Position24>
       <Position25>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="117" Column="30" TopLine="50"/>
+        <Caret Line="178" TopLine="161"/>
       </Position25>
       <Position26>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="320" Column="13" TopLine="253"/>
+        <Caret Line="182" TopLine="161"/>
       </Position26>
       <Position27>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="322" Column="21" TopLine="255"/>
+        <Caret Line="61" Column="75" TopLine="25"/>
       </Position27>
       <Position28>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="331" Column="23" TopLine="264"/>
+        <Caret Line="117" Column="30" TopLine="50"/>
       </Position28>
       <Position29>
-        <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="334" Column="26" TopLine="267"/>
+        <Filename Value="code\terrainmesh.pas"/>
+        <Caret Column="44"/>
       </Position29>
       <Position30>
         <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="165" TopLine="95"/>
+        <Caret Line="40" Column="21"/>
       </Position30>
     </JumpHistory>
     <RunParams>
@@ -492,29 +492,6 @@
     </RunParams>
   </ProjectSession>
   <Debugging>
-    <BreakPoints>
-      <Item>
-        <Kind Value="bpkSource"/>
-        <WatchScope Value="wpsLocal"/>
-        <WatchKind Value="wpkWrite"/>
-        <Source Value="..\commoncode\basemesh.pas"/>
-        <Line Value="241"/>
-      </Item>
-      <Item>
-        <Kind Value="bpkSource"/>
-        <WatchScope Value="wpsLocal"/>
-        <WatchKind Value="wpkWrite"/>
-        <Source Value="code\terrainmesh.pas"/>
-        <Line Value="356"/>
-      </Item>
-      <Item>
-        <Kind Value="bpkSource"/>
-        <WatchScope Value="wpsLocal"/>
-        <WatchKind Value="wpkWrite"/>
-        <Source Value="..\commoncode\basemesh.pas"/>
-        <Line Value="138"/>
-      </Item>
-    </BreakPoints>
     <Watches>
       <Item>
         <Expression Value="Triangle"/>
