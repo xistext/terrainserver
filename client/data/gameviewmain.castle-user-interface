@@ -183,6 +183,7 @@
           "$Children" : [
             {
               "$$ClassName" : "TCastleWalkNavigation",
+              "CheckCollisions" : false,
               "CrouchHeight" : 1.0000000000000000E+000,
               "Gravity" : false,
               "MouseDragMode" : "mdNone",
@@ -427,7 +428,7 @@
           "TranslationPersistent" : {
             "$$ClassName" : "TCastleVector2Persistent",
             "X" : 1.0000000000000000E+001,
-            "Y" : -7.0900006103515625E+002
+            "Y" : -7.0900000000000000E+002
           },
           "VerticalAnchorParent" : "vpTop",
           "VerticalAnchorSelf" : "vpTop",
