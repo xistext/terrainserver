@@ -5,6 +5,7 @@ interface
 uses Classes, SysUtils, Collect, TerServerCommon, terrainparams,
      CastleVectors, CastleTerrain, watergrid,
      math, castletransform,
+     {$ifdef terserver}castlefindfiles,{$endif}
      debug;
 
 const terrainpath = 'data\terrain\';
@@ -33,6 +34,13 @@ type TTerTile = class; { forward }
 
         function findtileatlocation( const Pos : TVector2;
                                      var tile : TTerTile ) : boolean;
+        {$ifdef terserver}
+        function readallterrainfiles( path : string ) : integer;
+
+        private
+
+        procedure foundterfile( const FileInfo : TFileInfo; var StopSearch : boolean );
+        {$endif}
 
       end;
 
@@ -198,6 +206,39 @@ function TTileList.findtileatlocation( const Pos : TVector2;
    tile := tilexy( pt.x, pt.y );
    result := assigned( tile );
  end;
+
+function parsetilepos( tilestr : string ) : tpoint;
+ begin
+   result := Point(0,0);
+   if length( tilestr ) = 6 then
+    begin
+      result.X := strtoint(copy(tilestr,2,2)) * ( 1-2*ord( tilestr[1] = 'W' ));
+      result.Y := strtoint(copy(tilestr,5,2)) * ( 1-2*ord( tilestr[4] = 'S' ));
+    end;
+ end;
+
+{$ifdef terserver}
+procedure TTilelist.FoundTerFile( const FileInfo : TFileInfo; var StopSearch : boolean );
+ var filename : string;
+     dotpos : integer;
+     tilepos : tpoint;
+     tile : ttertile;
+ begin
+   filename := fileinfo.name;
+   dotpos := pos( '.', filename );
+   if dotpos > 0 then
+      system.delete( filename, dotpos, length( filename ) - dotpos + 1 );
+   dbgwriteln( filename );
+   tilepos := parsetilepos( filename );
+   tile := initxy( tilepos.x, tilepos.y, GDefGridCellCount );
+   tile.LoadFromFile;
+ end;
+
+function TTileList.ReadAllTerrainFiles( path : string ) : integer;
+ begin
+   result :=FindFiles( Path, '*.ter', false, {$ifdef fpc}@{$endif} FoundTerFile, [ffReadAllFirst] );
+ end;
+{$endif}
 
 //-------------------------------
 

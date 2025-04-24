@@ -183,6 +183,7 @@ procedure TViewMain.SendStringToClient( AMessage : string;
  end;
 
 procedure TViewMain.ClickCreateServer(Sender: TObject);
+var filecount : integer;
 begin
   FServer := TCastleTCPServer.Create;
   FServer.Port := EditPort.Value;
@@ -192,6 +193,9 @@ begin
   FServer.OnMessageReceived := {$ifdef FPC}@{$endif} HandleMessageReceived;
 
   FServer.Start;
+  FileCount := GTileList.ReadAllTerrainFiles( 'castle-data:/terrain' );
+  dbgwriteln( inttostr( filecount )+' tiles read' );
+
   Notification( 'Started' );
 end;
 

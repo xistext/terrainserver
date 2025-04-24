@@ -119,7 +119,7 @@ void drawcontourstripe( inout vec3 terrain_color,
         //terrain_color = mix( terrain_color, contour_color.rgb, 0.2 );
         vec3 hsv = rgb2hsv( terrain_color );
         //hsv.y = 1 - ( 1 - hsv.y ) / 2;
-        hsv.y = hsv.y * 0.5;
+        hsv.y = hsv.y * 0.66;
         terrain_color = hsv2rgb( hsv );
         }
   }
