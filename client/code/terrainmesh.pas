@@ -162,7 +162,7 @@ function TTerrainMesh.offset : TVector2;
       sz := LinkedTile.GetWorldSize;
       sz2 := sz/2;
       result := vector2( LinkedTile.Info.TileX * sz,
-                         LinkedTile.Info.TileY * sz )
+                         -sz2 + LinkedTile.Info.TileY * sz )
     end
    else
       result := inherited Offset;
@@ -243,7 +243,7 @@ function decodesplatcell( v : integer ) : integer;
 
 function TTerrainMesh.BuildTerrainEffect : TEffectNode;
  var FragmentPart, VertexPart : TEffectPartNode;
-     i : integer;
+     ix, iy : integer;
      SplatMap : TMFLong;
      TexImage : TImageTextureNode;
  begin
@@ -279,40 +279,10 @@ function TTerrainMesh.BuildTerrainEffect : TEffectNode;
    Result.AddCustomField(TSFInt32.Create(Result, true, 'splat_sz', 60));
    splatmap := TMFLong.Create( Result, true, 'splatmap', [] );
    splatmap.items.Count := 3600;
-   for i := 0 to splatmap.items.Count - 1 do
-      splatmap.items[i] := encodesplatcell( random(16), random(16), random(16), random(3), random(4), random(6)+random(6));
+   for ix := 0 to 60 - 1 do
+       for iy := 0 to 60 - 1 do
+           splatmap.items[ix*60+iy] := encodesplatcell( random(16), random(16), random(16), random(2), random(4), random(6)+random(6));
    Result.AddCustomField(splatmap);
-                      (*
-   Result.AddCustomField(TSFInt32.Create(Result, true, 'splat_sz', 60));
-   splatmap := TMFLong.Create( Result, true, 'splatmap1', [] );
-   splatmap.items.Count := 3600;
-   for i := 0 to splatmap.items.Count - 1 do
-    begin
-      code := encodesplatcell( random(16), random(16), random(16), random(3), random(4), random(6)+random(6));
-      splatmap.items[i] := code;
-    end;
-   Result.AddCustomField(splatmap);
-   Result.AddCustomField(TSFInt32.Create(Result, true, 'splat_sz', 60));
-   splatmap := TMFLong.Create( Result, true, 'splatmap2', [] );
-   splatmap.items.Count := 3600;
-   for i := 0 to splatmap.items.Count - 1 do
-    begin
-      code := encodesplatcell( random(16), random(16), random(16), random(3), random(4), random(6)+random(6));
-      splatmap.items[i] := code;
-    end;
-   Result.AddCustomField(splatmap);
-   Result.AddCustomField(TSFInt32.Create(Result, true, 'splat_sz', 60));
-
-   splatmap := TMFLong.Create( Result, true, 'splatmap3', [] );
-   splatmap.items.Count := 3600;
-   for i := 0 to splatmap.items.Count - 1 do
-    begin
-      code := encodesplatcell( random(16), random(16), random(16), random(3), random(4), random(6)+random(6));
-      splatmap.items[i] := code;
-    end;
-   Result.AddCustomField(splatmap);
-                        *)
-
 
    Result.AddCustomField(TSFFloat.Create(Result, true, 'grid_scale', ord( GShowGrid ) * GGridScale ));
    Result.AddCustomField(TSFFloat.Create(Result, true, 'contour_scale', ord( GShowContour ) * GContourScale ));
