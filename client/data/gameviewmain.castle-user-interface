@@ -58,7 +58,7 @@
               "AutoOnScreenKeyboard" : true,
               "CaptureAllInput" : false,
               "Name" : "EditSend",
-              "Text" : "build 0,0,10",
+              "Text" : "build 0,0",
               "TranslationPersistent" : {
                 "$$ClassName" : "TCastleVector2Persistent",
                 "X" : 1.1300000000000000E+002
@@ -428,7 +428,7 @@
           "TranslationPersistent" : {
             "$$ClassName" : "TCastleVector2Persistent",
             "X" : 1.0000000000000000E+001,
-            "Y" : -7.0900000000000000E+002
+            "Y" : -7.0900006103515625E+002
           },
           "VerticalAnchorParent" : "vpTop",
           "VerticalAnchorSelf" : "vpTop",
