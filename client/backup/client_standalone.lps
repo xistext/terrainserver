@@ -47,7 +47,7 @@
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="5"/>
         <TopLine Value="256"/>
-        <CursorPos X="102" Y="284"/>
+        <CursorPos X="88" Y="284"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
       </Unit5>
@@ -354,8 +354,8 @@
       <Unit48>
         <Filename Value="data\terrain\textures\terrain.fs"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="184"/>
-        <CursorPos X="28" Y="251"/>
+        <TopLine Value="182"/>
+        <CursorPos X="21" Y="233"/>
         <UsageCount Value="43"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="C++"/>
