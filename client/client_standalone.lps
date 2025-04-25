@@ -44,9 +44,8 @@
       <Unit5>
         <Filename Value="code\terrainmesh.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="5"/>
-        <TopLine Value="240"/>
+        <TopLine Value="125"/>
         <CursorPos X="134" Y="284"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
@@ -255,7 +254,7 @@
         <Filename Value="E:\cge\src\scene\x3d\x3dnodes_sfnode.inc"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="63" Y="50"/>
-        <UsageCount Value="48"/>
+        <UsageCount Value="47"/>
       </Unit34>
       <Unit35>
         <Filename Value="E:\cge\examples\viewport_and_scenes\shader_effects_on_texture\code\gameviewmain.pas"/>
@@ -353,9 +352,10 @@
       </Unit47>
       <Unit48>
         <Filename Value="data\terrain\textures\terrain.fs"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="190"/>
-        <CursorPos X="119" Y="227"/>
+        <TopLine Value="52"/>
+        <CursorPos X="59" Y="95"/>
         <UsageCount Value="44"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="C++"/>

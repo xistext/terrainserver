@@ -88,13 +88,11 @@ void mixsplat( inout vec3 terrain_color,
                float edgealpha )
  { int texid;
    float texalpha1;
-   splatalpha = splatalpha /2;
-   texalpha = texalpha / 2;
    vec4 c1 = getsplatcolor( ax, ay, texid, texalpha1 );
    texalpha = mix( texalpha, texalpha1, edgealpha );
    c1.a = mix( splatalpha, c1.a, edgealpha );
-   terrain_color = mix( terrain_color, tex[texid], texalpha1 );
-   terrain_color = mix( terrain_color, c1.rgb, c1.a );
+   terrain_color = mix( terrain_color, tex[texid], texalpha1 * 0.33);
+   terrain_color = mix( terrain_color, c1.rgb, c1.a * 0.33 );
   }
 
 
