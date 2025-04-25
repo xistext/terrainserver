@@ -60,14 +60,6 @@ vec3 hsv2rgb(vec3 c)
     return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
 }
 
-float factor = 1.0/15.0;
-
-vec4 decodecolor( int c, out int texid, out float texalpha )
- { texid = ( c >> 16 ) & 15;
-   texalpha = (( c >> 20 ) & 15 ) * factor;
-   return vec4( c & 15, ( c >> 4 ) & 15, ( c >> 8 ) & 15, ( c >> 12 ) & 15 ) * factor; 
-  }
-
   // terrain textures
   vec2 uv = vec2(terrain_position.x, -terrain_position.z);
   vec3 tex[4] = vec3[4]( castle_texture_color_to_linear(texture2D(tex_1, uv * uv_scale.x)).rgb,
@@ -75,10 +67,19 @@ vec4 decodecolor( int c, out int texid, out float texalpha )
   			 castle_texture_color_to_linear(texture2D(tex_3, uv * uv_scale.z)).rgb,
 			 castle_texture_color_to_linear(texture2D(tex_4, uv * uv_scale.w)).rgb  );
 
+float factor = 1.0/15.0;
 
-vec4 getsplatcolor( int ax, int ay, out int texid, out float texalpha )
+vec4 decodecolor( int c, out vec4 texture )
+ { int texid = ( c >> 16 ) & 15;
+   float texalpha = (( c >> 20 ) & 15 ) * factor;
+   vec3 texc = tex[texid];
+   texture = vec4( texc.r, texc.g, texc.b, texalpha );
+   return vec4( c & 15, ( c >> 4 ) & 15, ( c >> 8 ) & 15, ( c >> 12 ) & 15 ) * factor;
+  }
+
+vec4 getsplatcolor( int ax, int ay, out vec4 texture )
  { int c = splatmap[( ax * splat_sz ) + ay];
-   return decodecolor( c, texid, texalpha ); 
+   return decodecolor( c, texture );
   }
 
 void mixsplat( inout vec3 terrain_color,
@@ -86,19 +87,78 @@ void mixsplat( inout vec3 terrain_color,
                float splatalpha,
                float texalpha,
                float edgealpha )
- { int texid;
-   float texalpha1;
+ { vec4 texture;
    edgealpha = edgealpha * 0.5;
-   vec4 c1 = getsplatcolor( ax, ay, texid, texalpha1 );
-   texalpha = mix( texalpha, texalpha1, edgealpha );
+   vec4 c1 = getsplatcolor( ax, ay, texture );
+   texalpha = mix( texalpha, texture.a, edgealpha );
    splatalpha = mix( splatalpha, c1.a, edgealpha );
 
-   terrain_color = mix( terrain_color, tex[texid], texalpha );
-   terrain_color = mix( terrain_color, c1.rgb, splatalpha );
+   terrain_color = mix( terrain_color, texture.rgb, texalpha * edgealpha );
+   terrain_color = mix( terrain_color, c1.rgb, splatalpha * edgealpha );
 
   //terrain_color = mix( terrain_color, vec3(0,1,0), edgealpha );
   }
 
+vec4 bilerp( int ax, int ay, in vec2 pos, int steps )
+ {  if ( steps > 0 )
+     { pos = vec2( floor( pos.x * steps) / steps, floor( pos.y * steps) / steps );}
+    float ratio4 = pos.y;
+    float ratio3 = 1 - ratio4;
+    float ratio2 = pos.x;
+    float ratio1 = 1 - ratio2;
+    vec4 tx0;
+    vec4 cx0 = getsplatcolor( ax, ay, tx0 );
+    if (( ratio2 != 0 ) || ( ratio4 != 0 ))
+     { vec4 tx1;
+       vec4 cx1 = getsplatcolor( ax + 1, ay, tx0 );
+
+       vec4 ty0;
+       vec4 cy0 = getsplatcolor( ax, ay+1, ty0 );
+
+       vec4 ty1;
+       vec4 cy1 = getsplatcolor( ax + 1, ay+1, ty1 );
+
+       float alpha = ratio3 * ( cx0.a * ratio1 + cx1.a * ratio2 ) + ratio4 * ( cy0.a * ratio1 + cy1.a * ratio2 );
+       vec3 c = ratio3 * ( cx0.rgb * ratio1 + cx1.rgb * ratio2 ) + ratio4 * ( cy0.rgb * ratio1 + cy1.rgb * ratio2 );
+
+       return vec4( c.r, c.g, c.b, alpha );
+
+      }
+      else
+       { return cx0; }
+  }
+
+  vec4 lerpx( int ax, int ay, in float posx, int steps )
+ {  if ( steps > 0 )
+      { posx = floor( posx * steps)/steps; }
+    float ratio2 = posx;
+    float ratio1 = 1 - ratio2;
+    vec4 tx0;
+    vec4 cx0 = getsplatcolor( ax, ay, tx0 );
+    if ( ratio2 != 0 )
+     { vec4 tx1;
+       vec4 cx1 = getsplatcolor( ax + 1, ay, tx1 );
+       return ( cx0 * ratio1 + cx1 * ratio2 );
+      }
+      else
+       { return cx0; }
+  }
+
+vec4 lerpy( int ax, int ay, in float posy, int steps )
+ {  if ( steps > 0 )
+      { posy = floor( posy * steps) / steps; }
+    float ratio4 = posy;
+    float ratio3 = 1 - ratio4;
+    vec4 ty0;
+    vec4 cy0 = getsplatcolor( ax, ay, ty0 );
+    if ( ratio4 != 0 )
+     { vec4 ty1;
+       vec4 cy1 = getsplatcolor( ax, ay+1, ty1 );
+       return ratio3 * cy0 + ratio4 * cy1;
+      }
+      else
+       { return cy0; }
+  }
 
 float absroundfract( float v )
  { return abs( v - round( v )); }
@@ -170,89 +230,84 @@ void PLUG_main_texture_apply(inout vec4 fragment_color, const in vec3 normal)
   if ( splat_sz > 0 )
    {
      int texid = 0;
-     float texalpha = 0;
-     float texalpha1;
+     float texture;
      float dim = 120/splat_sz;
      float idim = 1/dim;
      vec2 splatpos = vec2( uv.x, uv.y ) * idim;
      // calculate 2d index into splatmap
      int ax = int( floor( mod( splatpos.x, splat_sz )));
      int ay = int( floor( mod( splatpos.y, splat_sz )));
-     vec4 c = getsplatcolor( ax, ay, texid, texalpha );
-     vec3 splatcolor = c.rgb;
-     float splatalpha = c.a;
-     vec3 splattex = tex[texid];
-     terrain_color = mix( terrain_color, tex[texid], texalpha  );
-     terrain_color = mix( terrain_color, splatcolor, splatalpha  );
+//     terrain_color = mix( terrain_color, splatcolor, splatalpha  );
 
   //   if ( blur )
       {
 	vec2 posincell = vec2( mod(uv.x, dim), mod( uv.y, dim )) * idim;
-	float shadepct = 0.33;
+	float shadepct = 0.5;
+        int steps = 0;
 	float ishadepct = 1/shadepct;
 
         if ( ( posincell.x > ( 1 - shadepct )) && ( ax < splat_sz - 1 ) )
-         { float xedgealpha = //smoothstep( shadepct, 1, posincell.x );
-                              ( posincell.x - ( 1-shadepct )) / shadepct;
-           if  (( posincell.y > ( 1 - shadepct )) && ( ay < splat_sz - 1 ) )
+         { if  (( posincell.y > ( 1 - shadepct )) && ( ay < splat_sz - 1 ) )
             { // ur corner
-               float yedgealpha = //smoothstep( 1 - shadepct, 1, posincell.y );
-                                  ( posincell.y - ( 1 - shadepct )) / shadepct;
-               mixsplat( terrain_color, ax + 1, ay + 1, splatalpha, texalpha, xedgealpha * yedgealpha * 0.5);
-               mixsplat( terrain_color, ax + 1, ay, splatalpha, texalpha, xedgealpha );
-               mixsplat( terrain_color, ax, ay + 1, splatalpha, texalpha, yedgealpha );
+              vec4 c1 = bilerp( ax, ay, vec2(0.5*( posincell.x - ( 1-shadepct))/shadepct ,
+                                             0.5*( posincell.y - ( 1-shadepct))/shadepct ), steps );
+              terrain_color = mix( terrain_color, c1.rgb, c1.a );
              }
            else
 	   if (( posincell.y < shadepct) && ( ay > 0 ))
 	    { // lr corner
-              float yedgealpha = //( 1 - smoothstep( 0, shadepct, posincell.y ));
-                                 ( 1 - posincell.y / shadepct );
-              mixsplat( terrain_color, ax + 1, ay - 1, splatalpha, texalpha, xedgealpha * yedgealpha * 0.5);
-              mixsplat( terrain_color, ax + 1, ay - 1, splatalpha, texalpha, xedgealpha  );
-              mixsplat( terrain_color, ax, ay - 1, splatalpha, texalpha, yedgealpha );
+              vec4 c1 = bilerp( ax, ay-1, vec2( 0.5* ( posincell.x - ( 1-shadepct))/shadepct,
+                                                0.5 + 0.5 * posincell.y/shadepct ), steps );
+              terrain_color = mix( terrain_color, c1.rgb, c1.a  );
 	     }
             else //r
-             { mixsplat( terrain_color, ax + 1, ay, splatalpha, texalpha, xedgealpha ); }
+             { vec4 c1 = lerpx( ax, ay, 0.5 * ( posincell.x - ( 1-shadepct))/shadepct, steps );
+              terrain_color = mix( terrain_color, c1.rgb, c1.a  );
+             }
          }
         else
         if (( ax > 0 ) && ( posincell.x < shadepct ))
-         { float xedgealpha = //1 - smoothstep( 0, shadepct, posincell.x );
-                            ( 1 - posincell.x / shadepct );
-           if (( ay < splat_sz - 1 ) && ( posincell.y > ( 1 - shadepct )))
+         { if (( ay < splat_sz - 1 ) && ( posincell.y > ( 1 - shadepct )))
 	    { // ulcorner
-              float yedgealpha = //smoothstep( 1 - shadepct, 1, posincell.y );
-                                 ( posincell.y - ( 1 - shadepct )) / shadepct;
-              mixsplat( terrain_color, ax - 1, ay + 1, splatalpha, texalpha, yedgealpha * xedgealpha * 0.5 );
-              mixsplat( terrain_color, ax - 1, ay, splatalpha, texalpha, xedgealpha  );
-              mixsplat( terrain_color, ax, ay + 1, splatalpha, texalpha, yedgealpha );
+              vec4 c1 = bilerp( ax-1, ay, vec2( 0.5 + 0.5 * posincell.x/shadepct,
+                                              0.5* ( posincell.y - ( 1-shadepct))/shadepct ), steps);
+              terrain_color = mix( terrain_color, c1.rgb, c1.a  );
 	     }
            else
            if (( ay > 0 ) && ( posincell.y < shadepct ))
              { // llcorner
-               float yedgealpha = //1 - smoothstep( 0, shadepct, posincell.y );
-                                 ( 1 - posincell.y / shadepct );
-               mixsplat( terrain_color, ax - 1, ay - 1, splatalpha, texalpha, xedgealpha * yedgealpha * 0.5 );
-               mixsplat( terrain_color, ax - 1, ay, splatalpha, texalpha, xedgealpha );
-               mixsplat( terrain_color, ax, ay - 1, splatalpha, texalpha, yedgealpha );
+              vec4 c1 = bilerp( ax-1, ay-1, vec2( 0.5 + 0.5 * posincell.x/shadepct,
+                                                  0.5 + 0.5 * posincell.y/shadepct ), steps);
+              terrain_color = mix( terrain_color, c1.rgb, c1.a );
              }
             else //l
-             { mixsplat( terrain_color, ax - 1, ay, splatalpha, texalpha, xedgealpha ); }
+             { //mixsplat( terrain_color, ax - 1, ay, splatalpha, texalpha, xedgealpha );
+              vec4 c1 = lerpx( ax-1, ay, 0.5 + 0.5 * posincell.x/shadepct, steps );
+              terrain_color = mix( terrain_color, c1.rgb, c1.a  );
+              }
+         }
+         else
+          if  ( ( posincell.y > ( 1 - shadepct )) && ( ay < splat_sz - 1 ) )
+           {
+             vec4 c1 = lerpy( ax, ay, 0.5 * ( posincell.y - ( 1-shadepct))/shadepct, steps );
+             terrain_color = mix( terrain_color, c1.rgb, c1.a  );
+
            }
          else
-           if (( ay > 0 ) && ( posincell.y < shadepct ))
-	    {
-  	      float   edgealpha = //( 1 - smoothstep( 0, shadepct, posincell.y ));
-                                  ( 1 - posincell.y  / shadepct );
-              mixsplat( terrain_color, ax, ay - 1, splatalpha, texalpha, edgealpha );
-	     }
-           else
-           if (( ay < splat_sz - 1 ) && ( posincell.y > ( 1 - shadepct )))
-	     {
- 	       float edgealpha = //smoothstep( shadepct, 1, posincell.y );
-                                 ( posincell.y - ( 1 - shadepct )) / shadepct;
-               mixsplat( terrain_color, ax, ay + 1, splatalpha, texalpha, edgealpha );
-	      }
+          if (( ay > 0 ) && ( posincell.y < shadepct ))
+           {
+              vec4 c1 = lerpy( ax, ay-1, 0.5 + 0.5 * posincell.y/shadepct, steps );
+              terrain_color = mix( terrain_color, c1.rgb, c1.a );
+
            }
+         else
+          { vec4 splattex;
+            vec4 c = getsplatcolor( ax, ay, splattex );
+            terrain_color = mix( terrain_color, c.rgb, c.a  );
+           }
+
+      }
+
 
 
    }

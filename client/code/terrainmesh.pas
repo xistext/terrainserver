@@ -281,7 +281,7 @@ function TTerrainMesh.BuildTerrainEffect : TEffectNode;
    splatmap.items.Count := 3600;
    for ix := 0 to 60 - 1 do
        for iy := 0 to 60 - 1 do
-           splatmap.items[ix*60+iy] := encodesplatcell( random(8), random(8), random(8), random(4), random(4), random(6)+random(6) );
+           splatmap.items[ix*60+iy] := encodesplatcell( random(16), random(16), random(16), random(16), random(4), random(4)+random(4) );
    Result.AddCustomField(splatmap);
 
    Result.AddCustomField(TSFFloat.Create(Result, true, 'grid_scale', ord( GShowGrid ) * GGridScale ));
