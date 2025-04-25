@@ -91,8 +91,8 @@ void mixsplat( inout vec3 terrain_color,
    vec4 c1 = getsplatcolor( ax, ay, texid, texalpha1 );
    texalpha = mix( texalpha, texalpha1, edgealpha );
    c1.a = mix( splatalpha, c1.a, edgealpha );
-   terrain_color = mix( terrain_color, tex[texid], texalpha1 * 0.33);
-   terrain_color = mix( terrain_color, c1.rgb, c1.a * 0.33 );
+   terrain_color = mix( terrain_color, tex[texid], texalpha1 * 0.5);
+   terrain_color = mix( terrain_color, c1.rgb, c1.a * 0.5 );
   }
 
 
@@ -188,10 +188,12 @@ void PLUG_main_texture_apply(inout vec4 fragment_color, const in vec3 normal)
 	float ishadepct = 1/shadepct;
 
         if ( ( posincell.x > ( 1 - shadepct )) && ( ax < splat_sz - 1 ) )
-         { float xedgealpha = smoothstep( shadepct, 1, posincell.x );
+         { float xedgealpha = //smoothstep( shadepct, 1, posincell.x );
+                              ( posincell.x - shadepct ) / shadepct;
            if  (( posincell.y > ( 1 - shadepct )) && ( ay < splat_sz - 1 ) )
             { // ur corner
-               float yedgealpha = smoothstep( 1 - shadepct, 1, posincell.y );
+               float yedgealpha = //smoothstep( 1 - shadepct, 1, posincell.y );
+                                  ( posincell.y - shadepct ) / shadepct;
                mixsplat( terrain_color, ax + 1, ay + 1, splatalpha, texalpha, xedgealpha * yedgealpha );
                mixsplat( terrain_color, ax + 1, ay, splatalpha, texalpha, xedgealpha * ( posincell.x - posincell.y ));
                mixsplat( terrain_color, ax, ay + 1, splatalpha, texalpha, yedgealpha * ( posincell.y - posincell.x ));
@@ -199,7 +201,8 @@ void PLUG_main_texture_apply(inout vec4 fragment_color, const in vec3 normal)
            else
 	   if (( posincell.y < shadepct) && ( ay > 0 ))
 	    { // lr corner
-              float yedgealpha = ( 1 - smoothstep( 0, shadepct, posincell.y ));
+              float yedgealpha = //( 1 - smoothstep( 0, shadepct, posincell.y ));
+                                 ( 1 - ( shadepct - posincell.y )) / shadepct;
               mixsplat( terrain_color, ax + 1, ay - 1, splatalpha, texalpha, xedgealpha * yedgealpha );
               mixsplat( terrain_color, ax + 1, ay - 1, splatalpha, texalpha, xedgealpha * ( posincell.x - ( 1 - posincell.y )) );
               mixsplat( terrain_color, ax, ay - 1, splatalpha, texalpha, yedgealpha * ( ( 1 - posincell.y ) - posincell.x) );
@@ -209,10 +212,12 @@ void PLUG_main_texture_apply(inout vec4 fragment_color, const in vec3 normal)
          }
         else
         if (( ax > 0 ) && ( posincell.x < shadepct ))
-         { float xedgealpha = 1 - smoothstep( 0, shadepct, posincell.x );
+         { float xedgealpha = //1 - smoothstep( 0, shadepct, posincell.x );
+                            ( 1 - ( shadepct - posincell.y )) / shadepct;
            if (( ay < splat_sz - 1 ) && ( posincell.y > ( 1 - shadepct )))
 	    { // ulcorner
-              float yedgealpha = smoothstep( 1 - shadepct, 1, posincell.y );
+              float yedgealpha = //smoothstep( 1 - shadepct, 1, posincell.y );
+                                 ( posincell.y - shadepct ) / shadepct;
               mixsplat( terrain_color, ax - 1, ay + 1, splatalpha, texalpha, yedgealpha * xedgealpha );
               mixsplat( terrain_color, ax - 1, ay, splatalpha, texalpha, xedgealpha * (( 1 - posincell.y ) - posincell.x) );
               mixsplat( terrain_color, ax, ay + 1, splatalpha, texalpha, yedgealpha * (posincell.x)- ( 1 - posincell.y ));
@@ -220,7 +225,8 @@ void PLUG_main_texture_apply(inout vec4 fragment_color, const in vec3 normal)
            else
            if (( ay > 0 ) && ( posincell.y < shadepct ))
              { // llcorner
-               float yedgealpha = 1 - smoothstep( 0, shadepct, posincell.y );
+               float yedgealpha = //1 - smoothstep( 0, shadepct, posincell.y );
+                                 ( 1 - ( shadepct - posincell.y )) / shadepct;
                mixsplat( terrain_color, ax - 1, ay - 1, splatalpha, texalpha, xedgealpha * yedgealpha);
                mixsplat( terrain_color, ax - 1, ay, splatalpha, texalpha, xedgealpha * ( posincell.y - posincell.x ));
                mixsplat( terrain_color, ax, ay - 1, splatalpha, texalpha, yedgealpha * ( posincell.x - posincell.y ));
@@ -231,13 +237,15 @@ void PLUG_main_texture_apply(inout vec4 fragment_color, const in vec3 normal)
          else
            if (( ay > 0 ) && ( posincell.y < shadepct ))
 	    {
-  	      float   edgealpha = ( 1 - smoothstep( 0, shadepct, posincell.y ));
+  	      float   edgealpha = //( 1 - smoothstep( 0, shadepct, posincell.y ));
+                                  ( 1 - ( shadepct - posincell.y )) / shadepct;
               mixsplat( terrain_color, ax, ay - 1, splatalpha, texalpha, edgealpha );
 	     }
            else
            if (( ay < splat_sz - 1 ) && ( posincell.y > ( 1 - shadepct )))
 	     {
- 	       float edgealpha = smoothstep( shadepct, 1, posincell.y );
+ 	       float edgealpha = //smoothstep( shadepct, 1, posincell.y );
+                                 ( posincell.y - shadepct ) / shadepct;
                mixsplat( terrain_color, ax, ay + 1, splatalpha, texalpha, edgealpha );
 	      }
            }
