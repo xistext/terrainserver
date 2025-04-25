@@ -355,7 +355,7 @@
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
         <TopLine Value="52"/>
-        <CursorPos X="58" Y="95"/>
+        <CursorPos X="59" Y="95"/>
         <UsageCount Value="44"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="C++"/>

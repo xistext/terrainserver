@@ -44,9 +44,10 @@
       <Unit5>
         <Filename Value="code\terrainmesh.pas"/>
         <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="5"/>
-        <TopLine Value="125"/>
-        <CursorPos X="134" Y="284"/>
+        <TopLine Value="251"/>
+        <CursorPos X="87" Y="284"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
       </Unit5>
@@ -352,10 +353,9 @@
       </Unit47>
       <Unit48>
         <Filename Value="data\terrain\textures\terrain.fs"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
         <TopLine Value="52"/>
-        <CursorPos X="59" Y="95"/>
+        <CursorPos X="91" Y="85"/>
         <UsageCount Value="44"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="C++"/>
