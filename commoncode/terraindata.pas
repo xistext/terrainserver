@@ -4,8 +4,8 @@ interface
 
 uses Classes, SysUtils, Collect, TerServerCommon, terrainparams,
      CastleVectors, CastleTerrain, watergrid,
-     math, castletransform,
-     {$ifdef terserver}castlefindfiles,{$endif}
+     math, castletransform, castlewindow,
+     {$ifdef terserver}castlefindfiles, {$endif}
      debug;
 
 const terrainpath = 'data\terrain\';
@@ -239,6 +239,7 @@ procedure TTilelist.FoundTerFile( const FileInfo : TFileInfo; var StopSearch : b
    tilepos := parsetilepos( filename );
    tile := initxy( tilepos.x, tilepos.y, GDefGridCellCount );
    tile.LoadFromFile;
+   Application.ProcessAllMessages;
  end;
 
 function TTileList.ReadAllTerrainFiles( path : string ) : integer;

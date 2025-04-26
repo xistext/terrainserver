@@ -88,16 +88,14 @@ begin
   ClickCreateServer( self );
   ConnectedIndicator.exists := true;
   Container.UIScaling := usNone;
-  Application.Height := 300;
+  EditPort.Enabled := false;
+
+  //!!! how to set application window size?
 end;
 
 procedure TViewMain.Stop;
 begin
-(*  if assigned( fserver ) then
-   begin
-  //   FServer.Stop;
-     FreeAndNil(FServer);
-   end;*)
+  EditPort.Enabled := false;
   inherited;
 end;
 
@@ -197,9 +195,9 @@ begin
   FServer.OnConnected := {$ifdef FPC}@{$endif} HandleConnected;
   FServer.OnDisconnected := {$ifdef FPC}@{$endif} HandleDisconnected;
   FServer.OnMessageReceived := {$ifdef FPC}@{$endif} HandleMessageReceived;
+  FileCount := GTileList.ReadAllTerrainFiles( 'castle-data:/terrain' );
 
   FServer.Start;
-  FileCount := GTileList.ReadAllTerrainFiles( 'castle-data:/terrain' );
   dbgwriteln( inttostr( filecount )+' tiles read' );
 
   Notification( 'Started' );

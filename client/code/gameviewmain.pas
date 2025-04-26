@@ -22,7 +22,7 @@ uses Classes,
   idGlobal,
   CastleVectors, CastleComponentSerialize, CastleUIControls, CastleControls,
   CastleKeysMouse, CastleClientServer, CastleTerrain, CastleScene,
-  CastleViewport, CastleCameras, CastleTransform,
+  CastleViewport, CastleCameras, CastleTransform, CastleWindow,
   TerServerCommon, TerrainData, TerrainParams, TerrainShader, TerrainMesh,
   watergrid, BaseMesh, TerrainClient,
   debug;
@@ -182,11 +182,17 @@ begin
      FClient.OnDisconnected := {$ifdef FPC}@{$endif} HandleDisconnected;
      FClient.OnMessageReceived := {$ifdef FPC}@{$endif} HandleMessageReceived;
      FClient.fOnTileReceived :=  {$ifdef FPC}@{$endif}HandleTileReceived;
-     try
-       FClient.Connect;
-     except
-       FreeAndNil( FClient );
-     end;
+     FClient.Connect;
+     (*
+     if FClient.IsConnected then
+      begin
+        dbgwriteln( 'Connected to server' );
+      end
+     else
+      begin
+         dbgwriteln( 'Terrain server not found' );
+        FreeAndNil( FClient );
+      end;*)
    end;
 end;
 
@@ -202,7 +208,7 @@ procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
       if Tile.Info.TileSz <> tileInfo.TileSz then
        begin
          Viewport1.Items.Remove( Tile.Graphics );
-         FreeAndNil( Tile.Graphics );
+         Tile.Graphics.Free;
          Tile.Info := TileInfo;
          Tile.Graphics := TTerrainMesh.create2( Viewport1, Tile );
          Viewport1.Items.Add( Tile.Graphics );
@@ -216,16 +222,16 @@ procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
 
    { update tile graphics }
    TTerrainMesh( Tile.Graphics ).UpdateFromGrid( TileGrid );
-   TileGrid.Free;
 
+   { free the sent data when finished }
+   TileGrid.Free;
  end;
 
 
 procedure TViewMain.ClickTest(Sender: TObject);
  var button : TCastleButton;
- var tile : TTerTile;
-var i : integer;
-   shader : TTileShader;
+     tile : TTerTile;
+     i : integer;
  begin
    button := TCastleButton( Sender );
    Button.Pressed := not Button.Pressed;

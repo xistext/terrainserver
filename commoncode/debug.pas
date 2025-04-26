@@ -22,10 +22,6 @@ PROCEDURE DBGDispose( S: STRING );
 IMPLEMENTATION //===============================================================
 
 CONST LinePos : INTEGER = 0;
-      DBGPlaces : INTEGER = 3;
-      DBGCounter : INTEGER = -1;
-      BackStr    : STRING = '';
-VAR NewCount, DoneCount : LONGINT;
 
 {-------------------------------------}
 FUNCTION WaitforWrite : BOOLEAN;

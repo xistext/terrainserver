@@ -174,7 +174,7 @@ function TTileList.getinittile( const tileinfo : TTileHeader ) : TTerTile;
  var i : integer;
  begin
    if search( @tileinfo, i ) then
-      result := TTerTile( at( i ));
+      result := TTerTile( at( i ))
    else
     begin
       result := TTerTile.create( tileinfo );
@@ -239,6 +239,7 @@ procedure TTilelist.FoundTerFile( const FileInfo : TFileInfo; var StopSearch : b
    tilepos := parsetilepos( filename );
    tile := initxy( tilepos.x, tilepos.y, GDefGridCellCount );
    tile.LoadFromFile;
+   Application.ProcessAllMessages;
  end;
 
 function TTileList.ReadAllTerrainFiles( path : string ) : integer;
