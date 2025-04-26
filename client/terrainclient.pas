@@ -4,7 +4,7 @@ interface
 
 uses Classes, Generics.Collections,
      Collect, TerServerCommon, terrainparams, idGlobal,
-     CastleClientServer, CastleTransform,
+     CastleClientServer, CastleTransform, CastleControls,
      CastleVectors, watergrid, CastleRenderOptions,
      TerrainData, BaseMesh, x3dnodes, TerrainShader,
      TerrainMesh,
@@ -48,12 +48,38 @@ type
       end;
 
 const GParentComponent : TComponent = nil;
+      GDefaultHost     : string = 'localhost';
+      GDefaultPort     : integer = 10244;
+
       status_disconnected = 0;
       status_connecting = 1;
       status_connected = 2;
 
+procedure setCreateClientMode( mode : integer;
+                               AButton : TCastleButton );
+
 implementation
 
+procedure setCreateClientMode( mode : integer;
+                               AButton : TCastleButton );
+ begin
+   case mode of
+     status_disconnected : begin
+                             AButton.Caption := 'Connect';
+                             AButton.Enabled := true;
+                           end;
+     status_connecting :   begin
+                             AButton.Caption := 'Connecting...';
+                             AButton.Enabled := false;
+                           end;
+     status_connected :    begin
+                             AButton.Caption := 'Disconnect';
+                             AButton.Enabled := true;
+                           end;
+     end;
+ end;
+
+//---------------------------------
 
 constructor TTerClientThread.Create(const AClient: TIdTCPClient;
         const AOnMessageReceived, AOnConnected, AOnDisconnected: TProcedureObject);

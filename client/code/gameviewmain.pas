@@ -147,12 +147,11 @@ begin
      connectiontimeout := connectiontimeout + secondspassed;
      if connectiontimeout > 1 then
       begin
-        dbgwriteln( 'Server not found' );
+        dbgwriteln( 'Terrain server at '+GDefaulthost+':'+inttostr(GDefaultPort)+' not found.' );
         if FClient <> nil then
         begin
-          ButtonCreateClient.Enabled := true;
-          ButtonCreateClient.Caption := 'Connect';
           connectionstatus := status_disconnected;
+          SetCreateClientMode( connectionstatus, ButtonCreateClient );
           FreeAndNil(FClient);
         end
       end;
@@ -165,21 +164,19 @@ end;
 
 procedure TViewMain.HandleConnected;
 begin
-  DbgWriteln('Connected to server');
+  DbgWriteln('Connected to terrain server.');
   ClickSend( self );
   connectionstatus := status_connected;
-  ButtonCreateClient.Caption := 'Disconnect';
-  ButtonCreateClient.Enabled := true;
+  SetCreateClientMode( connectionstatus, ButtonCreateClient );
   ButtonSend.Enabled := FClient <> nil;
 end;
 
 procedure TViewMain.HandleDisconnected;
 begin
-  DbgWriteln('Disconnected from server');
-  ButtonCreateClient.Caption := 'Connect';
-  ButtonCreateClient.Enabled := true;
+  DbgWriteln('Disconnected from terrain server.');
   ButtonSend.Enabled := false;
   connectionstatus := status_disconnected;
+  SetCreateClientMode( connectionstatus, ButtonCreateClient );
   if assigned( fclient ) then
      FreeAndNil( fClient );
 end;
@@ -194,11 +191,10 @@ begin
   case connectionstatus of
     status_disconnected :
     begin
-      ButtonCreateClient.Caption := 'Connecting';
-      ButtonCreateClient.Enabled := false;
+      DBGWriteln( 'Connecting to terrain server at '+GDefaultHost + ':' + IntToStr( GDefaultPort ) +'...');
       FClient := TTerClient.Create;
-      FClient.Hostname := 'localhost';
-      FClient.Port := 10244;
+      FClient.Hostname := GDefaultHost;
+      FClient.Port := GDefaultPort;
 
       FClient.OnConnected := {$ifdef FPC}@{$endif} HandleConnected;
       FClient.OnDisconnected := {$ifdef FPC}@{$endif} HandleDisconnected;
@@ -216,11 +212,11 @@ begin
      end;
     status_connecting : if FClient <> nil then
      begin
-       ButtonCreateClient.Enabled := false;
        connectionstatus := status_disconnected;
        FreeAndNil(FClient);
      end
-   end
+   end;
+  SetCreateClientMode( connectionstatus, ButtonCreateClient );
 end;
 
 
