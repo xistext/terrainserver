@@ -200,8 +200,7 @@ function TTileList.CalculateTileOffset( Pos : TVector2 ) : TPoint;
  begin
    tilesz := GDefGridCellCount * GDefGridStep;
    sizefactor := 1/tilesz;
-   Result := Point( floor( Pos.X * SizeFactor + 0.5 ),
-                    floor( Pos.Y * SizeFactor + 0.5 ));
+   Result := Point( floor( Pos.X * SizeFactor + 0.5 ), floor( Pos.Y * SizeFactor + 0.5 ));
  end;
 
 function TTileList.findtileatlocation( const Pos : TVector2;
@@ -282,7 +281,7 @@ constructor TTerTile.create( const iInfo : TTileHeader );
    datalayers[layer_terrain] := layer;
    { initialize splat layer }
    layer := TIntLayer.create;
-   layer.initgrid( Info.TileSz );
+   layer.initgrid(60 { Info.TileSz } );
    datalayers[layer_splat] := layer;
    { initialize water layer }
    layer := TDataLayer.create;

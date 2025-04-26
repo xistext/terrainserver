@@ -582,7 +582,7 @@ function tdepthgrid.valuexy( x, y : dword ) : single;
 constructor tintgrid.create( initialValue : integer = 0;
                              initialSize : dword = defaultsize );
  begin
-   inherited create( initialValue );
+   inherited create( initialValue, initialsize );
  end;
 
 type pinteger = ^integer;

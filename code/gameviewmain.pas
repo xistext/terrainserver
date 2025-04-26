@@ -1,4 +1,5 @@
-{
+{ Terrain Server
+
   Copyright 2018-2024 Benedikt Magnus, Michalis Kamburelis.
 
   This file is part of "Castle Game Engine".
@@ -220,6 +221,7 @@ procedure TViewMain.Notification( Msg : string );
  var alabel : TCastleLabel;
  begin
    alabel := TCastleLabel.Create( VerticalGroup2 );
+   alabel.FontSize := 12;
    alabel.AutoSize := true;
    alabel.Color := Vector4(1,1,1,1);
    alabel.caption := FormatDateTime('yyyy.mm.dd hh:mm:ss', now )+ ' ' + Msg;

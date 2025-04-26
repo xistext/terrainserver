@@ -1,4 +1,5 @@
-{
+{ Terrain Client
+
   Copyright 2018-2024 Benedikt Magnus, Michalis Kamburelis.
 
   This file is part of "Castle Game Engine".
@@ -71,6 +72,7 @@ type
     procedure ColorSliderChange( sender : TObject );
 
   public
+    lockviewtoground : boolean;
     constructor Create(AOwner: TComponent); override;
     procedure Start; override;
     procedure Stop; override;
@@ -100,6 +102,7 @@ begin
   DesignUrl := 'castle-data:/gameviewmain.castle-user-interface';
   ConnectionStatus := status_disconnected;
   ConnectionTimeout := 0;
+  lockviewtoground := false;
 end;
 
 procedure TViewMain.Start;
@@ -316,17 +319,7 @@ procedure TViewMain.TerrainHeight( const pos : tvector3; var h : single );
    h := -1;
    pos2 := Vector2(Pos.X,Pos.Z);
    if gtilelist.findtileatlocation( pos2, atile ) and assigned( atile.Graphics ) then
-    begin
-//      dbgwriteln( inttostr( atile.Info.TileX )+','+inttostr( atile.Info.TileY ));
       TTerrainMesh( atile.graphics ).Elevationatpos( pos2, h );
-    end;
- (*
-   if assigned( atile ) then
-      Y := aTile.Data.Height( Pos2, Vector2(0,0));
-   else
-    begin
-      {!!! if no tile then use the tterrainnoise }
-    end;     *)
  end;
 
 function TViewMain.MoveAllowed(const Sender: TCastleNavigation;
@@ -338,8 +331,13 @@ function TViewMain.MoveAllowed(const Sender: TCastleNavigation;
    h := ProposedNewPos.Y;
    TerrainHeight( ProposedNewPos, TerrainH );
    NewPos := ProposedNewPos;
-   if h - radius < Terrainh then
+   lockviewtoground := ( h - radius < Terrainh ) or lockviewtoground;
+   if lockviewtoground then
+    begin
       NewPos := Vector3(ProposedNewPos.X, TerrainH + radius, ProposedNewPos.Z );
+      MainNavigation.MoveHorizontalSpeed := sqrt(radius);
+
+    end;
    result := true;
  end;
 
@@ -391,9 +389,12 @@ procedure TViewMain.Mousewheel( direction : integer );
       h := h + delta;
       if h - MainNavigation.radius < TerrainH then
        begin
+         lockviewtoground := true;
          h := MainNavigation.radius + TerrainH;
          MainNavigation.MoveHorizontalSpeed := 0.1;
-       end;
+       end
+      else
+         lockviewtoground := false;
       pos.Y := h;
       MainNavigation.MoveHorizontalSpeed := sqrt(amt);
 //      ViewUpdated;

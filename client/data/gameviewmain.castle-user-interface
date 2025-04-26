@@ -6,26 +6,15 @@
     {
       "$$ClassName" : "TCastleVerticalGroup",
       "FullSize" : true,
-      "HeightFraction" : 9.0000000000000000E+001,
+      "HeightFraction" : 1.0000000000000000E+002,
       "Name" : "VerticalGroup1",
-      "Padding" : 1.0000000000000000E+001,
-      "TranslationPersistent" : {
-        "$$ClassName" : "TCastleVector2Persistent",
-        "X" : 1.0000000000000000E+001,
-        "Y" : -2.0000000000000000E+001
-      },
       "VerticalAnchorParent" : "vpTop",
       "VerticalAnchorSelf" : "vpTop",
-      "WidthFraction" : 9.0000000000000000E+001,
+      "WidthFraction" : 1.0000000000000000E+002,
       "$Children" : [
         {
           "$$ClassName" : "TCastleHorizontalGroup",
           "Name" : "HorizontalGroup3",
-          "TranslationPersistent" : {
-            "$$ClassName" : "TCastleVector2Persistent",
-            "X" : 1.0000000000000000E+001,
-            "Y" : -1.0000000000000000E+001
-          },
           "VerticalAnchorParent" : "vpTop",
           "VerticalAnchorSelf" : "vpTop",
           "$Children" : [
@@ -168,13 +157,12 @@
           "Name" : "Viewport1",
           "TranslationPersistent" : {
             "$$ClassName" : "TCastleVector2Persistent",
-            "X" : 1.0000000000000000E+001,
-            "Y" : -4.1400001525878906E+001
+            "Y" : -3.1400001525878906E+001
           },
           "VerticalAnchorParent" : "vpTop",
           "VerticalAnchorSelf" : "vpTop",
           "Width" : 8.2000000000000000E+002,
-          "WidthFraction" : 9.8000001907348633E-001,
+          "WidthFraction" : 1.0000000000000000E+000,
           "$NonVisualComponents" : [
             {
               "$$ClassName" : "TCastleBackground",
@@ -417,6 +405,7 @@
         },
         {
           "$$ClassName" : "TCastleShape",
+          "AutoSizeToChildren" : true,
           "ColorPersistent" : {
             "$$ClassName" : "TCastleColorPersistent",
             "Alpha" : 0.0000000000000000E+000,
@@ -424,16 +413,15 @@
             "Green" : 0.0000000000000000E+000,
             "Red" : 0.0000000000000000E+000
           },
-          "Height" : 8.0000000000000000E+001,
+          "Height" : 5.0000000000000000E+001,
           "Name" : "Shape1",
           "TranslationPersistent" : {
             "$$ClassName" : "TCastleVector2Persistent",
-            "X" : 1.0000000000000000E+001,
-            "Y" : -6.8140002441406250E+002
+            "Y" : -6.7140002441406250E+002
           },
           "VerticalAnchorParent" : "vpTop",
           "VerticalAnchorSelf" : "vpTop",
-          "Width" : 2.0000000000000000E+002,
+          "Width" : 1.5000000000000000E+002,
           "$Children" : [
             {
               "$$ClassName" : "TCastleShape",
