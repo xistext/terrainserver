@@ -86,8 +86,8 @@ initialization
 
   { Special code in client / server examples:
     Portrait-like aspect ratio, similar to mobile portrait mode. }
-  Window.Width := Application.ScreenWidth div 3;
-  Window.Height := Application.ScreenHeight * 3 div 4;
+  Window.Width := 520;
+  Window.Height := 400;
 
   { Handle command-line parameters like --fullscreen and --window.
     By doing this last, you let user to override your fullscreen / mode setup. }

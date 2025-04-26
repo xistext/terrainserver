@@ -89,9 +89,6 @@ begin
   ConnectedIndicator.exists := true;
   Container.UIScaling := usNone;
   EditPort.Enabled := false;
-
-  //!!! how to set application window size?
-  Application
 end;
 
 procedure TViewMain.Stop;

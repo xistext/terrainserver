@@ -48,6 +48,9 @@ type
       end;
 
 const GParentComponent : TComponent = nil;
+      status_disconnected = 0;
+      status_connecting = 1;
+      status_connected = 2;
 
 implementation
 

@@ -56,6 +56,8 @@ type
     AlphaSlider : TCastleIntegerSlider;
 
   private
+    connectiontimeout : single;
+    connectionstatus : integer;
     FClient: TTerClient;
     procedure HandleConnected;
     procedure HandleDisconnected;
@@ -67,6 +69,7 @@ type
     procedure ClickTest(Sender: TObject);
     procedure ClickSend(Sender: TObject);
     procedure ColorSliderChange( sender : TObject );
+
   public
     constructor Create(AOwner: TComponent); override;
     procedure Start; override;
@@ -95,6 +98,8 @@ constructor TViewMain.Create(AOwner: TComponent);
 begin
   inherited;
   DesignUrl := 'castle-data:/gameviewmain.castle-user-interface';
+  ConnectionStatus := status_disconnected;
+  ConnectionTimeout := 0;
 end;
 
 procedure TViewMain.Start;
@@ -137,6 +142,21 @@ var terrainh : single;
     agl : single;
 begin
   inherited;
+  if connectionstatus = status_connecting then
+   begin
+     connectiontimeout := connectiontimeout + secondspassed;
+     if connectiontimeout > 1 then
+      begin
+        dbgwriteln( 'Server not found' );
+        if FClient <> nil then
+        begin
+          ButtonCreateClient.Enabled := true;
+          ButtonCreateClient.Caption := 'Connect';
+          connectionstatus := status_disconnected;
+          FreeAndNil(FClient);
+        end
+      end;
+   end;
   MainNavigation.MouseLook := {( GActiveDrag = self ) and} ( buttonMiddle in Container.MousePressed );
   TerrainHeight( MainCamera.Translation, terrainh );
   agl := MainCamera.Translation.Y - terrainh;
@@ -147,7 +167,9 @@ procedure TViewMain.HandleConnected;
 begin
   DbgWriteln('Connected to server');
   ClickSend( self );
+  connectionstatus := status_connected;
   ButtonCreateClient.Caption := 'Disconnect';
+  ButtonCreateClient.Enabled := true;
   ButtonSend.Enabled := FClient <> nil;
 end;
 
@@ -155,7 +177,9 @@ procedure TViewMain.HandleDisconnected;
 begin
   DbgWriteln('Disconnected from server');
   ButtonCreateClient.Caption := 'Connect';
+  ButtonCreateClient.Enabled := true;
   ButtonSend.Enabled := false;
+  connectionstatus := status_disconnected;
   if assigned( fclient ) then
      FreeAndNil( fClient );
 end;
@@ -167,33 +191,36 @@ end;
 
 procedure TViewMain.ClickCreateClient(Sender: TObject);
 begin
-  if FClient <> nil then
-  begin
-    FClient.Disconnect;
-    FreeAndNil(FClient);
-  end
-  else
-   begin
-     FClient := TTerClient.Create;
-     FClient.Hostname := 'localhost';
-     FClient.Port := 10244;
+  case connectionstatus of
+    status_disconnected :
+    begin
+      ButtonCreateClient.Caption := 'Connecting';
+      ButtonCreateClient.Enabled := false;
+      FClient := TTerClient.Create;
+      FClient.Hostname := 'localhost';
+      FClient.Port := 10244;
 
-     FClient.OnConnected := {$ifdef FPC}@{$endif} HandleConnected;
-     FClient.OnDisconnected := {$ifdef FPC}@{$endif} HandleDisconnected;
-     FClient.OnMessageReceived := {$ifdef FPC}@{$endif} HandleMessageReceived;
-     FClient.fOnTileReceived :=  {$ifdef FPC}@{$endif}HandleTileReceived;
-     FClient.Connect;
-     (*
-     if FClient.IsConnected then
-      begin
-        dbgwriteln( 'Connected to server' );
-      end
-     else
-      begin
-         dbgwriteln( 'Terrain server not found' );
-        FreeAndNil( FClient );
-      end;*)
-   end;
+      FClient.OnConnected := {$ifdef FPC}@{$endif} HandleConnected;
+      FClient.OnDisconnected := {$ifdef FPC}@{$endif} HandleDisconnected;
+      FClient.OnMessageReceived := {$ifdef FPC}@{$endif} HandleMessageReceived;
+      FClient.fOnTileReceived :=  {$ifdef FPC}@{$endif}HandleTileReceived;
+      connectiontimeout := 0;
+      connectionstatus := status_connecting;
+      FClient.Connect;
+    end;
+    status_connected : if FClient <> nil then
+     begin
+       connectionstatus := status_disconnected;
+       FClient.Disconnect;
+       FreeAndNil(FClient);
+     end;
+    status_connecting : if FClient <> nil then
+     begin
+       ButtonCreateClient.Enabled := false;
+       connectionstatus := status_disconnected;
+       FreeAndNil(FClient);
+     end
+   end
 end;
 
 

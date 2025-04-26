@@ -48,6 +48,9 @@ type
       end;
 
 const GParentComponent : TComponent = nil;
+      status_disconnect = 0;
+      status_connecting = 1;
+      status_connected = 2;
 
 implementation
 
@@ -96,7 +99,7 @@ procedure TTerClientThread.SendTile( const msgheader : TMsgHeader;
    BufLen := BufLen - hdsz;
    tilerec.msginfo := msgheader;
    Move( buffer[sizeof(tmsgheader)], tilerec.tileinfo, sizeof( ttileheader ));
-   tilerec.tileGrid := TSingleGrid.createsize(tileinfo.TileSz );
+   tilerec.tileGrid := TSingleGrid.createsize(tilerec.tileinfo.TileSz );
    Move( buffer[hdsz], tilerec.tileGrid.data^, BufLen );
    { make a new mesh if we can't figure out how to reuse existing mesh if same size }
    FTileList.Add( tilerec );
