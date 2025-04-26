@@ -87,15 +87,17 @@ begin
   ButtonSend.OnClick := {$ifdef FPC}@{$endif} ClickSend;
   ClickCreateServer( self );
   ConnectedIndicator.exists := true;
+  Container.UIScaling := usNone;
+  Application.Height := 300;
 end;
 
 procedure TViewMain.Stop;
 begin
-  if assigned( fserver ) then
+(*  if assigned( fserver ) then
    begin
   //   FServer.Stop;
      FreeAndNil(FServer);
-   end;
+   end;*)
   inherited;
 end;
 

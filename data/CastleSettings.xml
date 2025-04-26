@@ -15,6 +15,6 @@ this is most comfortable to design our simple UI.
   <ui_scaling
     mode="EncloseReferenceSize"
     reference_width="450"
-    reference_height="800"
+    reference_height="300"
   />
 </castle_settings>

@@ -315,23 +315,26 @@ function TTerrainMesh.InitAppearance : TAppearanceNode;
  end;
 
 procedure buildvertexlistsfromgrid( grid : TSingleGrid;
-                                    Vertices : TVector3List;
-                                    shader : TTileShader );
+                                    Vertices : TVector3List );
 var i, j, c, posy : integer;
     VertexPtr : ^TVector3;
     hptr : PSingle;
+    l, ix : integer;
  begin
    VertexPtr := Vertices.Ptr(0);  { starting vertex pointer }
    posy := 0;
    c := grid.wh;
+   l := vertices.count;
+   ix := 0;
    for i := c - 1 downto 0 do
     begin
       hptr := grid.ptrix( posy );
       for j := c - 1 downto 0 do
        begin
+         assert( ix < l );
          VertexPtr^.Y := hptr^;
          inc( VertexPtr );
-
+         inc( l );
          inc( hptr, grid.wh );
        end;
       inc( posy );
@@ -339,14 +342,11 @@ var i, j, c, posy : integer;
  end;
 
 procedure TTerrainMesh.updatefromgrid( TerrainGrid : TSingleGrid );
-var shader : TTileShader;
-    coord : TCoordinateNode;
+var coord : TCoordinateNode;
 begin
-  shader := gettileshader( LinkedTile, GShaderId );
   coord := CoordinateNode;
   buildvertexlistsfromgrid( TerrainGrid,
-                            Coord.FdPoint.Items, shader );
-  shader.free;
+                            Coord.FdPoint.Items );
   Coord.FdPoint.changed; { trigger mesh to rebuild }
 //  dirty := false;
 end;

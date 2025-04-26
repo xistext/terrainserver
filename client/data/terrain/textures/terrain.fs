@@ -256,9 +256,8 @@ void PLUG_main_texture_apply(inout vec4 fragment_color, const in vec3 normal)
 
      if ( blur )
       {
-//	vec2 posincell = fract(uv/dim);
 //	vec2 posincell = vec2( floor( uv.x * dim)/dim, floor( uv.y * dim)/dim );
-        vec2 posincell = vec2((uv.x - floor(uv.x / dim) * dim) / dim,
+        vec2 posincell = vec2((uv.x - floor(uv.x / dim) * dim) / dim,  //! this still produces seams and x=0 or y=0
                               (uv.y - floor(uv.y / dim) * dim) / dim );
 	float shadepct = 0.33;
         int steps = 0;

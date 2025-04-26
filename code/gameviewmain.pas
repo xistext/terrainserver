@@ -87,6 +87,8 @@ begin
   ButtonSend.OnClick := {$ifdef FPC}@{$endif} ClickSend;
   ClickCreateServer( self );
   ConnectedIndicator.exists := true;
+  Container.UIScaling := usNone;
+  //!!! how to set application window size?
 end;
 
 procedure TViewMain.Stop;

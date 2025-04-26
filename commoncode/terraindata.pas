@@ -174,10 +174,7 @@ function TTileList.getinittile( const tileinfo : TTileHeader ) : TTerTile;
  var i : integer;
  begin
    if search( @tileinfo, i ) then
-    begin
-      result := TTerTile( at( i ));
-      result.Info := tileinfo;
-    end
+      result := TTerTile( at( i ))
    else
     begin
       result := TTerTile.create( tileinfo );

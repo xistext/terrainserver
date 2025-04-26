@@ -195,21 +195,29 @@ procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
                                         const tileinfo : TTileHeader;
                                         tilegrid : TSingleGrid );
  var tile : TTerTile;
-     tilemesh : TTerrainMesh;
  begin
    Tile := GTileList.GetInitTile( tileinfo );
    if assigned( Tile.Graphics ) then
     begin
-      Viewport1.Items.Remove( Tile.Graphics );
-      Tile.Graphics.Free;
+      if Tile.Info.TileSz <> tileInfo.TileSz then
+       begin
+         Viewport1.Items.Remove( Tile.Graphics );
+         FreeAndNil( Tile.Graphics );
+         Tile.Info := TileInfo;
+         Tile.Graphics := TTerrainMesh.create2( Viewport1, Tile );
+         Viewport1.Items.Add( Tile.Graphics );
+       end
+    end
+   else
+    begin
+      Tile.Graphics := TTerrainMesh.create2( Viewport1, Tile );
+      Viewport1.Items.Add( Tile.Graphics );
     end;
+
    { update tile graphics }
-   tilemesh := TTerrainMesh.create2( Viewport1, Tile );
-   tilemesh.UpdateFromGrid( TileGrid );
+   TTerrainMesh( Tile.Graphics ).UpdateFromGrid( TileGrid );
    TileGrid.Free;
 
-   Tile.Graphics := tilemesh;
-   Viewport1.Items.Add( tilemesh );
  end;
 
 
