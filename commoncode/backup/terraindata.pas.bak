@@ -281,17 +281,19 @@ constructor TTerTile.create( const iInfo : TTileHeader );
    datalayers[layer_terrain] := layer;
    { initialize splat layer }
    layer := TIntLayer.create;
-   layer.initgrid( Info.TileSz );
+   layer.initgrid(60 { Info.TileSz } );
    datalayers[layer_splat] := layer;
    { initialize water layer }
    layer := TDataLayer.create;
    layer.initgrid( Info.TileSz );
+   TSingleGrid( layer.DataGrid ).setvalue( 2 );
    datalayers[layer_water] := layer;
 
 
    status := 0;
    {$else}
-   Graphics := nil;
+   TerrainGraphics := nil;
+   WaterGraphics := nil;
    {$endif}
  end;
 

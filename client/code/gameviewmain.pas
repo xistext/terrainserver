@@ -229,25 +229,48 @@ procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
  var tile : TTerTile;
  begin
    Tile := GTileList.GetInitTile( tileinfo );
-   if assigned( Tile.Graphics ) then
+   if ( msginfo.msgtype = msg_Water ) then
     begin
-      if Tile.Info.TileSz <> tileInfo.TileSz then
-       begin
-         Viewport1.Items.Remove( Tile.Graphics );
-         Tile.Graphics.Free;
-         Tile.Info := TileInfo;
-         Tile.Graphics := TTerrainMesh.create2( Viewport1, Tile );
-         Viewport1.Items.Add( Tile.Graphics );
-       end
+     if assigned( Tile.WaterGraphics ) then
+      begin
+        if Tile.Info.TileSz <> tileInfo.TileSz then
+         begin
+           Viewport1.Items.Remove( Tile.WaterGraphics );
+           Tile.WaterGraphics.Free;
+           Tile.Info := TileInfo;
+           Tile.WaterGraphics := TTerrainMesh.create2( Viewport1, Tile );
+           Viewport1.Items.Add( Tile.WaterGraphics );
+         end
+      end
+     else
+      begin
+        Tile.WaterGraphics := TTerrainMesh.create2( Viewport1, Tile );
+        Viewport1.Items.Add( Tile.WaterGraphics );
+      end;
+     { update tile graphics }
+     TTerrainMesh( Tile.WaterGraphics ).UpdateFromGrid( TileGrid );
     end
    else
     begin
-      Tile.Graphics := TTerrainMesh.create2( Viewport1, Tile );
-      Viewport1.Items.Add( Tile.Graphics );
+      if assigned( Tile.TerrainGraphics ) then
+       begin
+         if Tile.Info.TileSz <> tileInfo.TileSz then
+          begin
+            Viewport1.Items.Remove( Tile.TerrainGraphics );
+            Tile.TerrainGraphics.Free;
+            Tile.Info := TileInfo;
+            Tile.TerrainGraphics := TTerrainMesh.create2( Viewport1, Tile );
+            Viewport1.Items.Add( Tile.TerrainGraphics );
+          end
+       end
+      else
+       begin
+         Tile.TerrainGraphics := TTerrainMesh.create2( Viewport1, Tile );
+         Viewport1.Items.Add( Tile.TerrainGraphics );
+       end;
+      { update tile graphics }
+      TTerrainMesh( Tile.TerrainGraphics ).UpdateFromGrid( TileGrid );
     end;
-
-   { update tile graphics }
-   TTerrainMesh( Tile.Graphics ).UpdateFromGrid( TileGrid );
 
    { free the sent data when finished }
    TileGrid.Free;
@@ -294,8 +317,8 @@ procedure TViewMain.ClickTest(Sender: TObject);
   for i := 0 to gtilelist.Count - 1 do
    begin
      Tile := TTerTile( gTileList.At( i ));
-     if assigned( Tile.graphics ) then
-        TTerrainMesh( Tile.graphics ).UpdateAppearance;
+     if assigned( Tile.TerrainGraphics ) then
+        TTerrainMesh( Tile.TerrainGraphics ).UpdateAppearance;
    end;
  end;
 
@@ -318,8 +341,8 @@ procedure TViewMain.TerrainHeight( const pos : tvector3; var h : single );
  begin
    h := -1;
    pos2 := Vector2(Pos.X,Pos.Z);
-   if gtilelist.findtileatlocation( pos2, atile ) and assigned( atile.Graphics ) then
-      TTerrainMesh( atile.graphics ).Elevationatpos( pos2, h );
+   if gtilelist.findtileatlocation( pos2, atile ) and assigned( atile.TerrainGraphics ) then
+      TTerrainMesh( atile.TerrainGraphics ).Elevationatpos( pos2, h );
  end;
 
 function TViewMain.MoveAllowed(const Sender: TCastleNavigation;

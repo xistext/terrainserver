@@ -39,7 +39,6 @@ TTerrainMesh = class( TAbstractTextureMesh )
                           iLinkedTile : TTerTile );
      function offset : TVector2; override;
      procedure UpdateSize;
-//   procedure updategraphics; override;
      procedure updatefromgrid( TerrainGrid : TSingleGrid );
      procedure UpdateAppearance;
      function InitAppearance : TAppearanceNode; override;

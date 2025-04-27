@@ -93,7 +93,8 @@ type TTerTile = class; { forward }
         property TerrainGrid : TSingleGrid read getTerrainGrid;
         property WaterGrid : TSingleGrid read getWaterGrid;
         {$else}
-        Graphics : TCastleTransform;
+        TerrainGraphics : TCastleTransform;
+        WaterGraphics : TCastleTransform;
         {$endif}
       end;
 
@@ -286,12 +287,14 @@ constructor TTerTile.create( const iInfo : TTileHeader );
    { initialize water layer }
    layer := TDataLayer.create;
    layer.initgrid( Info.TileSz );
+   TSingleGrid( layer.DataGrid ).setvalue( 2 );
    datalayers[layer_water] := layer;
 
 
    status := 0;
    {$else}
-   Graphics := nil;
+   TerrainGraphics := nil;
+   WaterGraphics := nil;
    {$endif}
  end;
 
