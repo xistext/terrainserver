@@ -325,18 +325,15 @@ procedure TViewMain.TerrainHeight( const pos : tvector3; var h : single );
 function TViewMain.MoveAllowed(const Sender: TCastleNavigation;
                                const OldPos, ProposedNewPos: TVector3; out NewPos: TVector3;
                                const Radius: Single; const BecauseOfGravity: Boolean): boolean;
- var h : single;
-     terrainh : single;
+ var terrainh : single;
  begin
-   h := ProposedNewPos.Y;
    TerrainHeight( ProposedNewPos, TerrainH );
    NewPos := ProposedNewPos;
-   lockviewtoground := ( h - radius < Terrainh ) or lockviewtoground;
+   lockviewtoground := ( NewPos.Y - radius < Terrainh ) or lockviewtoground;
    if lockviewtoground then
     begin
       NewPos := Vector3(ProposedNewPos.X, TerrainH + radius, ProposedNewPos.Z );
       MainNavigation.MoveHorizontalSpeed := sqrt(radius);
-
     end;
    result := true;
  end;

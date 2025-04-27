@@ -108,7 +108,7 @@ function TTerClientThread.ProcessMessage( const msgheader : TmsgHeader;
           assert( length( buffer ) = MsgLen + SizeOf( msgheader ));
 
           case msgheader.msgtype of
-              msg_Tile : sendtile( msgheader, buffer, MsgLen + SizeOf( msgheader ));
+              msg_Tile, msg_Water : sendtile( msgheader, buffer, MsgLen + SizeOf( msgheader ));
           end;
         end;
      end;

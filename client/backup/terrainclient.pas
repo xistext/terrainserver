@@ -69,7 +69,7 @@ procedure setCreateClientMode( mode : integer;
                              AButton.Enabled := true;
                            end;
      status_connecting :   begin
-                             AButton.Caption := 'Connecting';
+                             AButton.Caption := 'Connecting...';
                              AButton.Enabled := false;
                            end;
      status_connected :    begin
@@ -108,7 +108,7 @@ function TTerClientThread.ProcessMessage( const msgheader : TmsgHeader;
           assert( length( buffer ) = MsgLen + SizeOf( msgheader ));
 
           case msgheader.msgtype of
-              msg_Tile : sendtile( msgheader, buffer, MsgLen + SizeOf( msgheader ));
+              msg_Tile, msgwater : sendtile( msgheader, buffer, MsgLen + SizeOf( msgheader ));
           end;
         end;
      end;

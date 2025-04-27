@@ -63,6 +63,16 @@ type TCommandCallback = procedure( msg : string ) of object;
         function runtask : boolean; override;
       end;
 
+     TTask_SendWater = class( TClientTaskItem )
+        Tile   : TTerTile;
+        LOD    : dword;
+        constructor create( const iClient : TClientConnection;
+                            iTile : TTerTile;
+                            iLOD : dword );
+        function runtask : boolean; override;
+      end;
+
+
     TTask_BuildTile = class( TClientTaskItem )
             Tile   : TTerTile;
             tileparams : TTerrainParams;
@@ -110,9 +120,9 @@ const version : string = 'xisterra0.1a';
       end;
    end;
 
-  function UpdateTile( const tileparams : TTerrainParams;
-                             TileX, TileY : integer;
-                       var ATile : TTerTile ) : boolean;
+  function UpdateTile(       TileX, TileY : integer;
+                         var ATile : TTerTile;
+                             docreate : boolean = true ) : boolean;
   { returns true if creaated }
    var tileix : integer;
        tileinfo : TTileHeader;
@@ -120,12 +130,20 @@ const version : string = 'xisterra0.1a';
      result := not GTileList.findtile( TileX, TileY, tileix );
      if result then
       begin { not found, create }
-        sethxy( tileinfo, TileX, TileY, GDefGridCellCount );
-        ATile := TTerTile.create( tileinfo );
-        GTileList.atinsert( tileix, ATile );
+        if docreate then
+         begin
+           sethxy( tileinfo, TileX, TileY, GDefGridCellCount );
+           ATile := TTerTile.create( tileinfo );
+           GTileList.atinsert( tileix, ATile );
+         end
+        else
+          result := false;
       end
      else
-        ATile := TTerTile( GTileList.at( tileix ))
+      begin
+        ATile := TTerTile( GTileList.at( tileix ));
+        result := not docreate;
+      end;
    end;
 
 procedure SendClientMsgHeader( AClient : TClientConnection;
@@ -258,19 +276,10 @@ function TTask_BuildTile.runtask : boolean;
 
 //-------------------------------------
 
-constructor TTask_SendTile.create( const iClient : TClientConnection;
-                                   iTile : TTerTile;
-                                   iLOD : dword );
- begin
-   inherited create( iClient );
-   Tile := iTile;
-   LOD := iLOD;
- end;
-
-
 function BuildResultGrid( tile : ttertile;
                           const resultinfo : TTileHeader;
-                          LOD : dword) : TIdBytes;
+                          LOD : dword;
+                          layer : integer =  layer_terrain) : TIdBytes;
  var tilesz, LODDiv : integer;
      buffer : TIdBytes;
      TerGrid : TSingleGrid;
@@ -343,8 +352,10 @@ function BuildResultGrid( tile : ttertile;
    loddiv := divOfLOD( LOD );
     buflen := resultinfo.tilesz * resultinfo.tilesz * sizeof( single ) ;
     tilesz := Tile.info.tilesz div loddiv;
-
-    TerGrid := Tile.TerrainGrid;
+    case layer of
+      layer_terrain : TerGrid := Tile.TerrainGrid;
+      layer_water  : TerGrid := Tile.WaterGrid;
+     end;
     setlength( buffer, buflen );
     bufptr := @buffer[0];
     neighbor := GTileList.getneighbor( tile, 0, 1 );
@@ -353,6 +364,17 @@ function BuildResultGrid( tile : ttertile;
     else
        reducedresolutionsample;
    result := buffer;
+ end;
+
+//------------------------
+
+constructor TTask_SendTile.create( const iClient : TClientConnection;
+                                   iTile : TTerTile;
+                                   iLOD : dword );
+ begin
+   inherited create( iClient );
+   Tile := iTile;
+   LOD := iLOD;
  end;
 
 function TTask_SendTile.RunTask : boolean;
@@ -381,6 +403,45 @@ function TTask_SendTile.RunTask : boolean;
 
    result := true;
  end;
+
+//----------------------------
+
+constructor TTask_SendWater.create( const iClient : TClientConnection;
+                                    iTile : TTerTile;
+                                    iLOD : dword );
+ begin
+   inherited create( iClient );
+   Tile := iTile;
+   LOD := iLOD;
+ end;
+
+function TTask_SendWater.RunTask : boolean;
+ var buffer : TIdBytes;
+     resulttileinfo : TTileHeader;
+     buflen : integer;
+     tilesz, loddiv : integer;
+ begin
+   result := inherited Runtask;
+   if not result then
+      exit;
+   loddiv := divOfLOD( LOD );
+   resulttileinfo := Tile.info;
+
+   tilesz := GDefGridCellCount div loddiv;
+   resulttileinfo.tilesz := tilesz + 1;
+   buffer := BuildResultGrid( tile, resulttileinfo, LOD, layer_water );
+   buflen := length( buffer );
+
+   { send message + tile headers }
+   SendClientMsgHeader( client, msg_Tile, buflen + sizeof( TTileHeader ));
+   client.Send( resulttileinfo, sizeof( TTileHeader ));
+   client.SendBuffer( buffer, buflen );
+
+   dbgwrite( 'Send '+tile.tileid+'.   ' );
+
+   result := true;
+ end;
+
 
 //---------------------------------
 
@@ -497,7 +558,7 @@ procedure buildArea( client : TClientConnection;
     LOD := trunc(sqrt( sqr( tx - CenterX ) + sqr( ty - CenterY )));
     if LOD <= Radius then
      begin
-       if UpdateTile( Params, tx, ty, tile ) then { if the tile was created then we have to add a task to build it }
+       if UpdateTile( tx, ty, tile ) then { if the tile was created then we have to add a task to build it }
           GTaskList.AddTask( TTask_BuildTile.create( client, Tile, Params ) );
        GTaskList.AddTask( TTask_SendTile.create( client, Tile, LOD ) );
        Callback('');
@@ -540,6 +601,64 @@ procedure buildArea( client : TClientConnection;
    aTaskList.Free;}
  end;
 
+procedure waterArea( client : TClientConnection;
+                     CenterX, CenterY : integer;
+                     Radius : integer;
+                     callback : TCommandCallback);
+ var atasklist : TTasklist;
+
+ procedure SendATile( tx, ty : integer );
+  var Tile : TTerTile;
+      LOD : dword;
+  begin
+    LOD := trunc(sqrt( sqr( tx - CenterX ) + sqr( ty - CenterY )));
+    if LOD <= Radius then
+     begin
+       if UpdateTile( tx, ty, tile, false ) then { if the tile was created then we have to add a task to build it }
+        begin
+          GTaskList.AddTask( TTask_SendWater.create( client, Tile, LOD ) );
+          Callback('');
+        end;
+     end;
+  end;
+
+ var TileY, TileY2 : Integer;
+     i, r : integer;
+ begin
+   atasklist := ttasklist.create;
+   SendATile( CenterX, CenterY );
+   for r := 1 to radius do
+    begin
+      TileY := CenterY - r;
+      TileY2 := CenterY + r;
+      { do long end top and bottom }
+      SendATile( CenterX, TileY );
+      SendATile( CenterX, CenterY + r );
+      { do sides left, right }
+      SendATile( CenterX - r, CenterY );
+      SendATile( CenterX + r, CenterY );
+      for i := 1 to r - 1 do
+        begin
+          SendATile( CenterX - i, TileY );
+          SendATile( CenterX + i, TileY );
+          SendATile( CenterX - i, TileY2 );
+          SendATile( CenterX + i, TileY2 );
+          SendATile( CenterX - r, CenterY - i );
+          SendATile( CenterX - r, CenterY + i );
+          SendATile( CenterX + r, CenterY - i );
+          SendATile( CenterX + r, CenterY + i );
+        end;
+      SendATile( CenterX - r, CenterY - r );
+      SendATile( CenterX - r, CenterY + r );
+      SendATile( CenterX + r, CenterY - r );
+      SendATile( CenterX + r, CenterY + r );
+    end;
+{   gtasklist.AddTasks(aTaskList);
+   aTaskList.Free;}
+ end;
+
+
+
 function parseTileXY( var params : string;
                        var TileX, TileY : integer ) : boolean;
  var param : string;
@@ -574,13 +693,30 @@ function cmdBuildTile( client : TClientConnection;
     end;
  end;
 
+function cmdWater( client : TClientConnection;
+                   params : string;
+                   callback : TCommandCallback) : integer;
+ var TileX, TileY : integer;
+     param : string;
+     Radius   : dword;
+ begin
+   TileX := 0;
+   TileY := 0;
+   Radius := 0;
+   if parsetilexy( params, tilex, tiley ) and nextparam( params, param ) then
+      Radius := intofstr( param );
+   WaterArea( client, TileX, TileY, Radius, callback );
 
+
+ end;
 
 initialization
   GCmdList := TCmdList.Create;
   GTaskList := TTaskList.Create;
   GCmdList.RegisterCmd( 'version', @cmdVersion );
   GCmdList.RegisterCmd( 'build', @cmdBuildTile );
+  GCmdList.RegisterCmd( 'water', @cmdWater );
+
 //  GCmdList.RegisterCmd( 'save', @cmdSave );
 finalization
   GCmdList.Free;
