@@ -222,13 +222,6 @@ float modPos(float x, float y) {
     return mod(x, y) + (x < 0.0 ? y : 0.0);
 }
 
-float nfract( float  x )
- { if (x>=0.)
-     { return x-floor(x); }
-   else
-     { return 1-(x-floor(x)); }
-  }
-
 void PLUG_main_texture_apply(inout vec4 fragment_color, const in vec3 normal)
 {
   float h = terrain_position.y;
@@ -256,14 +249,28 @@ void PLUG_main_texture_apply(inout vec4 fragment_color, const in vec3 normal)
      float dim = 120/splat_sz;
      float idim = 1/dim;
      vec2 splatpos = vec2( uv.x, uv.y ) * idim;
+     splatpos.x = splatpos.x + 1000; //!kludge to prevent discontinuity at 0 axis
+     splatpos.y = splatpos.y + 1000;
+
      // calculate 2d index into splatmap
-     int ax = int( floor( mod( splatpos.x, splat_sz )));
-     int ay = int( floor( mod( splatpos.y, splat_sz )));
+     splatpos.x = mod( splatpos.x, splat_sz );
+     splatpos.y = mod( splatpos.y, splat_sz );
+
+     int ax = int( floor( splatpos.x ));
+     int ay = int( floor( splatpos.y ));
+
+     splatpos.x = fract( splatpos.x );
+     splatpos.y = fract( splatpos.y );
+
 //     terrain_color = mix( terrain_color, splatcolor, splatalpha  );
 
      if ( blur )
       {
-        vec2 posincell = vec2( fract( splatpos.x / splat_sz ), fract( splatpos.y / splat_sz ));
+//	vec2 posincell = vec2( floor( uv.x * dim)/dim, floor( uv.y * dim)/dim );
+//        vec2 posincell = vec2((uv.x - floor(uv.x / dim) * dim) / dim,  //! this still produces seams and x=0 or y=0
+//                              (uv.y - floor(uv.y / dim) * dim) / dim );
+         vec2 posincell = splatpos;
+//        vec2 posincell = vec2( fract( splatpos.x / splat_sz ), fract( splatpos.y / splat_sz ));
 
 	float shadepct = 0.33;
         int steps = 0;
