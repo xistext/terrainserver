@@ -9,6 +9,7 @@ uses
    terrainparams,
    basemesh, watergrid, TerrainData, TerrainShader;
 
+const WaterTextureUrl = 'castle-data:/textures/testwater3.png';
 
 {
   sand, clay, dirt, soil, gravel, rocks, boulders }
@@ -56,13 +57,17 @@ TTerrainMesh = class( TAbstractTextureMesh )
 
    end;
 
+TWaterMesh = class( TTerrainMesh )
+  constructor create2( aowner : TComponent;
+                       iLinkedTile : TTerTile );
+  function InitAppearance : TAppearanceNode; override;
+ end;
+
 const GShaderId : integer = 0;
       GShowGrid : boolean = false;
       GShowContour : boolean = false;
-//      GGridScale : integer = 1; { 5m }
-      GGridScale : single = 5; { 5m }
-      GContourScale : single = 5; {5m }
-var  GSplatPalette : TSplatPalette;
+      GGridScale : single = 5; { 1m }
+      GContourScale : single = 5; {1m }
 
 function gettileshader( Tile : ttertile;
                         shaderid : integer ) : TTileShader;
@@ -361,70 +366,28 @@ begin
   TSFFloat( EffectNode.Field( 'grid_scale' )).Value := ord( GShowGrid ) * GGridScale;
  // TSFFloat( EffectNode.Field( 'overlay_scale' )).Changed;
 
-  self.ChangedAll( true );
+  ChangedAll( true );
 
 //  dirty := false;
 end;
 
-procedure buildsplatpalette;
- var i : integer;
-     v : single;
-     ix : integer;
+//-------------------------
+
+constructor TWaterMesh.create2( aowner : TComponent;
+                                iLinkedTile : TTerTile );
  begin
-   { black .. white }
-   setlength( gsplatpalette, 71 );
-   ix := 0;
-   for i := 0 to 10 do
-    begin
-      v := i * 0.1;
-      gsplatpalette[ix] := vector3( v, v, v );
-      inc( ix )
-    end;
-   { red }
-   for i := 1 to 10 do
-    begin
-      v := i * 0.1;
-      gsplatpalette[ix] := vector3( v, 0, 0 );
-      inc( ix )
-    end;
-   { green }
-   for i := 1 to 10 do
-    begin
-      v := i * 0.1;
-      gsplatpalette[ix] := vector3( 0, v, 0 );
-      inc( ix )
-    end;
-   { blue }
-   for i := 1 to 10 do
-    begin
-      v := i * 0.1;
-      gsplatpalette[ix] := vector3( 0, 0, v );
-      inc( ix )
-    end;
-   { yellow }
-   for i := 1 to 10 do
-    begin
-      v := i * 0.1;
-      gsplatpalette[ix] := vector3( v, v, 0 );
-      inc( ix )
-    end;
-   { cyan }
-   for i := 1 to 10 do
-    begin
-      v := i * 0.1;
-      gsplatpalette[ix] := vector3( 0, v, v );
-      inc( ix )
-    end;
-   { magenta }
-   for i := 1 to 10 do
-    begin
-      v := i * 0.1;
-      gsplatpalette[ix] := vector3( v, 0, v );
-      inc( ix )
-    end;
+   inherited;
+   RenderOptions.WireframeEffect := weNormal;
  end;
 
-initialization
-  buildsplatpalette;
+function TWaterMesh.InitAppearance : TAppearanceNode;
+ begin
+   result := TAppearanceNode.create;
+   { make the material lit }
+   result.Material := initMaterial;
+   result.Material.MaterialInfo.MainColor := vector3( 0.1, 0.1, 0.4 );
+   result.Material.MaterialInfo.Transparency:= 0.5;
+ end;
+
 end.
 

@@ -238,13 +238,13 @@ procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
            Viewport1.Items.Remove( Tile.WaterGraphics );
            Tile.WaterGraphics.Free;
            Tile.Info := TileInfo;
-           Tile.WaterGraphics := TTerrainMesh.create2( Viewport1, Tile );
+           Tile.WaterGraphics := TWaterMesh.create2( Viewport1, Tile );
            Viewport1.Items.Add( Tile.WaterGraphics );
          end
       end
      else
       begin
-        Tile.WaterGraphics := TTerrainMesh.create2( Viewport1, Tile );
+        Tile.WaterGraphics := TWaterMesh.create2( Viewport1, Tile );
         Viewport1.Items.Add( Tile.WaterGraphics );
       end;
      { update tile graphics }

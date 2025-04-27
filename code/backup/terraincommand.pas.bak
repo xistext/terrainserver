@@ -287,10 +287,18 @@ function TTask_BuildTile.runtask : boolean;
 
     end;
 
-function BuildResultGrid( tile : ttertile;
-                          const resultinfo : TTileHeader;
-                          LOD : dword;
-                          layer : integer =  layer_terrain) : TIdBytes;
+   function gridvaluexy( grid : TSingleGrid;
+                         x,y : integer ) : single;
+    begin
+      result := -1;
+      if assigned( grid ) then
+         result := grid.valuexy(x,y);
+    end;
+
+function BuildResultBuffer( tile : ttertile;
+                            const resultinfo : TTileHeader;
+                            LOD : dword;
+                            layer : integer =  layer_terrain) : TIdBytes;
  var tilesz, LODDiv : integer;
      buffer : TIdBytes;
      ThisGrid : TSingleGrid;
@@ -306,10 +314,7 @@ function BuildResultGrid( tile : ttertile;
       begin
         move( ThisGrid.ptrxy(x,0)^, bufptr^, tilesz * sizeof( single ));
         { last point in line }
-        if assigned( ngrid ) then
-           h := ngrid.valuexy(x,0)
-        else
-           h := 0;
+        h := gridvaluexy(ngrid,x,0);
         inc( bufptr, tilesz );
         bufptr^ := h;
         inc( bufptr );
@@ -322,8 +327,7 @@ function BuildResultGrid( tile : ttertile;
      inc( bufptr, tilesz );
      neighbor := GTileList.getNeighbor( tile, 1, 1 );
      ngrid := neighborlayer( neighbor, layer );
-     if assigned( ngrid ) then
-        bufptr^ := nGrid.valuexy( 0, 0 );
+     gridvaluexy( nGrid, 0, 0 );
    end;
   procedure reducedresolutionsample;
    var x, y : integer;
@@ -340,10 +344,7 @@ function BuildResultGrid( tile : ttertile;
              inc( bufptr );
            end;
           { last point in from neighbor grid }
-          if assigned( ngrid ) then
-             h := ngrid.valuexy(x * loddiv,0)
-          else
-             h := 0;
+          h := gridvaluexy( ngrid, x * loddiv,0);
           bufptr^ := h;
           inc( bufptr );
         end;
@@ -363,8 +364,7 @@ function BuildResultGrid( tile : ttertile;
        { corner point from neighbor grid }
        neighbor := GTileList.getNeighbor( tile, 1, 1 );
        ngrid := neighborlayer( neighbor, layer );
-       if assigned( ngrid ) then
-          bufptr^ := ngrid.valuexy( 0, 0 );
+       bufptr^ := gridvaluexy( ngrid, 0, 0 );
    end;
  var buflen : integer;
  begin
@@ -384,6 +384,94 @@ function BuildResultGrid( tile : ttertile;
        reducedresolutionsample;
    result := buffer;
  end;
+
+function BuildResultGrid( tile : ttertile;
+                          const resultinfo : TTileHeader;
+                          LOD : dword;
+                          layer : integer =  layer_terrain) : TSingleGrid;
+ var tilesz, LODDiv : integer;
+     bufptr : ^single;
+     ThisGrid : TSingleGrid;
+     neighbor : TTerTile;
+  procedure fullresolutionsample;
+   var x, y : integer;
+       h : single;
+       ngrid : TSingleGrid;
+   begin
+     ngrid := neighborlayer( neighbor, layer );
+     for x := 0 to tilesz - 1 do
+      begin
+        move( ThisGrid.ptrxy(x,0)^, bufptr^, tilesz * sizeof( single ));
+        { last point in line }
+           h := gridvaluexy(ngrid, x,0);
+        inc( bufptr, tilesz );
+        bufptr^ := h;
+        inc( bufptr );
+      end;
+     { last row }
+     neighbor := GTileList.getNeighbor( tile, 1, 0 );
+     ngrid := neighborlayer( neighbor, layer );
+     if assigned( ngrid ) then
+        move( nGrid.ptrxy(0,0)^, bufptr^, tilesz * sizeof( single ));
+     inc( bufptr, tilesz );
+     neighbor := GTileList.getNeighbor( tile, 1, 1 );
+     ngrid := neighborlayer( neighbor, layer );
+     bufptr^ := gridvaluexy( ngrid, 0, 0 );
+   end;
+  procedure reducedresolutionsample;
+   var x, y : integer;
+       h : single;
+       ngrid : tsinglegrid;
+   begin
+      ngrid := neighborlayer( neighbor, layer );
+      for x := 0 to tilesz - 1 do
+        begin
+          for y := 0 to tilesz - 1 do
+           begin
+   //            bufptr^ := TerGrid.samplemax(x * loddiv, y * loddiv, loddiv, loddiv);
+             bufptr^ := ThisGrid.valuexy(x * loddiv, y * loddiv);
+             inc( bufptr );
+           end;
+          { last point in from neighbor grid }
+          h := gridvaluexy( ngrid, x * loddiv,0);
+          bufptr^ := h;
+          inc( bufptr );
+        end;
+       { last line from neighbor grid }
+       neighbor := GTileList.getNeighbor( tile, 1, 0 );
+       ngrid := neighborlayer( neighbor, layer );
+       if assigned( ngrid ) then
+        begin
+          for y := 0 to tilesz - 1 do
+           begin
+             bufptr^ := ngrid.valuexy(0, y * loddiv );
+             inc( bufptr );
+           end;
+        end
+       else
+          inc( bufptr, tilesz );
+       { corner point from neighbor grid }
+       neighbor := GTileList.getNeighbor( tile, 1, 1 );
+       ngrid := neighborlayer( neighbor, layer );
+       bufptr^ := gridvaluexy( ngrid, 0, 0 );
+   end;
+ var buflen : integer;
+ begin
+   loddiv := divOfLOD( LOD );
+    tilesz := Tile.info.tilesz div loddiv;
+    case layer of
+      layer_terrain : ThisGrid := Tile.TerrainGrid;
+      layer_water  : ThisGrid := Tile.WaterGrid;
+     end;
+    Result := TSingleGrid.Create( 0, resultinfo.tilesz );
+    bufptr := Result.ptrix(0);
+    neighbor := GTileList.getneighbor( tile, 0, 1 );
+    if loddiv = 1 then { full resolution }
+       fullresolutionsample
+    else
+       reducedresolutionsample;
+ end;
+
 
 //------------------------
 
@@ -410,7 +498,7 @@ function TTask_SendTile.RunTask : boolean;
 
    tilesz := GDefGridCellCount div loddiv;
    resulttileinfo.tilesz := tilesz + 1;
-   buffer := BuildResultGrid( tile, resulttileinfo, LOD );
+   buffer := BuildResultBuffer( tile, resulttileinfo, LOD );
    buflen := length( buffer );
 
    { send message + tile headers }
@@ -439,6 +527,7 @@ function TTask_SendWater.RunTask : boolean;
      resulttileinfo : TTileHeader;
      buflen : integer;
      tilesz, loddiv : integer;
+     resultwater, resultterrain : TSingleGrid;
  begin
    result := inherited Runtask;
    if not result then
@@ -448,13 +537,21 @@ function TTask_SendWater.RunTask : boolean;
 
    tilesz := GDefGridCellCount div loddiv;
    resulttileinfo.tilesz := tilesz + 1;
-   buffer := BuildResultGrid( tile, resulttileinfo, LOD, layer_water );
-   buflen := length( buffer );
+   resultwater := BuildResultGrid( tile, resulttileinfo, LOD, layer_water );
+   resultterrain := BuildResultGrid( tile, resulttileinfo, LOD, layer_terrain );
+   resultwater.addgrid(resultterrain);
+   resultterrain.free;
+
+   buflen := resultwater.wxh*sizeof(single);
+   setlength( buffer, buflen );
+   Move( resultwater.depthptr^, buffer[0], buflen );
 
    { send message + tile headers }
-   SendClientMsgHeader( client, msg_Tile, buflen + sizeof( TTileHeader ));
+   SendClientMsgHeader( client, msg_Water, buflen + sizeof( TTileHeader ));
    client.Send( resulttileinfo, sizeof( TTileHeader ));
    client.SendBuffer( buffer, buflen );
+
+   resultwater.free;
 
    dbgwrite( 'Send '+tile.tileid+'.   ' );
 

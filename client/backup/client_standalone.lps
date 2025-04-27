@@ -4,11 +4,11 @@
     <PathDelim Value="\"/>
     <Version Value="12"/>
     <BuildModes Active="Debug"/>
-    <Units Count="44">
+    <Units Count="47">
       <Unit0>
         <Filename Value="client_standalone.dpr"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="8"/>
+        <EditorIndex Value="12"/>
         <TopLine Value="3"/>
         <CursorPos Y="69"/>
         <UsageCount Value="203"/>
@@ -30,9 +30,8 @@
         <Filename Value="code\gameviewmain.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="GameViewMain"/>
-        <IsVisibleTab Value="True"/>
-        <TopLine Value="214"/>
-        <CursorPos X="19" Y="247"/>
+        <TopLine Value="217"/>
+        <CursorPos X="51" Y="251"/>
         <UsageCount Value="203"/>
         <Loaded Value="True"/>
       </Unit3>
@@ -46,9 +45,10 @@
       <Unit5>
         <Filename Value="code\terrainmesh.pas"/>
         <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="7"/>
-        <TopLine Value="2"/>
-        <CursorPos Y="42"/>
+        <TopLine Value="328"/>
+        <CursorPos Y="394"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
       </Unit5>
@@ -72,7 +72,7 @@
         <EditorIndex Value="3"/>
         <TopLine Value="375"/>
         <CursorPos X="86" Y="428"/>
-        <UsageCount Value="96"/>
+        <UsageCount Value="99"/>
         <Loaded Value="True"/>
       </Unit8>
       <Unit9>
@@ -85,7 +85,7 @@
       <Unit10>
         <Filename Value="..\commoncode\terservercommon.pas"/>
         <EditorIndex Value="4"/>
-        <UsageCount Value="91"/>
+        <UsageCount Value="94"/>
         <Loaded Value="True"/>
       </Unit10>
       <Unit11>
@@ -108,8 +108,7 @@
         <Filename Value="..\commoncode\terraindata.pas"/>
         <UnitName Value="TerrainData"/>
         <EditorIndex Value="6"/>
-        <TopLine Value="31"/>
-        <CursorPos X="42" Y="54"/>
+        <CursorPos X="7" Y="103"/>
         <UsageCount Value="107"/>
         <Loaded Value="True"/>
       </Unit13>
@@ -132,7 +131,7 @@
         <Filename Value="..\commoncode\terrainparams.pas"/>
         <EditorIndex Value="5"/>
         <CursorPos X="54" Y="11"/>
-        <UsageCount Value="97"/>
+        <UsageCount Value="100"/>
         <Loaded Value="True"/>
       </Unit16>
       <Unit17>
@@ -143,312 +142,337 @@
         <UsageCount Value="48"/>
       </Unit17>
       <Unit18>
-        <Filename Value="E:\cge\src\base\castlerenderoptions_globals.inc"/>
-        <EditorIndex Value="-1"/>
-        <CursorPos X="17" Y="242"/>
-        <UsageCount Value="26"/>
+        <Filename Value="E:\cge\src\base\castlerenderoptions_renderoptions.inc"/>
+        <EditorIndex Value="10"/>
+        <TopLine Value="397"/>
+        <CursorPos X="39" Y="429"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
       </Unit18>
       <Unit19>
+        <Filename Value="E:\cge\src\base\castlerenderoptions_globals.inc"/>
+        <EditorIndex Value="11"/>
+        <TopLine Value="154"/>
+        <CursorPos X="3" Y="187"/>
+        <UsageCount Value="28"/>
+        <Loaded Value="True"/>
+      </Unit19>
+      <Unit20>
         <Filename Value="E:\cge\src\transform\castletransform_initial_types.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="122"/>
         <CursorPos X="85" Y="153"/>
         <UsageCount Value="8"/>
-      </Unit19>
-      <Unit20>
-        <Filename Value="..\commoncode\basemesh.pas"/>
-        <EditorIndex Value="9"/>
-        <TopLine Value="260"/>
-        <CursorPos Y="311"/>
-        <UsageCount Value="103"/>
-        <Loaded Value="True"/>
       </Unit20>
       <Unit21>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <EditorIndex Value="13"/>
+        <TopLine Value="18"/>
+        <CursorPos Y="53"/>
+        <UsageCount Value="103"/>
+        <Loaded Value="True"/>
+      </Unit21>
+      <Unit22>
         <Filename Value="E:\cge\src\scene\castlescenecore.pas"/>
         <UnitName Value="CastleSceneCore"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="33" Y="360"/>
-        <UsageCount Value="24"/>
-      </Unit21>
-      <Unit22>
+        <UsageCount Value="23"/>
+      </Unit22>
+      <Unit23>
         <Filename Value="E:\cge\src\scene\x3d\castlefields_x3dsimplemultfield_descendants.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="407"/>
         <CursorPos X="10" Y="444"/>
         <UsageCount Value="12"/>
-      </Unit22>
-      <Unit23>
+      </Unit23>
+      <Unit24>
         <Filename Value="E:\cge\src\scene\x3d\castlefields_x3dsimplemultfield.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="13"/>
         <CursorPos X="5" Y="26"/>
-        <UsageCount Value="20"/>
-      </Unit23>
-      <Unit24>
+        <UsageCount Value="19"/>
+      </Unit24>
+      <Unit25>
         <Filename Value="E:\cge\src\scene\x3d\castlefields_x3dfield.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="1028"/>
         <CursorPos X="53" Y="1027"/>
         <UsageCount Value="49"/>
-      </Unit24>
-      <Unit25>
+      </Unit25>
+      <Unit26>
         <Filename Value="E:\cge\src\scene\castlescene.pas"/>
         <UnitName Value="CastleScene"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="79"/>
         <CursorPos X="30" Y="122"/>
         <UsageCount Value="21"/>
-      </Unit25>
-      <Unit26>
+      </Unit26>
+      <Unit27>
+        <Filename Value="E:\cge\src\scene\x3d\x3dnodes_standard_shape.inc"/>
+        <EditorIndex Value="8"/>
+        <TopLine Value="7"/>
+        <CursorPos X="37" Y="42"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+      </Unit27>
+      <Unit28>
         <Filename Value="E:\cge\src\scene\x3d\castlefields_x3dsinglefield_descendants.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="298"/>
         <CursorPos X="34" Y="333"/>
         <UsageCount Value="39"/>
-      </Unit26>
-      <Unit27>
+      </Unit28>
+      <Unit29>
         <Filename Value="E:\cge\src\transform\castlecameras.pas"/>
         <UnitName Value="CastleCameras"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="78" Y="12"/>
-        <UsageCount Value="56"/>
-      </Unit27>
-      <Unit28>
+        <UsageCount Value="55"/>
+      </Unit29>
+      <Unit30>
         <Filename Value="E:\cge\src\scene\x3d\x3dnodes_sfnode.inc"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="63" Y="50"/>
         <UsageCount Value="34"/>
-      </Unit28>
-      <Unit29>
+      </Unit30>
+      <Unit31>
         <Filename Value="E:\cge\src\scene\castleterrain.pas"/>
         <UnitName Value="CastleTerrain"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="1592"/>
         <CursorPos X="55" Y="1603"/>
-        <UsageCount Value="84"/>
-      </Unit29>
-      <Unit30>
+        <UsageCount Value="83"/>
+      </Unit31>
+      <Unit32>
         <Filename Value="E:\wyrdforest\code\baseterrain.pas"/>
         <UnitName Value="BaseTerrain"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="460"/>
         <CursorPos X="19" Y="521"/>
         <UsageCount Value="31"/>
-      </Unit30>
-      <Unit31>
+      </Unit32>
+      <Unit33>
         <Filename Value="E:\cge\src\scene\x3d\x3dnodes_standard_texturing.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="1045"/>
         <CursorPos X="100" Y="1082"/>
-        <UsageCount Value="21"/>
-      </Unit31>
-      <Unit32>
+        <UsageCount Value="20"/>
+      </Unit33>
+      <Unit34>
         <Filename Value="E:\cge\src\scene\castlerendererinternalshader_surfacetexture.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="47"/>
         <CursorPos X="13" Y="85"/>
         <UsageCount Value="20"/>
-      </Unit32>
-      <Unit33>
+      </Unit34>
+      <Unit35>
         <Filename Value="E:\cge\src\scene\x3d\castlefields_x3dsinglefield.inc"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="41" Y="22"/>
-        <UsageCount Value="20"/>
-      </Unit33>
-      <Unit34>
+        <UsageCount Value="19"/>
+      </Unit35>
+      <Unit36>
         <Filename Value="E:\cge\examples\deprecated_to_upgrade\fixed_camera_game\code\gamelocations.pas"/>
         <UnitName Value="GameLocations"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="3" Y="95"/>
         <UsageCount Value="64"/>
-      </Unit34>
-      <Unit35>
+      </Unit36>
+      <Unit37>
         <Filename Value="E:\cge\examples\animations\deprecated_resource_animations\code\gameviewmain.pas"/>
         <UnitName Value="GameViewMain"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="50" Y="21"/>
         <UsageCount Value="33"/>
-      </Unit35>
-      <Unit36>
+      </Unit37>
+      <Unit38>
         <Filename Value="E:\cge\src\scene\castleinternalarraysgenerator.pas"/>
         <UnitName Value="CastleInternalArraysGenerator"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="1724"/>
         <CursorPos X="41" Y="1761"/>
         <UsageCount Value="33"/>
-      </Unit36>
-      <Unit37>
+      </Unit38>
+      <Unit39>
         <Filename Value="E:\cge\src\transform\castleinternalgeometryarrays.pas"/>
         <UnitName Value="CastleInternalGeometryArrays"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="34" Y="17"/>
         <UsageCount Value="33"/>
-      </Unit37>
-      <Unit38>
+      </Unit39>
+      <Unit40>
         <Filename Value="E:\cge\src\scene\x3d\x3dnodes_standard_cadgeometry.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="147"/>
         <CursorPos X="35" Y="184"/>
-        <UsageCount Value="12"/>
-      </Unit38>
-      <Unit39>
+        <UsageCount Value="11"/>
+      </Unit40>
+      <Unit41>
         <Filename Value="E:\cge\src\scene\x3d\auto_generated_node_helpers\x3dnodes_abstractvrml1indexed_1.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="8"/>
         <CursorPos Y="71"/>
-        <UsageCount Value="33"/>
-      </Unit39>
-      <Unit40>
+        <UsageCount Value="32"/>
+      </Unit41>
+      <Unit42>
         <Filename Value="data\terrain\textures\terrain.fs"/>
         <EditorIndex Value="1"/>
         <TopLine Value="209"/>
         <CursorPos X="48" Y="243"/>
-        <UsageCount Value="99"/>
+        <UsageCount Value="100"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="C++"/>
-      </Unit40>
-      <Unit41>
+      </Unit42>
+      <Unit43>
         <Filename Value="E:\cge\src\ui\castleuicontrols_view.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="42"/>
         <CursorPos X="37" Y="76"/>
-        <UsageCount Value="12"/>
-      </Unit41>
-      <Unit42>
+        <UsageCount Value="11"/>
+      </Unit43>
+      <Unit44>
         <Filename Value="E:\cge\src\ui\castleuicontrols_userinterface.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="23"/>
         <CursorPos X="33" Y="83"/>
-        <UsageCount Value="12"/>
-      </Unit42>
-      <Unit43>
+        <UsageCount Value="11"/>
+      </Unit44>
+      <Unit45>
         <Filename Value="E:\cge\src\ui\castleuicontrols_container.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="953"/>
         <CursorPos X="64" Y="1011"/>
+        <UsageCount Value="11"/>
+      </Unit45>
+      <Unit46>
+        <Filename Value="E:\cge\src\scene\x3d\x3dnodes_utils_materials.inc"/>
+        <EditorIndex Value="9"/>
+        <TopLine Value="124"/>
+        <CursorPos X="3" Y="25"/>
         <UsageCount Value="12"/>
-      </Unit43>
+        <Loaded Value="True"/>
+      </Unit46>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="code\gameviewmain.pas"/>
-        <Caret Line="75" Column="32" TopLine="36"/>
+        <Filename Value="code\terrainmesh.pas"/>
+        <Caret Line="382" Column="37" TopLine="342"/>
       </Position1>
       <Position2>
-        <Filename Value="terrainclient.pas"/>
-        <Caret Line="111" Column="20" TopLine="80"/>
+        <Filename Value="code\terrainmesh.pas"/>
+        <Caret Line="386" Column="60" TopLine="348"/>
       </Position2>
       <Position3>
-        <Filename Value="terrainclient.pas"/>
-        <Caret Line="97" Column="68" TopLine="80"/>
+        <Filename Value="code\terrainmesh.pas"/>
+        <Caret Line="382" TopLine="348"/>
       </Position3>
       <Position4>
-        <Filename Value="terrainclient.pas"/>
-        <Caret Line="111" Column="31" TopLine="80"/>
+        <Filename Value="code\terrainmesh.pas"/>
+        <Caret Line="384" TopLine="349"/>
       </Position4>
       <Position5>
-        <Filename Value="terrainclient.pas"/>
-        <Caret Line="34" Column="19"/>
+        <Filename Value="code\terrainmesh.pas"/>
+        <Caret Line="383" TopLine="349"/>
       </Position5>
       <Position6>
-        <Filename Value="terrainclient.pas"/>
-        <Caret Line="111" Column="43" TopLine="77"/>
+        <Filename Value="code\gameviewmain.pas"/>
+        <Caret Column="16"/>
       </Position6>
       <Position7>
         <Filename Value="code\gameviewmain.pas"/>
-        <Caret Line="231" TopLine="209"/>
+        <Caret Line="492" Column="40" TopLine="433"/>
       </Position7>
       <Position8>
-        <Filename Value="code\gameviewmain.pas"/>
-        <Caret Line="232" TopLine="209"/>
+        <Filename Value="code\terrainmesh.pas"/>
+        <Caret Line="381" Column="14" TopLine="351"/>
       </Position8>
       <Position9>
         <Filename Value="code\gameviewmain.pas"/>
-        <Caret Line="234" TopLine="209"/>
+        <Caret Line="251" Column="46" TopLine="217"/>
       </Position9>
       <Position10>
-        <Filename Value="code\gameviewmain.pas"/>
-        <Caret Line="250" TopLine="209"/>
+        <Filename Value="code\terrainmesh.pas"/>
+        <Caret Line="43" Column="16" TopLine="9"/>
       </Position10>
       <Position11>
         <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="346" TopLine="293"/>
+        <Caret Line="354" Column="22" TopLine="313"/>
       </Position11>
       <Position12>
-        <Filename Value="data\terrain\textures\terrain.fs"/>
-        <Caret Line="253" Column="65" TopLine="246"/>
+        <Filename Value="code\terrainmesh.pas"/>
       </Position12>
       <Position13>
-        <Filename Value="data\terrain\textures\terrain.fs"/>
-        <Caret Line="258" Column="19" TopLine="246"/>
+        <Filename Value="code\terrainmesh.pas"/>
+        <Caret Line="44" Column="40"/>
       </Position13>
       <Position14>
-        <Filename Value="data\terrain\textures\terrain.fs"/>
-        <Caret Line="260" Column="40" TopLine="246"/>
+        <Filename Value="code\terrainmesh.pas"/>
+        <Caret Line="380" Column="20" TopLine="320"/>
       </Position14>
       <Position15>
-        <Filename Value="data\terrain\textures\terrain.fs"/>
-        <Caret Line="261" Column="40" TopLine="246"/>
+        <Filename Value="code\gameviewmain.pas"/>
+        <Caret Line="345" Column="56" TopLine="295"/>
       </Position15>
       <Position16>
-        <Filename Value="data\terrain\textures\terrain.fs"/>
-        <Caret Line="269" Column="53" TopLine="246"/>
+        <Filename Value="code\gameviewmain.pas"/>
+        <Caret Line="251" Column="65" TopLine="226"/>
       </Position16>
       <Position17>
-        <Filename Value="code\gameviewmain.pas"/>
-        <Caret Line="232" Column="26" TopLine="209"/>
+        <Filename Value="code\terrainmesh.pas"/>
+        <Caret Line="394" Column="74" TopLine="360"/>
       </Position17>
       <Position18>
-        <Filename Value="..\commoncode\terraindata.pas"/>
-        <Caret Column="40"/>
+        <Filename Value="code\terrainmesh.pas"/>
+        <Caret Line="6" Column="28"/>
       </Position18>
       <Position19>
-        <Filename Value="..\commoncode\terraindata.pas"/>
-        <Caret Line="96" Column="24" TopLine="36"/>
+        <Filename Value="code\terrainmesh.pas"/>
+        <Caret Line="394" Column="63" TopLine="360"/>
       </Position19>
       <Position20>
-        <Filename Value="..\commoncode\terraindata.pas"/>
-        <Caret Line="97" Column="22" TopLine="37"/>
+        <Filename Value="code\gameviewmain.pas"/>
+        <Caret Line="251" TopLine="226"/>
       </Position20>
       <Position21>
-        <Filename Value="..\commoncode\terraindata.pas"/>
-        <Caret Line="330" Column="25" TopLine="263"/>
+        <Filename Value="code\terrainmesh.pas"/>
+        <Caret Line="408" TopLine="360"/>
       </Position21>
       <Position22>
-        <Filename Value="..\commoncode\terrainparams.pas"/>
-        <Caret Line="11" Column="54"/>
+        <Filename Value="code\terrainmesh.pas"/>
+        <Caret Line="411" Column="11" TopLine="360"/>
       </Position22>
       <Position23>
-        <Filename Value="terrainclient.pas"/>
-        <Caret Line="7" Column="20"/>
+        <Filename Value="code\gameviewmain.pas"/>
+        <Caret Line="251" Column="51" TopLine="214"/>
       </Position23>
       <Position24>
-        <Filename Value="..\commoncode\castleclientserver.pas"/>
-        <Caret Line="32" Column="23"/>
+        <Filename Value="code\terrainmesh.pas"/>
+        <Caret Line="44" Column="33" TopLine="10"/>
       </Position24>
       <Position25>
-        <Filename Value="code\gameviewmain.pas"/>
-        <Caret Line="241" Column="43" TopLine="198"/>
+        <Filename Value="code\terrainmesh.pas"/>
+        <Caret Line="43" Column="23" TopLine="10"/>
       </Position25>
       <Position26>
         <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="42" TopLine="2"/>
+        <Caret Line="44" Column="40" TopLine="10"/>
       </Position26>
       <Position27>
         <Filename Value="code\gameviewmain.pas"/>
-        <Caret Line="321" Column="36" TopLine="287"/>
+        <Caret Line="251" Column="51" TopLine="217"/>
       </Position27>
       <Position28>
-        <Filename Value="..\commoncode\terraindata.pas"/>
-        <Caret Line="330" Column="25" TopLine="263"/>
+        <Filename Value="code\terrainmesh.pas"/>
+        <Caret Line="44" TopLine="9"/>
       </Position28>
       <Position29>
-        <Filename Value="code\gameviewmain.pas"/>
-        <Caret Line="229" Column="17" TopLine="200"/>
+        <Filename Value="code\terrainmesh.pas"/>
+        <Caret Line="449" Column="17" TopLine="390"/>
       </Position29>
       <Position30>
-        <Filename Value="..\commoncode\terraindata.pas"/>
-        <Caret Line="70" Column="51" TopLine="46"/>
+        <Filename Value="code\terrainmesh.pas"/>
+        <Caret Line="72" Column="3" TopLine="38"/>
       </Position30>
     </JumpHistory>
     <RunParams>
