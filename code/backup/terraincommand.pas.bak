@@ -327,7 +327,7 @@ function BuildResultBuffer( tile : ttertile;
      inc( bufptr, tilesz );
      neighbor := GTileList.getNeighbor( tile, 1, 1 );
      ngrid := neighborlayer( neighbor, layer );
-     gridvaluexy( nGrid, 0, 0 );
+     bufptr^ := gridvaluexy( nGrid, 0, 0 );
    end;
   procedure reducedresolutionsample;
    var x, y : integer;
@@ -395,7 +395,6 @@ function BuildResultGrid( tile : ttertile;
      neighbor : TTerTile;
   procedure fullresolutionsample;
    var x, y : integer;
-       h : single;
        ngrid : TSingleGrid;
    begin
      ngrid := neighborlayer( neighbor, layer );
@@ -403,9 +402,8 @@ function BuildResultGrid( tile : ttertile;
       begin
         move( ThisGrid.ptrxy(x,0)^, bufptr^, tilesz * sizeof( single ));
         { last point in line }
-           h := gridvaluexy(ngrid, x,0);
         inc( bufptr, tilesz );
-        bufptr^ := h;
+        bufptr^ := gridvaluexy(ngrid, x,0);
         inc( bufptr );
       end;
      { last row }
@@ -420,7 +418,6 @@ function BuildResultGrid( tile : ttertile;
    end;
   procedure reducedresolutionsample;
    var x, y : integer;
-       h : single;
        ngrid : tsinglegrid;
    begin
       ngrid := neighborlayer( neighbor, layer );
@@ -433,8 +430,7 @@ function BuildResultGrid( tile : ttertile;
              inc( bufptr );
            end;
           { last point in from neighbor grid }
-          h := gridvaluexy( ngrid, x * loddiv,0);
-          bufptr^ := h;
+          bufptr^ := gridvaluexy( ngrid, x * loddiv,0);
           inc( bufptr );
         end;
        { last line from neighbor grid }
@@ -455,7 +451,6 @@ function BuildResultGrid( tile : ttertile;
        ngrid := neighborlayer( neighbor, layer );
        bufptr^ := gridvaluexy( ngrid, 0, 0 );
    end;
- var buflen : integer;
  begin
    loddiv := divOfLOD( LOD );
     tilesz := Tile.info.tilesz div loddiv;
@@ -665,8 +660,6 @@ procedure buildArea( client : TClientConnection;
                      Radius : integer;
                      const Params : TTerrainParams;
                      callback : TCommandCallback);
- var atasklist : TTasklist;
-
  procedure SendATile( tx, ty : integer );
   var Tile : TTerTile;
       LOD : dword;
@@ -713,16 +706,12 @@ procedure buildArea( client : TClientConnection;
       SendATile( CenterX + r, CenterY + r );
     end;
    GTaskList.AddTask( TTask_SaveTiles.create );
-{   gtasklist.AddTasks(aTaskList);
-   aTaskList.Free;}
  end;
 
 procedure waterArea( client : TClientConnection;
                      CenterX, CenterY : integer;
                      Radius : integer;
                      callback : TCommandCallback);
- var atasklist : TTasklist;
-
  procedure SendATile( tx, ty : integer );
   var Tile : TTerTile;
       LOD : dword;
@@ -769,8 +758,6 @@ procedure waterArea( client : TClientConnection;
       SendATile( CenterX + r, CenterY - r );
       SendATile( CenterX + r, CenterY + r );
     end;
-{   gtasklist.AddTasks(aTaskList);
-   aTaskList.Free;}
  end;
 
 

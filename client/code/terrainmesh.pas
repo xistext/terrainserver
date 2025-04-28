@@ -61,6 +61,7 @@ TWaterMesh = class( TTerrainMesh )
   constructor create2( aowner : TComponent;
                        iLinkedTile : TTerTile );
   function InitAppearance : TAppearanceNode; override;
+  function BuildWaterEffect : TEffectNode;
  end;
 
 const GShaderId : integer = 0;
@@ -380,13 +381,85 @@ constructor TWaterMesh.create2( aowner : TComponent;
    RenderOptions.WireframeEffect := weNormal;
  end;
 
-function TWaterMesh.InitAppearance : TAppearanceNode;
+function TWaterMesh.BuildWaterEffect : TEffectNode;
+ var FragmentPart, VertexPart : TEffectPartNode;
+     ix, iy : integer;
+     SplatMap : TMFLong;
+     TexImage : TImageTextureNode;
  begin
+   Result := TEffectNode.Create;
+   Result.Language := slGLSL;
+   Result.UniformMissing := umIgnore;
+
+   Result.AddCustomField(TSFVec4f.Create(Result, true, 'uv_scale', Vector4( 0.11, 0.26, 0.36, 0.36)));
+   Result.AddCustomField(TSFVec4f.Create(Result, true, 'metallic', Vector4( 1, 1, 1, 1)));
+   Result.AddCustomField(TSFVec4f.Create(Result, true, 'roughness', Vector4( 1, 1, 1, 1)));
+
+   Result.AddCustomField(TSFBool.Create(Result, true, 'blur', true ));
+
+   Result.AddCustomField(TSFFloat.Create(Result, true, 'height_1', 4));
+   Result.AddCustomField(TSFFloat.Create(Result, true, 'height_2', 8));
+
+   TexImage := TImageTextureNode.Create;
+   TexImage.SetUrl( ['castle-data:/testwater3.png'] );
+   Result.AddCustomField( TSFNode.Create(Result, false, 'tex_1', [], TexImage ));
+
+   TexImage  := TImageTextureNode.Create;
+   TexImage.SetUrl( ['castle-data:/testwater3.png'] );
+   Result.AddCustomField( TSFNode.Create(Result, false, 'tex_2', [], TexImage ));
+
+   TexImage := TImageTextureNode.Create;
+   TexImage.SetUrl( ['castle-data:/testwater3.png'] );
+   Result.AddCustomField( TSFNode.Create(Result, false, 'tex_3', [], TexImage ));
+
+   TexImage := TImageTextureNode.Create;
+   TexImage.SetUrl( ['castle-data:/testwater3.png'] );
+   Result.AddCustomField( TSFNode.Create(Result, false, 'tex_4', [], TexImage ));
+
+   Result.AddCustomField(TSFInt32.Create(Result, true, 'splat_sz', 60));
+   splatmap := TMFLong.Create( Result, true, 'splatmap', [] );
+   splatmap.items.Count := 3600;
+   for ix := 0 to 60 - 1 do
+       for iy := 0 to 60 - 1 do
+           splatmap.items[ix*60+iy] := encodesplatcell( 1, 1, 1, 8, 0, 0 );
+   Result.AddCustomField(splatmap);
+
+   Result.AddCustomField(TSFFloat.Create(Result, true, 'grid_scale', ord( GShowGrid ) * GGridScale ));
+   Result.AddCustomField(TSFFloat.Create(Result, true, 'contour_scale', ord( GShowContour ) * GContourScale ));
+
+   Result.AddCustomField(TSFVec4f.Create(Result, true, 'grid_color', Vector4( 0.1,0.2,0.2,0.5 )));
+   Result.AddCustomField(TSFVec4f.Create(Result, true, 'grid10_color', Vector4( 0.5,0.1,0.1,0.5 )));
+   Result.AddCustomField(TSFVec4f.Create(Result, true, 'contour_color', Vector4( 0.38,0.19,0.0,0.9 )));
+
+   Result.AddCustomField(TSFFloat.Create(Result, true, 'layers_influence', 1.0));
+   Result.AddCustomField(TSFFloat.Create(Result, true, 'steep_emphasize', 5 ));
+
+
+   { initialize 2 EffectPart nodes (one for vertex shader, one for fragment shader) }
+   FragmentPart := TEffectPartNode.Create;
+   FragmentPart.ShaderType := stFragment;
+   FragmentPart.Contents := readstring('castle-data:/water/water.fs');
+
+(*   VertexPart := TEffectPartNode.Create;
+   VertexPart.ShaderType := stVertex;
+   VertexPart.Contents := readstring('castle-data:/terrain/textures/terrain.vs');*)
+
+   Result.SetParts([FragmentPart]);
+ end;
+
+
+function TWaterMesh.InitAppearance : TAppearanceNode;
+ var Effect : TEffectNode;
+ begin
+   renderoptions.Blending := true;
+   renderoptions.Textures := true;
    result := TAppearanceNode.create;
-   { make the material lit }
    result.Material := initMaterial;
-   result.Material.MaterialInfo.MainColor := vector3( 0.1, 0.1, 0.4 );
-   result.Material.MaterialInfo.Transparency:= 0.5;
+   result.material.MaterialInfo.transparency := 0.5;
+
+   { make the material lit }
+   Effect := BuildWaterEffect;
+   Result.SetEffects([Effect]);
  end;
 
 end.
