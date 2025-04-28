@@ -73,6 +73,8 @@ const GShaderId : integer = 0;
 function gettileshader( Tile : ttertile;
                         shaderid : integer ) : TTileShader;
 
+procedure TerrainHeight( const pos : tvector3; var h : single );
+
 implementation
 
 const
@@ -92,6 +94,18 @@ function gettileshader( Tile : ttertile;
        1 : result := TElevationShader.create('1m',5);
     end;
  end;
+
+procedure TerrainHeight( const pos : tvector3; var h : single );
+{ uses terrain mesh to determine terrain height at a position }
+var atile : ttertile;
+    pos2 : tvector2;
+begin
+  h := -1;
+  pos2 := Vector2(Pos.X,Pos.Z);
+  if gtilelist.findtileatlocation( pos2, atile ) and assigned( atile.TerrainGraphics ) then
+     TTerrainMesh( atile.TerrainGraphics ).Elevationatpos( pos2, h );
+end;
+
 
 //------------------------------
 

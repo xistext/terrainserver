@@ -289,8 +289,6 @@ constructor TTerTile.create( const iInfo : TTileHeader );
    layer.initgrid( Info.TileSz );
    TSingleGrid( layer.DataGrid ).setvalue( 2 );
    datalayers[layer_water] := layer;
-
-
    status := 0;
    {$else}
    TerrainGraphics := nil;
@@ -448,7 +446,6 @@ function TTerTile.LoadfromFile : boolean;
          status := status xor tile_dirty;
     end;
  end;
-
 {$endif}
 
 initialization

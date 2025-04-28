@@ -1,26 +1,10 @@
 UNIT Collect;
 
-{ Collection classes for Delphi
-  compatible with TPW<=7.0/Delphi1 OWL TCollection
-    except for firstthat, foreach not implemented... (now can be just as fast with fcnt
-  Alin Flaider, 1996 aflaidar@datalog.ro.
-
-  1997 EDJ. made thread safe. Use ifdef threaded to enable thread safety for threaded applications
-  2004 EDJ. Made more memory efficient.  24-28 byte overhead reduced to 12 byte.
-  Compiles under D5..XE6.
-  Can use QStrings under D5..D7 for optimized string compare
-
-  removed nobjects dependency so create no longer virtual;
-
-  }
-
-{ Xistext }
+{ like the old borland collections }
 
 INTERFACE
 
-//{$ifdef lowdebug}{$D+}{$O-}{$else}{$O+}{$D-}{$endif}
-
-uses Classes, Sysutils{, nobjects};
+uses Classes, Sysutils;
 
 const
   coIndexError = -1;              { Index out of range }
@@ -37,7 +21,6 @@ CONST { Tdcollection Bits }
                                   {override this method to specify relation bewtween two keys
                                   1 if Key1 comes after Key2, -1 if Key1 comes before Key2,
                                   0 if Key1 is equivalent to Key2}
-(* not used yet      CB_FixedChildType=16; { used to know if a stream list needs to store the streamid
                               for each child or just once for the whole list }*)
       { 16,32,64,128 unused }
 
@@ -55,12 +38,12 @@ TYPE TCollection = CLASS;
      PPointerList = ^TPointerList;
      TPointerList = array[0..Maxint div 16 - 1] of Pointer;
 
- TCollection = CLASS//( TdObject )
+ TCollection = CLASS
   public
-    Count  : INTEGER;          { Current Number of Items, 8 bytes }
+    Count  : INTEGER;          { Current Number of Items }
     It     : PPointerList;     { array of pointers }
   public
-    constructor Create; //OVERRIDE;
+    constructor Create;
     constructor init( aLimit, aDelta : INTEGER );
     destructor  Destroy; override; {before deallocating object it disposes all items and the storage array}
 
@@ -176,11 +159,7 @@ constructor TCollection.Create;
    Count:=0;
    It := nil;
 
-   {$ifdef QStrings}
-   Q_ZeroMem( @Info, SizeOf( Info ));
-   {$else}
    FillChar( FInfo, SizeOf( FInfo ), 0 );
-   {$endif}
 
    FInfo.Delta:=10;
    FInfo.Bits := cb_OwnItems OR cb_HaveObjs;
@@ -193,11 +172,7 @@ constructor TCollection.Init( ALimit, ADelta: INTEGER );
    inherited Create;
    Count:=0;
    It := nil;
-   {$ifdef QStrings}
-   Q_ZeroMem( @Info, SizeOf( Info ));
-   {$else}
    FillChar( FInfo, SizeOf( FInfo ), 0 );
-   {$endif}
 
    FInfo.Delta := aDelta;
    FInfo.Bits := cb_OwnItems OR cb_HaveObjs;

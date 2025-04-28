@@ -79,11 +79,12 @@ type
     procedure Update(const SecondsPassed: Single; var HandleInput: Boolean); override;
     procedure mousewheel( direction : integer );
     function Press(const Event: TInputPressRelease): boolean; override;
-    procedure TerrainHeight( const pos : tvector3; var h : single );
     function MoveAllowed(const Sender: TCastleNavigation;
                          const OldPos, ProposedNewPos: TVector3; out NewPos: TVector3;
                          const Radius: Single; const BecauseOfGravity: Boolean): boolean;
-    procedure HandleMotion(const Sender: TCastleUserInterface; const Event: TInputMotion; var Handled: Boolean);
+    procedure HandleMotion(const Sender: TCastleUserInterface;
+                           const Event: TInputMotion;
+                           var Handled: Boolean);
   end;
 
 var
@@ -333,16 +334,6 @@ procedure TViewMain.ColorSliderChange( sender : TObject );
    factor := 1/15;
    ColorPreview.Color := vector4( RedSlider.Value * factor, GreenSlider.Value * factor, BlueSlider.Value * factor, AlphaSlider.Value * factor );
 
- end;
-
-procedure TViewMain.TerrainHeight( const pos : tvector3; var h : single );
- var atile : ttertile;
-     pos2 : tvector2;
- begin
-   h := -1;
-   pos2 := Vector2(Pos.X,Pos.Z);
-   if gtilelist.findtileatlocation( pos2, atile ) and assigned( atile.TerrainGraphics ) then
-      TTerrainMesh( atile.TerrainGraphics ).Elevationatpos( pos2, h );
  end;
 
 function TViewMain.MoveAllowed(const Sender: TCastleNavigation;

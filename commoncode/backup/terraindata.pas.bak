@@ -93,11 +93,14 @@ type TTerTile = class; { forward }
         property TerrainGrid : TSingleGrid read getTerrainGrid;
         property WaterGrid : TSingleGrid read getWaterGrid;
         {$else}
-        Graphics : TCastleTransform;
+        TerrainGraphics : TCastleTransform;
+        WaterGraphics : TCastleTransform;
         {$endif}
       end;
 
 procedure sethxy( var h : TTileHeader; x, y : smallint; sz : word = 1 );
+
+procedure TerrainHeight( const pos : tvector3; var h : single );
 
 const GTileList : TTileList = nil;
 
@@ -117,6 +120,23 @@ function compareint( v1, v2 : integer ) : integer; inline;
  begin
    result := -ord( v1 < v2 ) + ord( v1 > v2 );
  end;
+
+procedure TerrainHeight( const pos : tvector3; var h : single );
+var atile : ttertile;
+    pos2 : tvector2;
+begin
+  h := -1;
+  pos2 := Vector2(Pos.X,Pos.Z);
+  {$ifdef terserver}
+//  if gtilelist.findtileatlocation( pos2, atile ) then
+  assert( false, 'stub use grid' );
+
+  {$else}
+  if gtilelist.findtileatlocation( pos2, atile ) and assigned( atile.TerrainGraphics ) then
+     TTerrainMesh( atile.TerrainGraphics ).Elevationatpos( pos2, h );
+  {$endif}
+end;
+
 
 //----------------------------------
 
@@ -288,8 +308,6 @@ constructor TTerTile.create( const iInfo : TTileHeader );
    layer.initgrid( Info.TileSz );
    TSingleGrid( layer.DataGrid ).setvalue( 2 );
    datalayers[layer_water] := layer;
-
-
    status := 0;
    {$else}
    TerrainGraphics := nil;
@@ -447,7 +465,6 @@ function TTerTile.LoadfromFile : boolean;
          status := status xor tile_dirty;
     end;
  end;
-
 {$endif}
 
 initialization
