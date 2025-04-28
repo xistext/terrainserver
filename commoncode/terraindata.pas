@@ -19,6 +19,7 @@ const terrainpath = 'data\terrain\';
       layer_water   = 2;
 
 type TTerTile = class; { forward }
+     TTileNeighbors = array[0..7] of TTerTile;
 
      TTileList = class( tsortedCollection )
 
@@ -75,11 +76,12 @@ type TTerTile = class; { forward }
         function getWorldSize : single;
         function gridStep : single;
         function tileid : string;
-//        function offset : TVector2;
+        function GetNeighbors : TTileNeighbors;
 
         public
         {$ifdef terserver}
         datalayers : TDataLayers;
+        LastUpdateTime : single;
         procedure UpdateTerrainGridFromSource( Source : TCastleTerrainNoise );
 
         function SaveToFile : boolean;
@@ -103,6 +105,9 @@ procedure sethxy( var h : TTileHeader; x, y : smallint; sz : word = 1 );
 const GTileList : TTileList = nil;
 
 implementation
+{$ifdef terserver}
+uses waterflow;
+{$endif}
 
 procedure sethxy( var h : TTileHeader; x, y : smallint; sz : word = 1 ); inline;
  begin
@@ -235,7 +240,7 @@ procedure TTilelist.FoundTerFile( const FileInfo : TFileInfo; var StopSearch : b
    dotpos := pos( '.', filename );
    if dotpos > 0 then
       system.delete( filename, dotpos, length( filename ) - dotpos + 1 );
-   dbgwriteln( filename );
+   dbgwrite( filename + '  ' );
    tilepos := parsetilepos( filename );
    tile := initxy( tilepos.x, tilepos.y, GDefGridCellCount );
    tile.LoadFromFile;
@@ -287,9 +292,11 @@ constructor TTerTile.create( const iInfo : TTileHeader );
    { initialize water layer }
    layer := TDataLayer.create;
    layer.initgrid( Info.TileSz );
-   TSingleGrid( layer.DataGrid ).setvalue( 2 );
+   TSingleGrid( layer.DataGrid ).setvalue( 0.1 );
    datalayers[layer_water] := layer;
    status := 0;
+   lastupdatetime := 0;
+   WaterToFlowList_high.addtask( TWaterTask.create( self ));
    {$else}
    TerrainGraphics := nil;
    WaterGraphics := nil;
@@ -447,6 +454,28 @@ function TTerTile.LoadfromFile : boolean;
     end;
  end;
 {$endif}
+
+function TTerTile.GetNeighbors : TTileNeighbors;
+{ get tile's neighbors }
+  procedure setneighbor( n : integer;
+                         x, y : integer );
+   begin
+     result[n] := GTileList.tilexy( x, y );
+   end;
+ var iY, iX : integer;
+   begin
+     iX := Info.TileX;
+     iY := Info.TileY;
+     setneighbor(0, iX, iY - 1); {0 y-1}
+     setneighbor(1, iX + 1, iY - 1); {1 x+1 y-1}
+     setneighbor(2, iX + 1, iY ); {2 x+1}
+     setneighbor(3, iX + 1, iY + 1); {3 x+1 y+1 }
+     setneighbor(4, iX, iY + 1); {4 y+1 }
+     setneighbor(5, iX - 1, iY + 1); {5 x-1, y+1 }
+     setneighbor(6, iX - 1, iY); {6 x-1 }
+     setneighbor(7, iX - 1, iY - 1); {7 x-1, y-1 }
+   end;
+
 
 initialization
   GTileList := TTileList.create;

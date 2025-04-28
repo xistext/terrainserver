@@ -7,7 +7,8 @@ uses Classes, SysUtils, Collect, castleterrain,
      BaseThread,
      TerServerCommon, CastleClientServer,
      TerrainParams, TerrainData,
-     watergrid, debug;
+     watergrid, waterflow,
+     debug;
 
 type TCommandCallback = procedure( msg : string ) of object;
 
@@ -677,7 +678,6 @@ procedure buildArea( client : TClientConnection;
  var TileY, TileY2 : Integer;
      i, r : integer;
  begin
-   atasklist := ttasklist.create;
    SendATile( CenterX, CenterY );
    for r := 1 to radius do
     begin
@@ -730,7 +730,6 @@ procedure waterArea( client : TClientConnection;
  var TileY, TileY2 : Integer;
      i, r : integer;
  begin
-   atasklist := ttasklist.create;
    SendATile( CenterX, CenterY );
    for r := 1 to radius do
     begin

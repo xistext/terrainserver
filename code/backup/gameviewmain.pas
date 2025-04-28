@@ -24,6 +24,8 @@ uses Classes,
   CastleVectors, CastleWindow, CastleComponentSerialize, CastleUIControls, CastleControls,
   CastleKeysMouse, CastleClientServer, CastleNotifications,
   TerServerCommon, TerrainData, TerrainCommand,
+  WaterFlow,
+  liveTime,
   debug;
 
 type
@@ -67,6 +69,8 @@ type
 var
   ViewMain: TViewMain;
 
+var lastclient : TClientConnection; { !kludge to test pushing water }
+
 implementation
 
 uses SysUtils,
@@ -101,10 +105,12 @@ end;
 procedure TViewMain.Update(const SecondsPassed: Single; var HandleInput: Boolean);
  var connected : boolean;
      task : TTaskItem;
+     atile : ttertile;
  const connectstatus : integer = -1;
        clientcount   : integer = -1;
  begin
   inherited;
+  UpdateGameTime( SecondsPassed );
   { This virtual method is executed every frame (many times per second). }
   TilesLabel.Caption := IntToStr( GTileList.Count )+' tiles';
   connected := FServer <> nil;
@@ -147,10 +153,20 @@ procedure TViewMain.Update(const SecondsPassed: Single; var HandleInput: Boolean
 //     Application.ProcessMessage( false, false );
      task := GTaskList.Pop;
    end;
+
+  if assigned( client.context ) and WaterFlowThreads[0].DirtyTileList.nexttile( atile  ) then
+   begin
+     waterArea( lastclient,
+                atile.info.tilex, atile.info.tiley,
+                0, {$ifdef fpc}@{$endif} HandleCommandCallback );
+   end;
+
+
 end;
 
 procedure TViewMain.HandleConnected(AClient: TClientConnection);
 begin
+  LastClient := AClient;{!}
   Notification('Client connected');
 end;
 
@@ -194,11 +210,13 @@ begin
   FServer.OnConnected := {$ifdef FPC}@{$endif} HandleConnected;
   FServer.OnDisconnected := {$ifdef FPC}@{$endif} HandleDisconnected;
   FServer.OnMessageReceived := {$ifdef FPC}@{$endif} HandleMessageReceived;
+  dbgwriteln( 'Reading tiles...' );
   FileCount := GTileList.ReadAllTerrainFiles( 'castle-data:/terrain' );
 
   FServer.Start;
   dbgwriteln( inttostr( filecount )+' tiles read' );
 
+  StartWaterFlowThreads;
   Notification( 'Started' );
 end;
 
@@ -221,7 +239,7 @@ procedure TViewMain.Notification( Msg : string );
  var alabel : TCastleLabel;
  begin
    alabel := TCastleLabel.Create( VerticalGroup2 );
-   alabel.FontSize := 10;
+   alabel.FontSize := 12;
    alabel.AutoSize := true;
    alabel.Color := Vector4(1,1,1,1);
    alabel.caption := FormatDateTime('yyyy.mm.dd hh:mm:ss', now )+ ' ' + Msg;

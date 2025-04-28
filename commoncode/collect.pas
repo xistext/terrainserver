@@ -18,10 +18,6 @@ CONST { Tdcollection Bits }
       CB_HaveObjs = 4;
       CB_Duplicates=8;            {used by sorted collection
                                    if true, rejects item whose key already exists}
-                                  {override this method to specify relation bewtween two keys
-                                  1 if Key1 comes after Key2, -1 if Key1 comes before Key2,
-                                  0 if Key1 is equivalent to Key2}
-                              for each child or just once for the whole list }*)
       { 16,32,64,128 unused }
 
 TYPE TCollection = CLASS;

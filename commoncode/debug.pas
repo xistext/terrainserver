@@ -16,9 +16,6 @@ PROCEDURE DBGWriteln( S: STRING = '' );
 PROCEDURE DBGLnWrite( S: STRING ); { guarantees new line at beginning, but doesn't add ln at end }
 PROCEDURE DBGWrite( S: STRING );
 
-PROCEDURE DBGNew( S: STRING );
-PROCEDURE DBGDispose( S: STRING );
-
 IMPLEMENTATION //===============================================================
 
 CONST LinePos : INTEGER = 0;
@@ -72,22 +69,6 @@ PROCEDURE DBGLnWrite( S: STRING );
    IF LinePos > 0 THEN
       DBGWriteln( '' );
    DBGWrite( S )
- END;
-
-PROCEDURE DBGNew( S: String );
- BEGIN
-   {$ifdef dbg}
-   INC( NewCount );
-   DBGWriteln( DBG, 'NEW     (',NewCount:4,')+ : ',S );
-   {$endif}
- END;
-
-PROCEDURE DBGDispose( S: String );
- BEGIN
-   {$ifdef dbg}
-   INC( DoneCount );
-   DBGWriteln( DBG, 'DISPOSE (',DoneCount:4,')- : ',S );
-  {$endif}
  END;
 
 INITIALIZATION

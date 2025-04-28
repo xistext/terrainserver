@@ -7,7 +7,8 @@ uses Classes, SysUtils, Collect, castleterrain,
      BaseThread,
      TerServerCommon, CastleClientServer,
      TerrainParams, TerrainData,
-     watergrid, debug;
+     watergrid, waterflow,
+     debug;
 
 type TCommandCallback = procedure( msg : string ) of object;
 
@@ -94,6 +95,12 @@ procedure SendClientMsgHeader( AClient : TClientConnection;
 
 const GCmdList : TCmdList = nil;
       GTaskList : TTaskList = nil;
+
+procedure waterArea( client : TClientConnection;
+                     CenterX, CenterY : integer;
+                     Radius : integer;
+                     callback : TCommandCallback);
+
 
 implementation
 
