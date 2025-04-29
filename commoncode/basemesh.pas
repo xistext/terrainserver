@@ -9,6 +9,8 @@ uses
 
 type
 
+TTexCoords = array of TVector2;
+
 TAbstractMesh = class( TCastleScene )
    public
 
@@ -61,10 +63,18 @@ TLiteMesh = class( TAbstractMesh )
    procedure InitializeData( texture : boolean = false ); override;
 
    procedure InitVertices( Coord : TCoordinateNode ); override;
+   function InitTexture( TextureUrl : string ) : TImageTextureNode;
+
+   function TexCoordinates : TTextureCoordinateNode;
+
+   procedure UpdateVerticesTexture( var Tex : TTexCoords );
+
+   private
+
    procedure InitVerticesWithTexture( var Coord : TCoordinateNode;
                                       var TexCoord : TTextureCoordinateNode );
 
-   function InitTexture( TextureUrl : string ) : TImageTextureNode;
+
 end;
 
 implementation
@@ -107,7 +117,6 @@ function TAbstractMesh.CoordinateNode : TCoordinateNode;
       result := TCoordinateNode( IndexedTriangleSetNode.Coord );
     end
  end;
-
 
 function TAbstractMesh.ElevationAtPos_InternalRayCollision( pos  : TVector2;
                                                             var Elev : single ) : boolean;
@@ -322,6 +331,43 @@ procedure TLiteMesh.InitVerticesWithTexture( var Coord : TCoordinateNode;
    Vertices.Free;
    TexCoords.Free;
  end;
+
+function TLiteMesh.TexCoordinates : TTextureCoordinateNode;
+ var IndexedTriangleSetNode : TIndexedTriangleSetNode;
+ begin
+   result := nil;
+   if assigned( rootnode ) then
+    begin
+      IndexedTriangleSetNode := TIndexedTriangleSetNode( rootnode.FindNode( TIndexedTriangleSetNode, false ));
+      result := TTextureCoordinateNode( IndexedTriangleSetNode.TexCoord );
+    end
+ end;
+
+
+procedure TLiteMesh.UpdateVerticesTexture( var Tex : TTexCoords );
+ var i, j : integer;
+     TexCoords : TTextureCoordinateNode;
+     srcptr : ^TVector2;
+     destptr : ^TVector2;
+ begin
+   TexCoords := TexCoordinates;
+   if assigned( TexCoords ) then
+    begin
+      srcptr := @Tex[0];
+      destptr := TexCoords.FdPoint.items.ptr(0);
+      for i := 0 to GridCount - 1 do
+       begin
+         for j := 0 to GridCount - 1 do
+          begin
+            destptr^ := srcptr^;
+            inc( srcptr );
+            inc( destptr );
+          end;
+       end;
+    end;
+   TexCoords.FdPoint.changed;
+ end;
+
 
 function TLiteMesh.inittexture( TextureUrl : string ) : TImageTextureNode;
  begin

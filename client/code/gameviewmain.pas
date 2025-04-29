@@ -65,7 +65,8 @@ type
     procedure HandleMessageReceived(const AMessage: String);
     procedure HandleTileReceived( const msginfo : TMsgHeader;
                                   const tileinfo : TTileHeader;
-                                  tilegrid : TSingleGrid );
+                                  tilegrid : TSingleGrid;
+                                  texgrid : TTexPoints );
     procedure ClickCreateClient(Sender: TObject);
     procedure ClickTest(Sender: TObject);
     procedure ClickSend(Sender: TObject);
@@ -226,7 +227,8 @@ end;
 
 procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
                                         const tileinfo : TTileHeader;
-                                        tilegrid : TSingleGrid );
+                                        tilegrid : TSingleGrid;
+                                        texgrid : TTexPoints );
  var tile : TTerTile;
  begin
    Tile := GTileList.GetInitTile( tileinfo );
@@ -246,10 +248,12 @@ procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
      else
       begin
         Tile.WaterGraphics := TWaterMesh.create2( Viewport1, Tile );
+
         Viewport1.Items.Add( Tile.WaterGraphics );
       end;
      { update tile graphics }
      TTerrainMesh( Tile.WaterGraphics ).UpdateFromGrid( TileGrid );
+     TTerrainMesh( Tile.WaterGraphics ).UpdateVerticesTexture( texgrid );
     end
    else
     begin

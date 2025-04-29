@@ -11,18 +11,21 @@ uses Classes, Generics.Collections,
      IDTCPClient;
 
 type
+     TTexPoints = array of tvector2;
 
      TTileRec = record
         msginfo : TMsgHeader;
         tileinfo : TTileHeader;
         tilegrid : TSingleGrid;
+        texgrid : TTexPoints;
       end;
 
      TSynchronisedTileList = {$ifdef FPC}specialize{$endif} TThreadList<TTileRec>;
 
      TTileReceivedEvent = procedure( const msginfo : TMsgHeader;
                                      const tileinfo : TTileHeader;
-                                           tilegrid : TSingleGrid ) of object;
+                                           tilegrid : TSingleGrid;
+                                           texgrid : TTexPoints) of object;
 
      TTerClientThread = class( TCastleTCPClientThread )
         constructor Create(const AClient: TIdTCPClient;
@@ -108,7 +111,7 @@ function TTerClientThread.ProcessMessage( const msgheader : TmsgHeader;
           assert( length( buffer ) = MsgLen + SizeOf( msgheader ));
 
           case msgheader.msgtype of
-              msg_Tile, msg_Water : sendtile( msgheader, buffer, MsgLen + SizeOf( msgheader ));
+              msg_Tile, msg_water  : sendtile( msgheader, buffer, MsgLen + SizeOf( msgheader ));
           end;
         end;
      end;
@@ -119,14 +122,23 @@ procedure TTerClientThread.SendTile( const msgheader : TMsgHeader;
                                            BufLen : dword );
  var tilerec : TTileRec;
      hdsz : integer;
+     tilesz : integer;
+     bufpos : integer;
  begin
    hdsz := sizeof(tmsgheader) + sizeof(ttileheader);
    assert( BufLen > hdsz );
-   BufLen := BufLen - hdsz;
    tilerec.msginfo := msgheader;
    Move( buffer[sizeof(tmsgheader)], tilerec.tileinfo, sizeof( ttileheader ));
    tilerec.tileGrid := TSingleGrid.createsize(tilerec.tileinfo.TileSz );
-   Move( buffer[hdsz], tilerec.tileGrid.data^, BufLen );
+   tilesz := tilerec.tileinfo.TileSz * tilerec.tileinfo.TileSz;
+   bufpos := hdsz;
+   Move( buffer[bufpos], tilerec.tileGrid.data^, tilesz * sizeof( single ));
+   inc( bufpos, tilesz * sizeof( single ));
+   if msgheader.msgtype = msg_water then
+    begin
+      setlength( tilerec.texgrid, tilesz );
+      Move( buffer[bufpos], tilerec.texgrid[0], tilesz * sizeof(tvector2));
+    end;
    { make a new mesh if we can't figure out how to reuse existing mesh if same size }
    FTileList.Add( tilerec );
    Queue(FOnTileReceived);
@@ -148,7 +160,7 @@ procedure TTerClient.ClientOnTileReceived;
     begin
       for TileRec in TTerClientThread( FClientThread ).fTileList.LockList do
        begin
-         FOnTileReceived( tilerec.msginfo, tilerec.tileinfo, tilerec.tilegrid );
+         FOnTileReceived( tilerec.msginfo, tilerec.tileinfo, tilerec.tilegrid, tilerec.texgrid );
 
        end;
       TTerClientThread( FClientThread ).fTileList.Clear;

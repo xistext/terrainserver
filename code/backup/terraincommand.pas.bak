@@ -533,10 +533,10 @@ function TTask_SendWater.RunTask : boolean;
      resultwater, resultterrain, resultflora : TSingleGrid;
      resultwatertex : array of tvector2;
      terrainh, waterh, florah : ^single;
-     texptr ^TVector2;
+     texptr : ^TVector2;
      i : integer;
      h : single;
-
+     bufpos : integer;
  begin
    result := inherited Runtask;
    if not result then
@@ -575,21 +575,19 @@ function TTask_SendWater.RunTask : boolean;
    resultterrain.free;
    resultflora.free;
 
-   buflen := resultwater.wxh*sizeof(single);
+   buflen := resultwater.wxh*sizeof(single) * resultwater.wxh * sizeof( tvector2 );
    setlength( buffer, buflen );
-   Move( resultwater.depthptr^, buffer[0], buflen );
+   bufpos := 0;
+   Move( resultwater.depthptr^, buffer[bufpos], resultwater.wxh*sizeof(single));
+   inc( bufpos, resultwater.wxh*sizeof(single));
+
+   Move( resultwatertex[0], buffer[bufpos], resultwater.wh * sizeof( tvector2 ));
 
    { send message + tile headers }
    SendClientMsgHeader( client, msg_Water, buflen + sizeof( TTileHeader ));
    client.Send( resulttileinfo, sizeof( TTileHeader ));
    client.SendBuffer( buffer, buflen );
-              (*
-   { send tex mapping }
-   buflen := resultwater.wh * sizeof( tvector2 ));
-   setlength( buffer, buflen );
-   Move( resultwatertex[0], buffer, buflen );
-   client.SendBuffer( buffer, buflen );
-                *)
+
    resultwater.free;
 
    result := true;

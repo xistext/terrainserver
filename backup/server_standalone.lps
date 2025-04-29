@@ -30,7 +30,7 @@
         <Filename Value="code\gameviewmain.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="GameViewMain"/>
-        <EditorIndex Value="9"/>
+        <EditorIndex Value="10"/>
         <TopLine Value="125"/>
         <CursorPos Y="159"/>
         <UsageCount Value="212"/>
@@ -51,10 +51,10 @@
       </Unit5>
       <Unit6>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\System\IdGlobal.pas"/>
-        <EditorIndex Value="1"/>
+        <EditorIndex Value="2"/>
         <TopLine Value="3057"/>
         <CursorPos X="74" Y="3081"/>
-        <UsageCount Value="35"/>
+        <UsageCount Value="36"/>
         <Loaded Value="True"/>
       </Unit6>
       <Unit7>
@@ -74,16 +74,18 @@
       <Unit9>
         <Filename Value="commoncode\castleclientserver.pas"/>
         <UnitName Value="CastleClientServer"/>
-        <EditorIndex Value="-1"/>
-        <CursorPos X="37" Y="665"/>
-        <UsageCount Value="100"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="477"/>
+        <CursorPos X="21" Y="487"/>
+        <UsageCount Value="99"/>
+        <Loaded Value="True"/>
       </Unit9>
       <Unit10>
         <Filename Value="code\terraincommand.pas"/>
         <UnitName Value="TerrainCommand"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="510"/>
-        <CursorPos X="15" Y="536"/>
+        <TopLine Value="547"/>
+        <CursorPos Y="578"/>
         <UsageCount Value="101"/>
         <Loaded Value="True"/>
       </Unit10>
@@ -112,15 +114,15 @@
       <Unit14>
         <Filename Value="commoncode\terraindata.pas"/>
         <UnitName Value="TerrainData"/>
-        <EditorIndex Value="11"/>
-        <TopLine Value="53"/>
-        <CursorPos X="60" Y="71"/>
+        <EditorIndex Value="12"/>
+        <TopLine Value="410"/>
+        <CursorPos X="46" Y="462"/>
         <UsageCount Value="142"/>
         <Loaded Value="True"/>
       </Unit14>
       <Unit15>
         <Filename Value="commoncode\terrainparams.pas"/>
-        <EditorIndex Value="12"/>
+        <EditorIndex Value="13"/>
         <CursorPos X="24" Y="11"/>
         <UsageCount Value="113"/>
         <Loaded Value="True"/>
@@ -133,7 +135,7 @@
       </Unit16>
       <Unit17>
         <Filename Value="commoncode\watergrid.pas"/>
-        <EditorIndex Value="13"/>
+        <EditorIndex Value="14"/>
         <TopLine Value="322"/>
         <CursorPos Y="357"/>
         <UsageCount Value="107"/>
@@ -142,7 +144,7 @@
       <Unit18>
         <Filename Value="commoncode\debug.pas"/>
         <UnitName Value="Debug"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="3"/>
         <TopLine Value="21"/>
         <CursorPos Y="74"/>
         <UsageCount Value="112"/>
@@ -151,10 +153,10 @@
       <Unit19>
         <Filename Value="commoncode\collect.pas"/>
         <UnitName Value="Collect"/>
-        <EditorIndex Value="7"/>
+        <EditorIndex Value="8"/>
         <TopLine Value="448"/>
         <CursorPos Y="477"/>
-        <UsageCount Value="96"/>
+        <UsageCount Value="97"/>
         <Loaded Value="True"/>
       </Unit19>
       <Unit20>
@@ -181,23 +183,23 @@
       </Unit22>
       <Unit23>
         <Filename Value="E:\wyrdforest\code\water_low.pas"/>
-        <EditorIndex Value="3"/>
-        <UsageCount Value="55"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="57"/>
         <Loaded Value="True"/>
       </Unit23>
       <Unit24>
         <Filename Value="code\waterflow.pas"/>
-        <EditorIndex Value="4"/>
-        <TopLine Value="455"/>
-        <CursorPos X="67" Y="468"/>
-        <UsageCount Value="55"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="479"/>
+        <CursorPos Y="505"/>
+        <UsageCount Value="57"/>
         <Loaded Value="True"/>
       </Unit24>
       <Unit25>
         <Filename Value="commoncode\livetime.pas"/>
-        <EditorIndex Value="10"/>
+        <EditorIndex Value="11"/>
         <CursorPos X="7" Y="13"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="39"/>
         <Loaded Value="True"/>
       </Unit25>
       <Unit26>
@@ -208,149 +210,149 @@
       </Unit26>
       <Unit27>
         <Filename Value="commoncode\waterparams.pas"/>
-        <EditorIndex Value="8"/>
+        <EditorIndex Value="9"/>
         <CursorPos X="40" Y="5"/>
-        <UsageCount Value="35"/>
+        <UsageCount Value="37"/>
         <Loaded Value="True"/>
       </Unit27>
       <Unit28>
         <Filename Value="commoncode\basetools.pas"/>
-        <EditorIndex Value="6"/>
+        <EditorIndex Value="7"/>
         <TopLine Value="468"/>
         <CursorPos Y="497"/>
-        <UsageCount Value="16"/>
+        <UsageCount Value="17"/>
         <Loaded Value="True"/>
       </Unit28>
       <Unit29>
         <Filename Value="code\watercolor.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="5"/>
+        <EditorIndex Value="6"/>
         <TopLine Value="71"/>
         <CursorPos Y="105"/>
-        <UsageCount Value="32"/>
+        <UsageCount Value="35"/>
         <Loaded Value="True"/>
       </Unit29>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
         <Filename Value="code\waterflow.pas"/>
-        <Caret Line="372" TopLine="358"/>
+        <Caret Line="356" TopLine="331"/>
       </Position1>
       <Position2>
         <Filename Value="code\waterflow.pas"/>
-        <Caret Line="373" TopLine="358"/>
+        <Caret Line="357" TopLine="331"/>
       </Position2>
       <Position3>
         <Filename Value="code\waterflow.pas"/>
-        <Caret Line="506" TopLine="479"/>
+        <Caret Line="358" TopLine="331"/>
       </Position3>
       <Position4>
-        <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="10" Column="39"/>
+        <Filename Value="code\waterflow.pas"/>
+        <Caret Line="359" TopLine="331"/>
       </Position4>
       <Position5>
-        <Filename Value="code\watercolor.pas"/>
-        <Caret Line="9" Column="18" TopLine="2"/>
+        <Filename Value="code\waterflow.pas"/>
+        <Caret Line="360" TopLine="331"/>
       </Position5>
       <Position6>
-        <Filename Value="code\watercolor.pas"/>
-        <Caret Line="14" Column="47"/>
+        <Filename Value="code\waterflow.pas"/>
+        <Caret Line="361" TopLine="331"/>
       </Position6>
       <Position7>
-        <Filename Value="code\watercolor.pas"/>
-        <Caret Line="149" Column="13" TopLine="123"/>
+        <Filename Value="code\waterflow.pas"/>
+        <Caret Line="363" TopLine="331"/>
       </Position7>
       <Position8>
-        <Filename Value="code\watercolor.pas"/>
-        <Caret Line="134" Column="64" TopLine="124"/>
+        <Filename Value="code\waterflow.pas"/>
+        <Caret Line="364" TopLine="331"/>
       </Position8>
       <Position9>
-        <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="10" Column="39" TopLine="10"/>
+        <Filename Value="code\waterflow.pas"/>
+        <Caret Line="365" TopLine="331"/>
       </Position9>
       <Position10>
-        <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="242" Column="23" TopLine="197"/>
+        <Filename Value="code\waterflow.pas"/>
+        <Caret Line="367" TopLine="331"/>
       </Position10>
       <Position11>
-        <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="255" Column="29" TopLine="210"/>
+        <Filename Value="code\waterflow.pas"/>
+        <Caret Line="377" TopLine="332"/>
       </Position11>
       <Position12>
-        <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="272" Column="29" TopLine="227"/>
+        <Filename Value="code\waterflow.pas"/>
+        <Caret Line="378" TopLine="333"/>
       </Position12>
       <Position13>
-        <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="489" Column="28" TopLine="444"/>
+        <Filename Value="code\waterflow.pas"/>
+        <Caret Line="380" TopLine="335"/>
       </Position13>
       <Position14>
-        <Filename Value="commoncode\terraindata.pas"/>
-        <Caret Line="20" Column="25"/>
+        <Filename Value="code\waterflow.pas"/>
+        <Caret Line="382" TopLine="355"/>
       </Position14>
       <Position15>
-        <Filename Value="commoncode\terraindata.pas"/>
-        <Caret Line="277" Column="26" TopLine="252"/>
+        <Filename Value="code\waterflow.pas"/>
+        <Caret Line="383" TopLine="355"/>
       </Position15>
       <Position16>
-        <Filename Value="commoncode\terraindata.pas"/>
-        <Caret Line="297" Column="26" TopLine="252"/>
+        <Filename Value="code\waterflow.pas"/>
+        <Caret Line="386" TopLine="355"/>
       </Position16>
       <Position17>
         <Filename Value="commoncode\terraindata.pas"/>
-        <Caret Line="15" Column="33"/>
+        <Caret Line="8" Column="110"/>
       </Position17>
       <Position18>
         <Filename Value="commoncode\terraindata.pas"/>
-        <Caret Line="471" Column="4" TopLine="419"/>
+        <Caret Line="15" Column="31"/>
       </Position18>
       <Position19>
         <Filename Value="commoncode\terraindata.pas"/>
-        <Caret Line="71" Column="60" TopLine="53"/>
+        <Caret Line="21" Column="18"/>
       </Position19>
       <Position20>
-        <Filename Value="code\watercolor.pas"/>
-        <Caret Line="11" Column="17"/>
+        <Filename Value="commoncode\terraindata.pas"/>
+        <Caret Line="96" Column="26" TopLine="51"/>
       </Position20>
       <Position21>
-        <Filename Value="code\watercolor.pas"/>
-        <Caret Line="31" Column="2" TopLine="62"/>
+        <Filename Value="commoncode\terraindata.pas"/>
+        <Caret Line="100" Column="23" TopLine="55"/>
       </Position21>
       <Position22>
-        <Filename Value="code\watercolor.pas"/>
-        <Caret Line="26" Column="52"/>
+        <Filename Value="commoncode\terraindata.pas"/>
+        <Caret Line="310" Column="72" TopLine="302"/>
       </Position22>
       <Position23>
-        <Filename Value="code\watercolor.pas"/>
-        <Caret Line="52" Column="28" TopLine="18"/>
+        <Filename Value="commoncode\terraindata.pas"/>
+        <Caret Line="375" Column="27" TopLine="330"/>
       </Position23>
       <Position24>
-        <Filename Value="code\watercolor.pas"/>
-        <Caret Line="48" Column="27" TopLine="22"/>
+        <Filename Value="commoncode\terraindata.pas"/>
+        <Caret Line="377" Column="49" TopLine="332"/>
       </Position24>
       <Position25>
-        <Filename Value="code\watercolor.pas"/>
-        <Caret Line="105" TopLine="69"/>
+        <Filename Value="code\terraincommand.pas"/>
+        <Caret Line="594" Column="17" TopLine="553"/>
       </Position25>
       <Position26>
-        <Filename Value="code\watercolor.pas"/>
-        <Caret Line="107" Column="76" TopLine="71"/>
+        <Filename Value="code\terraincommand.pas"/>
+        <Caret Line="592" Column="17" TopLine="549"/>
       </Position26>
       <Position27>
-        <Filename Value="code\watercolor.pas"/>
-        <Caret Line="108" Column="61" TopLine="71"/>
+        <Filename Value="code\terraincommand.pas"/>
+        <Caret Line="539" TopLine="513"/>
       </Position27>
       <Position28>
         <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="538" Column="19" TopLine="521"/>
+        <Caret Line="577" Column="44" TopLine="552"/>
       </Position28>
       <Position29>
         <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="591" Column="19" TopLine="546"/>
+        <Caret Line="587" Column="49" TopLine="561"/>
       </Position29>
       <Position30>
         <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="8" Column="55"/>
+        <Caret Line="590" TopLine="556"/>
       </Position30>
     </JumpHistory>
     <RunParams>
@@ -366,6 +368,20 @@
         <WatchKind Value="wpkWrite"/>
         <Source Value="E:\wyrdforest\code\watergrid.pas"/>
         <Line Value="145"/>
+      </Item>
+      <Item>
+        <Kind Value="bpkSource"/>
+        <WatchScope Value="wpsLocal"/>
+        <WatchKind Value="wpkWrite"/>
+        <Source Value="code\waterflow.pas"/>
+        <Line Value="386"/>
+      </Item>
+      <Item>
+        <Kind Value="bpkSource"/>
+        <WatchScope Value="wpsLocal"/>
+        <WatchKind Value="wpkWrite"/>
+        <Source Value="code\terraincommand.pas"/>
+        <Line Value="578"/>
       </Item>
     </BreakPoints>
   </Debugging>

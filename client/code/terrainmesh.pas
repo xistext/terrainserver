@@ -39,7 +39,7 @@ TTerrainMesh = class( TLiteMesh )
      constructor create2( aowner : TComponent;
                           iLinkedTile : TTerTile );
      function offset : TVector2; override;
-     procedure UpdateSize;
+     procedure UpdateSize; dynamic;
      procedure updatefromgrid( TerrainGrid : TSingleGrid );
      procedure UpdateAppearance;
      function InitAppearance : TAppearanceNode; override;
@@ -60,6 +60,7 @@ TTerrainMesh = class( TLiteMesh )
 TWaterMesh = class( TTerrainMesh )
   constructor create2( aowner : TComponent;
                        iLinkedTile : TTerTile );
+  procedure UpdateSize; override;
   function InitAppearance : TAppearanceNode; override;
  end;
 
@@ -385,6 +386,11 @@ constructor TWaterMesh.create2( aowner : TComponent;
  begin
    inherited;
    RenderOptions.WireframeEffect := weNormal;
+ end;
+
+procedure TWaterMesh.UpdateSize;
+ begin
+   initializedata( true );
  end;
 
 function TWaterMesh.InitAppearance : TAppearanceNode;
