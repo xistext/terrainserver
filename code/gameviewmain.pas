@@ -185,8 +185,8 @@ end;
 
 procedure TViewMain.HandleCommandCallback( Msg : string );
  begin
-   if msg <> '' then
-     dbgwrite( Msg +'. ' );
+(*   if msg <> '' then
+     dbgwrite( Msg +'. ' );*)
    Application.ProcessMessage( false, false );
  end;
 

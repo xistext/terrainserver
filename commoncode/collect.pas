@@ -539,11 +539,11 @@ begin
            H := I - 1;
            Result := C = 0;
            IF Result AND NOT Dups THEN
-              L := I;
+             L := I; {replaced with branchless line below }
+//           L := I * ord( Result AND NOT Dups );
          end;
       end;
      Index := L;
-     { !!! if duplicates, should we arrange to return the first of the duplicates ?}
   {$ifdef threaded}ThreadRelease; END;{$endif}
 end;
 

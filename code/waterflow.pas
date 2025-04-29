@@ -11,8 +11,7 @@ uses
   basethread,
   waterparams, water_low, watergrid,
   TerrainParams, TerrainData,
-  Collect,
-  debug;
+  Collect;
 
 procedure StartWaterFlowThreads;
 procedure StopWaterFlowThreads;
@@ -363,15 +362,12 @@ function TFlowRunner.flowtoneighbors( x,y : integer ) : boolean;
 
    calcneighbors( neighborlist );
    neighbor := pneighbor( neighborlist.firstptr );
-   if assigned( neighbor ) then
+   for i := 0 to neighborlist.count - 1 do if not cancelflow then
     begin
-      for i := 0 to neighborlist.count - 1 do if not cancelflow then
-       begin
-         result := flowtoneighbor( Cellneighbors[ neighbor^.neighborix ]) or result;
-         inc( neighbor );
-         if ( celldata.waterdepth <= mindepth ) or cancelflow then
-            break;
-       end;
+      result := flowtoneighbor( Cellneighbors[ neighbor^.neighborix ]) or result;
+      inc( neighbor );
+      if ( celldata.waterdepth <= mindepth ) or cancelflow then
+         break;
     end;
    neighborlist.Free
  end;
@@ -394,7 +390,6 @@ function TFlowRunner.flowtoneighbor( var neighbor : TCellData) : boolean;
             limitmax( snowfactor, MaxSnowFactor );
             delta := delta * ( 1 - snowfactor );
           end;
-         assert( assigned( flowptrs.deltaptr ));
          flowptrs.deltaptr^ := flowptrs.deltaptr^ - delta;
          if assigned( neighbor.flowptrs.deltaptr ) then
             Neighbor.flowptrs.deltaptr^ := Neighbor.flowptrs.deltaptr^ + delta
@@ -481,7 +476,7 @@ procedure TWaterTask.RunTask;
     begin
       Delta := UpdateTime - WaterTile.LastUpdateTime;
       Delta := Delta * flowfactor;
-      FlowTile( 1 );
+      FlowTile( Delta );
     end;
    if cancelflow then
       exit;
@@ -502,7 +497,6 @@ function TWaterTask.flowtile( amounttoflow : single ) : boolean;
 
       DeltaGrid.zerogrid;
       FlowRunner := TFlowRunner.create( twaterflowthread( parentthread ), watertile );
-      dbgwrite( watertile.tileid + '~~' );
       FlowRunner.amounttoflow := amounttoflow;
       for x := 0 to flowrunner.linesz - 1 do for y := 0 to flowrunner.linesz - 1 do
       if not cancelflow then

@@ -469,11 +469,17 @@ function TWaterMesh.InitAppearance : TAppearanceNode;
    renderoptions.Textures := true;
    result := TAppearanceNode.create;
    result.Material := initMaterial;
-   result.material.MaterialInfo.transparency := 0.5;
+   result.Material.MaterialInfo.MainColor := vector3(0.1,0.1,0.5);
+   TPhysicalMaterialNode( result.Material ).BaseColor := vector3(0.1,0.1,0.5);
+   TPhysicalMaterialNode( result.Material ).Metallic := 1;
+   TPhysicalMaterialNode( result.Material ).Transparency := 0.1;;
 
+
+(*
    { make the material lit }
    Effect := BuildWaterEffect;
-   Result.SetEffects([Effect]);
+   Result.SetEffects([Effect]);*)
+   renderoptions.WireframeEffect := weSolidWireframe;
  end;
 
 end.

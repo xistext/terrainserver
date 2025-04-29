@@ -508,8 +508,6 @@ function TTask_SendTile.RunTask : boolean;
    client.Send( resulttileinfo, sizeof( TTileHeader ));
    client.SendBuffer( buffer, buflen );
 
-   dbgwrite( 'Send '+tile.tileid+'.   ' );
-
    result := true;
  end;
 
@@ -524,12 +522,17 @@ constructor TTask_SendWater.create( const iClient : TClientConnection;
    LOD := iLOD;
  end;
 
+const zmargin : single = 0.03;
+
 function TTask_SendWater.RunTask : boolean;
  var buffer : TIdBytes;
      resulttileinfo : TTileHeader;
      buflen : integer;
      tilesz, loddiv : integer;
      resultwater, resultterrain : TSingleGrid;
+     terrainh, waterh : ^single;
+     i : integer;
+     h : single;
  begin
    result := inherited Runtask;
    if not result then
@@ -541,7 +544,21 @@ function TTask_SendWater.RunTask : boolean;
    resulttileinfo.tilesz := tilesz + 1;
    resultwater := BuildResultGrid( tile, resulttileinfo, LOD, layer_water );
    resultterrain := BuildResultGrid( tile, resulttileinfo, LOD, layer_terrain );
-   resultwater.addgrid(resultterrain);
+
+   waterh := resultwater.ptrix(0);
+   terrainh := resultterrain.ptrix(0);
+
+   for i := 0 to resultwater.wxh - 1 do
+    begin
+      h := waterh^;
+      { prevent z-fighting }
+      if h < zmargin then
+         h := -zmargin;
+      waterh^ := terrainh^ + h;
+
+      inc( waterh );
+      inc( terrainh );
+    end;
    resultterrain.free;
 
    buflen := resultwater.wxh*sizeof(single);
@@ -554,8 +571,6 @@ function TTask_SendWater.RunTask : boolean;
    client.SendBuffer( buffer, buflen );
 
    resultwater.free;
-
-   dbgwrite( 'Send '+tile.tileid+'.   ' );
 
    result := true;
  end;
@@ -620,6 +635,17 @@ function TCmdList.executecommand( client : TClientConnection;
       result := TSrvCommand( at( i )).AFunc( client, params, callback );
  end;
 
+   procedure stripleadingspaces( var astr : string ); inline;
+    var spacecount : integer;
+        l : integer;
+    begin
+      spacecount := 0;
+      l := length( astr );
+      while ( spacecount < l ) and ( astr[spacecount+1] = ' ' ) do
+         inc( spacecount );
+      delete( astr, 1, spacecount );
+    end;
+
 function nextparam( var params : string;
                     var param : string ) : boolean;
  var i : integer;
@@ -631,8 +657,6 @@ function nextparam( var params : string;
     begin
       param := copy( params, 1, i - 1 );
       delete( params, 1, i );
-      while params[1] = ' ' do
-         delete( params, 1, 1 );
 
     end
    else

@@ -295,7 +295,7 @@ constructor TTerTile.create( const iInfo : TTileHeader );
    TSingleGrid( layer.DataGrid ).setvalue( 0.1 );
    datalayers[layer_water] := layer;
    status := 0;
-   lastupdatetime := 0;
+   lastupdatetime := -1;
    WaterToFlowList_high.addtask( TWaterTask.create( self ));
    {$else}
    TerrainGraphics := nil;

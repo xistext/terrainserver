@@ -292,7 +292,7 @@ constructor TTerTile.create( const iInfo : TTileHeader );
    { initialize water layer }
    layer := TDataLayer.create;
    layer.initgrid( Info.TileSz );
-   TSingleGrid( layer.DataGrid ).setvalue( 2 );
+   TSingleGrid( layer.DataGrid ).setvalue( 0.1 );
    datalayers[layer_water] := layer;
    status := 0;
    lastupdatetime := 0;

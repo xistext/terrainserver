@@ -154,7 +154,7 @@ procedure TViewMain.Update(const SecondsPassed: Single; var HandleInput: Boolean
      task := GTaskList.Pop;
    end;
 
-  if assigned( client.context ) and WaterFlowThreads[0].DirtyTileList.nexttile( atile  ) then
+  if assigned( lastclient.context ) and WaterFlowThreads[0].DirtyTileList.nexttile( atile  ) then
    begin
      waterArea( lastclient,
                 atile.info.tilex, atile.info.tiley,
