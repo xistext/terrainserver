@@ -12,11 +12,13 @@ const terrainpath = 'data\terrain\';
       terrainext  = '.is.terra';
       waterext    = '.is.water';
       splatext    = '.is.splat';
+      floraext    = '.is.flora';
       rootpath = 'e:\terrainserver\';
 
       layer_terrain = 0;
       layer_splat   = 1;
       layer_water   = 2;
+      layer_flora   = 3;
 
 type TTerTile = class; { forward }
      TTileNeighbors = array[0..7] of TTerTile;
@@ -91,9 +93,11 @@ type TTerTile = class; { forward }
         function getTerrainGrid : TSingleGrid;
         function getWaterGrid : TSingleGrid;
         function getSplatGrid : TIntGrid;
+        function getFloraGrid : TSingleGrid;
         public
         property TerrainGrid : TSingleGrid read getTerrainGrid;
         property WaterGrid : TSingleGrid read getWaterGrid;
+        property FloraGrid : TSingleGrid read getWaterGrid;
         {$else}
         TerrainGraphics : TCastleTransform;
         WaterGraphics : TCastleTransform;
@@ -294,8 +298,13 @@ constructor TTerTile.create( const iInfo : TTileHeader );
    layer.initgrid( Info.TileSz );
    TSingleGrid( layer.DataGrid ).setvalue( 0.1 );
    datalayers[layer_water] := layer;
+   { initialize flora layer }
+   layer := TDataLayer.create;
+   layer.initgrid( Info.TileSz );
+   TSingleGrid( layer.DataGrid ).setvalue( 0.1 );
+   datalayers[layer_flora] := layer;
    status := 0;
-   lastupdatetime := 0;
+   lastupdatetime := -1;
    WaterToFlowList_high.addtask( TWaterTask.create( self ));
    {$else}
    TerrainGraphics := nil;
@@ -363,6 +372,11 @@ function TTerTile.getSplatGrid : TIntGrid;
    Result := TIntGrid( datalayers[layer_splat].DataGrid );
  end;
 
+function TTerTile.getFloraGrid : TSingleGrid;
+ begin
+   Result := TSingleGrid( datalayers[layer_flora].DataGrid );
+ end;
+
 procedure TTerTile.UpdateTerrainGridFromSource( Source : TCastleTerrainNoise );
  var y, x, factor : dword;
      step, sz2 : single;
@@ -394,9 +408,25 @@ procedure TTerTile.UpdateTerrainGridFromSource( Source : TCastleTerrainNoise );
    status := status or tile_built or tile_dirty;
 end;
 
+  procedure savegrid( filename : string; datagrid : TSingleGrid );
+   var stream : TStream;
+   begin
+     stream := TFileStream.Create(filename, fmCreate );
+     stream.Write( datagrid.Data^, datagrid.datasz);
+     stream.Free;
+   end;
+
+  procedure readgrid( filename : string; datagrid : TSingleGrid );
+   var stream : TStream;
+   begin
+     stream := TFileStream.Create(filename, fmOpenRead);
+     stream.Read( datagrid.Data^, datagrid.datasz);
+     stream.Free;
+   end;
+
+
 function TTerTile.SaveToFile : boolean;
  var filename, fileroot : string;
-     stream : TStream;
      datagrid : TSingleGrid;
      dirty : boolean;
  begin
@@ -404,30 +434,10 @@ function TTerTile.SaveToFile : boolean;
    dirty := ( status and tile_dirty > 0 );
    if dirty then
     begin
-      filename := fileroot + terrainext;
-      if not fileexists( filename ) then
-       begin
-         datagrid := getTerrainGrid;
-         stream := TFileStream.Create(filename, fmCreate );
-         stream.Write( datagrid.Data^, datagrid.datasz);
-         stream.Free;
-       end;
-      filename := fileroot + waterext;
-      if not fileexists( filename ) then
-       begin
-         datagrid := getWaterGrid;
-         stream := TFileStream.Create(filename, fmCreate );
-         stream.Write( datagrid.Data^, datagrid.datasz);
-         stream.Free;
-       end;
-      filename := fileroot + splatext;
-      if not fileexists( filename ) then
-       begin
-         datagrid := getSplatGrid;
-         stream := TFileStream.Create(filename, fmCreate );
-         stream.Write( datagrid.Data^, datagrid.datasz);
-         stream.Free;
-       end;
+      savegrid( fileroot + terrainext, getTerrainGrid );
+      savegrid( fileroot + waterext, getWaterGrid );
+      savegrid( fileroot + splatext, getSplatGrid );
+      savegrid( fileroot + floraext, getFloraGrid );
       dbgwrite( 'Saved '+tileid+'.  ' );
       if dirty then
          status := status xor tile_dirty;
@@ -445,10 +455,7 @@ function TTerTile.LoadfromFile : boolean;
    result := fileexists( filename );
    if result then
     begin
-      datagrid := getTerrainGrid;
-      stream := TFileStream.Create(filename, fmOpenRead);
-      stream.Read( datagrid.Data^, datagrid.datasz);
-      stream.Free;
+      readgrid( filename, getTerrainGrid );
       if status and tile_dirty > 0 then
          status := status xor tile_dirty;
     end;

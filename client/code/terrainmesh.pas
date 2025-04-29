@@ -34,7 +34,7 @@ TTextureLayer = class(TCastleComponent)
 
  end;
 
-TTerrainMesh = class( TAbstractTextureMesh )
+TTerrainMesh = class( TLiteMesh )
      constructor create( aowner : TComponent );  override;
      constructor create2( aowner : TComponent;
                           iLinkedTile : TTerTile );
@@ -61,7 +61,6 @@ TWaterMesh = class( TTerrainMesh )
   constructor create2( aowner : TComponent;
                        iLinkedTile : TTerTile );
   function InitAppearance : TAppearanceNode; override;
-  function BuildWaterEffect : TEffectNode;
  end;
 
 const GShaderId : integer = 0;
@@ -85,7 +84,6 @@ const
     '255'#10 +
     '255 255 255';
 
-
 function gettileshader( Tile : ttertile;
                         shaderid : integer ) : TTileShader;
  begin
@@ -106,6 +104,57 @@ begin
      TTerrainMesh( atile.TerrainGraphics ).Elevationatpos( pos2, h );
 end;
 
+function readstring( url : string ) : string;
+ var MyTextReader : TTextReader;
+     Line : string;
+     L : integer;
+ begin
+   result := '';
+   MyTextReader := TTextReader.Create( url );
+   while not MyTextReader.eof do
+    begin
+      Line := MyTextReader.Readln;
+      L := Length( Line );
+     // if ( L > 0 ) and (( L = 1 ) or ( copy( Line, 1, 2 ) <> '//' )) then
+         result := result + line + lineending;
+    end;
+   MyTextReader.Free;
+ end;
+
+type tpaletterec = packed record
+        ix : byte;
+        a : byte;
+        r0, r1 : byte;
+      end;
+
+function encodesplatcell( r, g, b, a : byte;
+                          t1, t1a : byte ) : integer;
+ { encode 4 bit r,g,b,a into integer }
+ begin
+   assert(( r < 16 ) and ( g < 16 ) and ( b < 16 ) and ( a < 16 ));
+   result := r + g shl 4 + b shl 8 + a shl 12 + t1 shl 16 + t1a shl 20;
+ end;
+
+function decodesplatcell( v : integer ) : integer;
+ { encode 8 bit alpha into the paletteix }
+ var r, g, b, a : integer;
+ begin
+   r := v shl 28 shr 28;
+   g := v shl 24 shr 28;
+   b := v shl 20 shr 28;
+   a := v shl 16 shr 28;
+   result := r +
+             g * 16 +
+             b * 256 +
+             a * 4096;
+(*   with tpaletterec( result ) do
+    begin
+      ix := paletteix;
+      a := alpha;
+      r0 := 0;
+      r1 := 0;
+    end;*)
+ end;
 
 //------------------------------
 
@@ -153,8 +202,6 @@ constructor TTerrainMesh.create( aowner : TComponent );
  begin
    inherited create( aowner );
    LinkedTile := nil;
-   Pickable := true;
-//   PreciseCollisions := true;
  end;
 
 constructor TTerrainMesh.create2( aowner : TComponent;
@@ -169,8 +216,6 @@ var sz : single;
       sz := GDefGridCellCount * GDefGridStep;
     end;
    RenderOptions.WireframeEffect := weSilhouette;
-   pickable := true;
-//   PreciseCollisions := true;
 end;
 
 function TTerrainMesh.offset : TVector2;
@@ -204,59 +249,6 @@ function TTerrainMesh.getGridStep : single;
 begin
   Result := LinkedTile.GridStep;
 end;
-
-   function readstring( url : string ) : string;
-    var MyTextReader : TTextReader;
-        Line : string;
-        L : integer;
-    begin
-      result := '';
-      MyTextReader := TTextReader.Create( url );
-      while not MyTextReader.eof do
-       begin
-         Line := MyTextReader.Readln;
-         L := Length( Line );
-        // if ( L > 0 ) and (( L = 1 ) or ( copy( Line, 1, 2 ) <> '//' )) then
-            result := result + line + lineending;
-       end;
-      MyTextReader.Free;
-    end;
-
-type tpaletterec = packed record
-        ix : byte;
-        a : byte;
-        r0, r1 : byte;
-      end;
-
-function encodesplatcell( r, g, b, a : byte;
-                          t1, t1a : byte ) : integer;
- { encode 4 bit r,g,b,a into integer }
- begin
-   assert(( r < 16 ) and ( g < 16 ) and ( b < 16 ) and ( a < 16 ));
-   result := r + g shl 4 + b shl 8 + a shl 12 + t1 shl 16 + t1a shl 20;
- end;
-
-function decodesplatcell( v : integer ) : integer;
- { encode 8 bit alpha into the paletteix }
- var r, g, b, a : integer;
- begin
-   r := v shl 28 shr 28;
-   g := v shl 24 shr 28;
-   b := v shl 20 shr 28;
-   a := v shl 16 shr 28;
-   result := r +
-             g * 16 +
-             b * 256 +
-             a * 4096;
-(*   with tpaletterec( result ) do
-    begin
-      ix := paletteix;
-      a := alpha;
-      r0 := 0;
-      r1 := 0;
-    end;*)
- end;
-
 
 function TTerrainMesh.BuildTerrainEffect : TEffectNode;
  var FragmentPart, VertexPart : TEffectPartNode;
@@ -395,75 +387,7 @@ constructor TWaterMesh.create2( aowner : TComponent;
    RenderOptions.WireframeEffect := weNormal;
  end;
 
-function TWaterMesh.BuildWaterEffect : TEffectNode;
- var FragmentPart, VertexPart : TEffectPartNode;
-     ix, iy : integer;
-     SplatMap : TMFLong;
-     TexImage : TImageTextureNode;
- begin
-   Result := TEffectNode.Create;
-   Result.Language := slGLSL;
-   Result.UniformMissing := umIgnore;
-
-   Result.AddCustomField(TSFVec4f.Create(Result, true, 'uv_scale', Vector4( 0.11, 0.26, 0.36, 0.36)));
-   Result.AddCustomField(TSFVec4f.Create(Result, true, 'metallic', Vector4( 1, 1, 1, 1)));
-   Result.AddCustomField(TSFVec4f.Create(Result, true, 'roughness', Vector4( 1, 1, 1, 1)));
-
-   Result.AddCustomField(TSFBool.Create(Result, true, 'blur', true ));
-
-   Result.AddCustomField(TSFFloat.Create(Result, true, 'height_1', 4));
-   Result.AddCustomField(TSFFloat.Create(Result, true, 'height_2', 8));
-
-   TexImage := TImageTextureNode.Create;
-   TexImage.SetUrl( ['castle-data:/testwater3.png'] );
-   Result.AddCustomField( TSFNode.Create(Result, false, 'tex_1', [], TexImage ));
-
-   TexImage  := TImageTextureNode.Create;
-   TexImage.SetUrl( ['castle-data:/testwater3.png'] );
-   Result.AddCustomField( TSFNode.Create(Result, false, 'tex_2', [], TexImage ));
-
-   TexImage := TImageTextureNode.Create;
-   TexImage.SetUrl( ['castle-data:/testwater3.png'] );
-   Result.AddCustomField( TSFNode.Create(Result, false, 'tex_3', [], TexImage ));
-
-   TexImage := TImageTextureNode.Create;
-   TexImage.SetUrl( ['castle-data:/testwater3.png'] );
-   Result.AddCustomField( TSFNode.Create(Result, false, 'tex_4', [], TexImage ));
-
-   Result.AddCustomField(TSFInt32.Create(Result, true, 'splat_sz', 60));
-   splatmap := TMFLong.Create( Result, true, 'splatmap', [] );
-   splatmap.items.Count := 3600;
-   for ix := 0 to 60 - 1 do
-       for iy := 0 to 60 - 1 do
-           splatmap.items[ix*60+iy] := encodesplatcell( 1, 1, 1, 8, 0, 0 );
-   Result.AddCustomField(splatmap);
-
-   Result.AddCustomField(TSFFloat.Create(Result, true, 'grid_scale', ord( GShowGrid ) * GGridScale ));
-   Result.AddCustomField(TSFFloat.Create(Result, true, 'contour_scale', ord( GShowContour ) * GContourScale ));
-
-   Result.AddCustomField(TSFVec4f.Create(Result, true, 'grid_color', Vector4( 0.1,0.2,0.2,0.5 )));
-   Result.AddCustomField(TSFVec4f.Create(Result, true, 'grid10_color', Vector4( 0.5,0.1,0.1,0.5 )));
-   Result.AddCustomField(TSFVec4f.Create(Result, true, 'contour_color', Vector4( 0.38,0.19,0.0,0.9 )));
-
-   Result.AddCustomField(TSFFloat.Create(Result, true, 'layers_influence', 1.0));
-   Result.AddCustomField(TSFFloat.Create(Result, true, 'steep_emphasize', 5 ));
-
-
-   { initialize 2 EffectPart nodes (one for vertex shader, one for fragment shader) }
-   FragmentPart := TEffectPartNode.Create;
-   FragmentPart.ShaderType := stFragment;
-   FragmentPart.Contents := readstring('castle-data:/water/water.fs');
-
-(*   VertexPart := TEffectPartNode.Create;
-   VertexPart.ShaderType := stVertex;
-   VertexPart.Contents := readstring('castle-data:/terrain/textures/terrain.vs');*)
-
-   Result.SetParts([FragmentPart]);
- end;
-
-
 function TWaterMesh.InitAppearance : TAppearanceNode;
- var Effect : TEffectNode;
  begin
    renderoptions.Blending := true;
    renderoptions.Textures := true;
@@ -474,12 +398,7 @@ function TWaterMesh.InitAppearance : TAppearanceNode;
    TPhysicalMaterialNode( result.Material ).Metallic := 1;
    TPhysicalMaterialNode( result.Material ).Transparency := 0.1;;
 
-
-(*
-   { make the material lit }
-   Effect := BuildWaterEffect;
-   Result.SetEffects([Effect]);*)
-   renderoptions.WireframeEffect := weSolidWireframe;
+   result.Texture := initTexture( 'castle-data:/testwater3.png' );
  end;
 
 end.

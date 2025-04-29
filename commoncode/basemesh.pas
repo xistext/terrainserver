@@ -12,16 +12,12 @@ type
 TAbstractMesh = class( TCastleScene )
    public
 
-   constructor create( aowner : TComponent ); override;
-
-   procedure InitializeData; dynamic;
+   procedure InitializeData( texture : boolean = false ); dynamic;
    procedure UpdateMeshProperties; dynamic;
 
    function offset : TVector2; dynamic;
 
    protected
-
-   fCoordinateNode : TCoordinateNode;  { maintain refererence to CoordinateNode }
 
    function initindexes : TInt32List;
    function inittriangles : TIndexedTriangleSetNode;
@@ -38,9 +34,10 @@ TAbstractMesh = class( TCastleScene )
    function getcellcount : integer;
 
    function CoordinateNode : TCoordinateNode;
+
    public
 
-   procedure InitVertices; dynamic; abstract;
+   procedure InitVertices( Coord : TCoordinateNode ); dynamic; abstract;
 
    property GridCount : integer read getGridCount write setGridCount;
    property GridStep  : single read getGridStep write setGridStep;
@@ -58,57 +55,19 @@ TAbstractMesh = class( TCastleScene )
 
  end;
 
-TAbstractTextureMesh = class( TAbstractMesh )
+TLiteMesh = class( TAbstractMesh )
    public
 
-   procedure InitializeData; override;
+   procedure InitializeData( texture : boolean = false ); override;
 
-   procedure InitVertices; override;
+   procedure InitVertices( Coord : TCoordinateNode ); override;
+   procedure InitVerticesWithTexture( var Coord : TCoordinateNode;
+                                      var TexCoord : TTextureCoordinateNode );
 
-end;
-
-
-
-TBaseMesh = class( TAbstractMesh )
-   public
-
-   constructor create( aowner : TComponent ); override;
-
-   private
-
-   fGridCount  : integer; { vertex count }
-   fGridStep   : single;
-
-   procedure setGridCount( iGridCount : integer ); override;
-   function getGridCount : integer; override;
-
-   procedure setGridStep( iGridStep : single ); override;
-   function getGridStep : single; override;
-
-end;
-
-TTextureMesh = class( TBaseMesh )
-   public
-
-   procedure InitializeData; override;
-
-   function inittexture( TextureUrl : string ) : TImageTextureNode;
-
-   procedure InitVertices; override;
-
-   protected
-
-   TexCoordNode   : TTextureCoordinateNode;
-
+   function InitTexture( TextureUrl : string ) : TImageTextureNode;
 end;
 
 implementation
-
-constructor TAbstractMesh.create( aowner : TComponent );
- begin
-   inherited create( aowner );
-   fCoordinateNode := nil;
- end;
 
 function TAbstractMesh.getcellcount : integer;
  begin
@@ -141,9 +100,12 @@ function TAbstractMesh.initindexes : TInt32List;
 function TAbstractMesh.CoordinateNode : TCoordinateNode;
  var IndexedTriangleSetNode : TIndexedTriangleSetNode;
  begin
-   result := fCoordinateNode;
-//   IndexedTriangleSetNode := TIndexedTriangleSetNode( rootnode.FindNode( TIndexedTriangleSetNode, false ));
-//   assert( result = TCoordinateNode( IndexedTriangleSetNode.Coord ));
+   result := nil;
+   if assigned( rootnode ) then
+    begin
+      IndexedTriangleSetNode := TIndexedTriangleSetNode( rootnode.FindNode( TIndexedTriangleSetNode, false ));
+      result := TCoordinateNode( IndexedTriangleSetNode.Coord );
+    end
  end;
 
 
@@ -239,9 +201,8 @@ function TAbstractMesh.initmaterial : TPhysicalMaterialNode;
    Result := TPhysicalMaterialNode.Create;
  end;
 
-procedure TAbstractMesh.initializedata;
+procedure TAbstractMesh.initializedata( texture : boolean = false );
  begin
-   fCoordinateNode := TCoordinateNode.Create;
  end;
 
 function TAbstractMesh.inittriangles : TIndexedTriangleSetNode;
@@ -249,7 +210,7 @@ function TAbstractMesh.inittriangles : TIndexedTriangleSetNode;
  begin
    Indexes := initindexes;
    Result := TIndexedTriangleSetNode.Create;
-   Result.Coord := CoordinateNode;
+   Result.Coord := TCoordinateNode.Create;
    Result.SetIndex( Indexes );
    Indexes.Free;
  end;
@@ -258,38 +219,9 @@ procedure TAbstractMesh.UpdateMeshProperties;
  begin
  end;
 
-//--------------------------------------
-
-constructor TBaseMesh.create( aowner : TComponent );
- begin
-   inherited create( aowner );
-   fGridCount := 0;
-   fGridStep := 0;
- end;
-
-procedure TBaseMesh.setGridCount( iGridCount : integer );
- begin
-   fGridCount := iGridCount;
- end;
-
-function TBaseMesh.getGridCount : integer;
- begin
-   result := fGridCount;
- end;
-
-procedure TBaseMesh.setGridStep( iGridStep  : single );
- begin
-   fGridStep := iGridStep;
- end;
-
-function TBaseMesh.getGridStep : single;
- begin
-   result := fGridStep;
- end;
-
 //-------------------------------------
 
-procedure TAbstractTextureMesh.initializedata;
+procedure TLiteMesh.initializedata( texture : boolean = false );
  var Root : TX3DRootNode;
      Triangles : TIndexedTriangleSetNode;
      Appearance: TAppearanceNode;
@@ -298,7 +230,14 @@ procedure TAbstractTextureMesh.initializedata;
    inherited;
 
    Triangles := initTriangles;
-   initvertices;
+   if texture then
+    begin
+      Triangles.TexCoord := TTextureCoordinateNode.Create;
+      initverticeswithtexture(TCoordinateNode( Triangles.Coord ),
+                              TTextureCoordinateNode(Triangles.TexCoord));
+    end
+   else
+      initvertices( TCoordinateNode( Triangles.Coord ));
 
    Shape := TShapeNode.Create;
    Shape.Geometry := Triangles;
@@ -313,7 +252,7 @@ procedure TAbstractTextureMesh.initializedata;
    UpdateMeshProperties;
  end;
 
-procedure TAbstractTextureMesh.InitVertices;
+procedure TLiteMesh.InitVertices( Coord : TCoordinateNode );
  var Vertices  : TVector3List;
      step, sz2 : single;
      i, j, vcount : integer;
@@ -343,47 +282,12 @@ procedure TAbstractTextureMesh.InitVertices;
        end;
       vertex.z := vertex.z + step;
     end;
-   CoordinateNode.SetPoint( Vertices );
+   Coord.SetPoint( Vertices );
    Vertices.Free;
  end;
 
-//---------------------------------
-
-procedure TTextureMesh.InitializeData;
- var Root : TX3DRootNode;
-     Triangles : TIndexedTriangleSetNode;
-     Appearance: TAppearanceNode;
-     Shape : TShapeNode;
- begin
-   inherited;
-   TexCoordNode := TTextureCoordinateNode.Create;
-
-   Triangles := initTriangles;
-   initvertices;
-
-   Shape := TShapeNode.Create;
-   Shape.Geometry := Triangles;
-
-   Appearance := InitAppearance;
-   Shape.Appearance := Appearance;
-
-   Root := TX3DRootNode.Create;
-   Root.AddChildren( Shape );
-
-   { texture }
-   Triangles.TexCoord := TexCoordNode;
-
-   Load(Root, true );
-   UpdateMeshProperties;
- end;
-
-function TTextureMesh.inittexture( TextureUrl : string ) : TImageTextureNode;
- begin
-   Result := TImageTextureNode.Create;
-   Result.SetUrl([TextureUrl]);
- end;
-
-procedure TTextureMesh.InitVertices;
+procedure TLiteMesh.InitVerticesWithTexture( var Coord : TCoordinateNode;
+                                             var TexCoord : TTextureCoordinateNode );
  var Vertices  : TVector3List;
      step, sz2 : single;
      i, j, vcount : integer;
@@ -393,7 +297,7 @@ procedure TTextureMesh.InitVertices;
  begin
    step := gridstep;
    Vertices := TVector3List.Create;
-   vcount := fGridCount * fGridCount;
+   vcount := GridCount * GridCount;
    Vertices.Count := vcount;
    VertexPtr := Vertices.Ptr(0);
    TexCoords := TVector2List.Create;
@@ -401,10 +305,10 @@ procedure TTextureMesh.InitVertices;
    sz2 := CellCount * Step * 0.5;
    vertex.y := 0;
    vertex.z := -sz2;
-   for i := 0 to fGridCount - 1 do
+   for i := 0 to GridCount - 1 do
     begin
       Vertex.x := -sz2; { world x offset to align tiles }
-      for j := 0 to fGridCount - 1 do
+      for j := 0 to GridCount - 1 do
        begin
          VertexPtr^ := Vertex;
          vertex.x := vertex.x + step;
@@ -413,10 +317,16 @@ procedure TTextureMesh.InitVertices;
        end;
       vertex.z := vertex.z + step;
     end;
-   CoordinateNode.SetPoint( Vertices );
-   TexCoordNode.SetPoint(TexCoords);
+   Coord.SetPoint( Vertices );
+   TexCoord.SetPoint(TexCoords);
    Vertices.Free;
    TexCoords.Free;
+ end;
+
+function TLiteMesh.inittexture( TextureUrl : string ) : TImageTextureNode;
+ begin
+   Result := TImageTextureNode.Create;
+   Result.SetUrl([TextureUrl]);
  end;
 
 

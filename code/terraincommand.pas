@@ -2,12 +2,13 @@ unit TerrainCommand;
 
 interface
 
-uses Classes, SysUtils, Collect, castleterrain,
+uses Classes, SysUtils, Collect,
      IdGlobal,
      BaseThread,
-     TerServerCommon, CastleClientServer,
+     CastleClientServer, CastleVectors, castleterrain,
+     TerServerCommon,
      TerrainParams, TerrainData,
-     watergrid, waterflow,
+     watergrid, waterflow, watercolor,
      debug;
 
 type TCommandCallback = procedure( msg : string ) of object;
@@ -529,10 +530,13 @@ function TTask_SendWater.RunTask : boolean;
      resulttileinfo : TTileHeader;
      buflen : integer;
      tilesz, loddiv : integer;
-     resultwater, resultterrain : TSingleGrid;
-     terrainh, waterh : ^single;
+     resultwater, resultterrain, resultflora : TSingleGrid;
+     resultwatertex : array of tvector2;
+     terrainh, waterh, florah : ^single;
+     texptr : ^TVector2;
      i : integer;
      h : single;
+
  begin
    result := inherited Runtask;
    if not result then
@@ -544,9 +548,13 @@ function TTask_SendWater.RunTask : boolean;
    resulttileinfo.tilesz := tilesz + 1;
    resultwater := BuildResultGrid( tile, resulttileinfo, LOD, layer_water );
    resultterrain := BuildResultGrid( tile, resulttileinfo, LOD, layer_terrain );
+   resultflora := BuildResultGrid( tile, resulttileinfo, LOD, layer_flora );
 
    waterh := resultwater.ptrix(0);
    terrainh := resultterrain.ptrix(0);
+   florah := resultflora.ptrix(0);
+   setlength( resultwatertex, resultwater.wxh );
+   texptr := @resultwatertex[0];
 
    for i := 0 to resultwater.wxh - 1 do
     begin
@@ -554,12 +562,18 @@ function TTask_SendWater.RunTask : boolean;
       { prevent z-fighting }
       if h < zmargin then
          h := -zmargin;
+      texptr^ := CalcDepthAndTexture( h, florah^, terrainh^, false );
       waterh^ := terrainh^ + h;
 
+      { calculate water texture index }
+
+      inc( texptr );
       inc( waterh );
       inc( terrainh );
+      inc( florah );
     end;
    resultterrain.free;
+   resultflora.free;
 
    buflen := resultwater.wxh*sizeof(single);
    setlength( buffer, buflen );
@@ -569,7 +583,13 @@ function TTask_SendWater.RunTask : boolean;
    SendClientMsgHeader( client, msg_Water, buflen + sizeof( TTileHeader ));
    client.Send( resulttileinfo, sizeof( TTileHeader ));
    client.SendBuffer( buffer, buflen );
-
+              (*
+   { send tex mapping }
+   buflen := resultwater.wh * sizeof( tvector2 ));
+   setlength( buffer, buflen );
+   Move( resultwatertex[0], buffer, buflen );
+   client.SendBuffer( buffer, buflen );
+                *)
    resultwater.free;
 
    result := true;
