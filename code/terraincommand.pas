@@ -559,9 +559,6 @@ function TTask_SendWater.RunTask : boolean;
     for y := 0 to resultwater.wh - 1 do
     begin
       h := waterh^;
-      { prevent z-fighting }
-    (*  if h < zmargin then
-         h := -zmargin;*)
       resultwatertex[ y * resultwater.wh + x ] := CalcDepthAndTexture( h, florah^, terrainh^, false );
       waterh^ := terrainh^ + h;
 

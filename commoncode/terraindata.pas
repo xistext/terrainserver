@@ -301,7 +301,7 @@ constructor TTerTile.create( const iInfo : TTileHeader );
    { initialize flora layer }
    layer := TDataLayer.create;
    layer.initgrid( Info.TileSz );
-   TSingleGrid( layer.DataGrid ).setvalue( 0 );
+   TSingleGrid( layer.DataGrid ).setvalue( 0.01 );
    datalayers[layer_flora] := layer;
 
    status := 0;

@@ -534,7 +534,6 @@ function TTask_SendWater.RunTask : boolean;
      resultwater, resultterrain, resultflora : TSingleGrid;
      resultwatertex : array of tvector2;
      terrainh, waterh, florah : ^single;
-     texptr : ^TVector2;
      x, y : integer;
      h : single;
      bufpos : integer;
@@ -555,7 +554,6 @@ function TTask_SendWater.RunTask : boolean;
    terrainh := resultterrain.ptrix(0);
    florah := resultflora.ptrix(0);
    setlength( resultwatertex, resultwater.wxh );
-   texptr := @resultwatertex[0];
 
    for x := 0 to resultwater.wh - 1 do
     for y := 0 to resultwater.wh - 1 do
@@ -568,8 +566,6 @@ function TTask_SendWater.RunTask : boolean;
       waterh^ := terrainh^ + h;
 
       { calculate water texture index }
-
-      inc( texptr );
       inc( waterh );
       inc( terrainh );
       inc( florah );
