@@ -25,7 +25,7 @@ uses Classes,
   CastleKeysMouse, CastleClientServer, CastleTerrain, CastleScene,
   CastleViewport, CastleCameras, CastleTransform, CastleWindow,
   TerServerCommon, TerrainData, TerrainParams, TerrainShader, TerrainMesh,
-  watergrid, BaseMesh, TerrainClient,
+  watergrid, BaseMesh, TerrainClient, watercolor,
   debug;
 
 type
@@ -56,6 +56,9 @@ type
     BlueSlider : TCastleIntegerSlider;
     AlphaSlider : TCastleIntegerSlider;
 
+    TerrainLayer : TCastleTransform;
+    WaterLayer   : TCastleTransform;
+
   private
     connectiontimeout : single;
     connectionstatus : integer;
@@ -66,6 +69,8 @@ type
     procedure HandleTileReceived( const msginfo : TMsgHeader;
                                   const tileinfo : TTileHeader;
                                   tilegrid : TSingleGrid;
+                                  watergrid : TSingleGrid;
+                                  floragrid : TSingleGrid;
                                   texgrid : TTexPoints );
     procedure ClickCreateClient(Sender: TObject);
     procedure ClickTest(Sender: TObject);
@@ -225,60 +230,109 @@ begin
 end;
 
 
+
+
 procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
                                         const tileinfo : TTileHeader;
                                         tilegrid : TSingleGrid;
+                                        watergrid : TSingleGrid;
+                                        floragrid : TSingleGrid;
                                         texgrid : TTexPoints );
  var tile : TTerTile;
+     x,y : integer;
+     waterh, terrainh, florah : psingle;
+     h : single;
  begin
    Tile := GTileList.GetInitTile( tileinfo );
-   if ( msginfo.msgtype = msg_Water ) then
-    begin
-     if assigned( Tile.WaterGraphics ) then
-      begin
-        if Tile.Info.TileSz <> tileInfo.TileSz then
-         begin
-           Viewport1.Items.Remove( Tile.WaterGraphics );
-           Tile.WaterGraphics.Free;
-           Tile.Info := TileInfo;
-           Tile.WaterGraphics := TWaterMesh.create2( Viewport1, Tile );
-           Viewport1.Items.Add( Tile.WaterGraphics );
-         end
-      end
-     else
-      begin
-        Tile.WaterGraphics := TWaterMesh.create2( Viewport1, Tile );
+   case msginfo.msgtype of
+     msg_water : begin
+                    if assigned( Tile.WaterGraphics ) then
+                     begin
+                       if Tile.Info.TileSz <> tileInfo.TileSz then
+                        begin
+                          WaterLayer.Remove( Tile.WaterGraphics );
+                          Tile.WaterGraphics.Free;
+                          Tile.Info := TileInfo;
+                          Tile.WaterGraphics := TWaterMesh.create2( WaterLayer, Tile );
+                          WaterLayer.Add( Tile.WaterGraphics );
+                        end
+                     end
+                    else
+                     begin
+                       Tile.WaterGraphics := TWaterMesh.create2( WaterLayer, Tile );
+                       WaterLayer.Add( Tile.WaterGraphics );
+                     end;
+                    { update tile graphics }
+                    TTerrainMesh( Tile.WaterGraphics ).UpdateFromGrid( TileGrid );
+                    TTerrainMesh( Tile.WaterGraphics ).UpdateVerticesTexture( texgrid );
+                  end;
+     msg_tile : begin
+                  if assigned( Tile.TerrainGraphics ) then
+                   begin
+                     if Tile.Info.TileSz <> tileInfo.TileSz then
+                      begin
+                        TerrainLayer.Remove( Tile.TerrainGraphics );
+                        Tile.TerrainGraphics.Free;
+                        Tile.Info := TileInfo;
+                        Tile.TerrainGraphics := TTerrainMesh.create2( TerrainLayer, Tile );
+                        TerrainLayer.Add( Tile.TerrainGraphics );
+                      end
+                   end
+                  else
+                   begin
+                     Tile.TerrainGraphics := TTerrainMesh.create2( TerrainLayer, Tile );
+                     TerrainLayer.Add( Tile.TerrainGraphics );
+                   end;
+                  { update tile graphics }
+                  TTerrainMesh( Tile.TerrainGraphics ).UpdateFromGrid( TileGrid );
+                end;
+      msg_water2 : begin
+                     assert( assigned( tilegrid ) and assigned( watergrid ) and assigned( floragrid ));
+                     waterh := watergrid.ptrix(0);
+                     terrainh := tilegrid.ptrix(0);
+                     florah := floragrid.ptrix(0);
+                     setlength( texgrid, watergrid.wxh );
+                     for x := 0 to watergrid.wh - 1 do
+                      for y := 0 to watergrid.wh - 1 do
+                         begin
+                           h := waterh^;
+                           texgrid[ y * watergrid.wh + x ] := CalcDepthAndTexture( h, florah^, terrainh^, false );
+                           waterh^ := terrainh^ + h;
 
-        Viewport1.Items.Add( Tile.WaterGraphics );
-      end;
-     { update tile graphics }
-     TTerrainMesh( Tile.WaterGraphics ).UpdateFromGrid( TileGrid );
-     TTerrainMesh( Tile.WaterGraphics ).UpdateVerticesTexture( texgrid );
-    end
-   else
-    begin
-      if assigned( Tile.TerrainGraphics ) then
-       begin
-         if Tile.Info.TileSz <> tileInfo.TileSz then
-          begin
-            Viewport1.Items.Remove( Tile.TerrainGraphics );
-            Tile.TerrainGraphics.Free;
-            Tile.Info := TileInfo;
-            Tile.TerrainGraphics := TTerrainMesh.create2( Viewport1, Tile );
-            Viewport1.Items.Add( Tile.TerrainGraphics );
-          end
-       end
-      else
-       begin
-         Tile.TerrainGraphics := TTerrainMesh.create2( Viewport1, Tile );
-         Viewport1.Items.Add( Tile.TerrainGraphics );
-       end;
-      { update tile graphics }
-      TTerrainMesh( Tile.TerrainGraphics ).UpdateFromGrid( TileGrid );
+                           { calculate water texture index }
+                           inc( waterh );
+                           inc( terrainh );
+                           inc( florah );
+                         end;
+                     if assigned( Tile.WaterGraphics ) then
+                        begin
+                          if Tile.Info.TileSz <> tileInfo.TileSz then
+                           begin
+                             WaterLayer.Remove( Tile.WaterGraphics );
+                             Tile.WaterGraphics.Free;
+                             Tile.Info := TileInfo;
+                             Tile.WaterGraphics := TWaterMesh.create2( WaterLayer, Tile );
+                             WaterLayer.Add( Tile.WaterGraphics );
+                           end
+                        end
+                       else
+                        begin
+                          Tile.WaterGraphics := TWaterMesh.create2( WaterLayer, Tile );
+                          WaterLayer.Add( Tile.WaterGraphics );
+                        end;
+
+                      TTerrainMesh( Tile.WaterGraphics ).UpdateFromGrid( waterGrid );
+                     TTerrainMesh( Tile.WaterGraphics ).UpdateVerticesTexture( texgrid );
+                   end;
     end;
-
    { free the sent data when finished }
-   TileGrid.Free;
+   if assigned( tilegrid ) then
+      TileGrid.Free;
+   if assigned( watergrid ) then
+      watergrid.Free;
+   if assigned( floragrid ) then
+      floragrid.Free;
+
  end;
 
 

@@ -17,6 +17,8 @@ type
         msginfo : TMsgHeader;
         tileinfo : TTileHeader;
         tilegrid : TSingleGrid;
+        watergrid : TSingleGrid;
+        floragrid : TSingleGrid;
         texgrid : TTexPoints;
       end;
 
@@ -25,6 +27,8 @@ type
      TTileReceivedEvent = procedure( const msginfo : TMsgHeader;
                                      const tileinfo : TTileHeader;
                                            tilegrid : TSingleGrid;
+                                           watergrid : TSingleGrid;
+                                           floragrid : TSingleGrid;
                                            texgrid : TTexPoints) of object;
 
      TTerClientThread = class( TCastleTCPClientThread )
@@ -111,7 +115,7 @@ function TTerClientThread.ProcessMessage( const msgheader : TmsgHeader;
           assert( length( buffer ) = MsgLen + SizeOf( msgheader ));
 
           case msgheader.msgtype of
-              msg_Tile, msg_water  : sendtile( msgheader, buffer, MsgLen + SizeOf( msgheader ));
+              msg_Tile, msg_water, msg_water2  : sendtile( msgheader, buffer, MsgLen + SizeOf( msgheader ));
           end;
         end;
      end;
@@ -130,6 +134,8 @@ procedure TTerClientThread.SendTile( const msgheader : TMsgHeader;
    tilerec.msginfo := msgheader;
    Move( buffer[sizeof(tmsgheader)], tilerec.tileinfo, sizeof( ttileheader ));
    tilerec.tileGrid := TSingleGrid.createsize(tilerec.tileinfo.TileSz );
+   tilerec.waterGrid := nil;
+   tilerec.floragrid := nil;
    tilesz := tilerec.tileinfo.TileSz * tilerec.tileinfo.TileSz;
    bufpos := hdsz;
    Move( buffer[bufpos], tilerec.tileGrid.data^, tilesz * sizeof( single ));
@@ -138,7 +144,15 @@ procedure TTerClientThread.SendTile( const msgheader : TMsgHeader;
     begin
       setlength( tilerec.texgrid, tilesz );
       Move( buffer[bufpos], tilerec.texgrid[0], tilesz * sizeof(tvector2));
-
+    end
+   else
+   if msgheader.msgtype = msg_water2 then
+    begin
+      tilerec.waterGrid := TSingleGrid.createsize( tilerec.tileinfo.TileSz );
+      Move( buffer[bufpos], tilerec.waterGrid.data^, tilesz * sizeof( single ));
+      inc( bufpos, tilesz * sizeof( single ));
+      tilerec.floraGrid := TSingleGrid.createsize( tilerec.tileinfo.TileSz );
+      Move( buffer[bufpos], tilerec.floraGrid.data^, tilesz * sizeof( single ));
     end;
    { make a new mesh if we can't figure out how to reuse existing mesh if same size }
    FTileList.Add( tilerec );

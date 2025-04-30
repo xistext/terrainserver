@@ -12,6 +12,7 @@ const msg_undefined = 0;
       msg_string    = 2;
       msg_binary    = 3;
       msg_tile      = 4;
+      msg_water     = 5;
 
       tile_built    = 1;
       tile_locked   = 2;

@@ -121,8 +121,10 @@ Type tflowrunner = class
         celldata : TCellData;
         CellNeighbors : array[0..7] of TCellData;
         amounttoflow : single; { flow speed }
+        neighborlist : TNeighborlist;
         constructor create( iparentthread : TWaterFlowThread;
                             iparentgrid : TTerTile  );
+        destructor destroy; override;
         function nextcell : boolean;
         function flowtoneighbor( var neighbor : TCellData ) : boolean;
         function flowtoneighbors( x, y : integer ) : boolean;
@@ -155,6 +157,16 @@ constructor tflowrunner.create( iparentthread : TWaterFlowThread;
    setcelldata( Cellneighbors[3], flowptrs );
    walkflowptrs( flowptrs, -1 );
    setcelldata( Cellneighbors[4], flowptrs );
+
+   neighborlist := TNeighborlist.create;
+   neighborlist.OwnItems := true;
+   neighborlist.Duplicates := true;
+ end;
+
+destructor tflowrunner.destroy;
+ begin
+   inherited;
+   neighborlist.Free;
  end;
 
 const _next = 0;
@@ -271,7 +283,6 @@ const _invalid = 0;
 
 function TFlowRunner.flowtoneighbors( x,y : integer ) : boolean;
  var tileneighbors : TTileNeighbors;
-     neighborlist : TNeighborlist;
 
  function validateneighbor( localneighborix, distanttileix : integer;
                             distantx, distanty : integer ) : boolean; overload;
@@ -285,18 +296,15 @@ function TFlowRunner.flowtoneighbors( x,y : integer ) : boolean;
     distanttile := tileneighbors[distanttileix];
     nptr := @Cellneighbors[localneighborix];
     valid := ord( nptr^.valid ) + ord( assigned( distanttile )) shl 1;
-    case valid of
-       _localvalid, _bothvalid :;
-       _distantvalid :
-         begin
-           ix := distantx * distanttile.watergrid.wh + distanty;
-           FlowPtrs.hptr := distanttile.terraingrid.ptrix( ix );
-           FlowPtrs.dptr := distanttile.watergrid.ptrix( ix );
-           FlowPtrs.deltaptr := nil;
-           setcelldata( Cellneighbors[localneighborix], flowptrs );
-         end;
-     end;
     result := valid > _invalid;
+    if valid = _distantvalid then
+     begin
+       ix := distantx * distanttile.watergrid.wh + distanty;
+       FlowPtrs.hptr := distanttile.terraingrid.ptrix( ix );
+       FlowPtrs.dptr := distanttile.watergrid.ptrix( ix );
+       FlowPtrs.deltaptr := nil;
+       setcelldata( Cellneighbors[localneighborix], flowptrs );
+     end;
   end;
 
  function validateneighbor( localneighborix : integer ) : boolean; overload;
@@ -307,7 +315,7 @@ function TFlowRunner.flowtoneighbors( x,y : integer ) : boolean;
     result := not cancelflow and nptr^.valid;
   end;
 
- procedure calcneighbors( var neighborlist : Tneighborlist );
+ procedure calcneighbors;
   var delta : single;
   begin
     with celldata do
@@ -363,11 +371,7 @@ function TFlowRunner.flowtoneighbors( x,y : integer ) : boolean;
  begin
    Result := false;
    tileneighbors := parentgrid.getneighbors;
-   neighborlist := TNeighborlist.create;
-   neighborlist.OwnItems := true;
-   neighborlist.Duplicates := true;
-
-   calcneighbors( neighborlist );
+   calcneighbors;
    neighbor := pneighbor( neighborlist.firstptr );
    for i := 0 to neighborlist.count - 1 do if not cancelflow then
     begin
@@ -376,7 +380,7 @@ function TFlowRunner.flowtoneighbors( x,y : integer ) : boolean;
       if ( celldata.waterdepth <= mindepth ) or cancelflow then
          break;
     end;
-   neighborlist.Free
+   neighborlist.FreeAll;
  end;
 
 function TFlowRunner.flowtoneighbor( var neighbor : TCellData) : boolean;
@@ -390,13 +394,9 @@ function TFlowRunner.flowtoneighbor( var neighbor : TCellData) : boolean;
       Result := ( delta > 0 ) and not cancelflow;
       if Result then
        begin
-         if terrainheight > DefaultSnowLine then
-          begin
-            snowfactor := terrainheight - Defaultsnowline;
-            { limit snow factor }
-            limitmax( snowfactor, MaxSnowFactor );
-            delta := delta * ( 1 - snowfactor );
-          end;
+         snowfactor := terrainheight - Defaultsnowline;
+         limitminmax( snowfactor, 0, MaxSnowFactor );
+         delta := delta * ( 1 - snowfactor );
          flowptrs.deltaptr^ := flowptrs.deltaptr^ - delta;
          if assigned( neighbor.flowptrs.deltaptr ) then
             Neighbor.flowptrs.deltaptr^ := Neighbor.flowptrs.deltaptr^ + delta
@@ -453,7 +453,6 @@ function TWaterFlowThread.DoTaskFromList : boolean;
       flowix := flowix mod TaskList.Count;
       if TaskList.GetTask( flowix, task ) then
        begin
-         task := TThreadTask(TaskList.at(flowix));
          task.parentthread := self;
          task.RunTask;
          inc( flowix );

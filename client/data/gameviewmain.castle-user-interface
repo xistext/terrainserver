@@ -47,7 +47,7 @@
               "AutoOnScreenKeyboard" : true,
               "CaptureAllInput" : false,
               "Name" : "EditSend",
-              "Text" : "build 0,0",
+              "Text" : "build 0,0,1",
               "TranslationPersistent" : {
                 "$$ClassName" : "TCastleVector2Persistent",
                 "X" : 1.0000000000000000E+002
@@ -143,14 +143,12 @@
                 }
               },
               {
-                "$$ClassName" : "TCastleScene",
-                "ExposeTransforms" : [
-                ],
-                "Name" : "Scene1",
-                "RenderOptions" : {
-                  "$$ClassName" : "TCastleScene.TSceneRenderOptions",
-                  "BlendingSort" : "bs2D"
-                }
+                "$$ClassName" : "TCastleTransform",
+                "Name" : "TerrainLayer"
+              },
+              {
+                "$$ClassName" : "TCastleTransform",
+                "Name" : "WaterLayer"
               }
             ]
           },
