@@ -20,6 +20,7 @@ type TTaskThread = class;
         constructor create;
         procedure addtask( task : TThreadTask );
         function nexttask( var task : TThreadtask ) : boolean;
+        function gettask( ix : integer; var task : TThreadTask ) : boolean;
       end;
 
      TTaskThread = class( TThread )
@@ -58,7 +59,16 @@ function TThreadTaskList.nexttask( var task : TThreadTask ) : boolean;
     end;
  end;
 
-
+function TThreadTaskList.gettask( ix : integer; var task : TThreadTask ) : boolean;
+ begin
+   result := not locked and ( count > 0 );
+   if result then
+    begin
+      locked := true;
+      task := tthreadtask(at( ix ));
+      locked := false;
+    end;
+ end;
 
 end.
 

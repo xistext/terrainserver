@@ -395,9 +395,9 @@ function BuildResultBuffer( tile : ttertile;
 
 function BuildResultGrid( tile : ttertile;
                           const resultinfo : TTileHeader;
-                          LOD : dword;
+                          loddiv : dword;
                           layer : integer =  layer_terrain) : TSingleGrid;
- var tilesz, LODDiv : integer;
+ var tilesz : integer;
      bufptr : ^single;
      ThisGrid : TSingleGrid;
      neighbor : TTerTile;
@@ -460,7 +460,6 @@ function BuildResultGrid( tile : ttertile;
        bufptr^ := gridvaluexy( ngrid, 0, 0 );
    end;
  begin
-   loddiv := divOfLOD( LOD );
     tilesz := Tile.info.tilesz div loddiv;
     case layer of
       layer_terrain : ThisGrid := Tile.TerrainGrid;
@@ -501,6 +500,7 @@ function TTask_SendTile.RunTask : boolean;
    resulttileinfo := Tile.info;
 
    tilesz := GDefGridCellCount div loddiv;
+   Tile.lastresulttilesz := tilesz;
    resulttileinfo.tilesz := tilesz + 1;
    buffer := BuildResultBuffer( tile, resulttileinfo, LOD );
    buflen := length( buffer );
@@ -541,14 +541,20 @@ function TTask_SendWater.RunTask : boolean;
    result := inherited Runtask;
    if not result then
       exit;
-   loddiv := divOfLOD( LOD );
    resulttileinfo := Tile.info;
+   tilesz := tile.lastresulttilesz;
+   if tilesz = 0 then
+    begin
+      loddiv := divOfLOD( LOD );
+      tilesz := GDefGridCellCount div loddiv;
+    end
+   else
+      loddiv := GDefGridCellCount div tilesz;
 
-   tilesz := GDefGridCellCount div loddiv;
    resulttileinfo.tilesz := tilesz + 1;
-   resultwater := BuildResultGrid( tile, resulttileinfo, LOD, layer_water );
-   resultterrain := BuildResultGrid( tile, resulttileinfo, LOD, layer_terrain );
-   resultflora := BuildResultGrid( tile, resulttileinfo, LOD, layer_flora );
+   resultwater := BuildResultGrid( tile, resulttileinfo, LODdiv, layer_water );
+   resultterrain := BuildResultGrid( tile, resulttileinfo, LODdiv, layer_terrain );
+   resultflora := BuildResultGrid( tile, resulttileinfo, LODdiv, layer_flora );
 
    waterh := resultwater.ptrix(0);
    terrainh := resultterrain.ptrix(0);

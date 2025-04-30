@@ -273,6 +273,48 @@
                       "VerticalAnchorSelf" : "vpMiddle"
                     }
                   ]
+                },
+                {
+                  "$$ClassName" : "TCastleShape",
+                  "ColorPersistent" : {
+                    "$$ClassName" : "TCastleColorPersistent",
+                    "Blue" : 2.4705882370471954E-001,
+                    "Green" : 0.0000000000000000E+000,
+                    "Red" : 0.0000000000000000E+000
+                  },
+                  "Height" : 2.4000000000000000E+001,
+                  "Name" : "FlowIndicator",
+                  "TranslationPersistent" : {
+                    "$$ClassName" : "TCastleVector2Persistent",
+                    "X" : 2.3300000000000000E+002
+                  },
+                  "VerticalAnchorParent" : "vpMiddle",
+                  "VerticalAnchorSelf" : "vpMiddle",
+                  "$Children" : [
+                    {
+                      "$$ClassName" : "TCastleLabel",
+                      "ColorPersistent" : {
+                        "$$ClassName" : "TCastleColorPersistent",
+                        "Blue" : 1.0000000000000000E+000,
+                        "Green" : 1.0000000000000000E+000,
+                        "Red" : 1.0000000000000000E+000
+                      },
+                      "FontScale" : 2.0000000000000000E+000,
+                      "FontSize" : 1.0000000000000000E+001,
+                      "Height" : 1.0000000000000000E+001,
+                      "Name" : "FlowLabel",
+                      "Text" : [
+                        "0"
+                      ],
+                      "TranslationPersistent" : {
+                        "$$ClassName" : "TCastleVector2Persistent",
+                        "X" : 1.0000000000000000E+001
+                      },
+                      "VerticalAlignment" : "vpMiddle",
+                      "VerticalAnchorParent" : "vpMiddle",
+                      "VerticalAnchorSelf" : "vpMiddle"
+                    }
+                  ]
                 }
               ]
             },

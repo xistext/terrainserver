@@ -84,6 +84,8 @@ type TTerTile = class; { forward }
         {$ifdef terserver}
         datalayers : TDataLayers;
         LastUpdateTime : single;
+        LastResulttilesz : integer; {? store per client or compute on client?}
+
         procedure UpdateTerrainGridFromSource( Source : TCastleTerrainNoise );
 
         function SaveToFile : boolean;
@@ -306,6 +308,7 @@ constructor TTerTile.create( const iInfo : TTileHeader );
 
    status := 0;
    lastupdatetime := -1;
+   lastresulttilesz := 0;
    WaterToFlowList_high.addtask( TWaterTask.create( self ));
    {$else}
    TerrainGraphics := nil;

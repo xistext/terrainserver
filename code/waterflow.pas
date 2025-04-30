@@ -14,6 +14,9 @@ uses
   TerrainParams, TerrainData,
   debug;
 
+const FlowStartTime : single = -1;
+      FlowCounter   : dword = 0;
+
 procedure StartWaterFlowThreads;
 procedure StopWaterFlowThreads;
 
@@ -62,6 +65,9 @@ const isqrt2 : single = 0;
 
 procedure StartWaterFlowThreads;
  begin
+   FlowStartTime := gametime;
+   FlowCounter   := 0;
+
    WaterFlowThreads[0].Start;
    WaterFlowThreads[1].Start;
  end;
@@ -445,10 +451,13 @@ function TWaterFlowThread.DoTaskFromList : boolean;
    if result then
     begin
       flowix := flowix mod TaskList.Count;
-      task := TThreadTask(TaskList.at(flowix));
-      task.parentthread := self;
-      task.RunTask;
-      inc( flowix );
+      if TaskList.GetTask( flowix, task ) then
+       begin
+         task := TThreadTask(TaskList.at(flowix));
+         task.parentthread := self;
+         task.RunTask;
+         inc( flowix );
+       end;
     end
  end;
 
@@ -479,7 +488,6 @@ procedure TWaterTask.RunTask;
       if delta < 0.1 then
          exit;
       Delta := Delta * flowfactor;
-
       FlowTile( Delta );
     end;
    if cancelflow then
@@ -507,7 +515,7 @@ function TWaterTask.flowtile( amounttoflow : single ) : boolean;
        end;
       if ( not cancelflow ) and Result then
        begin
-         write( '~' );
+         inc( flowcounter );
          watertile.WaterGrid.addgrid(DeltaGrid);
          DirtyTileList.AddTile( watertile );
        end;

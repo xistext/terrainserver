@@ -44,6 +44,7 @@ type
     ConnectedIndicator : TCastleShape;
     ClientsLabel : TCastleLabel;
     TilesLabel : TCastleLabel;
+    FlowLabel : TCastleLabel;
   private
     FServer: TCastleTCPServer;
     procedure HandleConnected(AClient: TClientConnection);
@@ -106,6 +107,8 @@ procedure TViewMain.Update(const SecondsPassed: Single; var HandleInput: Boolean
  var connected : boolean;
      task : TTaskItem;
      atile : ttertile;
+     flowdelta : single;
+     astr : string;
  const connectstatus : integer = -1;
        clientcount   : integer = -1;
  begin
@@ -114,6 +117,15 @@ procedure TViewMain.Update(const SecondsPassed: Single; var HandleInput: Boolean
   { This virtual method is executed every frame (many times per second). }
   TilesLabel.Caption := IntToStr( GTileList.Count )+' tiles';
   connected := FServer <> nil;
+  astr := '';
+  if ( flowcounter > 0 ) then
+   begin
+     flowdelta := GameTime - FlowStartTime;
+     if flowdelta > 0 then
+       astr := Format( '%0.#f/sec', [flowcounter / flowdelta] );
+   end;
+  FlowLabel.caption := astr;
+
   if ord( connected ) <> connectstatus then
    begin
      case connected of
@@ -185,8 +197,8 @@ end;
 
 procedure TViewMain.HandleCommandCallback( Msg : string );
  begin
-   if msg <> '' then
-     dbgwrite( Msg +'. ' );
+(*   if msg <> '' then
+     dbgwrite( Msg +'. ' );*)
    Application.ProcessMessage( false, false );
  end;
 
