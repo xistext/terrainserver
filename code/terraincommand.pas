@@ -465,6 +465,7 @@ function BuildResultGrid( tile : ttertile;
     case layer of
       layer_terrain : ThisGrid := Tile.TerrainGrid;
       layer_water  : ThisGrid := Tile.WaterGrid;
+      layer_flora  : ThisGrid := Tile.FloraGrid;
      end;
     Result := TSingleGrid.Create( 0, resultinfo.tilesz );
     bufptr := Result.ptrix(0);
@@ -533,8 +534,7 @@ function TTask_SendWater.RunTask : boolean;
      resultwater, resultterrain, resultflora : TSingleGrid;
      resultwatertex : array of tvector2;
      terrainh, waterh, florah : ^single;
-     texptr : ^TVector2;
-     i : integer;
+     x, y : integer;
      h : single;
      bufpos : integer;
  begin
@@ -554,20 +554,18 @@ function TTask_SendWater.RunTask : boolean;
    terrainh := resultterrain.ptrix(0);
    florah := resultflora.ptrix(0);
    setlength( resultwatertex, resultwater.wxh );
-   texptr := @resultwatertex[0];
 
-   for i := 0 to resultwater.wxh - 1 do
+   for x := 0 to resultwater.wh - 1 do
+    for y := 0 to resultwater.wh - 1 do
     begin
       h := waterh^;
       { prevent z-fighting }
-      if h < zmargin then
-         h := -zmargin;
-      texptr^ := CalcDepthAndTexture( h, florah^, terrainh^, false );
+    (*  if h < zmargin then
+         h := -zmargin;*)
+      resultwatertex[ y * resultwater.wh + x ] := CalcDepthAndTexture( h, florah^, terrainh^, false );
       waterh^ := terrainh^ + h;
 
       { calculate water texture index }
-
-      inc( texptr );
       inc( waterh );
       inc( terrainh );
       inc( florah );
@@ -581,7 +579,7 @@ function TTask_SendWater.RunTask : boolean;
    Move( resultwater.depthptr^, buffer[bufpos], resultwater.wxh*sizeof(single));
    inc( bufpos, resultwater.wxh*sizeof(single));
 
-   Move( resultwatertex[0], buffer[bufpos], resultwater.wh * sizeof( tvector2 ));
+   Move( resultwatertex[0], buffer[bufpos], resultwater.wxh * sizeof( tvector2 ));
 
    { send message + tile headers }
    SendClientMsgHeader( client, msg_Water, buflen + sizeof( TTileHeader ));

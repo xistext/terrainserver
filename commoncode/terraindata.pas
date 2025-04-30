@@ -97,7 +97,7 @@ type TTerTile = class; { forward }
         public
         property TerrainGrid : TSingleGrid read getTerrainGrid;
         property WaterGrid : TSingleGrid read getWaterGrid;
-        property FloraGrid : TSingleGrid read getWaterGrid;
+        property FloraGrid : TSingleGrid read getFloraGrid;
         {$else}
         TerrainGraphics : TCastleTransform;
         WaterGraphics : TCastleTransform;
@@ -303,6 +303,7 @@ constructor TTerTile.create( const iInfo : TTileHeader );
    layer.initgrid( Info.TileSz );
    TSingleGrid( layer.DataGrid ).setvalue( 0 );
    datalayers[layer_flora] := layer;
+
    status := 0;
    lastupdatetime := -1;
    WaterToFlowList_high.addtask( TWaterTask.create( self ));

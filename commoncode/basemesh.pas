@@ -303,7 +303,9 @@ procedure TLiteMesh.InitVerticesWithTexture( var Coord : TCoordinateNode;
      VertexPtr : ^TVector3;
      Vertex : TVector3;
      TexCoords : TVector2List;
+     aOffset : TVector2;
  begin
+   aoffset := offset;
    step := gridstep;
    Vertices := TVector3List.Create;
    vcount := GridCount * GridCount;
@@ -313,10 +315,10 @@ procedure TLiteMesh.InitVerticesWithTexture( var Coord : TCoordinateNode;
    TexCoords.Capacity := vcount;
    sz2 := CellCount * Step * 0.5;
    vertex.y := 0;
-   vertex.z := -sz2;
+   vertex.z := aoffset.y-sz2;
    for i := 0 to GridCount - 1 do
     begin
-      Vertex.x := -sz2; { world x offset to align tiles }
+      Vertex.x := aoffset.x-sz2; { world x offset to align tiles }
       for j := 0 to GridCount - 1 do
        begin
          VertexPtr^ := Vertex;

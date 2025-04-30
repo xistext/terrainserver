@@ -7,11 +7,12 @@ interface
 uses
   {$ifndef FPC}System.types,{$endif}
   Classes, SysUtils,
+  Collect,
   livetime, BaseTools,
   basethread,
   waterparams, water_low, watergrid,
   TerrainParams, TerrainData,
-  Collect;
+  debug;
 
 procedure StartWaterFlowThreads;
 procedure StopWaterFlowThreads;
@@ -475,12 +476,15 @@ procedure TWaterTask.RunTask;
    if ( TimeSpeed > 1E-5 ) and ( not cancelflow ) and ( WaterTile.LastUpdateTime >= 0 ) then
     begin
       Delta := UpdateTime - WaterTile.LastUpdateTime;
+      if delta < 0.1 then
+         exit;
       Delta := Delta * flowfactor;
+
       FlowTile( Delta );
     end;
    if cancelflow then
       exit;
-   WaterTile.LastUpdateTime := GameTime;
+   WaterTile.LastUpdateTime := UpdateTime;
  end;
 
 function TWaterTask.flowtile( amounttoflow : single ) : boolean;
@@ -491,10 +495,6 @@ function TWaterTask.flowtile( amounttoflow : single ) : boolean;
    Result := false;
    with twaterflowthread(parentthread) do
     begin
-      {$ifdef dbgbehavior}
-      write( '~' );
-      {$endif}
-
       DeltaGrid.zerogrid;
       FlowRunner := TFlowRunner.create( twaterflowthread( parentthread ), watertile );
       FlowRunner.amounttoflow := amounttoflow;
@@ -507,6 +507,7 @@ function TWaterTask.flowtile( amounttoflow : single ) : boolean;
        end;
       if ( not cancelflow ) and Result then
        begin
+         write( '~' );
          watertile.WaterGrid.addgrid(DeltaGrid);
          DirtyTileList.AddTile( watertile );
        end;

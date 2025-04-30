@@ -399,10 +399,7 @@ function TWaterMesh.InitAppearance : TAppearanceNode;
    renderoptions.Textures := true;
    result := TAppearanceNode.create;
    result.Material := initMaterial;
-   result.Material.MaterialInfo.MainColor := vector3(0.1,0.1,0.5);
-   TPhysicalMaterialNode( result.Material ).BaseColor := vector3(0.1,0.1,0.5);
    TPhysicalMaterialNode( result.Material ).Metallic := 1;
-   TPhysicalMaterialNode( result.Material ).Transparency := 0.1;;
 
    result.Texture := initTexture( 'castle-data:/testwater3.png' );
  end;

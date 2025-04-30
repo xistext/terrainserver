@@ -137,8 +137,8 @@ procedure TTerClientThread.SendTile( const msgheader : TMsgHeader;
    if msgheader.msgtype = msg_water then
     begin
       setlength( tilerec.texgrid, tilesz );
-      assert( bufpos + tilesz * sizeof(tvector2) <= buflen );
       Move( buffer[bufpos], tilerec.texgrid[0], tilesz * sizeof(tvector2));
+
     end;
    { make a new mesh if we can't figure out how to reuse existing mesh if same size }
    FTileList.Add( tilerec );
