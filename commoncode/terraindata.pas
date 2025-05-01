@@ -25,7 +25,10 @@ type TTerTile = class; { forward }
 
      TTileList = class( tsortedCollection )
 
+        constructor Create;
+
         function tilexy( x, y : integer ) : TTerTile;
+
         function findtile( x, y : integer;
                            var ix : integer ) : boolean;
         function initxy( x, y : integer;
@@ -50,6 +53,10 @@ type TTerTile = class; { forward }
 
         procedure foundterfile( const FileInfo : TFileInfo; var StopSearch : boolean );
         {$endif}
+        private
+
+        locks : integer;
+
 
       end;
 
@@ -132,6 +139,12 @@ function compareint( v1, v2 : integer ) : integer; inline;
 
 //----------------------------------
 
+constructor TTileList.Create;
+ begin
+   inherited;
+   locks := 0;
+ end;
+
 function TTileList.keyof( item : pointer ) : pointer;
  begin
    result := @TTerTile( item ).Info;
@@ -159,8 +172,12 @@ function TTileList.tilexy( x, y : integer ) : TTerTile;
  var i : integer;
  begin
    result := nil;
+   while locks > 0 do
+     sleep( 1 );
+   inc( locks );
    if findtile( x, y, i ) then
       result := TTerTile( at( i ));
+   dec( locks );
  end;
 
 function TTileList.initxy( x, y : integer;
@@ -169,6 +186,9 @@ function TTileList.initxy( x, y : integer;
      i : integer;
  begin
    result := nil;
+   while locks > 0 do
+     sleep( 1 );
+   inc( locks );
    if findtile( x, y, i ) then
     begin
       result := TTerTile( at( i ));
@@ -180,11 +200,16 @@ function TTileList.initxy( x, y : integer;
       result := TTerTile.create( h );
       atinsert( i, result );
     end;
+   dec( locks );
  end;
 
 function TTileList.getinittile( const tileinfo : TTileHeader ) : TTerTile;
  var i : integer;
  begin
+   while locks > 0 do
+     sleep( 1 );
+   inc( locks );
+
    if search( @tileinfo, i ) then
       result := TTerTile( at( i ))
    else
@@ -192,6 +217,7 @@ function TTileList.getinittile( const tileinfo : TTileHeader ) : TTerTile;
       result := TTerTile.create( tileinfo );
       atinsert( i, result );
     end;
+   dec( locks );
  end;
 
 function TTileList.getneighbor( tile : TTerTile;
@@ -202,8 +228,14 @@ function TTileList.getneighbor( tile : TTerTile;
    result := nil;
    x := tile.Info.TileX + dx;
    y := tile.Info.TileY + dy;
+  while locks > 0 do
+     sleep( 1 );
+   inc( locks );
+
    if findtile( x, y, ix ) then
       result := TTerTile( at( ix ));
+
+   dec( locks );
  end;
 
 function TTileList.CalculateTileOffset( Pos : TVector2 ) : TPoint;

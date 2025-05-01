@@ -453,14 +453,20 @@ function BuildResultGrid( tile : ttertile;
            end;
         end
        else
-          inc( bufptr, tilesz );
+        begin { copy last line if no neighbor }
+          for y := 0 to tilesz - 1 do
+           begin
+             bufptr^ := thisgrid.valuexy( tilesz - 1, y * loddiv );
+             inc( bufptr );
+           end;
+        end;
        { corner point from neighbor grid }
        neighbor := GTileList.getNeighbor( tile, 1, 1 );
        ngrid := neighborlayer( neighbor, layer );
        bufptr^ := gridvaluexy( ngrid, 0, 0 );
    end;
  begin
-    tilesz := Tile.info.tilesz div loddiv;
+    tilesz := GDefGridCellCount div loddiv;
     case layer of
       layer_terrain : ThisGrid := Tile.TerrainGrid;
       layer_water  : ThisGrid := Tile.WaterGrid;

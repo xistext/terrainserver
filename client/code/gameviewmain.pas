@@ -21,6 +21,7 @@ interface
 
 uses Classes,
   idGlobal,
+  {$ifdef OpenGLES} CastleGLES {$else} CastleGL {$endif},
   CastleVectors, CastleComponentSerialize, CastleUIControls, CastleControls,
   CastleKeysMouse, CastleClientServer, CastleTerrain, CastleScene,
   CastleViewport, CastleCameras, CastleTransform, CastleWindow,
@@ -115,6 +116,8 @@ begin
 end;
 
 procedure TViewMain.Start;
+ var
+   MaxVertexUniformComponents: TGLint;
 begin
   inherited;
   GParentComponent := Viewport1.Items;
@@ -142,6 +145,9 @@ begin
   MainNavigation.OnMoveAllowed := {$ifdef FPC}@{$endif} MoveAllowed;
   LabelContourScale.Caption := '';
   LabelGridScale.Caption := '';
+
+  glGetIntegerv(GL_MAX_VERTEX_UNIFORM_COMPONENTS, @MaxVertexUniformComponents);
+  dbgwriteln(format('GL_MAX_VERTEX_UNIFORM_COMPONENTS: %d', [MaxVertexUniformComponents]));
 end;
 
 procedure TViewMain.Stop;

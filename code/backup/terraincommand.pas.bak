@@ -453,7 +453,13 @@ function BuildResultGrid( tile : ttertile;
            end;
         end
        else
-          inc( bufptr, tilesz );
+        begin { copy last line if no neighbor }
+          for y := 0 to tilesz - 1 do
+           begin
+             bufptr^ := thisgrid.valuexy( tilesz - 1, y * loddiv );
+             inc( bufptr );
+           end;
+        end;
        { corner point from neighbor grid }
        neighbor := GTileList.getNeighbor( tile, 1, 1 );
        ngrid := neighborlayer( neighbor, layer );
@@ -868,7 +874,7 @@ function cmdWater( client : TClientConnection;
      param : string;
      Radius   : dword;
  begin
-   rdsult := 0;
+   result := 0;
    TileX := 0;
    TileY := 0;
    Radius := 0;
