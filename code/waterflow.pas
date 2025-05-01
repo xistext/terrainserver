@@ -83,10 +83,13 @@ procedure StartWaterFlowThreads;
 
 procedure StopWaterFlowThreads;
  begin
-   FlowRunning := false;
    cancelflow := true;
+   sleep(10);
+   FlowRunning := false;
    WaterFlowThreads[0].Suspend;
+   WaterFlowThreads[0].DirtyTileList.DeleteAll;;
    WaterFlowThreads[1].Suspend;
+   WaterFlowThreads[1].DirtyTileList.DeleteAll;;
  end;
 
 constructor TDirtyList.create;
@@ -467,24 +470,6 @@ constructor TWaterTask.create( iwatertile : TTerTile );
    parentThread := nil;
  end;
 
-procedure TWaterTask.RunTask;
- var UpdateTime : single;
-     Delta : single;
- begin
-   UpdateTime := GameTime;
-   if ( TimeSpeed > 1E-5 ) and ( not cancelflow ) and ( WaterTile.LastUpdateTime >= 0 ) then
-    begin
-      Delta := UpdateTime - WaterTile.LastUpdateTime;
-      if delta < 0.1 then
-         exit;
-      Delta := Delta * flowfactor;
-      FlowTile( Delta );
-    end;
-   if cancelflow then
-      exit;
-   WaterTile.LastUpdateTime := UpdateTime;
- end;
-
 function TWaterTask.flowtile( amounttoflow : single ) : boolean;
      { local copies of grid parameters }
  var x, y : integer;
@@ -513,6 +498,23 @@ function TWaterTask.flowtile( amounttoflow : single ) : boolean;
     end;
  end;
 
+procedure TWaterTask.RunTask;
+ var UpdateTime : single;
+     Delta : single;
+ begin
+   UpdateTime := GameTime;
+   if ( TimeSpeed > 1E-5 ) and ( not cancelflow ) and ( WaterTile.LastUpdateTime >= 0 ) then
+    begin
+      Delta := UpdateTime - WaterTile.LastUpdateTime;
+      if delta < 0.1 then
+         exit;
+      Delta := Delta * flowfactor;
+      FlowTile( Delta );
+    end;
+   if cancelflow then
+      exit;
+   WaterTile.LastUpdateTime := UpdateTime;
+ end;
 
 initialization //===============================================================
   isqrt2 := 1/sqrt(2);

@@ -5,7 +5,7 @@ interface
 uses Classes, SysUtils, Collect, TerServerCommon, terrainparams,
      CastleVectors, CastleTerrain, watergrid,
      math, castletransform, castlewindow,
-     {$ifdef terserver}castlefindfiles, {$endif}
+     {$ifdef terserver}castlefindfiles, castlefilesutils,{$endif}
      debug;
 
 const terrainpath = 'data\terrain\';
@@ -23,9 +23,15 @@ const terrainpath = 'data\terrain\';
 type TTerTile = class; { forward }
      TTileNeighbors = array[0..7] of TTerTile;
 
-     TTileList = class( tsortedCollection )
-
+     TLockingCollection = class( tsortedcollection )
         constructor Create;
+        function lock : boolean;
+        procedure unlock;
+        private
+        locks : integer;
+      end;
+
+     TTileList = class( TLockingCollection )
 
         function tilexy( x, y : integer ) : TTerTile;
 
@@ -45,9 +51,6 @@ type TTerTile = class; { forward }
         function findtileatlocation( const Pos : TVector2;
                                      var tile : TTerTile ) : boolean;
 
-        function lock : boolean;
-        procedure unlock;
-
         function findtile( x, y : integer;
                            var ix : integer ) : boolean;
 
@@ -58,9 +61,6 @@ type TTerTile = class; { forward }
 
         procedure foundterfile( const FileInfo : TFileInfo; var StopSearch : boolean );
         {$endif}
-        private
-
-        locks : integer;
 
 
       end;
@@ -102,6 +102,7 @@ type TTerTile = class; { forward }
 
         function SaveToFile : boolean;
         function LoadFromFile : boolean;
+        function DeleteMyFiles : boolean;
 
         private
         function getTerrainGrid : TSingleGrid;
@@ -144,11 +145,30 @@ function compareint( v1, v2 : integer ) : integer; inline;
 
 //----------------------------------
 
-constructor TTileList.Create;
+constructor TLockingCollection.Create;
  begin
    inherited;
    locks := 0;
  end;
+
+function TLockingCollection.lock : boolean;
+ begin
+   while locks > 0 do
+      sleep( 10 ); {!need timeout}
+   inc( locks );
+   {if locks > 1 then
+      assert( locks = 1 );}
+   result := true;
+ end;
+
+procedure TLockingCollection.Unlock;
+ begin
+ {  if locks = 0 then
+      assert( locks > 0 );}
+   dec( locks );
+ end;
+
+//----------------------------------
 
 function TTileList.keyof( item : pointer ) : pointer;
  begin
@@ -163,24 +183,6 @@ function TTileList.compare( item1, item2 : pointer ) : integer;
    result := compareint( h1.TileY, h2.TileY );
    if result = 0 then
       result := compareint( h1.TileX, h2.TileX );
- end;
-
-function TTileList.lock : boolean;
- begin
-   while locks > 0 do
-      sleep( 10 ); {!need timeout}
-   inc( locks );
-   if locks > 1 then
-      assert( locks = 1 );
-
-   result := true;
- end;
-
-procedure TTileList.Unlock;
- begin
- {  if locks = 0 then
-      assert( locks > 0 );}
-   dec( locks );
  end;
 
 function TTileList.findtile( x, y : integer;
@@ -359,13 +361,26 @@ constructor TTerTile.create( const iInfo : TTileHeader );
  end;
 
 destructor TTerTile.destroy;
- {$ifdef terserver}var i : integer;{$endif}
+ {$ifdef terserver}var i : integer; item : TWaterTask;{$endif}
  begin
    inherited;
    {$ifdef terserver}
    for i := 0 to length( datalayers ) - 1 do
       datalayers[i].Free;
    setlength( datalayers, 0 );
+   i := 0;
+   while i < WaterToFlowList_high.Count do
+    begin
+      item := twatertask( WaterToFlowList_high.items[i] );
+      if ( item is TWaterTask ) and ( item.watertile = self ) then
+       begin
+         WaterToFlowList_high.AtDelete( i );
+         item.free;
+         break;
+       end
+      else
+         inc( i );
+    end;
    {$endif}
  end;
 
@@ -503,6 +518,29 @@ function TTerTile.LoadfromFile : boolean;
          status := status xor tile_dirty;
     end;
  end;
+
+function TTerTile.DeleteMyFiles : boolean;
+ var filename, fileroot : string;
+ begin
+   fileroot := rootpath + terrainpath + tileid;
+   filename := fileroot + terrainext;
+   result := fileexists( filename );
+   if result then
+      CheckDeleteFile( filename );
+   filename := fileroot + waterext;
+   result := fileexists( filename );
+   if result then
+      CheckDeleteFile( filename );
+   filename := fileroot + floraext;
+   result := fileexists( filename );
+   if result then
+      CheckDeleteFile( filename );
+   filename := fileroot + splatext;
+   result := fileexists( filename );
+   if result then
+      CheckDeleteFile( filename );
+ end;
+
 {$endif}
 
 function TTerTile.GetNeighbors : TTileNeighbors;

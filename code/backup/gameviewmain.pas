@@ -46,6 +46,7 @@ type
     TilesLabel : TCastleLabel;
     FlowLabel : TCastleLabel;
     ButtonFlow : TCastleButton;
+    ButtonDeleteTiles : TCastleButton;
   private
     FServer: TCastleTCPServer;
     procedure HandleConnected(AClient: TClientConnection);
@@ -55,7 +56,7 @@ type
     procedure ClickDestroyServer(Sender: TObject);
     procedure ClickSend(Sender: TObject);
     procedure ClickButtonFlow( Sender : TObject );
-
+    procedure ClickButtonDeleteTiles( Sender : TObject );
     procedure SendStringToClient( AMessage : string;
                                   AClient : TClientConnection );
 
@@ -94,6 +95,8 @@ begin
   ButtonDestroyServer.OnClick := {$ifdef FPC}@{$endif} ClickDestroyServer;
   ButtonSend.OnClick := {$ifdef FPC}@{$endif} ClickSend;
   ButtonFlow.OnClick := {$ifdef FPC}@{$endif} ClickButtonFlow;
+  ButtonDeleteTiles.OnClick := {$ifdef FPC}@{$endif} ClickButtonDeleteTiles;
+
 
   ClickCreateServer( self );
   ConnectedIndicator.exists := true;
@@ -130,7 +133,7 @@ procedure TViewMain.Update(const SecondsPassed: Single; var HandleInput: Boolean
        astr := Format( '%0f/sec', [flowcounter / flowdelta] );
    end
   else
-     astr := 'stopped';l
+     astr := 'stopped';
   FlowLabel.caption := astr;
 
   if ord( connected ) <> connectstatus then
@@ -267,6 +270,22 @@ procedure TViewMain.ClickButtonFlow( Sender : TObject );
       Notification( 'Stop water flow threads.' );
       StopWaterFlowThreads;
     end;
+ end;
+
+procedure TViewMain.ClickButtonDeleteTiles( Sender : TObject );
+ var i : integer;
+     atile : ttertile;
+ begin
+   if ButtonFlow.Pressed then
+      ClickButtonFlow( self ); { turn off water flow }
+   { delete all tiles on disk }
+   for i := 0 to gtilelist.count - 1 do
+    begin
+      atile := ttertile( gtilelist.at( i ));
+      atile.DeleteMyFiles;
+    end;
+   gtilelist.freeall;
+   Notification('Cleared terrain.');
  end;
 
 procedure TViewMain.Notification( Msg : string );
