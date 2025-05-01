@@ -37,7 +37,7 @@
               "AutoSizeHeight" : false,
               "AutoSizeToChildren" : true,
               "Height" : 4.0000000000000000E+001,
-              "Name" : "HorizontalGroup1",
+              "Name" : "ServerControlBar",
               "TranslationPersistent" : {
                 "$$ClassName" : "TCastleVector2Persistent",
                 "X" : 1.0000000000000000E+001,
@@ -187,7 +187,7 @@
               "AutoSizeHeight" : false,
               "AutoSizeToChildren" : true,
               "Height" : 2.0000000000000000E+001,
-              "Name" : "HorizontalGroup3",
+              "Name" : "PerformanceControlBar",
               "TranslationPersistent" : {
                 "$$ClassName" : "TCastleVector2Persistent",
                 "X" : 1.0000000000000000E+001,
@@ -315,6 +315,39 @@
                       "VerticalAnchorSelf" : "vpMiddle"
                     }
                   ]
+                },
+                {
+                  "$$ClassName" : "TCastleButton",
+                  "AutoSize" : false,
+                  "CustomBackground" : true,
+                  "CustomBackgroundDisabled" : {
+                    "$$ClassName" : "TCastleImagePersistent"
+                  },
+                  "CustomBackgroundFocused" : {
+                    "$$ClassName" : "TCastleImagePersistent"
+                  },
+                  "CustomBackgroundNormal" : {
+                    "$$ClassName" : "TCastleImagePersistent",
+                    "URL" : "castle-data:/play-solid_32x32.png"
+                  },
+                  "CustomBackgroundPressed" : {
+                    "$$ClassName" : "TCastleImagePersistent",
+                    "URL" : "castle-data:/play-green_32x32.png"
+                  },
+                  "Height" : 2.4000000000000000E+001,
+                  "Image" : {
+                    "$$ClassName" : "TCastleImagePersistent"
+                  },
+                  "ImageScale" : 5.0000000000000000E-001,
+                  "Name" : "ButtonFlow",
+                  "Toggle" : true,
+                  "TranslationPersistent" : {
+                    "$$ClassName" : "TCastleVector2Persistent",
+                    "X" : 3.3300000000000000E+002
+                  },
+                  "VerticalAnchorParent" : "vpMiddle",
+                  "VerticalAnchorSelf" : "vpMiddle",
+                  "Width" : 2.4000000000000000E+001
                 }
               ]
             },

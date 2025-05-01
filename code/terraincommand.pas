@@ -131,10 +131,11 @@ const version : string = 'xisterra0.1a';
   function UpdateTile(       TileX, TileY : integer;
                          var ATile : TTerTile;
                              docreate : boolean = true ) : boolean;
-  { returns true if creaated }
+  { returns true if created }
    var tileix : integer;
        tileinfo : TTileHeader;
    begin
+     GTileList.Lock;
      result := not GTileList.findtile( TileX, TileY, tileix );
      if result then
       begin { not found, create }
@@ -152,6 +153,7 @@ const version : string = 'xisterra0.1a';
         ATile := TTerTile( GTileList.at( tileix ));
         result := not docreate;
       end;
+     GTileList.Unlock;
    end;
 
 procedure SendClientMsgHeader( AClient : TClientConnection;
@@ -626,9 +628,7 @@ function TTask_SaveTiles.runtask : boolean;
    result := inherited runtask;
    if result then
       for i := 0 to GTilelist.count - 1 do
-       begin
          ttertile( GTilelist.at(i)).SaveToFile;
-       end;
  end;
 
 //-----------------------------

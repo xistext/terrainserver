@@ -45,6 +45,7 @@ type
     ClientsLabel : TCastleLabel;
     TilesLabel : TCastleLabel;
     FlowLabel : TCastleLabel;
+    ButtonFlow : TCastleButton;
   private
     FServer: TCastleTCPServer;
     procedure HandleConnected(AClient: TClientConnection);
@@ -53,6 +54,7 @@ type
     procedure ClickCreateServer(Sender: TObject);
     procedure ClickDestroyServer(Sender: TObject);
     procedure ClickSend(Sender: TObject);
+    procedure ClickButtonFlow( Sender : TObject );
 
     procedure SendStringToClient( AMessage : string;
                                   AClient : TClientConnection );
@@ -91,6 +93,8 @@ begin
   ButtonCreateServer.OnClick := {$ifdef FPC}@{$endif} ClickCreateServer;
   ButtonDestroyServer.OnClick := {$ifdef FPC}@{$endif} ClickDestroyServer;
   ButtonSend.OnClick := {$ifdef FPC}@{$endif} ClickSend;
+  ButtonFlow.OnClick := {$ifdef FPC}@{$endif} ClickButtonFlow;
+
   ClickCreateServer( self );
   ConnectedIndicator.exists := true;
   Container.UIScaling := usNone;
@@ -118,12 +122,15 @@ procedure TViewMain.Update(const SecondsPassed: Single; var HandleInput: Boolean
   TilesLabel.Caption := IntToStr( GTileList.Count )+' tiles';
   connected := FServer <> nil;
   astr := '';
-  if ( flowcounter > 0 ) then
+
+  if flowrunning and ( flowcounter > 0 ) then
    begin
      flowdelta := GameTime - FlowStartTime;
      if flowdelta > 0 then
        astr := Format( '%0f/sec', [flowcounter / flowdelta] );
-   end;
+   end
+  else
+     astr := 'stopped';
   FlowLabel.caption := astr;
 
   if ord( connected ) <> connectstatus then
@@ -228,7 +235,7 @@ begin
   FServer.Start;
   dbgwriteln( inttostr( filecount )+' tiles read' );
 
-  StartWaterFlowThreads;
+//
   Notification( 'Started' );
 end;
 
@@ -238,7 +245,7 @@ begin
   begin
     FServer.Stop;
     FreeAndNil(FServer);
-    Notification( 'Stopped' );
+    Notification( 'Stopped server.' );
   end;
 end;
 
@@ -246,6 +253,21 @@ procedure TViewMain.ClickSend(Sender: TObject);
 begin
   FServer.SendToAll(EditSend.Text);
 end;
+
+procedure TViewMain.ClickButtonFlow( Sender : TObject );
+ begin
+   ButtonFlow.Pressed := not ButtonFlow.Pressed;
+   if ButtonFlow.Pressed then
+    begin
+      Notification( 'Start water flow threads.' );
+      StartWaterFlowThreads;
+    end
+   else
+    begin
+      Notification( 'Stop water flow threads.' );
+      StopWaterFlowThreads;
+    end;
+ end;
 
 procedure TViewMain.Notification( Msg : string );
  var alabel : TCastleLabel;

@@ -29,8 +29,6 @@ type TTerTile = class; { forward }
 
         function tilexy( x, y : integer ) : TTerTile;
 
-        function findtile( x, y : integer;
-                           var ix : integer ) : boolean;
         function initxy( x, y : integer;
                          tilesz : integer ) : TTerTile;
         function getinittile( const tileinfo : TTileHeader ) : TTerTile;
@@ -46,6 +44,13 @@ type TTerTile = class; { forward }
 
         function findtileatlocation( const Pos : TVector2;
                                      var tile : TTerTile ) : boolean;
+
+        function lock : boolean;
+        procedure unlock;
+
+        function findtile( x, y : integer;
+                           var ix : integer ) : boolean;
+
         {$ifdef terserver}
         function readallterrainfiles( path : string ) : integer;
 
@@ -160,6 +165,24 @@ function TTileList.compare( item1, item2 : pointer ) : integer;
       result := compareint( h1.TileX, h2.TileX );
  end;
 
+function TTileList.lock : boolean;
+ begin
+   while locks > 0 do
+      sleep( 10 ); {!need timeout}
+   inc( locks );
+   {if locks > 1 then
+      assert( locks = 1 );}
+
+   result := true;
+ end;
+
+procedure TTileList.Unlock;
+ begin
+ {  if locks = 0 then
+      assert( locks > 0 );}
+   dec( locks );
+ end;
+
 function TTileList.findtile( x, y : integer;
                              var ix : integer ) : boolean;
  var h : ttileheader;
@@ -172,12 +195,10 @@ function TTileList.tilexy( x, y : integer ) : TTerTile;
  var i : integer;
  begin
    result := nil;
-   while locks > 0 do
-     sleep( 1 );
-   inc( locks );
+   lock;
    if findtile( x, y, i ) then
       result := TTerTile( at( i ));
-   dec( locks );
+   unlock;
  end;
 
 function TTileList.initxy( x, y : integer;
@@ -185,10 +206,7 @@ function TTileList.initxy( x, y : integer;
  var h : TTileHeader;
      i : integer;
  begin
-   result := nil;
-   while locks > 0 do
-     sleep( 1 );
-   inc( locks );
+   lock;
    if findtile( x, y, i ) then
     begin
       result := TTerTile( at( i ));
@@ -200,16 +218,13 @@ function TTileList.initxy( x, y : integer;
       result := TTerTile.create( h );
       atinsert( i, result );
     end;
-   dec( locks );
+   unlock;
  end;
 
 function TTileList.getinittile( const tileinfo : TTileHeader ) : TTerTile;
  var i : integer;
  begin
-   while locks > 0 do
-     sleep( 1 );
-   inc( locks );
-
+   lock;
    if search( @tileinfo, i ) then
       result := TTerTile( at( i ))
    else
@@ -217,7 +232,7 @@ function TTileList.getinittile( const tileinfo : TTileHeader ) : TTerTile;
       result := TTerTile.create( tileinfo );
       atinsert( i, result );
     end;
-   dec( locks );
+   unlock;
  end;
 
 function TTileList.getneighbor( tile : TTerTile;
@@ -228,14 +243,10 @@ function TTileList.getneighbor( tile : TTerTile;
    result := nil;
    x := tile.Info.TileX + dx;
    y := tile.Info.TileY + dy;
-  while locks > 0 do
-     sleep( 1 );
-   inc( locks );
-
+   lock;
    if findtile( x, y, ix ) then
       result := TTerTile( at( ix ));
-
-   dec( locks );
+   unlock;
  end;
 
 function TTileList.CalculateTileOffset( Pos : TVector2 ) : TPoint;
@@ -251,7 +262,6 @@ function TTileList.findtileatlocation( const Pos : TVector2;
                                         var tile : TTerTile ) : boolean;
  var pt : TPoint;
  begin
-   tile := nil;
    pt := CalculateTileOffset( Pos );
    tile := tilexy( pt.x, pt.y );
    result := assigned( tile );
@@ -423,9 +433,9 @@ procedure TTerTile.UpdateTerrainGridFromSource( Source : TCastleTerrainNoise );
      tilesize : single;
  begin
    assert( assigned( source ));
-   sz2 := getWorldSize * 0.5;
-   factor := GDefGridCellCount div Info.TileSz;
    tilesize := getWorldSize;
+   sz2 := tilesize * 0.5;
+   factor := GDefGridCellCount div Info.TileSz;
    QueryOffset := Vector2( Info.TileX * tilesize, Info.TileY * tilesize);
    pos := Vector2( queryoffset.x-sz2, queryoffset.y-sz2 );
    step := GridStep * factor;

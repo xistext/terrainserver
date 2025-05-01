@@ -16,6 +16,7 @@ uses
 
 const FlowStartTime : single = -1;
       FlowCounter   : dword = 0;
+      FlowRunning   : boolean = false;
 
 procedure StartWaterFlowThreads;
 procedure StopWaterFlowThreads;
@@ -65,16 +66,27 @@ const isqrt2 : single = 0;
 
 procedure StartWaterFlowThreads;
  begin
+   cancelflow := false;
+   FlowRunning := true;
    FlowStartTime := gametime;
    FlowCounter   := 0;
 
-   WaterFlowThreads[0].Start;
-   WaterFlowThreads[1].Start;
+   if WaterFlowThreads[0].Suspended then
+      WaterFlowthreads[0].Resume
+   else
+      WaterFlowThreads[0].Start;
+   if WaterFlowThreads[1].Suspended then
+      WaterFlowthreads[1].Resume
+   else
+      WaterFlowThreads[1].Start;
  end;
 
 procedure StopWaterFlowThreads;
  begin
+   FlowRunning := false;
    cancelflow := true;
+   WaterFlowThreads[0].Suspend;
+   WaterFlowThreads[1].Suspend;
  end;
 
 constructor TDirtyList.create;
