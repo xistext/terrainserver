@@ -868,14 +868,13 @@ function cmdWater( client : TClientConnection;
      param : string;
      Radius   : dword;
  begin
+   result := 0;
    TileX := 0;
    TileY := 0;
    Radius := 0;
    if parsetilexy( params, tilex, tiley ) and nextparam( params, param ) then
       Radius := intofstr( param );
    WaterArea( client, TileX, TileY, Radius, callback );
-
-
  end;
 
 initialization

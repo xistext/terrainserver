@@ -121,7 +121,8 @@ Type tflowrunner = class
         celldata : TCellData;
         CellNeighbors : array[0..7] of TCellData;
         amounttoflow : single; { flow speed }
-        neighborlist : TNeighborlist;
+        tileneighbors : TTileNeighbors; { array of neighbors around the active tile }
+        neighborlist : TNeighborlist;   { list of which neighbors this tile would flow to }
         constructor create( iparentthread : TWaterFlowThread;
                             iparentgrid : TTerTile  );
         destructor destroy; override;
@@ -130,6 +131,12 @@ Type tflowrunner = class
         function flowtoneighbors( x, y : integer ) : boolean;
         function flowtodistantneighbor( distantneighbor : TTerTile;
                                  x, y : integer ) : boolean;
+
+        function validateneighbor( localneighborix : integer ) : boolean; overload;
+        function validateneighbor( localneighborix, distanttileix : integer;
+                                   distantx, distanty : integer ) : boolean; overload;
+        procedure calcneighbors( x, y : integer );
+        procedure calcdiagonalneighbor( nid : integer );
       end;
 
 constructor tflowrunner.create( iparentthread : TWaterFlowThread;
@@ -140,7 +147,6 @@ constructor tflowrunner.create( iparentthread : TWaterFlowThread;
    celldata.valid := true;
    pos := Point(0,0);
    LineSz := GDefGridCellCount; { water grid dimensions match terrain }
-   //FillChar( Neightbors, Sizeof( Neightbor
    CellNeighbors[7].valid := false;
    CellNeighbors[0].valid := false;
    CellNeighbors[1].valid := false;
@@ -281,97 +287,71 @@ const _invalid = 0;
       _distantvalid = 2;
       _bothvalid = 3;
 
-function TFlowRunner.flowtoneighbors( x,y : integer ) : boolean;
- var tileneighbors : TTileNeighbors;
 
- function validateneighbor( localneighborix, distanttileix : integer;
-                            distantx, distanty : integer ) : boolean; overload;
-  { will get local neighbor and if that is out of bounds, look to neighboring tile }
+function tflowrunner.validateneighbor( localneighborix : integer ) : boolean; overload;
+ { will get local neighbor and if that is out of bounds, look to neighboring tile }
+ begin
+   result := not cancelflow and Cellneighbors[localneighborix].valid;
+ end;
+
+
+function tflowrunner.validateneighbor( localneighborix, distanttileix : integer;
+                                       distantx, distanty : integer ) : boolean; overload;
+ { will get local neighbor and if that is out of bounds, look to neighboring tile }
  var flowptrs : TFlowPtrRec;
      ix : integer;
      distanttile : TTerTile;
-     nptr : PCellData;
      valid : integer;
-  begin
-    distanttile := tileneighbors[distanttileix];
-    nptr := @Cellneighbors[localneighborix];
-    valid := ord( nptr^.valid ) + ord( assigned( distanttile )) shl 1;
-    result := valid > _invalid;
-    if valid = _distantvalid then
-     begin
-       ix := distantx * distanttile.watergrid.wh + distanty;
-       FlowPtrs.hptr := distanttile.terraingrid.ptrix( ix );
-       FlowPtrs.dptr := distanttile.watergrid.ptrix( ix );
-       FlowPtrs.deltaptr := nil;
-       setcelldata( Cellneighbors[localneighborix], flowptrs );
-     end;
-  end;
+ begin
+   distanttile := tileneighbors[distanttileix];
+   valid := ord( Cellneighbors[localneighborix].valid ) + ord( assigned( distanttile )) shl 1;
+   result := valid > _invalid;
+   if valid = _distantvalid then
+    begin
+      ix := distantx * distanttile.watergrid.wh + distanty;
+      FlowPtrs.hptr := distanttile.terraingrid.ptrix( ix );
+      FlowPtrs.dptr := distanttile.watergrid.ptrix( ix );
+      FlowPtrs.deltaptr := nil;
+      setcelldata( Cellneighbors[localneighborix], flowptrs );
+    end;
+ end;
 
- function validateneighbor( localneighborix : integer ) : boolean; overload;
-  { will get local neighbor and if that is out of bounds, look to neighboring tile }
-  var nptr : PCellData;
-  begin
-    nptr := @Cellneighbors[localneighborix];
-    result := not cancelflow and nptr^.valid;
-  end;
+procedure TFlowRunner.calcdiagonalneighbor( nid : integer );
+ begin
+   with celldata do
+      if validateneighbor(nid) and ( terrainandwater > Cellneighbors[nid].terrainandwater ) then
+         neighborlist.addneighbor(nid, ( terrainandwater - Cellneighbors[nid].terrainandwater ) * isqrt2 );
+ end;
 
- procedure calcneighbors;
-  var delta : single;
-  begin
-    with celldata do
-     begin
-       if validateneighbor(0,6,linesz-1,y) and ( terrainandwater > Cellneighbors[0].terrainandwater ) then
-        begin
-          delta := terrainandwater - Cellneighbors[0].terrainandwater;
-          neighborlist.addneighbor(0, delta );
-        end;
-       if validateneighbor(1) and  ( terrainandwater > Cellneighbors[1].terrainandwater ) then
-        begin
-          delta := terrainandwater - Cellneighbors[1].terrainandwater;
-          delta := delta * isqrt2; { adjust for diagonal }
-          neighborlist.addneighbor(1, delta );
-        end;
-       if validateneighbor(2,4,x,0) and  ( terrainandwater > Cellneighbors[2].terrainandwater ) then
-        begin
-          delta := terrainandwater - Cellneighbors[2].terrainandwater;
-          neighborlist.addneighbor(2, delta );
-        end;
-       if validateneighbor(3) and  ( terrainandwater > Cellneighbors[3].terrainandwater ) then
-        begin
-          delta := terrainandwater - Cellneighbors[3].terrainandwater;
-          delta := delta * isqrt2; { adjust for diagonal }
-          neighborlist.addneighbor(3, delta );
-        end;
-       if validateneighbor(4, 2, 0, y ) and  ( terrainandwater > Cellneighbors[4].terrainandwater ) then
-        begin
-          delta := terrainandwater - Cellneighbors[4].terrainandwater;
-          neighborlist.addneighbor(4, delta );
-        end;
-       if validateneighbor(5) and  ( terrainandwater > Cellneighbors[5].terrainandwater ) then
-        begin
-          delta := terrainandwater - Cellneighbors[5].terrainandwater;
-          delta := delta * isqrt2; { adjust for diagonal }
-          neighborlist.addneighbor(5, delta );
-        end;
-       if validateneighbor(6,0, x, linesz -1) and  ( terrainandwater > Cellneighbors[6].terrainandwater ) then
-        begin
-          delta := terrainandwater - Cellneighbors[6].terrainandwater;
-          neighborlist.addneighbor(6, delta );
-        end;
-       if validateneighbor(7) and  ( terrainandwater > Cellneighbors[7].terrainandwater ) then
-        begin
-          delta := terrainandwater - Cellneighbors[7].terrainandwater;
-          delta := delta * isqrt2; { adjust for diagonal }
-          neighborlist.addneighbor(7, delta );
-        end;
-     end;
-  end;
+procedure TFlowRunner.calcneighbors( x, y : integer );
+ { determine which neighbors this will flow to and add them to the list }
+ begin
+   with celldata do
+    begin
+      if validateneighbor(0,6,linesz-1,y) and ( terrainandwater > Cellneighbors[0].terrainandwater ) then
+         neighborlist.addneighbor(0, terrainandwater - Cellneighbors[0].terrainandwater );
+      calcdiagonalneighbor( 1 );
+      if validateneighbor(2,4,x,0) and  ( terrainandwater > Cellneighbors[2].terrainandwater ) then
+         neighborlist.addneighbor(2, terrainandwater - Cellneighbors[2].terrainandwater );
+      calcdiagonalneighbor( 3 );
+      if validateneighbor(4, 2, 0, y ) and  ( terrainandwater > Cellneighbors[4].terrainandwater ) then
+         neighborlist.addneighbor(4, terrainandwater - Cellneighbors[4].terrainandwater );
+      calcdiagonalneighbor( 5 );
+      if validateneighbor(6,0, x, linesz -1) and  ( terrainandwater > Cellneighbors[6].terrainandwater ) then
+         neighborlist.addneighbor(6, terrainandwater - Cellneighbors[6].terrainandwater );
+      calcdiagonalneighbor( 7 );
+    end;
+ end;
+
+
+function TFlowRunner.flowtoneighbors( x,y : integer ) : boolean;
+
  var i : integer;
      neighbor : pneighbor;
  begin
    Result := false;
    tileneighbors := parentgrid.getneighbors;
-   calcneighbors;
+   calcneighbors( x, y );
    neighbor := pneighbor( neighborlist.firstptr );
    for i := 0 to neighborlist.count - 1 do if not cancelflow then
     begin
@@ -425,7 +405,6 @@ function TFlowRunner.flowtodistantneighbor( distantneighbor : TTerTile;
       result := flowtoneighbor( distantcell );
     end
  end;
-
 
 //------------------------------------
 

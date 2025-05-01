@@ -45,10 +45,12 @@ type
     MainNavigation : TCastleWalkNavigation;
     MainCamera : TCastleCamera;
     PosLabel : TCastleLabel;
+
     ButtonContour : TCastleButton;
+     LabelContourScale : TCastleLabel;
     ButtonGrid    : TCastleButton;
-    LabelGridScale : TCastleLabel;
-    LabelContourScale : TCastleLabel;
+     LabelGridScale : TCastleLabel;
+    ButtonWater   : TCastleButton;
 
     ColorPreview : TCastleShape;
     RedSlider : TCastleIntegerSlider;
@@ -118,6 +120,7 @@ begin
   GParentComponent := Viewport1.Items;
   ButtonCreateClient.OnClick := {$ifdef FPC}@{$endif} ClickCreateClient;
   ButtonGrid.OnClick := {$ifdef FPC}@{$endif} ClickTest;
+  ButtonWater.OnClick := {$ifdef FPC}@{$endif} ClickTest;
   ButtonContour.OnClick := {$ifdef FPC}@{$endif} ClickTest;
   ButtonSend.OnClick := {$ifdef FPC}@{$endif} ClickSend;
 
@@ -229,8 +232,29 @@ begin
   SetCreateClientMode( connectionstatus, ButtonCreateClient );
 end;
 
+ procedure CreateWaterMesh( Layer : TCastleTransform;
+                            Tile : TTerTile );
+  begin
+    if assigned( Tile.WaterGraphics ) then
+     begin
+       Layer.Remove( Tile.WaterGraphics );
+       Tile.WaterGraphics.Free;
+     end;
+    Tile.WaterGraphics := TWaterMesh.Create2( Layer, Tile );
+    Layer.Add( Tile.WaterGraphics );
+  end;
 
-
+ procedure CreateTerrainMesh( Layer : TCastleTransform;
+                              Tile : TTerTile );
+  begin
+    if assigned( Tile.TerrainGraphics ) then
+     begin
+       Layer.Remove( Tile.TerrainGraphics );
+       Tile.TerrainGraphics.Free;
+     end;
+    Tile.TerrainGraphics := TTerrainMesh.Create2( Layer, Tile );
+    Layer.Add( Tile.TerrainGraphics );
+  end;
 
 procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
                                         const tileinfo : TTileHeader;
@@ -246,42 +270,22 @@ procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
    Tile := GTileList.GetInitTile( tileinfo );
    case msginfo.msgtype of
      msg_water : begin
-                    if assigned( Tile.WaterGraphics ) then
+                    if ( not assigned( Tile.WaterGraphics )) or
+                       ( Tile.Info.TileSz <> tileInfo.TileSz ) then
                      begin
-                       if Tile.Info.TileSz <> tileInfo.TileSz then
-                        begin
-                          WaterLayer.Remove( Tile.WaterGraphics );
-                          Tile.WaterGraphics.Free;
-                          Tile.Info := TileInfo;
-                          Tile.WaterGraphics := TWaterMesh.create2( WaterLayer, Tile );
-                          WaterLayer.Add( Tile.WaterGraphics );
-                        end
-                     end
-                    else
-                     begin
-                       Tile.WaterGraphics := TWaterMesh.create2( WaterLayer, Tile );
-                       WaterLayer.Add( Tile.WaterGraphics );
+                       Tile.Info := TileInfo;
+                       CreateWaterMesh( WaterLayer, Tile );
                      end;
                     { update tile graphics }
                     TTerrainMesh( Tile.WaterGraphics ).UpdateFromGrid( TileGrid );
                     TTerrainMesh( Tile.WaterGraphics ).UpdateVerticesTexture( texgrid );
                   end;
      msg_tile : begin
-                  if assigned( Tile.TerrainGraphics ) then
+                  if ( not assigned( Tile.TerrainGraphics )) or
+                     ( Tile.Info.TileSz <> tileInfo.TileSz ) then
                    begin
-                     if Tile.Info.TileSz <> tileInfo.TileSz then
-                      begin
-                        TerrainLayer.Remove( Tile.TerrainGraphics );
-                        Tile.TerrainGraphics.Free;
-                        Tile.Info := TileInfo;
-                        Tile.TerrainGraphics := TTerrainMesh.create2( TerrainLayer, Tile );
-                        TerrainLayer.Add( Tile.TerrainGraphics );
-                      end
-                   end
-                  else
-                   begin
-                     Tile.TerrainGraphics := TTerrainMesh.create2( TerrainLayer, Tile );
-                     TerrainLayer.Add( Tile.TerrainGraphics );
+                     Tile.Info := TileInfo;
+                     CreateTerrainMesh( TerrainLayer, Tile );
                    end;
                   { update tile graphics }
                   TTerrainMesh( Tile.TerrainGraphics ).UpdateFromGrid( TileGrid );
@@ -304,24 +308,13 @@ procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
                            inc( terrainh );
                            inc( florah );
                          end;
-                     if assigned( Tile.WaterGraphics ) then
-                        begin
-                          if Tile.Info.TileSz <> tileInfo.TileSz then
-                           begin
-                             WaterLayer.Remove( Tile.WaterGraphics );
-                             Tile.WaterGraphics.Free;
-                             Tile.Info := TileInfo;
-                             Tile.WaterGraphics := TWaterMesh.create2( WaterLayer, Tile );
-                             WaterLayer.Add( Tile.WaterGraphics );
-                           end
-                        end
-                       else
-                        begin
-                          Tile.WaterGraphics := TWaterMesh.create2( WaterLayer, Tile );
-                          WaterLayer.Add( Tile.WaterGraphics );
-                        end;
-
-                      TTerrainMesh( Tile.WaterGraphics ).UpdateFromGrid( waterGrid );
+                     if ( not assigned( Tile.WaterGraphics )) or
+                       ( Tile.Info.TileSz <> tileInfo.TileSz ) then
+                      begin
+                        Tile.Info := TileInfo;
+                        CreateWaterMesh( WaterLayer, Tile );
+                      end;
+                     TTerrainMesh( Tile.WaterGraphics ).UpdateFromGrid( waterGrid );
                      TTerrainMesh( Tile.WaterGraphics ).UpdateVerticesTexture( texgrid );
                    end;
     end;
@@ -340,9 +333,11 @@ procedure TViewMain.ClickTest(Sender: TObject);
  var button : TCastleButton;
      tile : TTerTile;
      i : integer;
+     updateappearance : boolean;
  begin
    button := TCastleButton( Sender );
    Button.Pressed := not Button.Pressed;
+   updateappearance := true;
    if button = buttongrid then
     begin
       GShowGrid := Button.Pressed;
@@ -371,9 +366,15 @@ procedure TViewMain.ClickTest(Sender: TObject);
          LabelContourScale.Caption := '';
          Button.CustomBackground := true;
        end;
+    end
+   else
+   if button = buttonwater then
+    begin
+      updateappearance := false;
+      WaterLayer.Visible := Button.Pressed;
+      Button.CustomBackground := not WaterLayer.Visible;
     end;
-  { test }
-  for i := 0 to gtilelist.Count - 1 do
+  if updateappearance then for i := 0 to gtilelist.Count - 1 do
    begin
      Tile := TTerTile( gTileList.At( i ));
      if assigned( Tile.TerrainGraphics ) then

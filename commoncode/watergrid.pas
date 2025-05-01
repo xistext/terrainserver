@@ -11,8 +11,7 @@ uses
   Classes, SysUtils,
   basetools;
 
-const defaultsize = 100;
-      defaultdepthscale : single = 1000; { 1000 allows +- 32.767 in 0.001 increments }
+const defaultdepthscale : single = 1000; { 1000 allows +- 32.767 in 0.001 increments }
 
 TYPE { never instantiated, used to typecase pointer }
      Tsingledata = array[0..99999999] of single;
@@ -26,7 +25,7 @@ TYPE { never instantiated, used to typecase pointer }
 
         wh : dword;
 
-        constructor create( initialSize : dword = defaultsize );
+        constructor create( initialSize : dword );
         destructor destroy; override;
         function wxh : dword;
         function valuesz : dword; dynamic; abstract;
@@ -43,9 +42,9 @@ TYPE { never instantiated, used to typecase pointer }
      { grid of single }
      tsinglegrid = class( tbasedatagrid )
 
-        constructor create( initialValue : single = 0;
-                            initialSize : dword = defaultsize );
-        constructor createsize( initialSize : dword = defaultsize );
+        constructor create( initialValue : single;
+                            initialSize : dword  );
+        constructor createsize( initialSize : dword );
 
         function valuesz : dword; override;
 
@@ -80,8 +79,8 @@ TYPE { never instantiated, used to typecase pointer }
      { grid of smallint }
      tsmalligrid = class( tbasedatagrid )
 
-        constructor create( initialValue : smallint = 0;
-                            initialSize : dword = defaultsize );
+        constructor create( initialValue : smallint;
+                            initialSize : dword );
         function valuesz : dword; override;
 
         procedure setvalue( value : smallint );
@@ -111,8 +110,8 @@ TYPE { never instantiated, used to typecase pointer }
 
        scalefactor, iscalefactor : single;
 
-       constructor create( initialValue : single  = 0;
-                           initialSize : dword = defaultsize );
+       constructor create( initialValue : single;
+                           initialSize : dword );
 
        function depthtoworld( dvalue : smallint ) : single;
        function worldtodepth( wvalue : single ) : smallint;
@@ -131,8 +130,8 @@ TYPE { never instantiated, used to typecase pointer }
 
      tintgrid = class( tsinglegrid )
 
-       constructor create( initialValue : integer = 0;
-                           initialSize : dword = defaultsize );
+       constructor create( initialValue : integer;
+                           initialSize : dword );
 
        procedure setvaluexy( x, y : dword;
                              v : integer); overload;
@@ -149,7 +148,7 @@ implementation //===============================================================
 
 //-----------------------------------
 
-constructor tbasedatagrid.Create( initialSize : dword = defaultsize );
+constructor tbasedatagrid.Create( initialSize : dword );
  begin
    inherited create;
    wh := initialsize;
@@ -185,8 +184,8 @@ procedure tbasedatagrid.copyto( dest : tbasedatagrid );
 
 //-----------------------------------
 
-constructor Tsinglegrid.create( initialValue : single = 0;
-                                initialSize : dword = defaultsize );
+constructor Tsinglegrid.create( initialValue : single;
+                                initialSize : dword );
 begin
   inherited create( initialSize );
   if initialvalue = 0 then
@@ -195,7 +194,7 @@ begin
      setvalue( initialValue );
 end;
 
-constructor TSinglegrid.createsize( initialSize : dword = defaultsize );
+constructor TSinglegrid.createsize( initialSize : dword );
  begin
    inherited create( initialSize );
    { does not initialize data values }
@@ -411,8 +410,8 @@ VAR Ratio1, Ratio2, Ratio3, Ratio4 : single;
 
 //-------------------------------------
 
-constructor Tsmalligrid.create( initialValue : smallint = 0;
-                                initialSize : dword = defaultsize );
+constructor Tsmalligrid.create( initialValue : smallint;
+                                initialSize : dword );
 begin
   inherited create( initialSize );
   if initialvalue = 0 then
@@ -530,11 +529,11 @@ function Tsmalligrid.depth : psmallidata;
 
 //-------------------------------------
 
-constructor tdepthgrid.create( initialValue : single = 0;
-                               initialSize : dword = defaultsize );
+constructor tdepthgrid.create( initialValue : single;
+                               initialSize : dword );
  begin
    setscalefactor( defaultdepthscale ); { scale the values for converting between smallint and single }
-   inherited create( trunc( initialValue * scalefactor ));
+   inherited create( trunc( initialValue * scalefactor ), initialsize);
  end;
 
 procedure tdepthgrid.setscalefactor( factor : single );
@@ -579,8 +578,8 @@ function tdepthgrid.valuexy( x, y : dword ) : single;
 
 //-------------------------------------
 
-constructor tintgrid.create( initialValue : integer = 0;
-                             initialSize : dword = defaultsize );
+constructor tintgrid.create( initialValue : integer;
+                             initialSize : dword );
  begin
    inherited create( initialValue, initialsize );
  end;

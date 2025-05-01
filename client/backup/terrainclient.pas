@@ -141,13 +141,13 @@ procedure TTerClientThread.SendTile( const msgheader : TMsgHeader;
    Move( buffer[bufpos], tilerec.tileGrid.data^, tilesz * sizeof( single ));
    inc( bufpos, tilesz * sizeof( single ));
    if msgheader.msgtype = msg_water then
-    begin
+    begin { send calulated water and texcoords }
       setlength( tilerec.texgrid, tilesz );
       Move( buffer[bufpos], tilerec.texgrid[0], tilesz * sizeof(tvector2));
     end
    else
    if msgheader.msgtype = msg_water2 then
-    begin
+    begin { send terrain + water depth + flora and let client build the water and texcoords }
       tilerec.waterGrid := TSingleGrid.createsize( tilerec.tileinfo.TileSz );
       Move( buffer[bufpos], tilerec.waterGrid.data^, tilesz * sizeof( single ));
       inc( bufpos, tilesz * sizeof( single ));
@@ -171,11 +171,12 @@ function TTerClient.CreateClientThread : TCastleTCPClientThread;
 procedure TTerClient.ClientOnTileReceived;
  var TileRec : TTileRec;
  begin
-   if assigned( FOnTileReceived ) then
+   if assigned( FOnTileReceived ) and assigned( FClientThread ) then
     begin
       for TileRec in TTerClientThread( FClientThread ).fTileList.LockList do
        begin
-         FOnTileReceived( tilerec.msginfo, tilerec.tileinfo, tilerec.tilegrid, tilerec.texgrid );
+         FOnTileReceived( tilerec.msginfo, tilerec.tileinfo,
+                          tilerec.tilegrid, tilerec.watergrid, tilerec.floragrid, tilerec.texgrid );
 
        end;
       TTerClientThread( FClientThread ).fTileList.Clear;
