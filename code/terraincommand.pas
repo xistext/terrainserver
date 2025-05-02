@@ -315,7 +315,7 @@ function BuildResultBuffer( tile : ttertile;
      bufptr : ^single;
      neighbor : TTerTile;
   procedure fullresolutionsample;
-   var x, y : integer;
+   var x : integer;
        h : single;
        ngrid : TSingleGrid;
    begin
@@ -404,7 +404,7 @@ function BuildResultGrid( tile : ttertile;
      ThisGrid : TSingleGrid;
      neighbor : TTerTile;
   procedure fullresolutionsample;
-   var x, y : integer;
+   var x : integer;
        ngrid : TSingleGrid;
    begin
      ngrid := neighborlayer( neighbor, layer );
@@ -413,7 +413,10 @@ function BuildResultGrid( tile : ttertile;
         move( ThisGrid.ptrxy(x,0)^, bufptr^, tilesz * sizeof( single ));
         { last point in line }
         inc( bufptr, tilesz );
-        bufptr^ := gridvaluexy(ngrid, x,0);
+        if assigned( ngrid ) then
+           bufptr^ := gridvaluexy(ngrid, x,0)
+        else
+           bufptr^ := gridvaluexy(thisgrid, x, tilesz-1);
         inc( bufptr );
       end;
      { last row }

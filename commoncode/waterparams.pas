@@ -16,7 +16,7 @@ const DefaultSnowLine : single = 8;
       MinDisplayWaterHeight = 0.002;
       { low negative values will be lowered to avoid moire interaction with terrain }
       ZeroDisplayFloraHeight = -0.1;
-      ZeroDisplayWaterHeight = -0.1;
+      ZeroDisplayWaterHeight = -0.01;
 
 { texture locations }
 const texsnow = 0.5/128;

@@ -20,7 +20,8 @@ const terrainpath = 'data\terrain\';
       layer_water   = 2;
       layer_flora   = 3;
 
-type TTerTile = class; { forward }
+type PTerTile = ^TTerTile;
+     TTerTile = class; { forward }
      TTileNeighbors = array[0..7] of TTerTile;
 
      TLockingCollection = class( tsortedcollection )
@@ -34,6 +35,7 @@ type TTerTile = class; { forward }
      TTileList = class( TLockingCollection )
 
         function tilexy( x, y : integer ) : TTerTile;
+        function ptrxy( x, y : integer ) : PTerTile;
 
         function initxy( x, y : integer;
                          tilesz : integer ) : TTerTile;
@@ -113,6 +115,7 @@ type TTerTile = class; { forward }
         property TerrainGrid : TSingleGrid read getTerrainGrid;
         property WaterGrid : TSingleGrid read getWaterGrid;
         property FloraGrid : TSingleGrid read getFloraGrid;
+        property SplatFrid : TIntGrid read getSplatGrid;
         {$else}
         TerrainGraphics : TCastleTransform;
         WaterGraphics : TCastleTransform;
@@ -152,11 +155,23 @@ constructor TLockingCollection.Create;
  end;
 
 function TLockingCollection.lock : boolean;
+ var timeout : integer;
  begin
+   timeout := 10;
    while locks > 0 do
     begin
-      dbgwrite('.');
-      sleep( 10 ); {!need timeout}
+      dec( timeout );
+      if timeout > 0 then
+       begin
+         dbgwrite('.');
+         sleep( 10 ); {!need timeout}
+       end
+      else
+       begin
+         dbgwrite('!');
+         result := false;
+         break;
+       end;
     end;
    inc( locks );
    {if locks > 1 then
@@ -204,6 +219,15 @@ function TTileList.tilexy( x, y : integer ) : TTerTile;
    if findtile( x, y, i ) then
       result := TTerTile( at( i ));
    unlock;
+ end;
+
+function TTileList.ptrxy( x, y : integer ) : PTerTile;
+ var i : integer;
+ begin
+   result := nil;
+   if findtile( x, y, i ) then
+      result := PTerTile( @It^[ i ]);
+
  end;
 
 function TTileList.initxy( x, y : integer;
@@ -549,6 +573,7 @@ function TTerTile.DeleteMyFiles : boolean;
 function TTerTile.GetNeighbors : TTileNeighbors;
  { get tile's neighbors }
  var iY, iX : integer;
+     gptr : PTerTile;
  begin
    iX := Info.TileX;
    iY := Info.TileY;

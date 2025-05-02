@@ -50,6 +50,9 @@ TAbstractMesh = class( TCastleScene )
    function ElevationAtPos( Pos : TVector2;
                             var Elev : single ) : boolean;
 
+   function raycast2( const raypos : TVector3;
+                     const raydir : TVector3;
+                     var pos : TVector3 ) : boolean;
    private
 
    function ElevationAtPos_InternalRayCollision( pos  : TVector2;
@@ -136,6 +139,43 @@ function TAbstractMesh.ElevationAtPos_InternalRayCollision( pos  : TVector2;
            end;
         end;
        collision.free;
+    end;
+ end;
+
+function TAbstractMesh.raycast2( const raypos : TVector3;
+                                const raydir : TVector3;
+                                var pos : TVector3 ) : boolean;
+function checktriangle( const triangle : TTriangle3 ) : boolean;
+ var intersection : tvector3;
+ begin
+   result := TryTriangleRayCollision( Intersection,
+                                      Triangle,
+                                      Triangle.Plane,
+                                      raypos, raydir );
+   if result then
+      pos := Intersection;
+ end;
+ var IndexedTriangleSetNode : TIndexedTriangleSetNode;
+    c, ix : integer;
+    p0, p1, p2 : tvector3;
+    Coord : TCoordinateNode;
+ begin
+   result := false;
+   IndexedTriangleSetNode := TIndexedTriangleSetNode( rootnode.FindNode( TIndexedTriangleSetNode, false ));
+   Coord := TCoordinateNode( IndexedTriangleSetNode.Coord );
+   c := IndexedTriangleSetNode.FdIndex.Count;
+   ix := 0;
+   while ix < c do
+    begin
+      p0 := translation + Coord.FdPoint.Items[IndexedTriangleSetNode.FdIndex.Items[ix]];
+      inc( ix );
+      p1 := translation + Coord.FdPoint.Items[IndexedTriangleSetNode.FdIndex.Items[ix]];
+      inc( ix );
+      p2 := translation + Coord.FdPoint.Items[IndexedTriangleSetNode.FdIndex.Items[ix]];
+      inc( ix );
+      result := checktriangle( Triangle3( p0, p1, p2 ));
+      if result then
+         exit;
     end;
  end;
 

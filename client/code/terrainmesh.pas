@@ -217,6 +217,7 @@ var sz : single;
       sz := GDefGridCellCount * GDefGridStep;
     end;
    RenderOptions.WireframeEffect := weSilhouette;
+
 end;
 
 function TTerrainMesh.offset : TVector2;
@@ -357,6 +358,7 @@ procedure TTerrainMesh.updatefromgrid( TerrainGrid : TSingleGrid );
 var coord : TCoordinateNode;
 begin
   coord := CoordinateNode;
+  assert( gridcount = terraingrid.wh );
   buildvertexlistsfromgrid( TerrainGrid,
                             Coord.FdPoint.Items );
   Coord.FdPoint.changed; { trigger mesh to rebuild }

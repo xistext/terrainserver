@@ -75,10 +75,10 @@ procedure StartWaterFlowThreads;
       WaterFlowthreads[0].Resume
    else
       WaterFlowThreads[0].Start;
-   if WaterFlowThreads[1].Suspended then
+(*   if WaterFlowThreads[1].Suspended then
       WaterFlowthreads[1].Resume
    else
-      WaterFlowThreads[1].Start;
+      WaterFlowThreads[1].Start;*)
  end;
 
 procedure StopWaterFlowThreads;
@@ -88,8 +88,8 @@ procedure StopWaterFlowThreads;
    FlowRunning := false;
    WaterFlowThreads[0].Suspend;
    WaterFlowThreads[0].DirtyTileList.DeleteAll;;
-   WaterFlowThreads[1].Suspend;
-   WaterFlowThreads[1].DirtyTileList.DeleteAll;;
+(*   WaterFlowThreads[1].Suspend;
+   WaterFlowThreads[1].DirtyTileList.DeleteAll;;*)
  end;
 
 constructor TDirtyList.create;
@@ -358,6 +358,49 @@ procedure TFlowRunner.calcneighbors( x, y : integer );
     end;
  end;
 
+function TFlowRunner.flowtodistantneighbor( distantneighbor : TTerTile;
+                                            x, y : integer ) : boolean;
+ var distantcell : TCellData;
+     flowptrs : TFlowPtrRec;
+     ix : integer;
+ begin
+   result := false;
+   if not cancelflow and assigned( distantneighbor ) then
+    begin
+      ix := x * distantneighbor.watergrid.wh + y;
+      flowptrs.hptr := distantneighbor.terraingrid.ptrix( ix );
+      flowptrs.dptr := distantneighbor.watergrid.ptrix( ix );
+      flowptrs.deltaptr := nil;
+      setcelldata( distantcell, flowptrs );
+      result := flowtoneighbor( distantcell );
+    end
+ end;
+
+function TFlowRunner.flowtoneighbor( var neighbor : TCellData) : boolean;
+ var delta, snowfactor : single;
+ begin
+   with celldata do
+    begin
+      delta := ( TerrainAndWater - (Neighbor.waterdepth + Neighbor.terrainheight))*0.5 * amounttoflow;
+      { limit delta to water depth }
+      limitmax( delta, waterdepth );
+      Result := ( delta > 0 ) and not cancelflow;
+      if Result then
+       begin
+         snowfactor := terrainheight - Defaultsnowline;
+         limitminmax( snowfactor, 0, MaxSnowFactor );
+         delta := delta * ( 1 - snowfactor );
+
+         flowptrs.deltaptr^ := flowptrs.deltaptr^ - delta;
+         if assigned( neighbor.flowptrs.deltaptr ) then
+            Neighbor.flowptrs.deltaptr^ := Neighbor.flowptrs.deltaptr^ + delta
+         else
+            Neighbor.flowptrs.dptr^ := Neighbor.flowptrs.dptr^ + delta;
+         waterdepth := waterdepth - delta;
+         TerrainAndWater := TerrainAndWater - delta;
+       end;
+    end;
+ end;
 
 function TFlowRunner.flowtoneighbors( x,y : integer ) : boolean;
 
@@ -376,49 +419,6 @@ function TFlowRunner.flowtoneighbors( x,y : integer ) : boolean;
          break;
     end;
    neighborlist.FreeAll;
- end;
-
-function TFlowRunner.flowtoneighbor( var neighbor : TCellData) : boolean;
- var delta, snowfactor : single;
- begin
-   with celldata do
-    begin
-      delta := ( TerrainAndWater - (Neighbor.waterdepth + Neighbor.terrainheight))*0.5 * amounttoflow;
-      { limit delta to water depth }
-      limitmax( delta, waterdepth );
-      Result := ( delta > 0 ) and not cancelflow;
-      if Result then
-       begin
-         snowfactor := terrainheight - Defaultsnowline;
-         limitminmax( snowfactor, 0, MaxSnowFactor );
-         delta := delta * ( 1 - snowfactor );
-         flowptrs.deltaptr^ := flowptrs.deltaptr^ - delta;
-         if assigned( neighbor.flowptrs.deltaptr ) then
-            Neighbor.flowptrs.deltaptr^ := Neighbor.flowptrs.deltaptr^ + delta
-         else
-            Neighbor.flowptrs.dptr^ := Neighbor.flowptrs.dptr^ + delta;
-         waterdepth := waterdepth - delta;
-         TerrainAndWater := TerrainAndWater - delta;
-       end;
-    end;
- end;
-
-function TFlowRunner.flowtodistantneighbor( distantneighbor : TTerTile;
-                                            x, y : integer ) : boolean;
- var distantcell : TCellData;
-     flowptrs : TFlowPtrRec;
-     ix : integer;
- begin
-   result := false;
-   if not cancelflow and assigned( distantneighbor ) then
-    begin
-      ix := x * distantneighbor.watergrid.wh + y;
-      flowptrs.hptr := distantneighbor.terraingrid.ptrix( ix );
-      flowptrs.dptr := distantneighbor.watergrid.ptrix( ix );
-      flowptrs.deltaptr := nil;
-      setcelldata( distantcell, flowptrs );
-      result := flowtoneighbor( distantcell );
-    end
  end;
 
 //------------------------------------
@@ -518,16 +518,16 @@ procedure TWaterTask.RunTask;
 
 initialization //===============================================================
   isqrt2 := 1/sqrt(2);
-  WaterToFlowList_low := TThreadTaskList.create;
+  //WaterToFlowList_low := TThreadTaskList.create;
   WaterToFlowList_high := TThreadTaskList.create;
   WaterFlowThreads[0] := TWaterFlowThread.Create;
   WaterFlowThreads[0].TaskList:= WaterToFlowList_high;
-  WaterFlowThreads[1] := TWaterFlowThread.Create;
-  WaterFlowThreads[1].TaskList:= WaterToFlowList_low;
+(*  WaterFlowThreads[1] := TWaterFlowThread.Create;
+  WaterFlowThreads[1].TaskList:= WaterToFlowList_low;*)
 finalization
   WaterFlowThreads[0].free;
-  WaterFlowThreads[1].free;
-  WaterToFlowList_low.Free;
+//  WaterFlowThreads[1].free;
+//  WaterToFlowList_low.Free;
   WaterToFlowList_high.Free;
 end.
 

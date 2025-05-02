@@ -521,7 +521,7 @@ end;
 
 function TSortedCollection.Search(key : Pointer; Var Index : integer) : Boolean;
 var L, H, I, C: Integer;
-    Dups : BOOLEAN;
+    Dups, modl : BOOLEAN;
 begin
   Result := False;
   {$ifdef threaded}IF ThreadLock THEN BEGIN {$endif}
@@ -538,9 +538,8 @@ begin
          begin
            H := I - 1;
            Result := C = 0;
-           IF Result AND NOT Dups THEN
-             L := I; {replaced with branchless line below }
-//           L := I * ord( Result AND NOT Dups );
+           modl := Result AND NOT Dups;
+           L := ord( modl ) * I + ord( not modl ) * L;
          end;
       end;
      Index := L;

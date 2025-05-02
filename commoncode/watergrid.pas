@@ -166,7 +166,6 @@ function tbasedatagrid.wxh : dword;
    result := wh * wh;
  end;
 
-
 function tbasedatagrid.datasz : dword;
  begin
    Result := wh * wh * valuesz;
@@ -179,6 +178,7 @@ procedure tbasedatagrid.zerogrid;
 
 procedure tbasedatagrid.copyto( dest : tbasedatagrid );
  begin
+   assert( wh = dest.wh );
    Move( data^, dest.data^, datasz );
  end;
 
@@ -217,15 +217,6 @@ procedure Tsinglegrid.setvalue( value : single );
       inc(dptr);
     end;
  end;
-
-type PSingle2 = ^TSingle2;
-     Tsingle2 = record
-                  s0, s1 : single;
-                end;
-     PSingle4 = ^TSingle4;
-     Tsingle4 = record
-                  s0, s1, s2, s3 : single;
-                end;
 
 procedure Tsinglegrid.addvalue( value : single;
                                 minvalue : single = 0 );
@@ -332,42 +323,20 @@ function Tsinglegrid.samplemax( samplex, sampley, samplew, sampleh : dword ) : s
  end;
 
 
-                                      (*
+
 procedure Tsinglegrid.addgrid( added : Tsinglegrid );
- var srcptr, destptr : pdepth;
+ var srcptr, destptr : PSingle;
      i : dword;
  begin
-   srcptr := pdepth( added.data );
-   destptr := pdepth( data );
+   srcptr := psingle( added.data );
+   destptr := psingle( data );
    for i := wxh - 1 downto 0 do
     begin
       destptr^ := destptr^ + srcptr^;
       inc( srcptr );
       inc( destptr );
     end;
- end;                               *)
-
-procedure Tsinglegrid.addgrid( added : Tsinglegrid );
- var srcptr, destptr : psingle4;
-     i : dword;
- begin
-   srcptr := psingle4( added.data );
-   destptr := psingle4( data );
-   for i := wxh shr 2 - 1 downto 0 do   { steps by 4 }
-    begin
-      with destptr^ do
-       begin
-         s0 := s0 + srcptr^.s0;
-         s1 := s1 + srcptr^.s1;
-         s2 := s2 + srcptr^.s2;
-         s3 := s3 + srcptr^.s3;
-       end;
-      inc( srcptr );
-      inc( destptr );
-    end;
  end;
-
-
 
 function Tsinglegrid.depth : psingledata;
  begin

@@ -26,7 +26,7 @@ uses Classes,
   CastleKeysMouse, CastleClientServer, CastleTerrain, CastleScene,
   CastleViewport, CastleCameras, CastleTransform, CastleWindow,
   TerServerCommon, TerrainData, TerrainParams, TerrainShader, TerrainMesh,
-  watergrid, BaseMesh, TerrainClient, watercolor,
+  watergrid, BaseMesh, TerrainClient, watercolor, layermarkup,
   debug;
 
 type
@@ -94,7 +94,10 @@ type
     procedure HandleMotion(const Sender: TCastleUserInterface;
                            const Event: TInputMotion;
                            var Handled: Boolean);
-  end;
+    function HeightAboveTerrain(Pos: TVector3;
+                                out Y: Single;
+                                heighttype : byte = 0 ): boolean;
+   end;
 
 var
   ViewMain: TViewMain;
@@ -118,6 +121,7 @@ end;
 procedure TViewMain.Start;
  var
    MaxVertexUniformComponents: TGLint;
+   MarkupLayer : TMarkupLayer;
 begin
   inherited;
   GParentComponent := Viewport1.Items;
@@ -145,6 +149,11 @@ begin
   MainNavigation.OnMoveAllowed := {$ifdef FPC}@{$endif} MoveAllowed;
   LabelContourScale.Caption := '';
   LabelGridScale.Caption := '';
+
+  MarkupLayer := TMarkupLayer.Create(Viewport1);
+  MarkupLayer.terrainheight := {$ifdef fpc}@{$endif}HeightAboveTerrain;
+  TerrainLayer.Add(MarkupLayer);
+  GMarkupLayer := MarkupLayer;
 
   glGetIntegerv(GL_MAX_VERTEX_UNIFORM_COMPONENTS, @MaxVertexUniformComponents);
   dbgwriteln(format('GL_MAX_VERTEX_UNIFORM_COMPONENTS: %d', [MaxVertexUniformComponents]));
@@ -275,7 +284,7 @@ procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
  begin
    Tile := GTileList.GetInitTile( tileinfo );
    case msginfo.msgtype of
-     msg_water : begin
+     msg_water : begin  { obsolete in favor of msg_water2? }
                     if ( not assigned( Tile.WaterGraphics )) or
                        ( Tile.Info.TileSz <> tileInfo.TileSz ) then
                      begin
@@ -302,13 +311,13 @@ procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
                      terrainh := tilegrid.ptrix(0);
                      florah := floragrid.ptrix(0);
                      setlength( texgrid, watergrid.wxh );
+                     assert( watergrid.wxh = tilegrid.wxh );
                      for x := 0 to watergrid.wh - 1 do
                       for y := 0 to watergrid.wh - 1 do
                          begin
                            h := waterh^;
                            texgrid[ y * watergrid.wh + x ] := CalcDepthAndTexture( h, florah^, terrainh^, false );
                            waterh^ := terrainh^ + h;
-
                            { calculate water texture index }
                            inc( waterh );
                            inc( terrainh );
@@ -417,33 +426,53 @@ function TViewMain.MoveAllowed(const Sender: TCastleNavigation;
    result := true;
  end;
 
+function TViewMain.HeightAboveTerrain(Pos: TVector3;
+                                      out Y: Single;
+                                      heighttype : byte = 0 ): boolean;
+ begin
+   TerrainHeight( MainCamera.Translation, Y );
+   result := true
+ end;
+
 procedure TViewMain.HandleMotion(const Sender: TCastleUserInterface;
                                  const Event: TInputMotion;
                                  var Handled: Boolean);
- var rayitems : TRayCollision;
-     node : TRayCollisionNode;
-     c, i : integer;
-     ItemHit : TCastleTransform;
-     TerMesh : TTerrainMesh;
+ var MouseRayOrigin, MouseRayDirection : TVector3;
+     i : integer;
+     pos : TVector3;
+     thistile : ttertile;
+     MousePosition : TVector2;
+     Neighbors : TTileNeighbors;
  begin
-   rayitems := Viewport1.MouseRayHit;
-   if assigned( rayitems ) then
-     begin
-      c := RayItems.Count;
-      for i := c - 1 downto 0 do
+   if buttonleft in event.Pressed then
+    begin
+      if GTileList.findtileatlocation( vector2( MainCamera.translation.x, MainCamera.translation.z ), thistile ) and
+         assigned( thistile.TerrainGraphics ) then
        begin
-         node := RayItems[i];
-         ItemHit := node.Item;
-         if ItemHit is TTerrainMesh then
+         MousePosition := Container.MousePosition;
+//         if Viewport1.MousePosition(MousePosition) then
           begin
-            TerMesh := TTerrainMesh( ItemHit );
+            Viewport1.PositionToRay(MousePosition, true, MouseRayOrigin, MouseRayDirection );
 
-//             poslabel.Caption := Format( '(%f, %f) %f' , [node.Point.X, node.point.z, node.point.y] );
+            if TTerrainMesh( thistile.TerrainGraphics ).raycast2( MouseRayOrigin, MouseRayDirection, Pos ) then
+               GMarkupLayer.addmark( pos, 0.1, vector3( 1, 0, 0 ))
+            else
+            begin
+              Neighbors := thistile.GetNeighbors;
+              for i := 0 to 7 do
+               begin
+                 if assigned( Neighbors[i] ) and assigned( Neighbors[i].terraingraphics ) and
+                    TTerrainMesh( Neighbors[i].terraingraphics ).raycast2( MouseRayOrigin, MouseRayDirection, Pos ) then
+                  begin
+                    GMarkupLayer.addmark( pos, 0.1, vector3( 1, 0, 0 ))
 
-            break;
+                  end;
+               end;
+
+            end;
           end;
        end;
-     end;
+    end;
  end;
 
 procedure TViewMain.Mousewheel( direction : integer );
