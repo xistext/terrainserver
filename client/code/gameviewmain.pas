@@ -1,33 +1,32 @@
-{ Terrain Clkllient
+{ Terrain Client
+  Based on the Castle Game Engine Indy Client/Server demo.
+  Erik Johnson erik@edj.net
 
-  Copyright 2018-2024 Benedikt Magnus, Michalis Kamburelis.
-
-  This file is part of "Castle Game Engine".
-
-  "Castle Game Engine" is free software; see the file COPYING.txt,
-  included in this distribution, for details about the copyright.
-
-  "Castle Game Engine" is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-  ----------------------------------------------------------------------------
 }
 
-{ Main view, where most of the application logic takes place. }
 unit GameViewMain;
 
 interface
 
-uses Classes,
+uses Classes, SysUtils,
+  { indy }
   idGlobal,
+  { cge }
   {$ifdef OpenGLES} CastleGLES {$else} CastleGL {$endif},
+  CastleUtils,
   CastleVectors, CastleComponentSerialize, CastleUIControls, CastleControls,
   CastleKeysMouse, CastleClientServer, CastleTerrain, CastleScene,
   CastleViewport, CastleCameras, CastleTransform, CastleWindow,
+  { terrain client }
   TerServerCommon, TerrainData, TerrainParams, TerrainShader, TerrainMesh,
   watergrid, BaseMesh, TerrainClient, watercolor, layermarkup,
   debug;
+
+const
+  tool_none  = 0;
+  tool_brush = 1;
+  tool_dig   = 2;
+  tool_pile  = 3;
 
 type
 
@@ -86,6 +85,7 @@ type
     procedure ColorSliderChange( sender : TObject );
 
   public
+    activetool : integer;
     lockviewtoground : boolean;
     constructor Create(AOwner: TComponent); override;
     procedure Start; override;
@@ -102,17 +102,13 @@ type
     function HeightAboveTerrain(Pos: TVector3;
                                 out Y: Single;
                                 heighttype : byte = 0 ): boolean;
+    procedure UseTool( const pos : tvector3 );
    end;
 
 var
   ViewMain: TViewMain;
 
-implementation
-
-uses SysUtils,
-  CastleUtils;
-
-{ TViewMain ----------------------------------------------------------------- }
+implementation //===============================================================
 
 constructor TViewMain.Create(AOwner: TComponent);
 begin
@@ -121,6 +117,7 @@ begin
   ConnectionStatus := status_disconnected;
   ConnectionTimeout := 0;
   lockviewtoground := false;
+  activetool := tool_none;
 end;
 
 procedure TViewMain.Start;
@@ -420,9 +417,16 @@ procedure TViewMain.ClickTool( Sender:Tobject );
       if thisbutton <> buttonpile then
          buttonpile.Pressed := false;
     end;
+   activetool := tool_none;
+   if buttonbrush.pressed then
+      activetool := tool_brush
+   else
+   if buttondig.pressed then
+      activetool := tool_dig
+   else
+   if buttonpile.pressed then
+      activetool := tool_pile;
  end;
-
-
 
 procedure TViewMain.ClickSend(Sender: TObject);
 begin
@@ -461,6 +465,22 @@ function TViewMain.HeightAboveTerrain(Pos: TVector3;
    result := true
  end;
 
+procedure TViewMain.UseTool( const pos : tvector3 );
+ var params : string;
+     cmd : string;
+ begin
+   params := FormatFloat( '0.###', pos.x )+','+FormatFloat( '0.###', pos.z );
+   case activetool of
+      tool_none : exit;
+      tool_brush : cmd := 'splat '+params;
+      tool_dig : cmd := 'dig '+params;
+      tool_pile : cmd := 'pile '+params;
+    end;
+
+   //!!! this crashes!!! I think it crashes if you send while it is receiving???
+   fClient.Send( cmd );
+ end;
+
 procedure TViewMain.HandleMotion(const Sender: TCastleUserInterface;
                                  const Event: TInputMotion;
                                  var Handled: Boolean);
@@ -482,7 +502,7 @@ procedure TViewMain.HandleMotion(const Sender: TCastleUserInterface;
             Viewport1.PositionToRay(MousePosition, true, MouseRayOrigin, MouseRayDirection );
 
             if TTerrainMesh( thistile.TerrainGraphics ).raycast2( MouseRayOrigin, MouseRayDirection, Pos ) then
-               GMarkupLayer.addmark( pos, 0.1, vector3( 1, 0, 0 ))
+               UseTool( Pos )
             else
             begin
               Neighbors := thistile.GetNeighbors;
@@ -491,7 +511,9 @@ procedure TViewMain.HandleMotion(const Sender: TCastleUserInterface;
                  if assigned( Neighbors[i] ) and assigned( Neighbors[i].terraingraphics ) and
                     TTerrainMesh( Neighbors[i].terraingraphics ).raycast2( MouseRayOrigin, MouseRayDirection, Pos ) then
                   begin
-                    GMarkupLayer.addmark( pos, 0.1, vector3( 1, 0, 0 ))
+                    UseTool( Pos );
+                    break;
+
 
                   end;
                end;

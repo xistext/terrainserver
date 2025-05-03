@@ -730,6 +730,11 @@ function intofstr( astr : string ) : integer;
    val( AStr, result, code );
  end;
 
+function singleofstr( astr : string ) : single;
+var code : integer;
+ begin
+   val( AStr, result, code );
+ end;
 
 procedure buildArea( client : TClientConnection;
                      CenterX, CenterY : integer;
@@ -850,6 +855,20 @@ function parseTileXY( var params : string;
     end;
  end;
 
+function parseWorldXY( var params : string;
+                       var WorldX, WorldY : single ) : boolean;
+ var param : string;
+ begin
+   result := nextparam( params, param );
+   if result then
+    begin
+      WorldX := singleofstr( param );
+      result := nextparam( params, param );
+      if result then
+         WorldY := singleofstr( param );
+    end;
+ end;
+
 function cmdBuildTile( client : TClientConnection;
                        params : string;
                        callback : TCommandCallback) : integer;
@@ -886,12 +905,30 @@ function cmdWater( client : TClientConnection;
    WaterArea( client, TileX, TileY, Radius, callback );
  end;
 
+function cmdDig( client : TClientConnection;
+                 params : string;
+                 callback : TCommandCallback ) : integer;
+ var worldpos : tvector2;
+     tile : ttertile;
+ begin
+   WorldPos := vector2( 0, 0 );
+   if parseworldxy( params, worldpos.x, worldpos.y ) then
+    begin
+      if gtilelist.findtileatlocation( WorldPos, Tile ) then
+       begin
+         Tile.Dig( WorldPos, -0.01 );
+         GTaskList.AddTask( TTask_SendTile.create( client, Tile, 1 ) );
+       end;
+    end;
+ end;
+
 initialization
   GCmdList := TCmdList.Create;
   GTaskList := TTaskList.Create;
   GCmdList.RegisterCmd( 'version', @cmdVersion );
   GCmdList.RegisterCmd( 'build', @cmdBuildTile );
   GCmdList.RegisterCmd( 'water', @cmdWater );
+  GCmdList.RegisterCmd( 'dig', @cmdDig );
 
 //  GCmdList.RegisterCmd( 'save', @cmdSave );
 finalization

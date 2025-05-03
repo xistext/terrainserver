@@ -81,7 +81,9 @@ procedure updateminmax( const pt : TVector3;
                         var max : TVector2 ); overload;
 
 procedure limitmax( var value : single;
-                     max   : single );
+                     max   : single ); overload;
+procedure limitmax( var value : integer;
+                     max : integer  ); overload;
 procedure limitminmax( var value : single;
                        min, max : single );
 procedure limitmin( var value : single;
@@ -495,6 +497,15 @@ procedure limitmax( var value : single;
    limit := value > max;
    value := ord( not limit ) * value + ord( limit ) * max;
  end;
+
+procedure limitmax( var value : integer;
+                     max : integer); overload;
+ var limit : boolean;
+ begin
+   limit := value > max;
+   value := ord( not limit ) * value + ord( limit ) * max;
+ end;
+
 
 procedure limitminmax( var value : single;
                           min, max : single );

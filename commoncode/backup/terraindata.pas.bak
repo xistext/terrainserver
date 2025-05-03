@@ -3,7 +3,7 @@ unit TerrainData;
 interface
 
 uses Classes, SysUtils, Collect, TerServerCommon, terrainparams,
-     CastleVectors, CastleTerrain, watergrid,
+     CastleVectors, CastleTerrain, watergrid, basetools,
      math, castletransform, castlewindow,
      {$ifdef terserver}castlefindfiles, castlefilesutils,{$endif}
      debug;
@@ -106,6 +106,10 @@ type PTerTile = ^TTerTile;
         function LoadFromFile : boolean;
         function DeleteMyFiles : boolean;
 
+        function WorldToLocal( const pos : TVector2 ) : TVector2;
+
+        procedure Dig( const WorldPos : TVector2; Amount : single );
+
         private
         function getTerrainGrid : TSingleGrid;
         function getWaterGrid : TSingleGrid;
@@ -115,6 +119,7 @@ type PTerTile = ^TTerTile;
         property TerrainGrid : TSingleGrid read getTerrainGrid;
         property WaterGrid : TSingleGrid read getWaterGrid;
         property FloraGrid : TSingleGrid read getFloraGrid;
+        property SplatFrid : TIntGrid read getSplatGrid;
         {$else}
         TerrainGraphics : TCastleTransform;
         WaterGraphics : TCastleTransform;
@@ -143,6 +148,15 @@ procedure sethxy( var h : TTileHeader; x, y : smallint; sz : word = 1 ); inline;
 function compareint( v1, v2 : integer ) : integer; inline;
  begin
    result := -ord( v1 < v2 ) + ord( v1 > v2 );
+ end;
+
+function worldtotile( wpos : tvector2 ) : tvector2;
+var sizefactor : single;
+    tilesz : single;
+ begin
+   tilesz := GDefGridCellCount * GDefGridStep;
+   sizefactor := 1/tilesz;
+   result := vector2( frac( wPos.X * SizeFactor + 0.5 ), frac( wPos.Y * SizeFactor + 0.5 ));
  end;
 
 //----------------------------------
@@ -565,6 +579,36 @@ function TTerTile.DeleteMyFiles : boolean;
    result := fileexists( filename );
    if result then
       CheckDeleteFile( filename );
+ end;
+
+
+function TTerTile.WorldToLocal( const pos : TVector2 ) : TVector2;
+ var factor : single;
+     offset : TVector2;
+     tilesize : single;
+ begin
+   factor := 1/GridStep;
+   tilesize := getWorldSize;
+
+   offset := vector2( info.tilex * tilesize, info.tiley * tilesize );
+   result := vector2((( pos.x - Offset.x ) + tilesize * 0.5 )*factor,
+                     (( pos.y - Offset.y ) + tilesize * 0.5 )*factor );
+ end;
+
+
+procedure TTerTile.Dig( const WorldPos : TVector2; Amount : single );
+ var TilePos : TVector2;
+     TilePosI : TPoint;
+     Offset : TPoint;
+     MaxTileIx : integer;
+ begin
+   TilePos := WorldToLocal( WorldPos );
+   TilePosI.X := round( tilepos.x );
+   TilePosI.Y := round( tilepos.y );
+   MaxTileIx := TerrainGrid.wh - 1;
+   LimitMax( TilePos.X, MaxTileIx );
+   LimitMax( TilePos.Y, MaxTileIx );
+   TerrainGrid.addxyvalue( tileposI.x, tileposI.y, amount );
  end;
 
 {$endif}

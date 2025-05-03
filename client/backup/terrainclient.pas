@@ -33,7 +33,7 @@ type
 
      TTerClientThread = class( TCastleTCPClientThread )
         constructor Create(const AClient: TIdTCPClient;
-                const AOnMessageReceived, AOnConnected, AOnDisconnected: TProcedureObject);
+        const AOnMessageReceived, AOnConnected, AOnDisconnected: TProcedureObject);
         destructor Destroy; override;
 
         function ProcessMessage( const msgheader : TmsgHeader;
@@ -52,6 +52,8 @@ type
         function CreateClientThread : TCastleTCPClientThread; override;
         procedure ClientOnTileReceived;
         property OnTileReceived: TTileReceivedEvent read FOnTileReceived write FOnTileReceived;
+        procedure Send(const AMessage: String); override;
+
       end;
 
 const GParentComponent : TComponent = nil;
@@ -61,6 +63,8 @@ const GParentComponent : TComponent = nil;
       status_disconnected = 0;
       status_connecting = 1;
       status_connected = 2;
+
+      glocksend : boolean = false;
 
 procedure setCreateClientMode( mode : integer;
                                AButton : TCastleButton );
@@ -105,6 +109,7 @@ function TTerClientThread.ProcessMessage( const msgheader : TmsgHeader;
                                           Buffer : TIdBytes ) : boolean;
  var MsgLen : dword;
  begin
+   glocksend := true;
    result := inherited ProcessMessage( msgheader, buffer );
    if not result then
     begin
@@ -119,6 +124,7 @@ function TTerClientThread.ProcessMessage( const msgheader : TmsgHeader;
           end;
         end;
      end;
+   glocksend := false;
  end;
 
 procedure TTerClientThread.SendTile( const msgheader : TMsgHeader;
@@ -147,7 +153,7 @@ procedure TTerClientThread.SendTile( const msgheader : TMsgHeader;
     end
    else
    if msgheader.msgtype = msg_water2 then
-    begin { send terrain + water depth + flora and let client build the water and texcoords }
+    begin { send terrain + water depth + flora heihgt and let client build the water and texcoords }
       tilerec.waterGrid := TSingleGrid.createsize( tilerec.tileinfo.TileSz );
       Move( buffer[bufpos], tilerec.waterGrid.data^, tilesz * sizeof( single ));
       inc( bufpos, tilesz * sizeof( single ));
@@ -184,7 +190,15 @@ procedure TTerClient.ClientOnTileReceived;
     end;
  end;
 
-//-----------------------------
+
+procedure TTerClient.Send(const AMessage: String);
+ begin
+   {???  how insure it is safe to send }
+   while glocksend do
+      sleep(10);
+   inherited send( AMessage );
+
+ end;
 
 
 
