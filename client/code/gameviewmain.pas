@@ -1,4 +1,4 @@
-{ Terrain Client
+{ Terrain Clkllient
 
   Copyright 2018-2024 Benedikt Magnus, Michalis Kamburelis.
 
@@ -62,6 +62,10 @@ type
     TerrainLayer : TCastleTransform;
     WaterLayer   : TCastleTransform;
 
+    ButtonBrush : TCastleButton;
+    ButtonDig   : TCastleButton;
+    ButtonPile  : TCastleButton;
+
   private
     connectiontimeout : single;
     connectionstatus : integer;
@@ -76,8 +80,9 @@ type
                                   floragrid : TSingleGrid;
                                   texgrid : TTexPoints );
     procedure ClickCreateClient(Sender: TObject);
-    procedure ClickTest(Sender: TObject);
+    procedure ClickLayer(Sender: TObject);
     procedure ClickSend(Sender: TObject);
+    procedure ClickTool( Sender: TObject );
     procedure ColorSliderChange( sender : TObject );
 
   public
@@ -126,10 +131,10 @@ begin
   inherited;
   GParentComponent := Viewport1.Items;
   ButtonCreateClient.OnClick := {$ifdef FPC}@{$endif} ClickCreateClient;
-  ButtonGrid.OnClick := {$ifdef FPC}@{$endif} ClickTest;
-  ButtonWater.OnClick := {$ifdef FPC}@{$endif} ClickTest;
-  ButtonContour.OnClick := {$ifdef FPC}@{$endif} ClickTest;
-  ButtonSend.OnClick := {$ifdef FPC}@{$endif} ClickSend;
+  ButtonGrid.OnClick := {$ifdef FPC}@{$endif} ClickLayer;
+  ButtonWater.OnClick := {$ifdef FPC}@{$endif} ClickLayer;
+  ButtonContour.OnClick := {$ifdef FPC}@{$endif} ClickLayer;
+  ButtonSend.OnClick := {$ifdef FPC}@{$endif} ClickLayer;
 
   RedSlider.OnChange := {$ifdef FPC}@{$endif} ColorSliderChange;
   BlueSlider.OnChange := {$ifdef FPC}@{$endif} ColorSliderChange;
@@ -149,6 +154,10 @@ begin
   MainNavigation.OnMoveAllowed := {$ifdef FPC}@{$endif} MoveAllowed;
   LabelContourScale.Caption := '';
   LabelGridScale.Caption := '';
+
+  ButtonBrush.OnClick := {$ifdef FPC}@{$endif} ClickTool;
+  ButtonDig.OnClick := {$ifdef FPC}@{$endif} ClickTool;
+  ButtonPile.OnClick := {$ifdef FPC}@{$endif} ClickTool;
 
   MarkupLayer := TMarkupLayer.Create(Viewport1);
   MarkupLayer.terrainheight := {$ifdef fpc}@{$endif}HeightAboveTerrain;
@@ -344,7 +353,7 @@ procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
  end;
 
 
-procedure TViewMain.ClickTest(Sender: TObject);
+procedure TViewMain.ClickLayer(Sender: TObject);
  var button : TCastleButton;
      tile : TTerTile;
      i : integer;
@@ -396,6 +405,24 @@ procedure TViewMain.ClickTest(Sender: TObject);
         TTerrainMesh( Tile.TerrainGraphics ).UpdateAppearance;
    end;
  end;
+
+procedure TViewMain.ClickTool( Sender:Tobject );
+ var thisbutton : TCastleButton;
+ begin
+   thisbutton := TCastleButton( Sender );
+   thisbutton.pressed := not thisbutton.pressed;
+   if thisbutton.pressed then
+    begin
+      if thisbutton <> buttondig then
+         buttondig.pressed := false;
+      if thisbutton <> buttonbrush then
+         buttonbrush.pressed := false;
+      if thisbutton <> buttonpile then
+         buttonpile.Pressed := false;
+    end;
+ end;
+
+
 
 procedure TViewMain.ClickSend(Sender: TObject);
 begin

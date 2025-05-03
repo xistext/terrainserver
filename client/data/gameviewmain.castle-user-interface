@@ -434,6 +434,134 @@
           }
         },
         {
+          "$$ClassName" : "TCastleHorizontalGroup",
+          "Name" : "HorizontalGroup4",
+          "TranslationPersistent" : {
+            "$$ClassName" : "TCastleVector2Persistent",
+            "Y" : -6.7140002441406250E+002
+          },
+          "VerticalAnchorParent" : "vpTop",
+          "VerticalAnchorSelf" : "vpTop",
+          "$Children" : [
+            {
+              "$$ClassName" : "TCastleButton",
+              "AutoSize" : false,
+              "CustomBackgroundDisabled" : {
+                "$$ClassName" : "TCastleImagePersistent"
+              },
+              "CustomBackgroundFocused" : {
+                "$$ClassName" : "TCastleImagePersistent"
+              },
+              "CustomBackgroundNormal" : {
+                "$$ClassName" : "TCastleImagePersistent",
+                "ColorPersistent" : {
+                  "$$ClassName" : "TCastleColorPersistent",
+                  "Blue" : 0.0000000000000000E+000,
+                  "Red" : 0.0000000000000000E+000
+                }
+              },
+              "CustomBackgroundPressed" : {
+                "$$ClassName" : "TCastleImagePersistent"
+              },
+              "CustomColorPressedPersistent" : {
+                "$$ClassName" : "TCastleColorPersistent",
+                "Alpha" : 9.3333333730697632E-001,
+                "Red" : 1.0000000000000000E+000
+              },
+              "Height" : 3.2000000000000000E+001,
+              "Image" : {
+                "$$ClassName" : "TCastleImagePersistent",
+                "URL" : "castle-data:/icon/brushicon.png"
+              },
+              "Name" : "ButtonBrush",
+              "Toggle" : true,
+              "VerticalAnchorParent" : "vpMiddle",
+              "VerticalAnchorSelf" : "vpMiddle",
+              "Width" : 3.2000000000000000E+001
+            },
+            {
+              "$$ClassName" : "TCastleButton",
+              "AutoSize" : false,
+              "CustomBackgroundDisabled" : {
+                "$$ClassName" : "TCastleImagePersistent"
+              },
+              "CustomBackgroundFocused" : {
+                "$$ClassName" : "TCastleImagePersistent"
+              },
+              "CustomBackgroundNormal" : {
+                "$$ClassName" : "TCastleImagePersistent",
+                "ColorPersistent" : {
+                  "$$ClassName" : "TCastleColorPersistent",
+                  "Blue" : 0.0000000000000000E+000,
+                  "Red" : 0.0000000000000000E+000
+                }
+              },
+              "CustomBackgroundPressed" : {
+                "$$ClassName" : "TCastleImagePersistent"
+              },
+              "CustomColorPressedPersistent" : {
+                "$$ClassName" : "TCastleColorPersistent",
+                "Alpha" : 9.3333333730697632E-001,
+                "Red" : 1.0000000000000000E+000
+              },
+              "Height" : 3.2000000000000000E+001,
+              "Image" : {
+                "$$ClassName" : "TCastleImagePersistent",
+                "URL" : "castle-data:/icon/digicon.png"
+              },
+              "Name" : "ButtonDig",
+              "Toggle" : true,
+              "TranslationPersistent" : {
+                "$$ClassName" : "TCastleVector2Persistent",
+                "X" : 3.2000000000000000E+001
+              },
+              "VerticalAnchorParent" : "vpMiddle",
+              "VerticalAnchorSelf" : "vpMiddle",
+              "Width" : 3.2000000000000000E+001
+            },
+            {
+              "$$ClassName" : "TCastleButton",
+              "AutoSize" : false,
+              "CustomBackgroundDisabled" : {
+                "$$ClassName" : "TCastleImagePersistent"
+              },
+              "CustomBackgroundFocused" : {
+                "$$ClassName" : "TCastleImagePersistent"
+              },
+              "CustomBackgroundNormal" : {
+                "$$ClassName" : "TCastleImagePersistent",
+                "ColorPersistent" : {
+                  "$$ClassName" : "TCastleColorPersistent",
+                  "Blue" : 0.0000000000000000E+000,
+                  "Red" : 0.0000000000000000E+000
+                }
+              },
+              "CustomBackgroundPressed" : {
+                "$$ClassName" : "TCastleImagePersistent"
+              },
+              "CustomColorPressedPersistent" : {
+                "$$ClassName" : "TCastleColorPersistent",
+                "Alpha" : 9.3333333730697632E-001,
+                "Red" : 1.0000000000000000E+000
+              },
+              "Height" : 3.2000000000000000E+001,
+              "Image" : {
+                "$$ClassName" : "TCastleImagePersistent",
+                "URL" : "castle-data:/icon/pileicon.png"
+              },
+              "Name" : "ButtonPile",
+              "Toggle" : true,
+              "TranslationPersistent" : {
+                "$$ClassName" : "TCastleVector2Persistent",
+                "X" : 6.4000000000000000E+001
+              },
+              "VerticalAnchorParent" : "vpMiddle",
+              "VerticalAnchorSelf" : "vpMiddle",
+              "Width" : 3.2000000000000000E+001
+            }
+          ]
+        },
+        {
           "$$ClassName" : "TCastleShape",
           "AutoSizeToChildren" : true,
           "ColorPersistent" : {
@@ -447,7 +575,7 @@
           "Name" : "Shape1",
           "TranslationPersistent" : {
             "$$ClassName" : "TCastleVector2Persistent",
-            "Y" : -6.7140002441406250E+002
+            "Y" : -7.0340002441406250E+002
           },
           "VerticalAnchorParent" : "vpTop",
           "VerticalAnchorSelf" : "vpTop",
