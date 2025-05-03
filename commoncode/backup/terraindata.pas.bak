@@ -109,6 +109,7 @@ type PTerTile = ^TTerTile;
         function WorldToLocal( const pos : TVector2 ) : TVector2;
 
         procedure Dig( const WorldPos : TVector2; Amount : single );
+        procedure Paint( const WorldPos : TVector2; EncodedColor : integer );
 
         private
         function getTerrainGrid : TSingleGrid;
@@ -119,7 +120,7 @@ type PTerTile = ^TTerTile;
         property TerrainGrid : TSingleGrid read getTerrainGrid;
         property WaterGrid : TSingleGrid read getWaterGrid;
         property FloraGrid : TSingleGrid read getFloraGrid;
-        property SplatFrid : TIntGrid read getSplatGrid;
+        property SplatGrid : TIntGrid read getSplatGrid;
         {$else}
         TerrainGraphics : TCastleTransform;
         WaterGraphics : TCastleTransform;
@@ -381,7 +382,7 @@ constructor TTerTile.create( const iInfo : TTileHeader );
    layer.initgrid(60 { Info.TileSz } );
    for x := 0 to 59 do for y := 0 to 59 do
       TIntGrid(layer.DataGrid).setvaluexy( x, y,
-          encodesplatcell( random(16), random(16), random(16), random(16), random(4), random(16)));
+          encodesplatcell( random(8), random(8), random(8), random(8), random(4), random(8)));
 
    datalayers[layer_splat] := layer;
    { initialize water layer }
@@ -604,7 +605,6 @@ function TTerTile.WorldToLocal( const pos : TVector2 ) : TVector2;
 procedure TTerTile.Dig( const WorldPos : TVector2; Amount : single );
  var TilePos : TVector2;
      TilePosI : TPoint;
-     Offset : TPoint;
      MaxTileIx : integer;
  begin
    TilePos := WorldToLocal( WorldPos );
@@ -615,6 +615,22 @@ procedure TTerTile.Dig( const WorldPos : TVector2; Amount : single );
    LimitMax( TilePosI.Y, MaxTileIx );
    TerrainGrid.addxyvalue( tileposI.x, tileposI.y, amount );
  end;
+
+procedure TTerTile.Paint( const WorldPos : TVector2; EncodedColor : integer );
+ var TilePos : TVector2;
+     SplatPosI : TPoint;
+     MaxTileIx : integer;
+ begin
+   TilePos := WorldToLocal( WorldPos );
+   SplatPosI.X := round( tilepos.x * 0.5 );
+   SplatPosI.Y := round( tilepos.y * 0.5 );
+   MaxTileIx := SplatGrid.wh - 1;
+   LimitMax( SplatPosI.X, MaxTileIx );
+   LimitMax( SplatPosI.Y, MaxTileIx );
+   SplatGrid.setvaluexy( SplatPosI.x, splatgrid.wh - 1 - SplatPosI.Y, EncodedColor );
+ end;
+
+
 
 {$endif}
 

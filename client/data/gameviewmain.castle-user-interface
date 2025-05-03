@@ -59,7 +59,7 @@
               "AutoOnScreenKeyboard" : true,
               "CaptureAllInput" : false,
               "Name" : "EditSend",
-              "Text" : "build 0,0,1",
+              "Text" : "build 0,0",
               "TranslationPersistent" : {
                 "$$ClassName" : "TCastleVector2Persistent",
                 "X" : 1.0000000000000000E+002

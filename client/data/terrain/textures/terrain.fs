@@ -248,7 +248,7 @@ void PLUG_main_texture_apply(inout vec4 fragment_color, const in vec3 normal)
      vec4 t1;
      float dim = 120/splat_sz;
      float idim = 1/dim;
-     vec2 splatpos = vec2( uv.x, uv.y ) * idim;
+     vec2 splatpos = vec2( uv.x * 2 - 60, uv.y * 2 - 60 ) * idim;
 
      // calculate 2d index into splatmap
      splatpos.x = mod( splatpos.x, splat_sz );

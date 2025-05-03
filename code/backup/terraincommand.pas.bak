@@ -673,7 +673,7 @@ function TTask_SendSplat.RunTask : boolean;
    buflen := tilesz*tilesz*sizeof(integer);
    setlength( buffer, buflen );
    bufpos := 0;
-   Move( resultsplat.depthptr^, buffer[bufpos], bef;em );
+   Move( resultsplat.depthptr^, buffer[bufpos], buflen );
 
    { send message + tile headers }
    SendClientMsgHeader( client, msg_Splat, buflen + sizeof( TTileHeader ));
@@ -1001,6 +1001,29 @@ function cmdPile( client : TClientConnection;
     end;
  end;
 
+function cmdPaint( client : TClientConnection;
+                   params : string;
+                   callback : TCommandCallback ) : integer;
+ var worldpos : tvector2;
+     tile : ttertile;
+     EncodedColor : integer;
+     param : string;
+ begin
+   WorldPos := vector2( 0, 0 );
+   if parseworldxy( params, worldpos.x, worldpos.y ) then
+    begin
+      if gtilelist.findtileatlocation( WorldPos, Tile ) then
+       begin
+         EncodedColor := 0;
+         if nextparam( params, param ) then
+            EncodedColor := intofstr( Param );
+
+         Tile.Paint( WorldPos, EncodedColor );
+         GTaskList.AddTask( TTask_SendSplat.create( client, Tile, 1 ) );
+       end;
+    end;
+ end;
+
 
 initialization
   GCmdList := TCmdList.Create;
@@ -1010,6 +1033,7 @@ initialization
   GCmdList.RegisterCmd( 'water', @cmdWater );
   GCmdList.RegisterCmd( 'dig', @cmdDig );
   GCmdList.RegisterCmd( 'pile', @cmdPile );
+  GCmdList.RegisterCmd( 'paint', @cmdPile );
 
 //  GCmdList.RegisterCmd( 'save', @cmdSave );
 finalization

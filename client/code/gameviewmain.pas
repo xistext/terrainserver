@@ -484,7 +484,7 @@ procedure TViewMain.UseTool( const pos : tvector3 );
    params := FormatFloat( '0.###', pos.x )+','+FormatFloat( '0.###', pos.z );
    case activetool of
       tool_none : exit;
-      tool_brush : cmd := 'splat '+params;
+      tool_brush : cmd := 'paint '+params;
       tool_dig : cmd := 'dig '+params;
       tool_pile : cmd := 'pile '+params;
     end;

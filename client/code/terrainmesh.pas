@@ -355,7 +355,6 @@ var Appearance : TAppearanceNode;
    for x := 0 to splatgrid.wh - 1 do
       for y := 0 to splatgrid.wh -1 do
        begin
-
          i := pinteger( SplatGrid.ptrxy( x, y ))^;
 
          Splatmap.Items[x*splatgrid.wh+y] := i;
