@@ -120,7 +120,8 @@ function TTerClientThread.ProcessMessage( const msgheader : TmsgHeader;
           assert( length( buffer ) = MsgLen + SizeOf( msgheader ));
 
           case msgheader.msgtype of
-              msg_Tile, msg_water, msg_water2  : sendtile( msgheader, buffer, MsgLen + SizeOf( msgheader ));
+              msg_Tile, msg_water, msg_water2, msg_splat  :
+                 sendtile( msgheader, buffer, MsgLen + SizeOf( msgheader ));
           end;
         end;
      end;
@@ -159,7 +160,13 @@ procedure TTerClientThread.SendTile( const msgheader : TMsgHeader;
       inc( bufpos, tilesz * sizeof( single ));
       tilerec.floraGrid := TSingleGrid.createsize( tilerec.tileinfo.TileSz );
       Move( buffer[bufpos], tilerec.floraGrid.data^, tilesz * sizeof( single ));
+    end
+   else
+   if msgheader.msgtype = msg_splat then
+    begin
+      dbgwriteln( 'splat' );
     end;
+
    { make a new mesh if we can't figure out how to reuse existing mesh if same size }
    FTileList.Add( tilerec );
    Queue(FOnTileReceived);
@@ -195,7 +202,10 @@ procedure TTerClient.Send(const AMessage: String);
  begin
    {???  how insure it is safe to send }
    while glocksend do
-      sleep(10);
+    begin
+      writeln('.');
+      FClientThread.Yield;
+    end;
    inherited send( AMessage );
 
  end;

@@ -7,6 +7,7 @@ uses
    x3dnodes, x3dfields, CastleInternalGeometryArrays,
    castleclassutils, castlevectors, castlerenderoptions, castlecolors, CastleDownload,
    terrainparams,
+   terservercommon,
    basemesh, watergrid, TerrainData, TerrainShader;
 
 const WaterTextureUrl = 'castle-data:/textures/testwater3.png';
@@ -41,6 +42,8 @@ TTerrainMesh = class( TLiteMesh )
      function offset : TVector2; override;
      procedure UpdateSize; dynamic;
      procedure updatefromgrid( TerrainGrid : TSingleGrid );
+     procedure updatesplatmap( SplatGrid : TSingleGrid );
+
      procedure UpdateAppearance;
      function InitAppearance : TAppearanceNode; override;
      public
@@ -127,35 +130,6 @@ type tpaletterec = packed record
         a : byte;
         r0, r1 : byte;
       end;
-
-function encodesplatcell( r, g, b, a : byte;
-                          t1, t1a : byte ) : integer;
- { encode 4 bit r,g,b,a into integer }
- begin
-   assert(( r < 16 ) and ( g < 16 ) and ( b < 16 ) and ( a < 16 ));
-   result := r + g shl 4 + b shl 8 + a shl 12 + t1 shl 16 + t1a shl 20;
- end;
-
-function decodesplatcell( v : integer ) : integer;
- { encode 8 bit alpha into the paletteix }
- var r, g, b, a : integer;
- begin
-   r := v shl 28 shr 28;
-   g := v shl 24 shr 28;
-   b := v shl 20 shr 28;
-   a := v shl 16 shr 28;
-   result := r +
-             g * 16 +
-             b * 256 +
-             a * 4096;
-(*   with tpaletterec( result ) do
-    begin
-      ix := paletteix;
-      a := alpha;
-      r0 := 0;
-      r1 := 0;
-    end;*)
- end;
 
 //------------------------------
 
@@ -289,10 +263,10 @@ function TTerrainMesh.BuildTerrainEffect : TEffectNode;
 
    Result.AddCustomField(TSFInt32.Create(Result, true, 'splat_sz', 60));
    splatmap := TMFLong.Create( Result, true, 'splatmap', [] );
-   splatmap.items.Count := 3600;
-   for ix := 0 to 60 - 1 do
-       for iy := 0 to 60 - 1 do
-           splatmap.items[ix*60+iy] := encodesplatcell( random(8), random(8), random(8), random(4), random(4), random(6)+random(6) );
+   splatmap.items.Count := 60 * 60;
+   for ix := 0 to 59 do
+       for iy := 0 to 59 do
+           splatmap.items[ix*60+iy] := encodesplatcell( 0, 0, 0, 0, 0, 0 );
    Result.AddCustomField(splatmap);
 
    Result.AddCustomField(TSFFloat.Create(Result, true, 'grid_scale', ord( GShowGrid ) * GGridScale ));
@@ -364,6 +338,30 @@ begin
   Coord.FdPoint.changed; { trigger mesh to rebuild }
 //  dirty := false;
 end;
+
+procedure TTerrainMesh.updatesplatmap( SplatGrid : TSingleGrid );
+var Appearance : TAppearanceNode;
+    EffectNode : TEffectNode;
+    SplatMap : TMFLong;
+    x, y : integer;
+    i : integer;
+    c : integer;
+ begin
+   Appearance := TAppearanceNode( rootnode.FindNode( TAppearanceNode, true ));
+   EffectNode := TEffectNode( Appearance.fdEffects[0] );
+
+   splatmap := TMFLong( EffectNode.Field('splatmap', false ));
+   c := splatmap.items.count;
+   for x := 0 to splatgrid.wh - 1 do
+      for y := 0 to splatgrid.wh -1 do
+       begin
+
+         i := pinteger( SplatGrid.ptrxy( x, y ))^;
+
+         Splatmap.Items[x*splatgrid.wh+y] := i;
+       end;
+   ChangedAll( true );
+ end;
 
 procedure TTerrainMesh.UpdateAppearance;
 var Appearance : TAppearanceNode;

@@ -119,7 +119,7 @@ type PTerTile = ^TTerTile;
         property TerrainGrid : TSingleGrid read getTerrainGrid;
         property WaterGrid : TSingleGrid read getWaterGrid;
         property FloraGrid : TSingleGrid read getFloraGrid;
-        property SplatFrid : TIntGrid read getSplatGrid;
+        property SplatGrid : TIntGrid read getSplatGrid;
         {$else}
         TerrainGraphics : TCastleTransform;
         WaterGraphics : TCastleTransform;
@@ -367,6 +367,7 @@ procedure TIntLayer.initgrid( igridsz : dword );
 //-------------------------------
 constructor TTerTile.create( const iInfo : TTileHeader );
  var layer : TDataLayer;
+     x, y : integer;
  begin
    Info := iInfo;
    {$ifdef terserver}
@@ -378,6 +379,10 @@ constructor TTerTile.create( const iInfo : TTileHeader );
    { initialize splat layer }
    layer := TIntLayer.create;
    layer.initgrid(60 { Info.TileSz } );
+   for x := 0 to 59 do for y := 0 to 59 do
+      TIntGrid(layer.DataGrid).setvaluexy( x, y,
+          encodesplatcell( random(16), random(16), random(16), random(16), random(4), random(16)));
+
    datalayers[layer_splat] := layer;
    { initialize water layer }
    layer := TDataLayer.create;

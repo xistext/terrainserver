@@ -47,6 +47,7 @@ type
     FlowLabel : TCastleLabel;
     ButtonFlow : TCastleButton;
     ButtonDeleteTiles : TCastleButton;
+    TexturePreview : TCastleImageControl;
   private
     FServer: TCastleTCPServer;
     procedure HandleConnected(AClient: TClientConnection);
@@ -86,6 +87,7 @@ constructor TViewMain.Create(AOwner: TComponent);
 begin
   inherited;
   DesignUrl := 'castle-data:/gameviewmain.castle-user-interface';
+  TexturePreview.Color := vector4(0,0,0,0.5);
 end;
 
 procedure TViewMain.Start;
@@ -96,7 +98,6 @@ begin
   ButtonSend.OnClick := {$ifdef FPC}@{$endif} ClickSend;
   ButtonFlow.OnClick := {$ifdef FPC}@{$endif} ClickButtonFlow;
   ButtonDeleteTiles.OnClick := {$ifdef FPC}@{$endif} ClickButtonDeleteTiles;
-
 
   ClickCreateServer( self );
   ConnectedIndicator.exists := true;
@@ -286,6 +287,7 @@ procedure TViewMain.ClickButtonDeleteTiles( Sender : TObject );
     end;
    gtilelist.freeall;
    Notification('Cleared terrain.');
+   assert( WaterFlowThreads[0].TaskList.Count = 0 );
  end;
 
 procedure TViewMain.Notification( Msg : string );

@@ -97,7 +97,6 @@ begin
   ButtonFlow.OnClick := {$ifdef FPC}@{$endif} ClickButtonFlow;
   ButtonDeleteTiles.OnClick := {$ifdef FPC}@{$endif} ClickButtonDeleteTiles;
 
-
   ClickCreateServer( self );
   ConnectedIndicator.exists := true;
   Container.UIScaling := usNone;

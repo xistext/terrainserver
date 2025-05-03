@@ -16,7 +16,7 @@ uses Classes, SysUtils,
   CastleUtils,
   CastleVectors, CastleComponentSerialize, CastleUIControls, CastleControls,
   CastleKeysMouse, CastleClientServer, CastleTerrain, CastleScene,
-  CastleViewport, CastleCameras, CastleTransform, CastleWindow,
+  CastleViewport, CastleCameras, CastleTransform, CastleWindow, CastleImages,
   { terrain client }
   TerServerCommon, TerrainData, TerrainParams, TerrainShader, TerrainMesh,
   watergrid, BaseMesh, TerrainClient, watercolor, layermarkup,
@@ -57,6 +57,7 @@ type
     GreenSlider : TCastleIntegerSlider;
     BlueSlider : TCastleIntegerSlider;
     AlphaSlider : TCastleIntegerSlider;
+    AlphaSlider1 : TCastleIntegerSlider;
 
     TerrainLayer : TCastleTransform;
     WaterLayer   : TCastleTransform;
@@ -64,6 +65,8 @@ type
     ButtonBrush : TCastleButton;
     ButtonDig   : TCastleButton;
     ButtonPile  : TCastleButton;
+
+    TexturePreview : TCastleImageControl;
 
   private
     connectiontimeout : single;
@@ -137,6 +140,7 @@ begin
   BlueSlider.OnChange := {$ifdef FPC}@{$endif} ColorSliderChange;
   GreenSlider.OnChange := {$ifdef FPC}@{$endif} ColorSliderChange;
   AlphaSlider.OnChange := {$ifdef FPC}@{$endif} ColorSliderChange;
+  AlphaSlider1.OnChange :=  {$ifdef FPC}@{$endif} ColorSliderChange;
 
   RedSlider.Value := trunc(ColorPreview.Color.X *15);
   GreenSlider.Value := trunc(ColorPreview.Color.Y *15);
@@ -160,6 +164,9 @@ begin
   MarkupLayer.terrainheight := {$ifdef fpc}@{$endif}HeightAboveTerrain;
   TerrainLayer.Add(MarkupLayer);
   GMarkupLayer := MarkupLayer;
+
+  TexturePreview.Color := vector4(1,1,1,0.5);
+  TexturePreview.AlphaChannel := acAuto;
 
   glGetIntegerv(GL_MAX_VERTEX_UNIFORM_COMPONENTS, @MaxVertexUniformComponents);
   dbgwriteln(format('GL_MAX_VERTEX_UNIFORM_COMPONENTS: %d', [MaxVertexUniformComponents]));
@@ -338,6 +345,11 @@ procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
                      TTerrainMesh( Tile.WaterGraphics ).UpdateFromGrid( waterGrid );
                      TTerrainMesh( Tile.WaterGraphics ).UpdateVerticesTexture( texgrid );
                    end;
+      msg_splat : begin
+                    assert( assigned( tilegrid ));
+                    TTerrainMesh( Tile.TerrainGraphics ).UpdateSplatmap( tilegrid )
+
+                  end;
     end;
    { free the sent data when finished }
    if assigned( tilegrid ) then
@@ -438,7 +450,7 @@ procedure TViewMain.ColorSliderChange( sender : TObject );
  begin
    factor := 1/15;
    ColorPreview.Color := vector4( RedSlider.Value * factor, GreenSlider.Value * factor, BlueSlider.Value * factor, AlphaSlider.Value * factor );
-
+   TexturePreview.Color := vector4( 1, 1, 1, AlphaSlider1.Value * factor );
  end;
 
 function TViewMain.MoveAllowed(const Sender: TCastleNavigation;

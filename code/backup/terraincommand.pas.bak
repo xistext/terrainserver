@@ -74,6 +74,15 @@ type TCommandCallback = procedure( msg : string ) of object;
         function runtask : boolean; override;
       end;
 
+     TTask_SendSplat = class( TClientTaskItem )
+        Tile   : TTerTile;
+        LOD    : dword;
+        constructor create( const iClient : TClientConnection;
+                            iTile : TTerTile;
+                            iLOD : dword );
+        function runtask : boolean; override;
+      end;
+
 
     TTask_BuildTile = class( TClientTaskItem )
             Tile   : TTerTile;
@@ -293,8 +302,9 @@ function TTask_BuildTile.runtask : boolean;
       if assigned( neighbor ) then case layer of
         layer_terrain : result := neighbor.TerrainGrid;
         layer_water  : result := neighbor.WaterGrid;
+        layer_flora : result := neighbor.FloraGrid;
+        layer_splat : result := neighbor.SplatGrid;
        end;
-
     end;
 
    function gridvaluexy( grid : TSingleGrid;
@@ -304,6 +314,15 @@ function TTask_BuildTile.runtask : boolean;
       if assigned( grid ) then
          result := grid.valuexy(x,y);
     end;
+
+   function splatgridvaluexy( grid : TIntGrid;
+                              x,y : integer ) : integer;
+    begin
+      result := -1;
+      if assigned( grid ) then
+         result := grid.valuexy(x,y);
+    end;
+
 
 function BuildResultBuffer( tile : ttertile;
                             const resultinfo : TTileHeader;
@@ -486,7 +505,6 @@ function BuildResultGrid( tile : ttertile;
        reducedresolutionsample;
  end;
 
-
 //------------------------
 
 constructor TTask_SendTile.create( const iClient : TClientConnection;
@@ -622,6 +640,49 @@ function TTask_SendWater.RunTask : boolean;
    result := true;
  end;
 
+//---------------------------
+
+constructor TTask_SendSplat.create( const iClient : TClientConnection;
+                                    iTile : TTerTile;
+                                    iLOD : dword );
+ begin
+   inherited create( iClient );
+   Tile := iTile;
+   LOD := iLOD;
+ end;
+
+function TTask_SendSplat.RunTask : boolean;
+ var buffer : TIdBytes;
+     resulttileinfo : TTileHeader;
+     buflen : integer;
+     tilesz, loddiv : integer;
+     resultsplat : TIntGrid;
+     x, y : integer;
+     h : single;
+     bufpos : integer;
+ begin
+   result := inherited Runtask;
+   if not result then
+      exit;
+   resulttileinfo := Tile.info;
+   tilesz := 60;
+   ResultSplat := Tile.SplatGrid;
+
+   resulttileinfo.tilesz := tilesz;
+
+   buflen := tilesz*tilesz*sizeof(integer);
+   setlength( buffer, buflen );
+   bufpos := 0;
+   Move( resultsplat.depthptr^, buffer[bufpos], bef;em );
+
+   { send message + tile headers }
+   SendClientMsgHeader( client, msg_Splat, buflen + sizeof( TTileHeader ));
+   client.Send( resulttileinfo, sizeof( TTileHeader ));
+   client.SendBuffer( buffer, buflen );
+
+   result := true;
+ end;
+
 
 //---------------------------------
 
@@ -751,6 +812,7 @@ procedure buildArea( client : TClientConnection;
        if UpdateTile( tx, ty, tile ) then { if the tile was created then we have to add a task to build it }
           GTaskList.AddTask( TTask_BuildTile.create( client, Tile, Params ) );
        GTaskList.AddTask( TTask_SendTile.create( client, Tile, LOD ) );
+       GTaskList.AddTask( TTask_SendSplat.create( client, Tile, 1 ) );
        Callback('');
      end;
   end;
@@ -916,11 +978,29 @@ function cmdDig( client : TClientConnection;
     begin
       if gtilelist.findtileatlocation( WorldPos, Tile ) then
        begin
-         Tile.Dig( WorldPos, -0.1 );
+         Tile.Dig( WorldPos, -0.01 );
          GTaskList.AddTask( TTask_SendTile.create( client, Tile, 1 ) );
        end;
     end;
  end;
+
+function cmdPile( client : TClientConnection;
+                 params : string;
+                 callback : TCommandCallback ) : integer;
+ var worldpos : tvector2;
+     tile : ttertile;
+ begin
+   WorldPos := vector2( 0, 0 );
+   if parseworldxy( params, worldpos.x, worldpos.y ) then
+    begin
+      if gtilelist.findtileatlocation( WorldPos, Tile ) then
+       begin
+         Tile.Dig( WorldPos, 0.01 );
+         GTaskList.AddTask( TTask_SendTile.create( client, Tile, 1 ) );
+       end;
+    end;
+ end;
+
 
 initialization
   GCmdList := TCmdList.Create;
@@ -929,6 +1009,7 @@ initialization
   GCmdList.RegisterCmd( 'build', @cmdBuildTile );
   GCmdList.RegisterCmd( 'water', @cmdWater );
   GCmdList.RegisterCmd( 'dig', @cmdDig );
+  GCmdList.RegisterCmd( 'pile', @cmdPile );
 
 //  GCmdList.RegisterCmd( 'save', @cmdSave );
 finalization
