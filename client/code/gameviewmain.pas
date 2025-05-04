@@ -58,6 +58,7 @@ type
     BlueSlider : TCastleIntegerSlider;
     AlphaSlider : TCastleIntegerSlider;
     AlphaSlider1 : TCastleIntegerSlider;
+    AlphaSlider2 : TCastleIntegerSlider;
 
     TerrainLayer : TCastleTransform;
     WaterLayer   : TCastleTransform;
@@ -66,7 +67,8 @@ type
     ButtonDig   : TCastleButton;
     ButtonPile  : TCastleButton;
 
-    TexturePreview : TCastleImageControl;
+    TexturePreview1 : TCastleImageControl;
+    TexturePreview2 : TCastleImageControl;
 
   private
     connectiontimeout : single;
@@ -134,13 +136,14 @@ begin
   ButtonGrid.OnClick := {$ifdef FPC}@{$endif} ClickLayer;
   ButtonWater.OnClick := {$ifdef FPC}@{$endif} ClickLayer;
   ButtonContour.OnClick := {$ifdef FPC}@{$endif} ClickLayer;
-  ButtonSend.OnClick := {$ifdef FPC}@{$endif} ClickLayer;
+  ButtonSend.OnClick := {$ifdef FPC}@{$endif} ClickSend;
 
   RedSlider.OnChange := {$ifdef FPC}@{$endif} ColorSliderChange;
   BlueSlider.OnChange := {$ifdef FPC}@{$endif} ColorSliderChange;
   GreenSlider.OnChange := {$ifdef FPC}@{$endif} ColorSliderChange;
   AlphaSlider.OnChange := {$ifdef FPC}@{$endif} ColorSliderChange;
   AlphaSlider1.OnChange :=  {$ifdef FPC}@{$endif} ColorSliderChange;
+  AlphaSlider2.OnChange :=  {$ifdef FPC}@{$endif} ColorSliderChange;
 
   RedSlider.Value := trunc(ColorPreview.Color.X *15);
   GreenSlider.Value := trunc(ColorPreview.Color.Y *15);
@@ -165,8 +168,11 @@ begin
   TerrainLayer.Add(MarkupLayer);
   GMarkupLayer := MarkupLayer;
 
-  TexturePreview.Color := vector4(1,1,1,0.5);
-  TexturePreview.AlphaChannel := acAuto;
+  TexturePreview1.Color := vector4(1,1,1,0.5);
+  TexturePreview1.AlphaChannel := acAuto;
+
+  TexturePreview2.Color := vector4(1,1,1,0.5);
+  TexturePreview2.AlphaChannel := acAuto;
 
   glGetIntegerv(GL_MAX_VERTEX_UNIFORM_COMPONENTS, @MaxVertexUniformComponents);
   dbgwriteln(format('GL_MAX_VERTEX_UNIFORM_COMPONENTS: %d', [MaxVertexUniformComponents]));
@@ -329,7 +335,7 @@ procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
                       for y := 0 to watergrid.wh - 1 do
                          begin
                            h := waterh^;
-                           texgrid[ y * watergrid.wh + x ] := CalcDepthAndTexture( h, florah^, terrainh^, false );
+                           texgrid[ y * watergrid.wh + x ] := CalcDepthAndTexture( h, florah^, terrainh^, true );
                            waterh^ := terrainh^ + h;
                            { calculate water texture index }
                            inc( waterh );
@@ -342,6 +348,8 @@ procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
                         Tile.Info := TileInfo;
                         CreateWaterMesh( WaterLayer, Tile );
                       end;
+                     if assigned( Tile.TerrainGraphics ) then
+                        TTerrainMesh( Tile.TerrainGraphics ).UpdateFromGrid( TileGrid );
                      TTerrainMesh( Tile.WaterGraphics ).UpdateFromGrid( waterGrid );
                      TTerrainMesh( Tile.WaterGraphics ).UpdateVerticesTexture( texgrid );
                    end;
@@ -450,7 +458,8 @@ procedure TViewMain.ColorSliderChange( sender : TObject );
  begin
    factor := 1/15;
    ColorPreview.Color := vector4( RedSlider.Value * factor, GreenSlider.Value * factor, BlueSlider.Value * factor, AlphaSlider.Value * factor );
-   TexturePreview.Color := vector4( 1, 1, 1, AlphaSlider1.Value * factor );
+   TexturePreview1.Color := vector4( 1, 1, 1, AlphaSlider1.Value * factor );
+   TexturePreview2.Color := vector4( 1, 1, 1, AlphaSlider2.Value * factor );
  end;
 
 function TViewMain.MoveAllowed(const Sender: TCastleNavigation;
@@ -484,7 +493,7 @@ procedure TViewMain.UseTool( const pos : tvector3 );
    params := FormatFloat( '0.###', pos.x )+','+FormatFloat( '0.###', pos.z );
    case activetool of
       tool_none : exit;
-      tool_brush : cmd := 'paint '+params;
+      tool_brush : cmd := 'paint '+params+','+inttostr( encodesplatcell( RedSlider.Value, GreenSlider.Value, BlueSlider.Value, AlphaSlider.Value, 0, AlphaSlider1.Value ));
       tool_dig : cmd := 'dig '+params;
       tool_pile : cmd := 'pile '+params;
     end;

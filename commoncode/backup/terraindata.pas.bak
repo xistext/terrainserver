@@ -637,7 +637,6 @@ procedure TTerTile.Paint( const WorldPos : TVector2; EncodedColor : integer );
 function TTerTile.GetNeighbors : TTileNeighbors;
  { get tile's neighbors }
  var iY, iX : integer;
-     gptr : PTerTile;
  begin
    iX := Info.TileX;
    iY := Info.TileY;

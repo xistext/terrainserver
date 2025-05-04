@@ -248,7 +248,7 @@ void PLUG_main_texture_apply(inout vec4 fragment_color, const in vec3 normal)
      vec4 t1;
      float dim = 120/splat_sz;
      float idim = 1/dim;
-     vec2 splatpos = vec2( uv.x * 2 - 60, uv.y * 2 - 60 ) * idim;
+     vec2 splatpos = vec2( uv.x * 2 - 59.5, uv.y * 2 - 59.5 ) * idim;
 
      // calculate 2d index into splatmap
      splatpos.x = mod( splatpos.x, splat_sz );
@@ -265,12 +265,12 @@ void PLUG_main_texture_apply(inout vec4 fragment_color, const in vec3 normal)
      if ( blur )
       {
         vec2 posincell = splatpos;
-	float shadepct = 0.33;
+	float shadepct = 0.50;
         int steps = 0;
 	float ishadepct = 1/shadepct;
 
-        if ( ( posincell.x > ( 1 - shadepct )) && ( ax < splat_sz - 1 ) )
-         { if  (( posincell.y > ( 1 - shadepct )) && ( ay < splat_sz - 1 ) )
+        if ( ( posincell.x > ( 1 - shadepct )) && ( ax < splat_sz ) )
+         { if  (( posincell.y > ( 1 - shadepct )) && ( ay < splat_sz ) )
             { // ur corner
               vec4 c1 = bilerp( ax, ay, vec2(0.5*( posincell.x - ( 1-shadepct))/shadepct ,
                                              0.5*( posincell.y - ( 1-shadepct))/shadepct ), steps, t1 );
@@ -316,7 +316,7 @@ void PLUG_main_texture_apply(inout vec4 fragment_color, const in vec3 normal)
               }
          }
          else
-          if  ( ( posincell.y > ( 1 - shadepct )) && ( ay < splat_sz - 1 ) )
+          if  ( ( posincell.y > ( 1 - shadepct )) && ( ay < splat_sz ) )
            {
              vec4 c1 = lerpy( ax, ay, 0.5 * ( posincell.y - ( 1-shadepct))/shadepct, steps, t1 );
              terrain_color = mix( terrain_color, t1.rgb, t1.a );

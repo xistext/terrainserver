@@ -117,6 +117,7 @@ function TTerClientThread.ProcessMessage( const msgheader : TmsgHeader;
        MsgLen := msgheader.msglen;
        if MsgLen > 0 then
         begin
+          assert( MsgLen < 200000 );
           FClient.IOHandler.ReadBytes( Buffer, MsgLen, true );
           assert( length( buffer ) = MsgLen + SizeOf( msgheader ));
 
@@ -148,26 +149,19 @@ procedure TTerClientThread.SendTile( const msgheader : TMsgHeader;
    bufpos := hdsz;
    Move( buffer[bufpos], tilerec.tileGrid.data^, tilesz * sizeof( single ));
    inc( bufpos, tilesz * sizeof( single ));
-   if msgheader.msgtype = msg_water then
-    begin { send calulated water and texcoords }
-      setlength( tilerec.texgrid, tilesz );
-      Move( buffer[bufpos], tilerec.texgrid[0], tilesz * sizeof(tvector2));
-    end
-   else
-   if msgheader.msgtype = msg_water2 then
-    begin { send terrain + water depth + flora heihgt and let client build the water and texcoords }
-      tilerec.waterGrid := TSingleGrid.createsize( tilerec.tileinfo.TileSz );
-      Move( buffer[bufpos], tilerec.waterGrid.data^, tilesz * sizeof( single ));
-      inc( bufpos, tilesz * sizeof( single ));
-      tilerec.floraGrid := TSingleGrid.createsize( tilerec.tileinfo.TileSz );
-      Move( buffer[bufpos], tilerec.floraGrid.data^, tilesz * sizeof( single ));
-    end
-   else
-   if msgheader.msgtype = msg_splat then
-    begin
-      dbgwriteln( 'splat' );
+   case msgheader.msgtype of
+      msg_water : begin { send calculated water and texcoords. obsolete? }
+                    setlength( tilerec.texgrid, tilesz );
+                    Move( buffer[bufpos], tilerec.texgrid[0], tilesz * sizeof(tvector2));
+                  end;
+      msg_water2: begin { send terrain + water depth + flora heihgt and let client build the water and texcoords }
+                    tilerec.waterGrid := TSingleGrid.createsize( tilerec.tileinfo.TileSz );
+                    Move( buffer[bufpos], tilerec.waterGrid.data^, tilesz * sizeof( single ));
+                    inc( bufpos, tilesz * sizeof( single ));
+                    tilerec.floraGrid := TSingleGrid.createsize( tilerec.tileinfo.TileSz );
+                    Move( buffer[bufpos], tilerec.floraGrid.data^, tilesz * sizeof( single ));
+                  end
     end;
-
    { make a new mesh if we can't figure out how to reuse existing mesh if same size }
    FTileList.Add( tilerec );
    Queue(FOnTileReceived);

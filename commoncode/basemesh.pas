@@ -355,10 +355,10 @@ procedure TLiteMesh.InitVerticesWithTexture( var Coord : TCoordinateNode;
    TexCoords.Capacity := vcount;
    sz2 := CellCount * Step * 0.5;
    vertex.y := 0;
-   vertex.z := aoffset.y-sz2;
+   vertex.z := aoffset.y-sz2-0.25;   {!!! why is this 0.25 kludge necessary to align water?}
    for i := 0 to GridCount - 1 do
-    begin
-      Vertex.x := aoffset.x-sz2; { world x offset to align tiles }
+    begin                             {!!! why is this 0.25 kludge necessary to align water?}
+      Vertex.x := aoffset.x-sz2-0.25; { world x offset to align tiles }
       for j := 0 to GridCount - 1 do
        begin
          VertexPtr^ := Vertex;
