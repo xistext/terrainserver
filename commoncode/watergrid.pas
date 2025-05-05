@@ -556,7 +556,7 @@ constructor tintgrid.create( initialValue : integer;
 type pinteger = ^integer;
 
 procedure tintgrid.setvaluexy( x, y : dword;
-                                 v : integer);
+                               v : integer);
  begin
    pinteger( ptrxy( x, y ))^ := v;
  end;

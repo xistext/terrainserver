@@ -6,8 +6,8 @@ const DefaultSnowLine : single = 8;
       StartWaterDepth   = 0.1;
       StartFloraDepth = 0.02;
       //ErosionFactor = 0.01;
-      mindepth : single = 0.0; { amount water will still flow underground, helps to level water edges }
-      flowfactor : single = 0.1;
+      mindepth : single = -5; { amount water will still flow underground, helps to level water edges }
+      flowfactor : single = 0.2;
       snowmeltfactor : single = 0.01;
       WaterTextureUrl = 'castle-data:/textures/testwater3.png';
 

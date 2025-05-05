@@ -11,7 +11,7 @@ uniform sampler2D tex_4;
 //uniform sampler2D ramp;
 
 uniform int splat_sz;
-uniform int splatmap[3600];
+uniform int splatmap[3721];
 
 uniform vec4 grid_color;
 uniform vec4 grid10_color;
@@ -78,7 +78,7 @@ vec4 decodecolor( int c, out vec4 texture )
   }
 
 vec4 getsplatcolor( int ax, int ay, out vec4 texture )
- { int c = splatmap[( ax * splat_sz ) + ay];
+ { int c = splatmap[( ax * (splat_sz) ) + ay];
    return decodecolor( c, texture );
   }
 
@@ -246,13 +246,12 @@ void PLUG_main_texture_apply(inout vec4 fragment_color, const in vec3 normal)
   if ( splat_sz > 0 )
    {
      vec4 t1;
-     float dim = 120/splat_sz;
-     float idim = 1/dim;
-     vec2 splatpos = vec2( uv.x * 2 - 59.5, uv.y * 2 - 59.5 ) * idim;
+     vec2 splatpos = vec2( uv.x - 30, uv.y - 30 );
 
      // calculate 2d index into splatmap
-     splatpos.x = mod( splatpos.x, splat_sz );
-     splatpos.y = mod( splatpos.y, splat_sz );
+     // position on tile
+     splatpos.x = mod( splatpos.x, 60 );
+     splatpos.y = 60-mod( splatpos.y, 60 );
 
      int ax = int( floor( splatpos.x ));
      int ay = int( floor( splatpos.y ));
@@ -269,8 +268,8 @@ void PLUG_main_texture_apply(inout vec4 fragment_color, const in vec3 normal)
         int steps = 0;
 	float ishadepct = 1/shadepct;
 
-        if ( ( posincell.x > ( 1 - shadepct )) && ( ax < splat_sz ) )
-         { if  (( posincell.y > ( 1 - shadepct )) && ( ay < splat_sz ) )
+        if ( ( posincell.x > ( 1 - shadepct )) && ( ax < splat_sz - 1 ) )
+         { if  (( posincell.y > ( 1 - shadepct )) && ( ay < splat_sz - 1 ) )
             { // ur corner
               vec4 c1 = bilerp( ax, ay, vec2(0.5*( posincell.x - ( 1-shadepct))/shadepct ,
                                              0.5*( posincell.y - ( 1-shadepct))/shadepct ), steps, t1 );
@@ -316,7 +315,7 @@ void PLUG_main_texture_apply(inout vec4 fragment_color, const in vec3 normal)
               }
          }
          else
-          if  ( ( posincell.y > ( 1 - shadepct )) && ( ay < splat_sz ) )
+          if  ( ( posincell.y > ( 1 - shadepct )) && ( ay < splat_sz - 1 ) )
            {
              vec4 c1 = lerpy( ax, ay, 0.5 * ( posincell.y - ( 1-shadepct))/shadepct, steps, t1 );
              terrain_color = mix( terrain_color, t1.rgb, t1.a );

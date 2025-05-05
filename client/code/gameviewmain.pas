@@ -302,7 +302,7 @@ procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
      h : single;
  begin
    Tile := GTileList.GetInitTile( tileinfo );
-   case msginfo.msgtype of
+   if assigned( tile ) then case msginfo.msgtype of
      msg_water : begin  { obsolete in favor of msg_water2? }
                     if ( not assigned( Tile.WaterGraphics )) or
                        ( Tile.Info.TileSz <> tileInfo.TileSz ) then
@@ -348,15 +348,12 @@ procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
                         Tile.Info := TileInfo;
                         CreateWaterMesh( WaterLayer, Tile );
                       end;
-                     if assigned( Tile.TerrainGraphics ) then
-                        TTerrainMesh( Tile.TerrainGraphics ).UpdateFromGrid( TileGrid );
                      TTerrainMesh( Tile.WaterGraphics ).UpdateFromGrid( waterGrid );
                      TTerrainMesh( Tile.WaterGraphics ).UpdateVerticesTexture( texgrid );
                    end;
       msg_splat : begin
-                    assert( assigned( tilegrid ));
-                    TTerrainMesh( Tile.TerrainGraphics ).UpdateSplatmap( tilegrid )
-
+                    if assigned( tile.TerrainGraphics ) then
+                       TTerrainMesh( Tile.TerrainGraphics ).UpdateSplatmap( tilegrid )
                   end;
     end;
    { free the sent data when finished }

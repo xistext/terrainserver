@@ -382,7 +382,7 @@ constructor TTerTile.create( const iInfo : TTileHeader );
    layer.initgrid(60 { Info.TileSz } );
    for x := 0 to 59 do for y := 0 to 59 do
       TIntGrid(layer.DataGrid).setvaluexy( x, y,
-          encodesplatcell( random(8), random(8), random(8), random(8), random(4), random(8)));
+          encodesplatcell( random(8), random(8), random(8), random(8), random(4), random(16));
 
    datalayers[layer_splat] := layer;
    { initialize water layer }
@@ -622,12 +622,14 @@ procedure TTerTile.Paint( const WorldPos : TVector2; EncodedColor : integer );
      MaxTileIx : integer;
  begin
    TilePos := WorldToLocal( WorldPos );
-   SplatPosI.X := round( tilepos.x * 0.5 );
-   SplatPosI.Y := round( tilepos.y * 0.5 );
+   SplatPosI.X := trunc( tilepos.x * 0.5 );
+   SplatPosI.Y := trunc( tilepos.y * 0.5 );
    MaxTileIx := SplatGrid.wh - 1;
-   LimitMax( SplatPosI.X, MaxTileIx );
-   LimitMax( SplatPosI.Y, MaxTileIx );
-   SplatGrid.setvaluexy( SplatPosI.x, splatgrid.wh - 1 - SplatPosI.Y, EncodedColor );
+   assert( splatposi.x <= maxtileix );
+   assert( splatposi.y <= maxtileix );
+//   LimitMax( SplatPosI.X, MaxTileIx );
+//   LimitMax( SplatPosI.Y, MaxTileIx );
+   SplatGrid.setvaluexy( SplatPosI.x, SplatPosI.Y, EncodedColor );
  end;
 
 

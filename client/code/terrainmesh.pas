@@ -261,11 +261,11 @@ function TTerrainMesh.BuildTerrainEffect : TEffectNode;
    TexImage.SetUrl( ['castle-data:/terrain/textures/mntn_green_d.jpg'] );
    Result.AddCustomField( TSFNode.Create(Result, false, 'tex_4', [], TexImage ));
 
-   Result.AddCustomField(TSFInt32.Create(Result, true, 'splat_sz', 60));
+   Result.AddCustomField(TSFInt32.Create(Result, true, 'splat_sz', 61));
    splatmap := TMFLong.Create( Result, true, 'splatmap', [] );
-   splatmap.items.Count := 60 * 60;
-   for ix := 0 to 59 do
-       for iy := 0 to 59 do
+   splatmap.items.Count := 61 * 61;
+   for ix := 0 to 60 do
+       for iy := 0 to 60 do
            splatmap.items[ix*60+iy] := encodesplatcell( 0, 0, 0, 0, 0, 0 );
    Result.AddCustomField(splatmap);
 
@@ -347,19 +347,22 @@ var Appearance : TAppearanceNode;
     i : integer;
     c : integer;
  begin
-   Appearance := TAppearanceNode( rootnode.FindNode( TAppearanceNode, true ));
-   EffectNode := TEffectNode( Appearance.fdEffects[0] );
+   if assigned( rootnode ) then
+    begin
+      Appearance := TAppearanceNode( rootnode.FindNode( TAppearanceNode, true ));
+      EffectNode := TEffectNode( Appearance.fdEffects[0] );
 
-   splatmap := TMFLong( EffectNode.Field('splatmap', false ));
-   c := splatmap.items.count;
-   for x := 0 to splatgrid.wh - 1 do
-      for y := 0 to splatgrid.wh -1 do
-       begin
-         i := pinteger( SplatGrid.ptrxy( x, y ))^;
+      splatmap := TMFLong( EffectNode.Field('splatmap', false ));
+      c := splatmap.items.count;
+      for x := 0 to splatgrid.wh - 1 do
+         for y := 0 to splatgrid.wh -1 do
+          begin
+            i := pinteger( SplatGrid.ptrxy( x, y ))^;
 
-         Splatmap.Items[x*splatgrid.wh+y] := i;
-       end;
-   ChangedAll( true );
+            Splatmap.Items[x*splatgrid.wh+y] := i;
+          end;
+      ChangedAll( true );
+    end;
  end;
 
 procedure TTerrainMesh.UpdateAppearance;

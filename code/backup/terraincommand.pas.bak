@@ -431,7 +431,7 @@ function BuildResultGrid( tile : ttertile;
       begin
         move( ThisGrid.ptrxy(x,0)^, bufptr^, tilesz * sizeof( single ));
         { last point in line }
-        inc( bufptr, tilesz );
+        inc( bufptr, TileSz );
         if assigned( ngrid ) then
            bufptr^ := gridvaluexy(ngrid, x,0)
         else
@@ -443,7 +443,7 @@ function BuildResultGrid( tile : ttertile;
      ngrid := neighborlayer( neighbor, layer );
      if assigned( ngrid ) then
         move( nGrid.ptrxy(0,0)^, bufptr^, tilesz * sizeof( single ));
-     inc( bufptr, tilesz );
+     inc( bufptr, TileSz );
      neighbor := GTileList.getNeighbor( tile, 1, 1 );
      ngrid := neighborlayer( neighbor, layer );
      bufptr^ := gridvaluexy( ngrid, 0, 0 );
@@ -495,15 +495,70 @@ function BuildResultGrid( tile : ttertile;
       layer_terrain : ThisGrid := Tile.TerrainGrid;
       layer_water  : ThisGrid := Tile.WaterGrid;
       layer_flora  : ThisGrid := Tile.FloraGrid;
+      layer_splat  : begin
+                       ThisGrid := Tile.SplatGrid;
+                       tilesz := 60;
+                     end;
      end;
     Result := TSingleGrid.Create( 0, resultinfo.tilesz );
     bufptr := Result.ptrix(0);
     neighbor := GTileList.getneighbor( tile, 0, 1 );
-    if loddiv = 1 then { full resolution }
+    if ( loddiv = 1 ) or ( layer = layer_splat ) then { full resolution }
        fullresolutionsample
     else
        reducedresolutionsample;
  end;
+
+
+function BuildResultSplatGrid( tile : ttertile;
+                               const resultinfo : TTileHeader) : TSingleGrid;
+ var tilesz : integer;
+     bufptr : ^single;
+     ThisGrid : TSingleGrid;
+     neighbor : TTerTile;
+     z : integer;
+  procedure fullresolutionsample;
+   var x : integer;
+       ngrid : TSingleGrid;
+   begin
+     ngrid := neighborlayer( neighbor, layer_splat );
+     for x := 0 to tilesz - 1 do
+      begin
+        move( ThisGrid.ptrxy(x,0)^, bufptr^, tilesz * sizeof( single ));
+        { last point in line }
+        inc( bufptr, TileSz );
+        inc( z, tilesz );
+        if assigned( ngrid ) then
+           bufptr^ := gridvaluexy(ngrid, x,0)
+        else
+           bufptr^ := gridvaluexy(thisgrid, x, tilesz-1);
+        inc( bufptr, 1 );  {!!! why does this need to be 2 to make splat align properly?! but if 2 it crashes on last row}
+        inc( z, 1 );
+      end;
+     { last row }
+     neighbor := GTileList.getNeighbor( tile, 1, 0 );
+     ngrid := neighborlayer( neighbor, layer_splat );
+     if assigned( ngrid ) then
+        move( nGrid.ptrxy(0,0)^, bufptr^, tilesz * sizeof( single ))
+     else
+        move( thisgrid.ptrxy(tilesz - 1 ,0)^, bufptr^, tilesz * sizeof( single ));
+     inc( z, tilesz );
+(*     inc( bufptr, TileSz );
+     neighbor := GTileList.getNeighbor( tile, 1, 1 );
+     ngrid := neighborlayer( neighbor, layer_splat );
+     bufptr^ := gridvaluexy( ngrid, 0, 0 );*)
+     dbgwriteln( inttostr( z ));
+   end;
+ begin
+    tilesz := 60;
+    z := 0;
+    ThisGrid := Tile.SplatGrid;
+    Result := TSingleGrid.Create( 0, resultinfo.tilesz );
+    bufptr := Result.ptrix(0);
+    neighbor := GTileList.getneighbor( tile, 0, 1 );
+    fullresolutionsample
+ end;
+
 
 //------------------------
 
@@ -656,7 +711,7 @@ function TTask_SendSplat.RunTask : boolean;
      resulttileinfo : TTileHeader;
      buflen : integer;
      tilesz, loddiv : integer;
-     resultsplat : TIntGrid;
+     resultsplat : TSingleGrid;
      x, y : integer;
      h : single;
      bufpos : integer;
@@ -665,10 +720,10 @@ function TTask_SendSplat.RunTask : boolean;
    if not result then
       exit;
    resulttileinfo := Tile.info;
-   tilesz := 60;
-   ResultSplat := Tile.SplatGrid;
-
+   tilesz := 61;
    resulttileinfo.tilesz := tilesz;
+   ResultSplat := BuildResultSplatGrid( tile, resulttileinfo );
+
 
    buflen := tilesz*tilesz*sizeof(integer);
    setlength( buffer, buflen );
@@ -680,6 +735,7 @@ function TTask_SendSplat.RunTask : boolean;
    client.Send( resulttileinfo, sizeof( TTileHeader ));
    client.SendBuffer( buffer, buflen );
 
+   resultsplat.free;
    result := true;
  end;
 
@@ -1033,7 +1089,7 @@ initialization
   GCmdList.RegisterCmd( 'water', @cmdWater );
   GCmdList.RegisterCmd( 'dig', @cmdDig );
   GCmdList.RegisterCmd( 'pile', @cmdPile );
-  GCmdList.RegisterCmd( 'paint', @cmdPile );
+  GCmdList.RegisterCmd( 'paint', @cmdPaint );
 
 //  GCmdList.RegisterCmd( 'save', @cmdSave );
 finalization

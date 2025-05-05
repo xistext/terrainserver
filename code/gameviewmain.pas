@@ -290,6 +290,7 @@ procedure TViewMain.ClickButtonDeleteTiles( Sender : TObject );
 
 procedure TViewMain.Notification( Msg : string );
  var alabel : TCastleLabel;
+     item : TCastleUserInterface;
  begin
    alabel := TCastleLabel.Create( VerticalGroup2 );
    alabel.FontSize := 12;
@@ -297,6 +298,12 @@ procedure TViewMain.Notification( Msg : string );
    alabel.Color := Vector4(1,1,1,1);
    alabel.caption := FormatDateTime('yyyy.mm.dd hh:mm:ss', now )+ ' ' + Msg;
    VerticalGroup2.InsertBack( alabel );
+   if VerticalGroup2.ControlsCount > 100 then
+    begin
+      item := VerticalGroup2.Controls[VerticalGroup2.ControlsCount-1];
+      VerticalGroup2.RemoveControl(item);
+      item.free;
+    end;
  end;
 
 end.
