@@ -44,7 +44,7 @@ type
     Viewport1 : TCastleViewport;
     MainNavigation : TCastleWalkNavigation;
     MainCamera : TCastleCamera;
-    PosLabel : TCastleLabel;
+    FPSLabel : TCastleLabel;
 
     ButtonContour : TCastleButton;
      LabelContourScale : TCastleLabel;
@@ -77,6 +77,12 @@ type
     TexturePreview2 : TCastleImageControl;
     TexturePreview3 : TCastleImageControl;
     TexturePreview4 : TCastleImageControl;
+
+    PositionLabel : TCastleLabel;
+    Elevationlabel : TCastleLabel;
+    AltitudeLabel : TCastleLabel;
+    ElevationIndicator : TCastleShape;
+    AltitudeIndicator : TCastleShape;
 
   private
     connectiontimeout : single;
@@ -116,6 +122,7 @@ type
                                 out Y: Single;
                                 heighttype : byte = 0 ): boolean;
     procedure UseTool( const pos : tvector3 );
+    procedure UpdatePositionIndicator;
    end;
 
 var
@@ -186,6 +193,7 @@ begin
   TexturePreview2.AlphaChannel := acAuto;
 
   ColorSliderChange( self );
+  UpdatePositionIndicator;
 
   glGetIntegerv(GL_MAX_VERTEX_UNIFORM_COMPONENTS, @MaxVertexUniformComponents);
   dbgwriteln(format('GL_MAX_VERTEX_UNIFORM_COMPONENTS: %d', [MaxVertexUniformComponents]));
@@ -197,10 +205,22 @@ begin
   inherited;
 end;
 
+procedure TViewMain.UpdatePositionIndicator;
+ var terrainh : single;
+     agl : single;
+ begin
+   TerrainHeight( MainCamera.Translation, terrainh );
+   agl := MainCamera.Translation.Y - terrainh;
+   PositionLabel.Caption := Format( '%f x %)', [MainCamera.Translation.X, MainCamera.Translation.Z] );
+   ElevationLabel.Caption := Format( '%f', [TerrainH] );
+   AltitudeLabel.Caption := Format( '%f', [MainCamera.Translation.Y] );
+   ElevationIndicator.Height := 8 + TerrainH;
+   AltitudeIndicator.Translation := vector2( 0, ElevationIndicator.Height - 2 + agl );
+ end;
+
 procedure TViewMain.Update(const SecondsPassed: Single; var HandleInput: Boolean);
-var terrainh : single;
-    agl : single;
-begin
+ var fps : single;
+ begin
   inherited;
   if connectionstatus = status_connecting then
    begin
@@ -217,9 +237,15 @@ begin
       end;
    end;
   MainNavigation.MouseLook := {( GActiveDrag = self ) and} ( buttonMiddle in Container.MousePressed );
-  TerrainHeight( MainCamera.Translation, terrainh );
-  agl := MainCamera.Translation.Y - terrainh;
-  PosLabel.Caption := Format( '(%f, %f) %f/%f', [MainCamera.Translation.X, MainCamera.Translation.Z, agl, TerrainH] );
+  fps := Container.Fps.RealFps;
+  FPSLabel.Caption := Format('%2.0ffps', [fps]);
+  if fps >= 60 then
+     FPSLabel.Color := vector4( 0, 1, 0, 1  )
+  else
+  if fps >= 30 then
+     FPSLabel.Color := Vector4( 1, 1, 0, 1 )
+  else
+     FPSLabel.Color := Vector4( 1, 0, 0, 1 )
 end;
 
 procedure TViewMain.HandleConnected;
@@ -501,6 +527,7 @@ function TViewMain.MoveAllowed(const Sender: TCastleNavigation;
       NewPos := Vector3(ProposedNewPos.X, TerrainH + radius, ProposedNewPos.Z );
       MainNavigation.MoveHorizontalSpeed := sqrt(radius);
     end;
+   UpdatePositionIndicator;
    result := true;
  end;
 
@@ -603,8 +630,8 @@ procedure TViewMain.Mousewheel( direction : integer );
          lockviewtoground := false;
       pos.Y := h;
       MainNavigation.MoveHorizontalSpeed := sqrt(amt);
-//      ViewUpdated;
     MainCamera.Translation := pos;
+    UpdatePositionIndicator;
  end;
 
 function TViewMain.Press(const Event: TInputPressRelease): boolean;

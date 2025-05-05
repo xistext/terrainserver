@@ -119,35 +119,38 @@ const version : string = 'xisterra0.1a';
 type Titerateareaproc = procedure( thisX, thisY : integer;
                                    data : pointer );
 
-procedure iteratearea( X, Y, R : integer;
+procedure iteratearea( X, Y, Radius : integer;
                        data : pointer;
                        proc : TIterateAreaProc );
- var Y1, Y2, i : integer;
+ var Y1, Y2, i, r : integer;
  begin
    proc( X, Y, data );
-   Y1 := Y - r;
-   Y2 := Y + r;
-   { do long end top and bottom }
-   proc( X, Y1, data );
-   proc( X, Y2, data );
-   { do sides left, right }
-   proc( X - r, Y, data );
-   proc( X + r, Y, data );
-   for i := 1 to r - 1 do
-     begin
-       proc( X - i, Y1, data );
-       proc( X + i, Y1, data );
-       proc( X - i, Y2, data );
-       proc( X + i, Y2, data );
-       proc( X - r, Y - i, data );
-       proc( X - r, Y + i, data );
-       proc( X + r, Y - i, data );
-       proc( X + r, Y + i, data );
-     end;
-   proc( X - r, Y - r, data );
-   proc( X - r, Y + r, data );
-   proc( X + r, Y - r, data );
-   proc( X + r, Y + r, data );
+   for r := 1 to radius do
+    begin
+      Y1 := Y - r;
+      Y2 := Y + r;
+      { do long end top and bottom }
+      proc( X, Y1, data );
+      proc( X, Y2, data );
+      { do sides left, right }
+      proc( X - r, Y, data );
+      proc( X + r, Y, data );
+      for i := 1 to r - 1 do
+        begin
+          proc( X - i, Y1, data );
+          proc( X + i, Y1, data );
+          proc( X - i, Y2, data );
+          proc( X + i, Y2, data );
+          proc( X - r, Y - i, data );
+          proc( X - r, Y + i, data );
+          proc( X + r, Y - i, data );
+          proc( X + r, Y + i, data );
+        end;
+      proc( X - r, Y - r, data );
+      proc( X - r, Y + r, data );
+      proc( X + r, Y - r, data );
+      proc( X + r, Y + r, data );
+    end;
  end;
 
 
@@ -918,12 +921,11 @@ procedure buildArea( client : TClientConnection;
                      Radius : integer;
                      const Params : TTerrainParams;
                      callback : TCommandCallback);
- var TileY, TileY2 : Integer;
-     i, r : integer;
  var IterateRec : TIterateRec;
  begin
    iteraterec.CenterX := CenterX;
    iteraterec.CenterY := CenterY;
+   iteraterec.Radius := Radius;
    iteraterec.Params := Params;
    iteraterec.callback := callback;
    iteraterec.Client := client;

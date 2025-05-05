@@ -116,6 +116,42 @@ implementation
 
 const version : string = 'xisterra0.1a';
 
+type Titerateareaproc = procedure( thisX, thisY : integer;
+                                   data : pointer );
+
+procedure iteratearea( X, Y, R : integer;
+                       data : pointer;
+                       proc : TIterateAreaProc );
+ var Y1, Y2, i : integer;
+ begin
+   proc( X, Y, data );
+   Y1 := Y - r;
+   Y2 := Y + r;
+   { do long end top and bottom }
+   proc( X, Y1, data );
+   proc( X, Y2, data );
+   { do sides left, right }
+   proc( X - r, Y, data );
+   proc( X + r, Y, data );
+   for i := 1 to r - 1 do
+     begin
+       proc( X - i, Y1, data );
+       proc( X + i, Y1, data );
+       proc( X - i, Y2, data );
+       proc( X + i, Y2, data );
+       proc( X - r, Y - i, data );
+       proc( X - r, Y + i, data );
+       proc( X + r, Y - i, data );
+       proc( X + r, Y + i, data );
+     end;
+   proc( X - r, Y - r, data );
+   proc( X - r, Y + r, data );
+   proc( X + r, Y - r, data );
+   proc( X + r, Y + r, data );
+ end;
+
+
+
   function divofLOD( LOD : dword ) : dword;
    begin
      result := 60;
@@ -850,46 +886,12 @@ var code : integer;
    val( AStr, result, code );
  end;
 
-type Titerateareaproc = procedure( thisX, thisY : integer;
-                                   data : pointer );
-
 type TIterateRec = record
                      CenterX, CenterY, Radius : integer;
                      Client : TClientConnection;
                      Params : TTerrainParams;
                      callback : TCommandCallback;
                     end;
-
-procedure iteratearea( X, Y, R : integer;
-                       data : pointer;
-                       proc : TIterateAreaProc );
- var Y1, Y2, i : integer;
- begin
-   proc( X, Y, data );
-   Y1 := Y - r;
-   Y2 := Y + r;
-   { do long end top and bottom }
-   proc( X, Y1, data );
-   proc( X, Y2, data );
-   { do sides left, right }
-   proc( X - r, Y, data );
-   proc( X + r, Y, data );
-   for i := 1 to r - 1 do
-     begin
-       proc( X - i, Y1, data );
-       proc( X + i, Y1, data );
-       proc( X - i, Y2, data );
-       proc( X + i, Y2, data );
-       proc( X - r, Y - i, data );
-       proc( X - r, Y + i, data );
-       proc( X + r, Y - i, data );
-       proc( X + r, Y + i, data );
-     end;
-   proc( X - r, Y - r, data );
-   proc( X - r, Y + r, data );
-   proc( X + r, Y - r, data );
-   proc( X + r, Y + r, data );
- end;
 
  procedure SendATile( tx, ty : integer; data : pointer );
   var iteratedata : TIterateRec;
@@ -916,12 +918,11 @@ procedure buildArea( client : TClientConnection;
                      Radius : integer;
                      const Params : TTerrainParams;
                      callback : TCommandCallback);
- var TileY, TileY2 : Integer;
-     i, r : integer;
  var IterateRec : TIterateRec;
  begin
    iteraterec.CenterX := CenterX;
    iteraterec.CenterY := CenterY;
+   iteraterec.Radius := Radius;
    iteraterec.Params := Params;
    iteraterec.callback := callback;
    iteraterec.Client := client;
