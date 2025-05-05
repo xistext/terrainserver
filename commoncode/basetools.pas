@@ -91,7 +91,9 @@ procedure limitmin( var value : single;
 procedure limitmin( var value : smallint;
                         min   : smallint ); overload;
 
-function comparesingle( s1, s2 : single ) : integer;
+function comparesingle( s1, s2 : single ) : integer; inline;
+function compareint( i1, i2 : integer ) : integer; inline;
+
 function delta2_3( const p1, p2 : tvector3 ) : tvector2;
 
 implementation //===============================================================
@@ -533,6 +535,12 @@ function comparesingle( s1, s2 : single ) : integer;
  begin
    result := ord( s1 > s2 ) - ord( s1 < s2 );
  end;
+
+function compareint( i1, i2 : integer ) : integer;
+ begin
+   result := ord( i1 > i2 ) - ord( i1 < i2 );
+ end;
+
 
 function delta2_3( const p1, p2 : tvector3 ) : tvector2;
  begin

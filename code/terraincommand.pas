@@ -116,6 +116,42 @@ implementation
 
 const version : string = 'xisterra0.1a';
 
+type Titerateareaproc = procedure( thisX, thisY : integer;
+                                   data : pointer );
+
+procedure iteratearea( X, Y, R : integer;
+                       data : pointer;
+                       proc : TIterateAreaProc );
+ var Y1, Y2, i : integer;
+ begin
+   proc( X, Y, data );
+   Y1 := Y - r;
+   Y2 := Y + r;
+   { do long end top and bottom }
+   proc( X, Y1, data );
+   proc( X, Y2, data );
+   { do sides left, right }
+   proc( X - r, Y, data );
+   proc( X + r, Y, data );
+   for i := 1 to r - 1 do
+     begin
+       proc( X - i, Y1, data );
+       proc( X + i, Y1, data );
+       proc( X - i, Y2, data );
+       proc( X + i, Y2, data );
+       proc( X - r, Y - i, data );
+       proc( X - r, Y + i, data );
+       proc( X + r, Y - i, data );
+       proc( X + r, Y + i, data );
+     end;
+   proc( X - r, Y - r, data );
+   proc( X - r, Y + r, data );
+   proc( X + r, Y - r, data );
+   proc( X + r, Y + r, data );
+ end;
+
+
+
   function divofLOD( LOD : dword ) : dword;
    begin
      result := 60;
@@ -516,7 +552,6 @@ function BuildResultSplatGrid( tile : ttertile;
      bufptr : ^single;
      ThisGrid : TSingleGrid;
      neighbor : TTerTile;
-     z : integer;
   procedure fullresolutionsample;
    var x : integer;
        ngrid : TSingleGrid;
@@ -527,13 +562,11 @@ function BuildResultSplatGrid( tile : ttertile;
         move( ThisGrid.ptrxy(x,0)^, bufptr^, tilesz * sizeof( single ));
         { last point in line }
         inc( bufptr, TileSz );
-        inc( z, tilesz );
         if assigned( ngrid ) then
            bufptr^ := gridvaluexy(ngrid, x,0)
         else
            bufptr^ := gridvaluexy(thisgrid, x, tilesz-1);
         inc( bufptr, 1 ); {!!! why does this need to be 2 to make splat align properly?! but if 2 it crashes on last row}
-        inc( z, 1 );
       end;
      { last row }
      neighbor := GTileList.getNeighbor( tile, 1, 0 );
@@ -542,16 +575,16 @@ function BuildResultSplatGrid( tile : ttertile;
         move( nGrid.ptrxy(0,0)^, bufptr^, tilesz * sizeof( single ))
      else
         move( thisgrid.ptrxy(tilesz - 1 ,0)^, bufptr^, tilesz * sizeof( single ));
-     inc( z, tilesz );
-(*     inc( bufptr, TileSz );
+     inc( bufptr, TileSz );
      neighbor := GTileList.getNeighbor( tile, 1, 1 );
      ngrid := neighborlayer( neighbor, layer_splat );
-     bufptr^ := gridvaluexy( ngrid, 0, 0 );*)
-     dbgwriteln( inttostr( z ));
+     if assigned( ngrid ) then
+        bufptr^ := gridvaluexy( ngrid, 0, 0 )
+     else
+        bufptr^ := 0;
    end;
  begin
     tilesz := 60;
-    z := 0;
     ThisGrid := Tile.SplatGrid;
     Result := TSingleGrid.Create( 0, resultinfo.tilesz );
     bufptr := Result.ptrix(0);
@@ -853,56 +886,49 @@ var code : integer;
    val( AStr, result, code );
  end;
 
+type TIterateRec = record
+                     CenterX, CenterY, Radius : integer;
+                     Client : TClientConnection;
+                     Params : TTerrainParams;
+                     callback : TCommandCallback;
+                    end;
+
+ procedure SendATile( tx, ty : integer; data : pointer );
+  var iteratedata : TIterateRec;
+      Tile : TTerTile;
+      LOD : dword;
+  begin
+    iteratedata := titeraterec( data^ );
+    with iteratedata do
+     begin
+       LOD := trunc(sqrt( sqr( tx - CenterX ) + sqr( ty - CenterY )));
+       if LOD <= Radius then
+        begin
+          if UpdateTile( tx, ty, tile ) then { if the tile was created then we have to add a task to build it }
+             GTaskList.AddTask( TTask_BuildTile.create( client, Tile, Params ) );
+          GTaskList.AddTask( TTask_SendTile.create( client, Tile, LOD ) );
+          GTaskList.AddTask( TTask_SendSplat.create( client, Tile, 1 ) );
+          Callback('');
+        end;
+     end;
+  end;
+
 procedure buildArea( client : TClientConnection;
                      CenterX, CenterY : integer;
                      Radius : integer;
                      const Params : TTerrainParams;
                      callback : TCommandCallback);
- procedure SendATile( tx, ty : integer );
-  var Tile : TTerTile;
-      LOD : dword;
-  begin
-    LOD := trunc(sqrt( sqr( tx - CenterX ) + sqr( ty - CenterY )));
-    if LOD <= Radius then
-     begin
-       if UpdateTile( tx, ty, tile ) then { if the tile was created then we have to add a task to build it }
-          GTaskList.AddTask( TTask_BuildTile.create( client, Tile, Params ) );
-       GTaskList.AddTask( TTask_SendTile.create( client, Tile, LOD ) );
-       GTaskList.AddTask( TTask_SendSplat.create( client, Tile, 1 ) );
-       Callback('');
-     end;
-  end;
-
  var TileY, TileY2 : Integer;
      i, r : integer;
+ var IterateRec : TIterateRec;
  begin
-   SendATile( CenterX, CenterY );
-   for r := 1 to radius do
-    begin
-      TileY := CenterY - r;
-      TileY2 := CenterY + r;
-      { do long end top and bottom }
-      SendATile( CenterX, TileY );
-      SendATile( CenterX, CenterY + r );
-      { do sides left, right }
-      SendATile( CenterX - r, CenterY );
-      SendATile( CenterX + r, CenterY );
-      for i := 1 to r - 1 do
-        begin
-          SendATile( CenterX - i, TileY );
-          SendATile( CenterX + i, TileY );
-          SendATile( CenterX - i, TileY2 );
-          SendATile( CenterX + i, TileY2 );
-          SendATile( CenterX - r, CenterY - i );
-          SendATile( CenterX - r, CenterY + i );
-          SendATile( CenterX + r, CenterY - i );
-          SendATile( CenterX + r, CenterY + i );
-        end;
-      SendATile( CenterX - r, CenterY - r );
-      SendATile( CenterX - r, CenterY + r );
-      SendATile( CenterX + r, CenterY - r );
-      SendATile( CenterX + r, CenterY + r );
-    end;
+   iteraterec.CenterX := CenterX;
+   iteraterec.CenterY := CenterY;
+   iteraterec.Params := Params;
+   iteraterec.callback := callback;
+   iteraterec.Client := client;
+   iteratearea( CenterX, CenterY, Radius,
+                @iteraterec, {$ifdef FPC}@{$endif}SendATile );
    GTaskList.AddTask( TTask_SaveTiles.create );
  end;
 
@@ -987,6 +1013,15 @@ function parseWorldXY( var params : string;
     end;
  end;
 
+function parseInt( var params : string;
+                   var anint : integer ) : boolean;
+var param : string;
+begin
+  result := nextparam( params, param );
+  if result then
+     anint := intofstr( param );
+end;
+
 function cmdBuildTile( client : TClientConnection;
                        params : string;
                        callback : TCommandCallback) : integer;
@@ -1027,6 +1062,7 @@ function cmdDig( client : TClientConnection;
                  params : string;
                  callback : TCommandCallback ) : integer;
  var worldpos : tvector2;
+     radius : integer;
      tile : ttertile;
  begin
    WorldPos := vector2( 0, 0 );
@@ -1034,7 +1070,9 @@ function cmdDig( client : TClientConnection;
     begin
       if gtilelist.findtileatlocation( WorldPos, Tile ) then
        begin
-         Tile.Dig( WorldPos, -0.01 );
+         radius := 1;
+         parseint( params, radius );
+         Tile.Dig( WorldPos, -0.01, radius );
          GTaskList.AddTask( TTask_SendTile.create( client, Tile, 1 ) );
        end;
     end;

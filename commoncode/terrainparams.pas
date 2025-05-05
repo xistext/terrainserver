@@ -3,7 +3,8 @@ unit terrainparams;
 interface
 
 uses classes, collect, sysutils,
-     castleterrain;
+     castleterrain,
+     terservercommon;
 
 const buildradius : integer = 4; //4
       disablewater : boolean = false;
@@ -13,6 +14,9 @@ const buildradius : integer = 4; //4
 
     //  GSteepEmphasis : single = 10;
       GTerrainSeed   : integer = 0;
+
+      freshdigcolor : integer = 0;
+
          (*
 const transitionsize = 20; { how many base grid cells to use as transition zone
                              around a tile where it borders a tile with different
@@ -126,6 +130,7 @@ procedure InitializeDefaultTypes;
 
 
 initialization
+   freshdigcolor := encodesplatcell( 13, 12, 6, 8, 1, 13 );
    TerrainTypes := TTerrainTypeList.create;
    InitializeDefaultTypes;
 finalization

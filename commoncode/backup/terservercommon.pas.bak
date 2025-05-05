@@ -36,7 +36,6 @@ function encodesplatcell( r, g, b, a : byte;
                          t1, t1a : byte ) : integer;
 function decodesplatcell( v : integer ) : integer;
 
-
 implementation
 
 function encodesplatcell( r, g, b, a : byte;

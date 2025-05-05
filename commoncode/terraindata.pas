@@ -108,7 +108,7 @@ type PTerTile = ^TTerTile;
 
         function WorldToLocal( const pos : TVector2 ) : TVector2;
 
-        procedure Dig( const WorldPos : TVector2; Amount : single );
+        procedure Dig( const WorldPos : TVector2; Amount : single; Radius : integer = 1 );
         procedure Paint( const WorldPos : TVector2; EncodedColor : integer );
 
         private
@@ -144,11 +144,6 @@ procedure sethxy( var h : TTileHeader; x, y : smallint; sz : word = 1 ); inline;
       tiley := y;
       tilesz := sz;
     end;
- end;
-
-function compareint( v1, v2 : integer ) : integer; inline;
- begin
-   result := -ord( v1 < v2 ) + ord( v1 > v2 );
  end;
 
 function worldtotile( wpos : tvector2 ) : tvector2;
@@ -382,7 +377,7 @@ constructor TTerTile.create( const iInfo : TTileHeader );
    layer.initgrid(60 { Info.TileSz } );
    for x := 0 to 59 do for y := 0 to 59 do
       TIntGrid(layer.DataGrid).setvaluexy( x, y,
-          encodesplatcell( random(8), random(8), random(8), random(8), random(4), random(16)));
+          encodesplatcell( random(6), random(8), random(6), random(6), random(4), random(16)));
 
    datalayers[layer_splat] := layer;
    { initialize water layer }
@@ -602,7 +597,7 @@ function TTerTile.WorldToLocal( const pos : TVector2 ) : TVector2;
  end;
 
 
-procedure TTerTile.Dig( const WorldPos : TVector2; Amount : single );
+procedure TTerTile.Dig( const WorldPos : TVector2; Amount : single; radius : integer = 1 );
  var TilePos : TVector2;
      TilePosI : TPoint;
      MaxTileIx : integer;
@@ -613,6 +608,8 @@ procedure TTerTile.Dig( const WorldPos : TVector2; Amount : single );
    MaxTileIx := TerrainGrid.wh - 1;
    LimitMax( TilePosI.X, MaxTileIx );
    LimitMax( TilePosI.Y, MaxTileIx );
+
+
    TerrainGrid.addxyvalue( tileposI.x, tileposI.y, amount );
  end;
 

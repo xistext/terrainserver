@@ -4,18 +4,6 @@
   "Name" : "RootGroup",
   "$Children" : [
     {
-      "$$ClassName" : "TCastleImageControl",
-      "Content" : {
-        "$$ClassName" : "TCastleImagePersistent",
-        "Clip" : true,
-        "SmoothScaling" : false,
-        "URL" : "castle-data:/ramp.png"
-      },
-      "FullSize" : true,
-      "HeightFraction" : 5.0000000000000000E+001,
-      "Name" : "ImageControl2"
-    },
-    {
       "$$ClassName" : "TCastleVerticalGroup",
       "FullSize" : true,
       "HeightFraction" : 1.0000000000000000E+002,
@@ -167,7 +155,7 @@
           "Name" : "Viewport1",
           "TranslationPersistent" : {
             "$$ClassName" : "TCastleVector2Persistent",
-            "Y" : -3.1399997711181641E+001
+            "Y" : -3.1399999618530273E+001
           },
           "VerticalAnchorParent" : "vpTop",
           "VerticalAnchorSelf" : "vpTop",
@@ -176,6 +164,12 @@
           "$NonVisualComponents" : [
             {
               "$$ClassName" : "TCastleBackground",
+              "GroundEquatorColorPersistent" : {
+                "$$ClassName" : "TCastleColorRGBPersistent",
+                "Blue" : 4.3529412150382996E-001,
+                "Green" : 4.9803921580314636E-001,
+                "Red" : 4.9803921580314636E-001
+              },
               "Name" : "Background1"
             }
           ],
@@ -250,6 +244,7 @@
                   "PaddingVertical" : 0.0000000000000000E+000,
                   "TintPressedPersistent" : {
                     "$$ClassName" : "TCastleColorPersistent",
+                    "Alpha" : 4.9803921580314636E-001,
                     "Blue" : 0.0000000000000000E+000,
                     "Red" : 0.0000000000000000E+000
                   },
@@ -317,6 +312,7 @@
                   "PaddingVertical" : 0.0000000000000000E+000,
                   "TintPressedPersistent" : {
                     "$$ClassName" : "TCastleColorPersistent",
+                    "Alpha" : 4.9803921580314636E-001,
                     "Blue" : 0.0000000000000000E+000,
                     "Red" : 0.0000000000000000E+000
                   },
@@ -375,6 +371,7 @@
                   },
                   "CustomColorPressedPersistent" : {
                     "$$ClassName" : "TCastleColorPersistent",
+                    "Alpha" : 4.9803921580314636E-001,
                     "Green" : 1.0000000000000000E+000
                   },
                   "EditorSelectOnHover" : false,
@@ -389,6 +386,7 @@
                   "Pressed" : true,
                   "TintPressedPersistent" : {
                     "$$ClassName" : "TCastleColorPersistent",
+                    "Alpha" : 4.9803921580314636E-001,
                     "Blue" : 0.0000000000000000E+000,
                     "Red" : 0.0000000000000000E+000
                   },
@@ -414,20 +412,16 @@
             },
             "RotationPersistent" : {
               "$$ClassName" : "TCastleVector4RotationPersistent",
-              "W" : 6.7926025390625000E-001,
-              "X" : -3.6003455519676208E-002,
-              "Y" : 9.9931824207305908E-001,
-              "Z" : 8.1759216263890266E-003
-            },
-            "ScalePersistent" : {
-              "$$ClassName" : "TCastleVector3Persistent",
-              "X" : 9.9999994039535522E-001
+              "W" : 2.6753330230712891E-001,
+              "X" : -8.9216709136962891E-002,
+              "Y" : -9.9572968482971191E-001,
+              "Z" : -2.3862546309828758E-002
             },
             "TranslationPersistent" : {
               "$$ClassName" : "TCastleVector3Persistent",
-              "X" : 6.2593780517578125E+001,
-              "Y" : 5.5831146240234375E+000,
-              "Z" : 7.6040252685546875E+001
+              "X" : 1.2407174682617188E+002,
+              "Y" : 7.9758853912353516E+000,
+              "Z" : 1.5224105834960938E+002
             }
           },
           "InternalDesignNavigations[dnFly]" : {
@@ -447,7 +441,8 @@
         },
         {
           "$$ClassName" : "TCastleHorizontalGroup",
-          "Name" : "HorizontalGroup4",
+          "ClipChildren" : true,
+          "Name" : "HorizontalGroup5",
           "TranslationPersistent" : {
             "$$ClassName" : "TCastleVector2Persistent",
             "Y" : -6.7140002441406250E+002
@@ -456,154 +451,19 @@
           "VerticalAnchorSelf" : "vpTop",
           "$Children" : [
             {
-              "$$ClassName" : "TCastleButton",
-              "AutoSize" : false,
-              "CustomBackgroundDisabled" : {
-                "$$ClassName" : "TCastleImagePersistent"
-              },
-              "CustomBackgroundFocused" : {
-                "$$ClassName" : "TCastleImagePersistent"
-              },
-              "CustomBackgroundNormal" : {
-                "$$ClassName" : "TCastleImagePersistent",
-                "ColorPersistent" : {
-                  "$$ClassName" : "TCastleColorPersistent",
-                  "Blue" : 0.0000000000000000E+000,
-                  "Red" : 0.0000000000000000E+000
-                }
-              },
-              "CustomBackgroundPressed" : {
-                "$$ClassName" : "TCastleImagePersistent"
-              },
-              "CustomColorPressedPersistent" : {
-                "$$ClassName" : "TCastleColorPersistent",
-                "Alpha" : 9.3333333730697632E-001,
-                "Red" : 1.0000000000000000E+000
-              },
-              "Height" : 3.2000000000000000E+001,
-              "Image" : {
-                "$$ClassName" : "TCastleImagePersistent",
-                "URL" : "castle-data:/icon/brushicon.png"
-              },
-              "Name" : "ButtonBrush",
-              "Toggle" : true,
-              "VerticalAnchorParent" : "vpMiddle",
-              "VerticalAnchorSelf" : "vpMiddle",
-              "Width" : 3.2000000000000000E+001
-            },
-            {
-              "$$ClassName" : "TCastleButton",
-              "AutoSize" : false,
-              "CustomBackgroundDisabled" : {
-                "$$ClassName" : "TCastleImagePersistent"
-              },
-              "CustomBackgroundFocused" : {
-                "$$ClassName" : "TCastleImagePersistent"
-              },
-              "CustomBackgroundNormal" : {
-                "$$ClassName" : "TCastleImagePersistent",
-                "ColorPersistent" : {
-                  "$$ClassName" : "TCastleColorPersistent",
-                  "Blue" : 0.0000000000000000E+000,
-                  "Red" : 0.0000000000000000E+000
-                }
-              },
-              "CustomBackgroundPressed" : {
-                "$$ClassName" : "TCastleImagePersistent"
-              },
-              "CustomColorPressedPersistent" : {
-                "$$ClassName" : "TCastleColorPersistent",
-                "Alpha" : 9.3333333730697632E-001,
-                "Red" : 1.0000000000000000E+000
-              },
-              "Height" : 3.2000000000000000E+001,
-              "Image" : {
-                "$$ClassName" : "TCastleImagePersistent",
-                "URL" : "castle-data:/icon/digicon.png"
-              },
-              "Name" : "ButtonDig",
-              "Toggle" : true,
-              "TranslationPersistent" : {
-                "$$ClassName" : "TCastleVector2Persistent",
-                "X" : 3.2000000000000000E+001
-              },
-              "VerticalAnchorParent" : "vpMiddle",
-              "VerticalAnchorSelf" : "vpMiddle",
-              "Width" : 3.2000000000000000E+001
-            },
-            {
-              "$$ClassName" : "TCastleButton",
-              "AutoSize" : false,
-              "CustomBackgroundDisabled" : {
-                "$$ClassName" : "TCastleImagePersistent"
-              },
-              "CustomBackgroundFocused" : {
-                "$$ClassName" : "TCastleImagePersistent"
-              },
-              "CustomBackgroundNormal" : {
-                "$$ClassName" : "TCastleImagePersistent",
-                "ColorPersistent" : {
-                  "$$ClassName" : "TCastleColorPersistent",
-                  "Blue" : 0.0000000000000000E+000,
-                  "Red" : 0.0000000000000000E+000
-                }
-              },
-              "CustomBackgroundPressed" : {
-                "$$ClassName" : "TCastleImagePersistent"
-              },
-              "CustomColorPressedPersistent" : {
-                "$$ClassName" : "TCastleColorPersistent",
-                "Alpha" : 9.3333333730697632E-001,
-                "Red" : 1.0000000000000000E+000
-              },
-              "Height" : 3.2000000000000000E+001,
-              "Image" : {
-                "$$ClassName" : "TCastleImagePersistent",
-                "URL" : "castle-data:/icon/pileicon.png"
-              },
-              "Name" : "ButtonPile",
-              "Toggle" : true,
-              "TranslationPersistent" : {
-                "$$ClassName" : "TCastleVector2Persistent",
-                "X" : 6.4000000000000000E+001
-              },
-              "VerticalAnchorParent" : "vpMiddle",
-              "VerticalAnchorSelf" : "vpMiddle",
-              "Width" : 3.2000000000000000E+001
-            }
-          ]
-        },
-        {
-          "$$ClassName" : "TCastleShape",
-          "ColorPersistent" : {
-            "$$ClassName" : "TCastleColorPersistent",
-            "Alpha" : 0.0000000000000000E+000,
-            "Blue" : 0.0000000000000000E+000,
-            "Green" : 0.0000000000000000E+000,
-            "Red" : 0.0000000000000000E+000
-          },
-          "Height" : 9.0000000000000000E+001,
-          "Name" : "ColorPicker",
-          "TranslationPersistent" : {
-            "$$ClassName" : "TCastleVector2Persistent",
-            "Y" : -7.0340002441406250E+002
-          },
-          "VerticalAnchorParent" : "vpTop",
-          "VerticalAnchorSelf" : "vpTop",
-          "Width" : 5.5000000000000000E+002,
-          "$Children" : [
-            {
               "$$ClassName" : "TCastleShape",
-              "ClipChildren" : true,
-              "Height" : 4.0000000000000000E+001,
-              "Name" : "Shape2",
-              "TranslationPersistent" : {
-                "$$ClassName" : "TCastleVector2Persistent",
-                "Y" : -1.0000000000000000E+001
+              "ColorPersistent" : {
+                "$$ClassName" : "TCastleColorPersistent",
+                "Alpha" : 1.2156862765550613E-001,
+                "Blue" : 0.0000000000000000E+000,
+                "Green" : 0.0000000000000000E+000,
+                "Red" : 0.0000000000000000E+000
               },
-              "VerticalAnchorParent" : "vpTop",
-              "VerticalAnchorSelf" : "vpTop",
-              "Width" : 4.0000000000000000E+001,
+              "Height" : 8.0000000000000000E+001,
+              "Name" : "ToolSizePicker",
+              "VerticalAnchorParent" : "vpMiddle",
+              "VerticalAnchorSelf" : "vpMiddle",
+              "Width" : 8.0000000000000000E+001,
               "$Children" : [
                 {
                   "$$ClassName" : "TCastleImageControl",
@@ -611,22 +471,364 @@
                   "Content" : {
                     "$$ClassName" : "TCastleImagePersistent",
                     "Clip" : true,
-                    "SmoothScaling" : false,
                     "URL" : "castle-data:/grid.png"
                   },
                   "FullSize" : true,
                   "Height" : 4.0000000000000000E+001,
-                  "Name" : "ImageControl1",
+                  "Name" : "ImageControl2",
                   "ProportionalScaling" : "psEnclose",
                   "Stretch" : true,
                   "TranslationPersistent" : {
                     "$$ClassName" : "TCastleVector2Persistent",
-                    "Y" : -1.0000000000000000E+001
+                    "X" : 8.0000000000000000E+001,
+                    "Y" : 4.0000000000000000E+001
                   },
+                  "Width" : 4.0000000000000000E+001
+                },
+                {
+                  "$$ClassName" : "TCastleButton",
+                  "AutoSize" : false,
+                  "CustomBackgroundDisabled" : {
+                    "$$ClassName" : "TCastleImagePersistent"
+                  },
+                  "CustomBackgroundFocused" : {
+                    "$$ClassName" : "TCastleImagePersistent"
+                  },
+                  "CustomBackgroundNormal" : {
+                    "$$ClassName" : "TCastleImagePersistent",
+                    "ColorPersistent" : {
+                      "$$ClassName" : "TCastleColorPersistent",
+                      "Blue" : 0.0000000000000000E+000,
+                      "Red" : 0.0000000000000000E+000
+                    }
+                  },
+                  "CustomBackgroundPressed" : {
+                    "$$ClassName" : "TCastleImagePersistent"
+                  },
+                  "CustomColorPressedPersistent" : {
+                    "$$ClassName" : "TCastleColorPersistent",
+                    "Alpha" : 9.3333333730697632E-001,
+                    "Red" : 1.0000000000000000E+000
+                  },
+                  "Height" : 2.2000000000000000E+001,
+                  "HorizontalAnchorParent" : "hpMiddle",
+                  "HorizontalAnchorSelf" : "hpMiddle",
+                  "Image" : {
+                    "$$ClassName" : "TCastleImagePersistent",
+                    "URL" : "castle-data:/icon/digicon.png"
+                  },
+                  "Name" : "ButtonDig",
+                  "TintNormalPersistent" : {
+                    "$$ClassName" : "TCastleColorPersistent",
+                    "Alpha" : 0.0000000000000000E+000
+                  },
+                  "TintPressedPersistent" : {
+                    "$$ClassName" : "TCastleColorPersistent",
+                    "Alpha" : 4.9803921580314636E-001,
+                    "Blue" : 0.0000000000000000E+000,
+                    "Red" : 0.0000000000000000E+000
+                  },
+                  "Toggle" : true,
+                  "VerticalAlignment" : "vpBottom",
+                  "Width" : 2.2000000000000000E+001
+                },
+                {
+                  "$$ClassName" : "TCastleButton",
+                  "AutoSize" : false,
+                  "CustomBackgroundDisabled" : {
+                    "$$ClassName" : "TCastleImagePersistent"
+                  },
+                  "CustomBackgroundFocused" : {
+                    "$$ClassName" : "TCastleImagePersistent"
+                  },
+                  "CustomBackgroundNormal" : {
+                    "$$ClassName" : "TCastleImagePersistent",
+                    "ColorPersistent" : {
+                      "$$ClassName" : "TCastleColorPersistent",
+                      "Blue" : 0.0000000000000000E+000,
+                      "Red" : 0.0000000000000000E+000
+                    }
+                  },
+                  "CustomBackgroundPressed" : {
+                    "$$ClassName" : "TCastleImagePersistent"
+                  },
+                  "CustomColorPressedPersistent" : {
+                    "$$ClassName" : "TCastleColorPersistent",
+                    "Alpha" : 9.3333333730697632E-001,
+                    "Red" : 1.0000000000000000E+000
+                  },
+                  "Height" : 2.2000000000000000E+001,
+                  "HorizontalAnchorParent" : "hpMiddle",
+                  "HorizontalAnchorSelf" : "hpMiddle",
+                  "Image" : {
+                    "$$ClassName" : "TCastleImagePersistent",
+                    "URL" : "castle-data:/icon/pileicon.png"
+                  },
+                  "Name" : "ButtonPile",
+                  "TintNormalPersistent" : {
+                    "$$ClassName" : "TCastleColorPersistent",
+                    "Alpha" : 0.0000000000000000E+000
+                  },
+                  "TintPressedPersistent" : {
+                    "$$ClassName" : "TCastleColorPersistent",
+                    "Alpha" : 4.9803921580314636E-001,
+                    "Blue" : 0.0000000000000000E+000,
+                    "Red" : 0.0000000000000000E+000
+                  },
+                  "Toggle" : true,
+                  "TranslationPersistent" : {
+                    "$$ClassName" : "TCastleVector2Persistent",
+                    "Y" : -4.0000000000000000E+000
+                  },
+                  "VerticalAlignment" : "vpTop",
+                  "VerticalAnchorParent" : "vpTop",
+                  "VerticalAnchorSelf" : "vpTop",
+                  "Width" : 2.2000000000000000E+001
+                },
+                {
+                  "$$ClassName" : "TCastleShape",
+                  "ColorPersistent" : {
+                    "$$ClassName" : "TCastleColorPersistent",
+                    "Alpha" : 4.9803921580314636E-001,
+                    "Blue" : 4.9803921580314636E-001,
+                    "Green" : 4.9803921580314636E-001,
+                    "Red" : 4.9803921580314636E-001
+                  },
+                  "Height" : 3.0000000000000000E+001,
+                  "HorizontalAnchorParent" : "hpMiddle",
+                  "HorizontalAnchorSelf" : "hpMiddle",
+                  "Name" : "ToolPileIndicator",
+                  "ShapeType" : "stTriangleUp",
+                  "TranslationPersistent" : {
+                    "$$ClassName" : "TCastleVector2Persistent",
+                    "Y" : 4.0000000000000000E+001
+                  },
+                  "Width" : 7.0000000000000000E+001
+                },
+                {
+                  "$$ClassName" : "TCastleShape",
+                  "ColorPersistent" : {
+                    "$$ClassName" : "TCastleColorPersistent",
+                    "Alpha" : 4.9803921580314636E-001,
+                    "Blue" : 4.9803921580314636E-001,
+                    "Green" : 4.9803921580314636E-001,
+                    "Red" : 4.9803921580314636E-001
+                  },
+                  "Height" : 3.0000000000000000E+001,
+                  "HorizontalAnchorParent" : "hpMiddle",
+                  "HorizontalAnchorSelf" : "hpMiddle",
+                  "Name" : "ToolDigIndicator",
+                  "ShapeType" : "stTriangleDown",
+                  "TranslationPersistent" : {
+                    "$$ClassName" : "TCastleVector2Persistent",
+                    "Y" : -5.0000000000000000E+001
+                  },
+                  "VerticalAnchorParent" : "vpTop",
+                  "VerticalAnchorSelf" : "vpTop",
+                  "Width" : 7.0000000000000000E+001
+                },
+                {
+                  "$$ClassName" : "TCastleShape",
+                  "ColorPersistent" : {
+                    "$$ClassName" : "TCastleColorPersistent",
+                    "Alpha" : 6.2352943420410156E-001,
+                    "Blue" : 1.2156862765550613E-001,
+                    "Green" : 0.0000000000000000E+000,
+                    "Red" : 0.0000000000000000E+000
+                  },
+                  "Height" : 3.0000000000000000E+001,
+                  "HorizontalAnchorParent" : "hpMiddle",
+                  "HorizontalAnchorSelf" : "hpMiddle",
+                  "Name" : "ToolShape",
+                  "ShapeType" : "stCircle",
+                  "TranslationPersistent" : {
+                    "$$ClassName" : "TCastleVector2Persistent",
+                    "Y" : -5.0000000000000000E+000
+                  },
+                  "VerticalAnchorParent" : "vpMiddle",
+                  "VerticalAnchorSelf" : "vpMiddle",
+                  "Width" : 6.0000000000000000E+001
+                },
+                {
+                  "$$ClassName" : "TCastleIntegerSlider",
+                  "Background" : {
+                    "$$ClassName" : "TCastleImagePersistent",
+                    "ColorPersistent" : {
+                      "$$ClassName" : "TCastleColorPersistent",
+                      "Alpha" : 4.9803921580314636E-001,
+                      "Blue" : 4.9803921580314636E-001,
+                      "Green" : 4.9803921580314636E-001,
+                      "Red" : 4.9803921580314636E-001
+                    },
+                    "URL" : "castle-data:/grid.png"
+                  },
+                  "FontSize" : 8.0000000000000000E+000,
+                  "Height" : 1.0000000000000000E+001,
+                  "Max" : 15,
+                  "Min" : 1,
+                  "Name" : "ToolRadiusSlider",
+                  "TextColorPersistent" : {
+                    "$$ClassName" : "TCastleColorPersistent",
+                    "Blue" : 1.0000000000000000E+000,
+                    "Green" : 1.0000000000000000E+000,
+                    "Red" : 1.0000000000000000E+000
+                  },
+                  "Thumb" : {
+                    "$$ClassName" : "TCastleImagePersistent"
+                  },
+                  "TranslationPersistent" : {
+                    "$$ClassName" : "TCastleVector2Persistent",
+                    "X" : 3.5000000000000000E+001,
+                    "Y" : -5.0000000000000000E+000
+                  },
+                  "VerticalAnchorParent" : "vpMiddle",
+                  "VerticalAnchorSelf" : "vpMiddle",
+                  "Width" : 4.5000000000000000E+001
+                },
+                {
+                  "$$ClassName" : "TCastleLabel",
+                  "ColorPersistent" : {
+                    "$$ClassName" : "TCastleColorPersistent",
+                    "Alpha" : 4.9803921580314636E-001,
+                    "Blue" : 1.2156862765550613E-001
+                  },
+                  "FontScale" : 5.0000000000000000E-001,
+                  "Name" : "Label1",
+                  "Text" : [
+                    "Radius"
+                  ],
+                  "TranslationPersistent" : {
+                    "$$ClassName" : "TCastleVector2Persistent",
+                    "X" : 2.0000000000000000E+000,
+                    "Y" : -5.0000000000000000E+000
+                  },
+                  "VerticalAlignment" : "vpMiddle",
+                  "VerticalAnchorParent" : "vpMiddle",
+                  "VerticalAnchorSelf" : "vpMiddle"
+                },
+                {
+                  "$$ClassName" : "TCastleButton",
+                  "AutoSize" : false,
+                  "CustomBackgroundDisabled" : {
+                    "$$ClassName" : "TCastleImagePersistent"
+                  },
+                  "CustomBackgroundFocused" : {
+                    "$$ClassName" : "TCastleImagePersistent"
+                  },
+                  "CustomBackgroundNormal" : {
+                    "$$ClassName" : "TCastleImagePersistent",
+                    "ColorPersistent" : {
+                      "$$ClassName" : "TCastleColorPersistent",
+                      "Blue" : 0.0000000000000000E+000,
+                      "Red" : 0.0000000000000000E+000
+                    }
+                  },
+                  "CustomBackgroundPressed" : {
+                    "$$ClassName" : "TCastleImagePersistent"
+                  },
+                  "CustomColorPressedPersistent" : {
+                    "$$ClassName" : "TCastleColorPersistent",
+                    "Alpha" : 9.3333333730697632E-001,
+                    "Red" : 1.0000000000000000E+000
+                  },
+                  "Height" : 2.2000000000000000E+001,
+                  "Image" : {
+                    "$$ClassName" : "TCastleImagePersistent",
+                    "URL" : "castle-data:/icon/brushicon.png"
+                  },
+                  "Name" : "ButtonBrush",
+                  "TintNormalPersistent" : {
+                    "$$ClassName" : "TCastleColorPersistent",
+                    "Alpha" : 0.0000000000000000E+000
+                  },
+                  "TintPressedPersistent" : {
+                    "$$ClassName" : "TCastleColorPersistent",
+                    "Alpha" : 4.9803921580314636E-001,
+                    "Blue" : 0.0000000000000000E+000,
+                    "Red" : 0.0000000000000000E+000
+                  },
+                  "Toggle" : true,
+                  "TranslationPersistent" : {
+                    "$$ClassName" : "TCastleVector2Persistent",
+                    "X" : 5.2000000000000000E+001,
+                    "Y" : -3.9999923706054688E+000
+                  },
+                  "VerticalAlignment" : "vpTop",
+                  "VerticalAnchorParent" : "vpTop",
+                  "VerticalAnchorSelf" : "vpTop",
+                  "Width" : 2.2000000000000000E+001
+                }
+              ]
+            },
+            {
+              "$$ClassName" : "TCastleShape",
+              "AutoSizeToChildren" : true,
+              "ColorPersistent" : {
+                "$$ClassName" : "TCastleColorPersistent",
+                "Alpha" : 1.2156862765550613E-001,
+                "Blue" : 0.0000000000000000E+000,
+                "Green" : 0.0000000000000000E+000,
+                "Red" : 0.0000000000000000E+000
+              },
+              "Height" : 9.0000000000000000E+001,
+              "Name" : "ColorPicker",
+              "TranslationPersistent" : {
+                "$$ClassName" : "TCastleVector2Persistent",
+                "X" : 8.0000000000000000E+001
+              },
+              "VerticalAnchorParent" : "vpMiddle",
+              "VerticalAnchorSelf" : "vpMiddle",
+              "Width" : 2.2000000000000000E+002,
+              "$Children" : [
+                {
+                  "$$ClassName" : "TCastleImageControl",
+                  "ClipChildren" : true,
+                  "Content" : {
+                    "$$ClassName" : "TCastleImagePersistent",
+                    "Clip" : true,
+                    "URL" : "castle-data:/grid.png"
+                  },
+                  "FullSize" : true,
+                  "Height" : 4.0000000000000000E+001,
+                  "Name" : "ImageControl7",
+                  "ProportionalScaling" : "psEnclose",
+                  "Stretch" : true,
+                  "TranslationPersistent" : {
+                    "$$ClassName" : "TCastleVector2Persistent",
+                    "X" : 8.0000000000000000E+001,
+                    "Y" : 4.0000000000000000E+001
+                  },
+                  "Width" : 4.0000000000000000E+001
+                },
+                {
+                  "$$ClassName" : "TCastleShape",
+                  "ClipChildren" : true,
+                  "ColorPersistent" : {
+                    "$$ClassName" : "TCastleColorPersistent",
+                    "Alpha" : 0.0000000000000000E+000,
+                    "Blue" : 0.0000000000000000E+000,
+                    "Green" : 0.0000000000000000E+000,
+                    "Red" : 0.0000000000000000E+000
+                  },
+                  "Height" : 4.0000000000000000E+001,
+                  "Name" : "Shape2",
+                  "VerticalAnchorParent" : "vpTop",
+                  "VerticalAnchorSelf" : "vpTop",
                   "Width" : 4.0000000000000000E+001,
                   "$Children" : [
                     {
                       "$$ClassName" : "TCastleShape",
+                      "Border" : {
+                        "$$ClassName" : "TBorder",
+                        "AllSides" : 1.0000000000000000E+000
+                      },
+                      "BorderColorPersistent" : {
+                        "$$ClassName" : "TCastleColorPersistent",
+                        "Alpha" : 4.9803921580314636E-001,
+                        "Blue" : 4.9803921580314636E-001,
+                        "Green" : 4.9803921580314636E-001,
+                        "Red" : 4.9803921580314636E-001
+                      },
                       "ColorPersistent" : {
                         "$$ClassName" : "TCastleColorPersistent",
                         "Blue" : 8.0000001192092896E-001,
@@ -642,173 +844,176 @@
                       "Width" : 3.0000000000000000E+001
                     }
                   ]
-                }
-              ]
-            },
-            {
-              "$$ClassName" : "TCastleIntegerSlider",
-              "Background" : {
-                "$$ClassName" : "TCastleImagePersistent",
-                "ColorPersistent" : {
-                  "$$ClassName" : "TCastleColorPersistent",
-                  "Blue" : 0.0000000000000000E+000,
-                  "Green" : 0.0000000000000000E+000,
-                  "Red" : 4.9803921580314636E-001
                 },
-                "URL" : "castle-data:/grid.png"
-              },
-              "FontSize" : 8.0000000000000000E+000,
-              "Height" : 1.0000000000000000E+001,
-              "Max" : 15,
-              "Name" : "RedSlider",
-              "TextColorPersistent" : {
-                "$$ClassName" : "TCastleColorPersistent",
-                "Blue" : 1.0000000000000000E+000,
-                "Green" : 1.0000000000000000E+000,
-                "Red" : 1.0000000000000000E+000
-              },
-              "Thumb" : {
-                "$$ClassName" : "TCastleImagePersistent"
-              },
-              "TranslationPersistent" : {
-                "$$ClassName" : "TCastleVector2Persistent",
-                "Y" : -5.0000000000000000E+001
-              },
-              "VerticalAnchorParent" : "vpTop",
-              "VerticalAnchorSelf" : "vpTop",
-              "Width" : 4.0000000000000000E+001
-            },
-            {
-              "$$ClassName" : "TCastleIntegerSlider",
-              "Background" : {
-                "$$ClassName" : "TCastleImagePersistent",
-                "ColorPersistent" : {
-                  "$$ClassName" : "TCastleColorPersistent",
-                  "Blue" : 0.0000000000000000E+000,
-                  "Green" : 4.9803921580314636E-001,
-                  "Red" : 0.0000000000000000E+000
-                },
-                "URL" : "castle-data:/grid.png"
-              },
-              "FontSize" : 8.0000000000000000E+000,
-              "Height" : 1.0000000000000000E+001,
-              "Max" : 15,
-              "Name" : "GreenSlider",
-              "TextColorPersistent" : {
-                "$$ClassName" : "TCastleColorPersistent",
-                "Blue" : 1.0000000000000000E+000,
-                "Green" : 1.0000000000000000E+000,
-                "Red" : 1.0000000000000000E+000
-              },
-              "Thumb" : {
-                "$$ClassName" : "TCastleImagePersistent"
-              },
-              "TranslationPersistent" : {
-                "$$ClassName" : "TCastleVector2Persistent",
-                "Y" : -6.0000000000000000E+001
-              },
-              "Value" : 14,
-              "VerticalAnchorParent" : "vpTop",
-              "VerticalAnchorSelf" : "vpTop",
-              "Width" : 4.0000000000000000E+001
-            },
-            {
-              "$$ClassName" : "TCastleIntegerSlider",
-              "Background" : {
-                "$$ClassName" : "TCastleImagePersistent",
-                "ColorPersistent" : {
-                  "$$ClassName" : "TCastleColorPersistent",
-                  "Blue" : 4.9803921580314636E-001,
-                  "Green" : 0.0000000000000000E+000,
-                  "Red" : 0.0000000000000000E+000
-                },
-                "URL" : "castle-data:/grid.png"
-              },
-              "FontSize" : 8.0000000000000000E+000,
-              "Height" : 1.0000000000000000E+001,
-              "Max" : 15,
-              "Name" : "BlueSlider",
-              "TextColorPersistent" : {
-                "$$ClassName" : "TCastleColorPersistent",
-                "Blue" : 1.0000000000000000E+000,
-                "Green" : 1.0000000000000000E+000,
-                "Red" : 1.0000000000000000E+000
-              },
-              "Thumb" : {
-                "$$ClassName" : "TCastleImagePersistent"
-              },
-              "TranslationPersistent" : {
-                "$$ClassName" : "TCastleVector2Persistent",
-                "Y" : -7.0000000000000000E+001
-              },
-              "Value" : 14,
-              "VerticalAnchorParent" : "vpTop",
-              "VerticalAnchorSelf" : "vpTop",
-              "Width" : 4.0000000000000000E+001
-            },
-            {
-              "$$ClassName" : "TCastleIntegerSlider",
-              "Background" : {
-                "$$ClassName" : "TCastleImagePersistent",
-                "Clip" : true,
-                "ColorPersistent" : {
-                  "$$ClassName" : "TCastleColorPersistent",
-                  "Alpha" : 4.3529412150382996E-001,
-                  "Blue" : 4.3529412150382996E-001,
-                  "Green" : 4.3529412150382996E-001,
-                  "Red" : 4.3529412150382996E-001
-                },
-                "URL" : "castle-data:/grid.png"
-              },
-              "FontSize" : 8.0000000000000000E+000,
-              "Height" : 1.0000000000000000E+001,
-              "Max" : 15,
-              "Name" : "AlphaSlider",
-              "TextColorPersistent" : {
-                "$$ClassName" : "TCastleColorPersistent",
-                "Blue" : 1.0000000000000000E+000,
-                "Green" : 1.0000000000000000E+000,
-                "Red" : 1.0000000000000000E+000
-              },
-              "Thumb" : {
-                "$$ClassName" : "TCastleImagePersistent"
-              },
-              "VerticalAnchorParent" : "vpTop",
-              "VerticalAnchorSelf" : "vpTop",
-              "Width" : 4.0000000000000000E+001
-            },
-            {
-              "$$ClassName" : "TCastleShape",
-              "ClipChildren" : true,
-              "Height" : 4.0000000000000000E+001,
-              "Name" : "TexturePicker1",
-              "TranslationPersistent" : {
-                "$$ClassName" : "TCastleVector2Persistent",
-                "X" : 4.0000000000000000E+001,
-                "Y" : -1.0000000000000000E+001
-              },
-              "VerticalAnchorParent" : "vpTop",
-              "VerticalAnchorSelf" : "vpTop",
-              "Width" : 4.0000000000000000E+001,
-              "$Children" : [
                 {
-                  "$$ClassName" : "TCastleImageControl",
-                  "ClipChildren" : true,
-                  "Content" : {
+                  "$$ClassName" : "TCastleIntegerSlider",
+                  "Background" : {
                     "$$ClassName" : "TCastleImagePersistent",
-                    "Clip" : true,
-                    "SmoothScaling" : false,
+                    "ColorPersistent" : {
+                      "$$ClassName" : "TCastleColorPersistent",
+                      "Blue" : 0.0000000000000000E+000,
+                      "Green" : 0.0000000000000000E+000,
+                      "Red" : 4.9803921580314636E-001
+                    },
                     "URL" : "castle-data:/grid.png"
                   },
-                  "FullSize" : true,
+                  "FontSize" : 8.0000000000000000E+000,
+                  "Height" : 1.0000000000000000E+001,
+                  "Max" : 15,
+                  "Name" : "RedSlider",
+                  "TextColorPersistent" : {
+                    "$$ClassName" : "TCastleColorPersistent",
+                    "Blue" : 1.0000000000000000E+000,
+                    "Green" : 1.0000000000000000E+000,
+                    "Red" : 1.0000000000000000E+000
+                  },
+                  "Thumb" : {
+                    "$$ClassName" : "TCastleImagePersistent"
+                  },
+                  "TranslationPersistent" : {
+                    "$$ClassName" : "TCastleVector2Persistent",
+                    "Y" : -5.0000000000000000E+001
+                  },
+                  "VerticalAnchorParent" : "vpTop",
+                  "VerticalAnchorSelf" : "vpTop",
+                  "Width" : 4.0000000000000000E+001
+                },
+                {
+                  "$$ClassName" : "TCastleIntegerSlider",
+                  "Background" : {
+                    "$$ClassName" : "TCastleImagePersistent",
+                    "ColorPersistent" : {
+                      "$$ClassName" : "TCastleColorPersistent",
+                      "Blue" : 0.0000000000000000E+000,
+                      "Green" : 4.9803921580314636E-001,
+                      "Red" : 0.0000000000000000E+000
+                    },
+                    "URL" : "castle-data:/grid.png"
+                  },
+                  "FontSize" : 8.0000000000000000E+000,
+                  "Height" : 1.0000000000000000E+001,
+                  "Max" : 15,
+                  "Name" : "GreenSlider",
+                  "TextColorPersistent" : {
+                    "$$ClassName" : "TCastleColorPersistent",
+                    "Blue" : 1.0000000000000000E+000,
+                    "Green" : 1.0000000000000000E+000,
+                    "Red" : 1.0000000000000000E+000
+                  },
+                  "Thumb" : {
+                    "$$ClassName" : "TCastleImagePersistent"
+                  },
+                  "TranslationPersistent" : {
+                    "$$ClassName" : "TCastleVector2Persistent",
+                    "Y" : -6.0000000000000000E+001
+                  },
+                  "Value" : 14,
+                  "VerticalAnchorParent" : "vpTop",
+                  "VerticalAnchorSelf" : "vpTop",
+                  "Width" : 4.0000000000000000E+001
+                },
+                {
+                  "$$ClassName" : "TCastleIntegerSlider",
+                  "Background" : {
+                    "$$ClassName" : "TCastleImagePersistent",
+                    "ColorPersistent" : {
+                      "$$ClassName" : "TCastleColorPersistent",
+                      "Blue" : 4.9803921580314636E-001,
+                      "Green" : 0.0000000000000000E+000,
+                      "Red" : 0.0000000000000000E+000
+                    },
+                    "URL" : "castle-data:/grid.png"
+                  },
+                  "FontSize" : 8.0000000000000000E+000,
+                  "Height" : 1.0000000000000000E+001,
+                  "Max" : 15,
+                  "Name" : "BlueSlider",
+                  "TextColorPersistent" : {
+                    "$$ClassName" : "TCastleColorPersistent",
+                    "Blue" : 1.0000000000000000E+000,
+                    "Green" : 1.0000000000000000E+000,
+                    "Red" : 1.0000000000000000E+000
+                  },
+                  "Thumb" : {
+                    "$$ClassName" : "TCastleImagePersistent"
+                  },
+                  "TranslationPersistent" : {
+                    "$$ClassName" : "TCastleVector2Persistent",
+                    "Y" : -7.0000000000000000E+001
+                  },
+                  "Value" : 14,
+                  "VerticalAnchorParent" : "vpTop",
+                  "VerticalAnchorSelf" : "vpTop",
+                  "Width" : 4.0000000000000000E+001
+                },
+                {
+                  "$$ClassName" : "TCastleIntegerSlider",
+                  "Background" : {
+                    "$$ClassName" : "TCastleImagePersistent",
+                    "Clip" : true,
+                    "ColorPersistent" : {
+                      "$$ClassName" : "TCastleColorPersistent",
+                      "Alpha" : 4.3529412150382996E-001,
+                      "Blue" : 4.3529412150382996E-001,
+                      "Green" : 4.3529412150382996E-001,
+                      "Red" : 4.3529412150382996E-001
+                    },
+                    "URL" : "castle-data:/grid.png"
+                  },
+                  "FontSize" : 8.0000000000000000E+000,
+                  "Height" : 1.0000000000000000E+001,
+                  "Max" : 15,
+                  "Name" : "AlphaSlider",
+                  "TextColorPersistent" : {
+                    "$$ClassName" : "TCastleColorPersistent",
+                    "Blue" : 1.0000000000000000E+000,
+                    "Green" : 1.0000000000000000E+000,
+                    "Red" : 1.0000000000000000E+000
+                  },
+                  "Thumb" : {
+                    "$$ClassName" : "TCastleImagePersistent"
+                  },
+                  "TranslationPersistent" : {
+                    "$$ClassName" : "TCastleVector2Persistent",
+                    "Y" : -4.0000000000000000E+001
+                  },
+                  "VerticalAnchorParent" : "vpTop",
+                  "VerticalAnchorSelf" : "vpTop",
+                  "Width" : 4.0000000000000000E+001
+                },
+                {
+                  "$$ClassName" : "TCastleShape",
+                  "ClipChildren" : true,
+                  "ColorPersistent" : {
+                    "$$ClassName" : "TCastleColorPersistent",
+                    "Alpha" : 0.0000000000000000E+000,
+                    "Blue" : 0.0000000000000000E+000,
+                    "Green" : 0.0000000000000000E+000,
+                    "Red" : 0.0000000000000000E+000
+                  },
                   "Height" : 4.0000000000000000E+001,
-                  "Name" : "ImageControl3",
-                  "ProportionalScaling" : "psEnclose",
-                  "Stretch" : true,
+                  "Name" : "TexturePicker1",
+                  "TranslationPersistent" : {
+                    "$$ClassName" : "TCastleVector2Persistent",
+                    "X" : 4.0000000000000000E+001
+                  },
+                  "VerticalAnchorParent" : "vpTop",
+                  "VerticalAnchorSelf" : "vpTop",
                   "Width" : 4.0000000000000000E+001,
                   "$Children" : [
                     {
                       "$$ClassName" : "TCastleImageControl",
+                      "Border" : {
+                        "$$ClassName" : "TBorder",
+                        "AllSides" : 1.0000000000000000E+000
+                      },
+                      "BorderColorPersistent" : {
+                        "$$ClassName" : "TCastleColorPersistent",
+                        "Alpha" : 4.9803921580314636E-001,
+                        "Blue" : 4.9803921580314636E-001,
+                        "Green" : 4.9803921580314636E-001,
+                        "Red" : 4.9803921580314636E-001
+                      },
                       "Content" : {
                         "$$ClassName" : "TCastleImagePersistent",
                         "URL" : "castle-data:/terrain/textures/island_sand2_d.jpg"
@@ -823,76 +1028,77 @@
                       "Width" : 3.0000000000000000E+001
                     }
                   ]
-                }
-              ]
-            },
-            {
-              "$$ClassName" : "TCastleIntegerSlider",
-              "Background" : {
-                "$$ClassName" : "TCastleImagePersistent",
-                "Clip" : true,
-                "ColorPersistent" : {
-                  "$$ClassName" : "TCastleColorPersistent",
-                  "Alpha" : 4.3529412150382996E-001,
-                  "Blue" : 4.3529412150382996E-001,
-                  "Green" : 4.3529412150382996E-001,
-                  "Red" : 4.3529412150382996E-001
                 },
-                "URL" : "castle-data:/grid.png"
-              },
-              "FontSize" : 8.0000000000000000E+000,
-              "Height" : 1.0000000000000000E+001,
-              "Max" : 15,
-              "Name" : "AlphaSlider1",
-              "TextColorPersistent" : {
-                "$$ClassName" : "TCastleColorPersistent",
-                "Blue" : 1.0000000000000000E+000,
-                "Green" : 1.0000000000000000E+000,
-                "Red" : 1.0000000000000000E+000
-              },
-              "Thumb" : {
-                "$$ClassName" : "TCastleImagePersistent"
-              },
-              "TranslationPersistent" : {
-                "$$ClassName" : "TCastleVector2Persistent",
-                "X" : 4.0000000000000000E+001
-              },
-              "VerticalAnchorParent" : "vpTop",
-              "VerticalAnchorSelf" : "vpTop",
-              "Width" : 4.0000000000000000E+001
-            },
-            {
-              "$$ClassName" : "TCastleShape",
-              "ClipChildren" : true,
-              "Height" : 4.0000000000000000E+001,
-              "Name" : "TexturePicker2",
-              "TranslationPersistent" : {
-                "$$ClassName" : "TCastleVector2Persistent",
-                "X" : 8.0000000000000000E+001,
-                "Y" : -1.0000000000000000E+001
-              },
-              "VerticalAnchorParent" : "vpTop",
-              "VerticalAnchorSelf" : "vpTop",
-              "Width" : 4.0000000000000000E+001,
-              "$Children" : [
                 {
-                  "$$ClassName" : "TCastleImageControl",
-                  "ClipChildren" : true,
-                  "Content" : {
+                  "$$ClassName" : "TCastleIntegerSlider",
+                  "Background" : {
                     "$$ClassName" : "TCastleImagePersistent",
                     "Clip" : true,
-                    "SmoothScaling" : false,
+                    "ColorPersistent" : {
+                      "$$ClassName" : "TCastleColorPersistent",
+                      "Alpha" : 4.3529412150382996E-001,
+                      "Blue" : 4.3529412150382996E-001,
+                      "Green" : 4.3529412150382996E-001,
+                      "Red" : 4.3529412150382996E-001
+                    },
                     "URL" : "castle-data:/grid.png"
                   },
-                  "FullSize" : true,
+                  "FontSize" : 8.0000000000000000E+000,
+                  "Height" : 1.0000000000000000E+001,
+                  "Max" : 15,
+                  "Name" : "AlphaSlider1",
+                  "TextColorPersistent" : {
+                    "$$ClassName" : "TCastleColorPersistent",
+                    "Blue" : 1.0000000000000000E+000,
+                    "Green" : 1.0000000000000000E+000,
+                    "Red" : 1.0000000000000000E+000
+                  },
+                  "Thumb" : {
+                    "$$ClassName" : "TCastleImagePersistent"
+                  },
+                  "TranslationPersistent" : {
+                    "$$ClassName" : "TCastleVector2Persistent",
+                    "X" : 4.0000000000000000E+001,
+                    "Y" : -4.0000000000000000E+001
+                  },
+                  "Value" : 15,
+                  "VerticalAnchorParent" : "vpTop",
+                  "VerticalAnchorSelf" : "vpTop",
+                  "Width" : 4.0000000000000000E+001
+                },
+                {
+                  "$$ClassName" : "TCastleShape",
+                  "ClipChildren" : true,
+                  "ColorPersistent" : {
+                    "$$ClassName" : "TCastleColorPersistent",
+                    "Alpha" : 0.0000000000000000E+000,
+                    "Blue" : 0.0000000000000000E+000,
+                    "Green" : 0.0000000000000000E+000,
+                    "Red" : 0.0000000000000000E+000
+                  },
                   "Height" : 4.0000000000000000E+001,
-                  "Name" : "ImageControl4",
-                  "ProportionalScaling" : "psEnclose",
-                  "Stretch" : true,
+                  "Name" : "TexturePicker2",
+                  "TranslationPersistent" : {
+                    "$$ClassName" : "TCastleVector2Persistent",
+                    "X" : 8.0000000000000000E+001
+                  },
+                  "VerticalAnchorParent" : "vpTop",
+                  "VerticalAnchorSelf" : "vpTop",
                   "Width" : 4.0000000000000000E+001,
                   "$Children" : [
                     {
                       "$$ClassName" : "TCastleImageControl",
+                      "Border" : {
+                        "$$ClassName" : "TBorder",
+                        "AllSides" : 1.0000000000000000E+000
+                      },
+                      "BorderColorPersistent" : {
+                        "$$ClassName" : "TCastleColorPersistent",
+                        "Alpha" : 4.9803921580314636E-001,
+                        "Blue" : 4.9803921580314636E-001,
+                        "Green" : 4.9803921580314636E-001,
+                        "Red" : 4.9803921580314636E-001
+                      },
                       "Content" : {
                         "$$ClassName" : "TCastleImagePersistent",
                         "URL" : "castle-data:/terrain/textures/ground_mud2_d.jpg"
@@ -907,43 +1113,215 @@
                       "Width" : 3.0000000000000000E+001
                     }
                   ]
+                },
+                {
+                  "$$ClassName" : "TCastleIntegerSlider",
+                  "Background" : {
+                    "$$ClassName" : "TCastleImagePersistent",
+                    "Clip" : true,
+                    "ColorPersistent" : {
+                      "$$ClassName" : "TCastleColorPersistent",
+                      "Alpha" : 4.3529412150382996E-001,
+                      "Blue" : 4.3529412150382996E-001,
+                      "Green" : 4.3529412150382996E-001,
+                      "Red" : 4.3529412150382996E-001
+                    },
+                    "URL" : "castle-data:/grid.png"
+                  },
+                  "FontSize" : 8.0000000000000000E+000,
+                  "Height" : 1.0000000000000000E+001,
+                  "Max" : 15,
+                  "Name" : "AlphaSlider2",
+                  "TextColorPersistent" : {
+                    "$$ClassName" : "TCastleColorPersistent",
+                    "Blue" : 1.0000000000000000E+000,
+                    "Green" : 1.0000000000000000E+000,
+                    "Red" : 1.0000000000000000E+000
+                  },
+                  "Thumb" : {
+                    "$$ClassName" : "TCastleImagePersistent"
+                  },
+                  "TranslationPersistent" : {
+                    "$$ClassName" : "TCastleVector2Persistent",
+                    "X" : 8.0000000000000000E+001,
+                    "Y" : -4.0000000000000000E+001
+                  },
+                  "Value" : 15,
+                  "VerticalAnchorParent" : "vpTop",
+                  "VerticalAnchorSelf" : "vpTop",
+                  "Width" : 4.0000000000000000E+001
+                },
+                {
+                  "$$ClassName" : "TCastleShape",
+                  "ClipChildren" : true,
+                  "ColorPersistent" : {
+                    "$$ClassName" : "TCastleColorPersistent",
+                    "Alpha" : 0.0000000000000000E+000,
+                    "Blue" : 0.0000000000000000E+000,
+                    "Green" : 0.0000000000000000E+000,
+                    "Red" : 0.0000000000000000E+000
+                  },
+                  "Height" : 4.0000000000000000E+001,
+                  "Name" : "TexturePicker3",
+                  "TranslationPersistent" : {
+                    "$$ClassName" : "TCastleVector2Persistent",
+                    "X" : 1.2000000000000000E+002
+                  },
+                  "VerticalAnchorParent" : "vpTop",
+                  "VerticalAnchorSelf" : "vpTop",
+                  "Width" : 4.0000000000000000E+001,
+                  "$Children" : [
+                    {
+                      "$$ClassName" : "TCastleImageControl",
+                      "Border" : {
+                        "$$ClassName" : "TBorder",
+                        "AllSides" : 1.0000000000000000E+000
+                      },
+                      "BorderColorPersistent" : {
+                        "$$ClassName" : "TCastleColorPersistent",
+                        "Alpha" : 4.9803921580314636E-001,
+                        "Blue" : 4.9803921580314636E-001,
+                        "Green" : 4.9803921580314636E-001,
+                        "Red" : 4.9803921580314636E-001
+                      },
+                      "Content" : {
+                        "$$ClassName" : "TCastleImagePersistent",
+                        "URL" : "castle-data:/terrain/textures/moss_ground_d.jpg"
+                      },
+                      "Height" : 3.0000000000000000E+001,
+                      "HorizontalAnchorParent" : "hpMiddle",
+                      "HorizontalAnchorSelf" : "hpMiddle",
+                      "Name" : "TexturePreview3",
+                      "Stretch" : true,
+                      "VerticalAnchorParent" : "vpMiddle",
+                      "VerticalAnchorSelf" : "vpMiddle",
+                      "Width" : 3.0000000000000000E+001
+                    }
+                  ]
+                },
+                {
+                  "$$ClassName" : "TCastleIntegerSlider",
+                  "Background" : {
+                    "$$ClassName" : "TCastleImagePersistent",
+                    "Clip" : true,
+                    "ColorPersistent" : {
+                      "$$ClassName" : "TCastleColorPersistent",
+                      "Alpha" : 4.3529412150382996E-001,
+                      "Blue" : 4.3529412150382996E-001,
+                      "Green" : 4.3529412150382996E-001,
+                      "Red" : 4.3529412150382996E-001
+                    },
+                    "URL" : "castle-data:/grid.png"
+                  },
+                  "FontSize" : 8.0000000000000000E+000,
+                  "Height" : 1.0000000000000000E+001,
+                  "Max" : 15,
+                  "Name" : "AlphaSlider3",
+                  "TextColorPersistent" : {
+                    "$$ClassName" : "TCastleColorPersistent",
+                    "Blue" : 1.0000000000000000E+000,
+                    "Green" : 1.0000000000000000E+000,
+                    "Red" : 1.0000000000000000E+000
+                  },
+                  "Thumb" : {
+                    "$$ClassName" : "TCastleImagePersistent"
+                  },
+                  "TranslationPersistent" : {
+                    "$$ClassName" : "TCastleVector2Persistent",
+                    "X" : 1.2000000000000000E+002,
+                    "Y" : -4.0000000000000000E+001
+                  },
+                  "Value" : 15,
+                  "VerticalAnchorParent" : "vpTop",
+                  "VerticalAnchorSelf" : "vpTop",
+                  "Width" : 4.0000000000000000E+001
+                },
+                {
+                  "$$ClassName" : "TCastleShape",
+                  "ClipChildren" : true,
+                  "ColorPersistent" : {
+                    "$$ClassName" : "TCastleColorPersistent",
+                    "Alpha" : 0.0000000000000000E+000,
+                    "Blue" : 0.0000000000000000E+000,
+                    "Green" : 0.0000000000000000E+000,
+                    "Red" : 0.0000000000000000E+000
+                  },
+                  "Height" : 4.0000000000000000E+001,
+                  "Name" : "TexturePicker4",
+                  "TranslationPersistent" : {
+                    "$$ClassName" : "TCastleVector2Persistent",
+                    "X" : 1.6000000000000000E+002
+                  },
+                  "VerticalAnchorParent" : "vpTop",
+                  "VerticalAnchorSelf" : "vpTop",
+                  "Width" : 4.0000000000000000E+001,
+                  "$Children" : [
+                    {
+                      "$$ClassName" : "TCastleImageControl",
+                      "Border" : {
+                        "$$ClassName" : "TBorder",
+                        "AllSides" : 1.0000000000000000E+000
+                      },
+                      "BorderColorPersistent" : {
+                        "$$ClassName" : "TCastleColorPersistent",
+                        "Alpha" : 4.9803921580314636E-001,
+                        "Blue" : 4.9803921580314636E-001,
+                        "Green" : 4.9803921580314636E-001,
+                        "Red" : 4.9803921580314636E-001
+                      },
+                      "Content" : {
+                        "$$ClassName" : "TCastleImagePersistent",
+                        "URL" : "castle-data:/terrain/textures/mntn_green_d.jpg"
+                      },
+                      "Height" : 3.0000000000000000E+001,
+                      "HorizontalAnchorParent" : "hpMiddle",
+                      "HorizontalAnchorSelf" : "hpMiddle",
+                      "Name" : "TexturePreview4",
+                      "Stretch" : true,
+                      "VerticalAnchorParent" : "vpMiddle",
+                      "VerticalAnchorSelf" : "vpMiddle",
+                      "Width" : 3.0000000000000000E+001
+                    }
+                  ]
+                },
+                {
+                  "$$ClassName" : "TCastleIntegerSlider",
+                  "Background" : {
+                    "$$ClassName" : "TCastleImagePersistent",
+                    "Clip" : true,
+                    "ColorPersistent" : {
+                      "$$ClassName" : "TCastleColorPersistent",
+                      "Alpha" : 4.3529412150382996E-001,
+                      "Blue" : 4.3529412150382996E-001,
+                      "Green" : 4.3529412150382996E-001,
+                      "Red" : 4.3529412150382996E-001
+                    },
+                    "URL" : "castle-data:/grid.png"
+                  },
+                  "FontSize" : 8.0000000000000000E+000,
+                  "Height" : 1.0000000000000000E+001,
+                  "Max" : 15,
+                  "Name" : "AlphaSlider4",
+                  "TextColorPersistent" : {
+                    "$$ClassName" : "TCastleColorPersistent",
+                    "Blue" : 1.0000000000000000E+000,
+                    "Green" : 1.0000000000000000E+000,
+                    "Red" : 1.0000000000000000E+000
+                  },
+                  "Thumb" : {
+                    "$$ClassName" : "TCastleImagePersistent"
+                  },
+                  "TranslationPersistent" : {
+                    "$$ClassName" : "TCastleVector2Persistent",
+                    "X" : 1.6000000000000000E+002,
+                    "Y" : -4.0000000000000000E+001
+                  },
+                  "Value" : 15,
+                  "VerticalAnchorParent" : "vpTop",
+                  "VerticalAnchorSelf" : "vpTop",
+                  "Width" : 4.0000000000000000E+001
                 }
               ]
-            },
-            {
-              "$$ClassName" : "TCastleIntegerSlider",
-              "Background" : {
-                "$$ClassName" : "TCastleImagePersistent",
-                "Clip" : true,
-                "ColorPersistent" : {
-                  "$$ClassName" : "TCastleColorPersistent",
-                  "Alpha" : 4.3529412150382996E-001,
-                  "Blue" : 4.3529412150382996E-001,
-                  "Green" : 4.3529412150382996E-001,
-                  "Red" : 4.3529412150382996E-001
-                },
-                "URL" : "castle-data:/grid.png"
-              },
-              "FontSize" : 8.0000000000000000E+000,
-              "Height" : 1.0000000000000000E+001,
-              "Max" : 15,
-              "Name" : "AlphaSlider2",
-              "TextColorPersistent" : {
-                "$$ClassName" : "TCastleColorPersistent",
-                "Blue" : 1.0000000000000000E+000,
-                "Green" : 1.0000000000000000E+000,
-                "Red" : 1.0000000000000000E+000
-              },
-              "Thumb" : {
-                "$$ClassName" : "TCastleImagePersistent"
-              },
-              "TranslationPersistent" : {
-                "$$ClassName" : "TCastleVector2Persistent",
-                "X" : 8.0000000000000000E+001
-              },
-              "VerticalAnchorParent" : "vpTop",
-              "VerticalAnchorSelf" : "vpTop",
-              "Width" : 4.0000000000000000E+001
             }
           ]
         }

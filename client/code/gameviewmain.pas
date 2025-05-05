@@ -59,6 +59,9 @@ type
     AlphaSlider : TCastleIntegerSlider;
     AlphaSlider1 : TCastleIntegerSlider;
     AlphaSlider2 : TCastleIntegerSlider;
+    AlphaSlider3 : TCastleIntegerSlider;
+    AlphaSlider4 : TCastleIntegerSlider;
+    ToolRadiusSlider : TCastleIntegerSlider;
 
     TerrainLayer : TCastleTransform;
     WaterLayer   : TCastleTransform;
@@ -66,9 +69,14 @@ type
     ButtonBrush : TCastleButton;
     ButtonDig   : TCastleButton;
     ButtonPile  : TCastleButton;
+    ToolShape : TCastleShape;
+    ToolPileIndicator : TCastleShape;
+    ToolDigIndicator : TCastleShape;
 
     TexturePreview1 : TCastleImageControl;
     TexturePreview2 : TCastleImageControl;
+    TexturePreview3 : TCastleImageControl;
+    TexturePreview4 : TCastleImageControl;
 
   private
     connectiontimeout : single;
@@ -144,6 +152,9 @@ begin
   AlphaSlider.OnChange := {$ifdef FPC}@{$endif} ColorSliderChange;
   AlphaSlider1.OnChange :=  {$ifdef FPC}@{$endif} ColorSliderChange;
   AlphaSlider2.OnChange :=  {$ifdef FPC}@{$endif} ColorSliderChange;
+  AlphaSlider3.OnChange :=  {$ifdef FPC}@{$endif} ColorSliderChange;
+  AlphaSlider4.OnChange :=  {$ifdef FPC}@{$endif} ColorSliderChange;
+  ToolRadiusSlider.OnChange :=  {$ifdef FPC}@{$endif} ColorSliderChange;
 
   RedSlider.Value := trunc(ColorPreview.Color.X *15);
   GreenSlider.Value := trunc(ColorPreview.Color.Y *15);
@@ -173,6 +184,8 @@ begin
 
   TexturePreview2.Color := vector4(1,1,1,0.5);
   TexturePreview2.AlphaChannel := acAuto;
+
+  ColorSliderChange( self );
 
   glGetIntegerv(GL_MAX_VERTEX_UNIFORM_COMPONENTS, @MaxVertexUniformComponents);
   dbgwriteln(format('GL_MAX_VERTEX_UNIFORM_COMPONENTS: %d', [MaxVertexUniformComponents]));
@@ -443,6 +456,7 @@ procedure TViewMain.ClickTool( Sender:Tobject );
    else
    if buttonpile.pressed then
       activetool := tool_pile;
+   ColorSliderChange( self );
  end;
 
 procedure TViewMain.ClickSend(Sender: TObject);
@@ -457,6 +471,21 @@ procedure TViewMain.ColorSliderChange( sender : TObject );
    ColorPreview.Color := vector4( RedSlider.Value * factor, GreenSlider.Value * factor, BlueSlider.Value * factor, AlphaSlider.Value * factor );
    TexturePreview1.Color := vector4( 1, 1, 1, AlphaSlider1.Value * factor );
    TexturePreview2.Color := vector4( 1, 1, 1, AlphaSlider2.Value * factor );
+   TexturePreview3.Color := vector4( 1, 1, 1, AlphaSlider3.Value * factor );
+   TexturePreview4.Color := vector4( 1, 1, 1, AlphaSlider4.Value * factor );
+
+   if activetool = tool_brush then
+      ToolShape.Color := ColorPreview.Color // ?how to combine textures?
+   else
+      ToolShape.Color := vector4( 0, 0, 0.12, 0.62 );
+   ToolShape.Width := ToolRadiusSlider.Value * 5;
+   ToolShape.Height := ToolRadiusSlider.Value * 2.5;
+   ToolPileIndicator.Width := ToolShape.Width;
+   ToolPileIndicator.Height := ToolShape.Height;
+   ToolDigIndicator.Width := ToolShape.Width;
+   ToolDigIndicator.Height := ToolShape.Height;
+   ToolPileIndicator.Exists := activetool = tool_pile;
+   ToolDigIndicator.Exists := activetool = tool_dig;
  end;
 
 function TViewMain.MoveAllowed(const Sender: TCastleNavigation;
@@ -485,18 +514,23 @@ function TViewMain.HeightAboveTerrain(Pos: TVector3;
 
 procedure TViewMain.UseTool( const pos : tvector3 );
  var params : string;
-     cmd : string;
  begin
    params := FormatFloat( '0.###', pos.x )+','+FormatFloat( '0.###', pos.z );
    case activetool of
       tool_none : exit;
-      tool_brush : cmd := 'paint '+params+','+inttostr( encodesplatcell( RedSlider.Value, GreenSlider.Value, BlueSlider.Value, AlphaSlider.Value, 0, AlphaSlider1.Value ));
-      tool_dig : cmd := 'dig '+params;
-      tool_pile : cmd := 'pile '+params;
+      tool_brush : fClient.Send( 'paint '+params+','+
+                                  inttostr( encodesplatcell( RedSlider.Value, GreenSlider.Value, BlueSlider.Value, AlphaSlider.Value, 0, AlphaSlider1.Value ))+','+
+                                  inttostr( toolradiusslider.value )
+                                  );
+      tool_dig : begin
+                   fClient.Send( 'dig '+params+','+
+                                  inttostr( toolradiusslider.value ) );
+                   fClient.Send( 'paint '+params +','+inttostr( freshdigcolor )+','+
+                                  inttostr( toolradiusslider.value ));
+                 end;
+      tool_pile : fClient.Send( 'pile '+params+','+
+                                  inttostr( toolradiusslider.value ) );
     end;
-
-   //!!! this crashes!!! I think it crashes if you send while it is receiving???
-   fClient.Send( cmd );
  end;
 
 procedure TViewMain.HandleMotion(const Sender: TCastleUserInterface;
@@ -658,6 +692,5 @@ begin
             end;
     end;
  end;
-
 
 end.
