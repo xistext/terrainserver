@@ -44,9 +44,10 @@
       <Unit5>
         <Filename Value="code\terrainmesh.pas"/>
         <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="7"/>
         <TopLine Value="312"/>
-        <CursorPos X="47" Y="360"/>
+        <CursorPos X="59" Y="362"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
       </Unit5>
@@ -123,7 +124,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="6030"/>
         <CursorPos Y="6067"/>
-        <UsageCount Value="93"/>
+        <UsageCount Value="92"/>
       </Unit15>
       <Unit16>
         <Filename Value="E:\cge\src\scene\castleviewport.pas"/>
@@ -192,10 +193,9 @@
       </Unit24>
       <Unit25>
         <Filename Value="data\terrain\textures\terrain.fs"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
         <TopLine Value="222"/>
-        <CursorPos X="21" Y="254"/>
+        <CursorPos X="19" Y="254"/>
         <UsageCount Value="107"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="C++"/>

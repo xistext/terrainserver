@@ -359,7 +359,7 @@ var Appearance : TAppearanceNode;
           begin
             i := pinteger( SplatGrid.ptrxy( x, y ))^;
 
-            Splatmap.Items[x*splatgrid.wh+y] := i;
+            Splatmap.Items[x*splatgrid.wh+splatgrid.wh -1-y] := i;
           end;
       ChangedAll( true );
     end;

@@ -251,7 +251,7 @@ void PLUG_main_texture_apply(inout vec4 fragment_color, const in vec3 normal)
      // calculate 2d index into splatmap
      // position on tile
      splatpos.x = mod( splatpos.x, 60 );
-     splatpos.y = 60-mod( splatpos.y, 60 );
+     splatpos.y = mod( splatpos.y, 60 );
 
      int ax = int( floor( splatpos.x ));
      int ay = int( floor( splatpos.y ));
