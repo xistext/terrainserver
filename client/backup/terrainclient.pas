@@ -77,15 +77,20 @@ procedure setCreateClientMode( mode : integer;
  begin
    case mode of
      status_disconnected : begin
-                             AButton.Caption := 'Connect';
+                             AButton.CustomColorPressed := vector4( 1, 1, 0, 0.75 );
+                             AButton.CustomColorFocused := vector4( 0.5, 0, 0, 0.25 );
+                             AButton.CustomColorNormal := vector4( 0.5, 0, 0, 0.5 );
                              AButton.Enabled := true;
                            end;
      status_connecting :   begin
-                             AButton.Caption := 'Connecting...';
+                             AButton.CustomColorFocused := vector4( 0.5, 0.5, 0, 0.25 );
+                             AButton.CustomColorNormal := vector4( 0.5, 0.5, 0, 0.5 );
                              AButton.Enabled := false;
                            end;
      status_connected :    begin
-                             AButton.Caption := 'Disconnect';
+                             AButton.CustomColorPressed := vector4( 1, 0, 0, 0.75 );
+                             AButton.CustomColorFocused := vector4( 0, 0.5, 0, 0.25 );
+                             AButton.CustomColorNormal := vector4( 0, 0.5, 0, 0.5 );
                              AButton.Enabled := true;
                            end;
      end;
@@ -117,7 +122,7 @@ function TTerClientThread.ProcessMessage( const msgheader : TmsgHeader;
        MsgLen := msgheader.msglen;
        if MsgLen > 0 then
         begin
-          assert( MsgLen < 100000 );
+          assert( MsgLen < 200000 );
           FClient.IOHandler.ReadBytes( Buffer, MsgLen, true );
           assert( length( buffer ) = MsgLen + SizeOf( msgheader ));
 

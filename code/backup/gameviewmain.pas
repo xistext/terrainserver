@@ -300,7 +300,7 @@ procedure TViewMain.Notification( Msg : string );
    VerticalGroup2.InsertBack( alabel );
    if VerticalGroup2.ControlsCount > 100 then
     begin
-      item := VerticalGroup2.Controls[0];
+      item := VerticalGroup2.Controls[VerticalGroup2.ControlsCount-1];
       VerticalGroup2.RemoveControl(item);
       item.free;
     end;

@@ -177,9 +177,9 @@ procedure TViewMain.Update(const SecondsPassed: Single; var HandleInput: Boolean
 
   if assigned( lastclient.context ) and WaterFlowThreads[0].DirtyTileList.nexttile( atile  ) then
    begin
-     waterArea( lastclient,
-                atile.info.tilex, atile.info.tiley,
-                0, {$ifdef fpc}@{$endif} HandleCommandCallback );
+     buildwaterArea( lastclient,
+                     atile.info.tilex, atile.info.tiley,
+                     0, {$ifdef fpc}@{$endif} HandleCommandCallback );
    end;
 
 

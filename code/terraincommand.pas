@@ -106,10 +106,10 @@ procedure SendClientMsgHeader( AClient : TClientConnection;
 const GCmdList : TCmdList = nil;
       GTaskList : TTaskList = nil;
 
-procedure waterArea( client : TClientConnection;
-                     CenterX, CenterY : integer;
-                     Radius : integer;
-                     callback : TCommandCallback);
+procedure buildwaterArea( client : TClientConnection;
+                          CenterX, CenterY : integer;
+                          Radius : integer;
+                          callback : TCommandCallback);
 
 
 implementation

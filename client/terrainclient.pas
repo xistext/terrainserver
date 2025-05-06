@@ -77,15 +77,20 @@ procedure setCreateClientMode( mode : integer;
  begin
    case mode of
      status_disconnected : begin
-                             AButton.Caption := 'Connect';
+                             AButton.CustomColorPressed := vector4( 0.75, 0.75, 0, 0.75 );
+                             AButton.CustomColorFocused := vector4( 0.5, 0, 0, 0.25 );
+                             AButton.CustomColorNormal := vector4( 0.5, 0, 0, 0.5 );
                              AButton.Enabled := true;
                            end;
      status_connecting :   begin
-                             AButton.Caption := 'Connecting...';
+                             AButton.CustomColorFocused := vector4( 0.5, 0.5, 0, 0.25 );
+                             AButton.CustomColorNormal := vector4( 0.5, 0.5, 0, 0.5 );
                              AButton.Enabled := false;
                            end;
      status_connected :    begin
-                             AButton.Caption := 'Disconnect';
+                             AButton.CustomColorPressed := vector4( 0.75, 0, 0, 0.75 );
+                             AButton.CustomColorFocused := vector4( 0, 0.5, 0, 0.25 );
+                             AButton.CustomColorNormal := vector4( 0, 0.5, 0, 0.5 );
                              AButton.Enabled := true;
                            end;
      end;

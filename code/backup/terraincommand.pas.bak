@@ -106,7 +106,7 @@ procedure SendClientMsgHeader( AClient : TClientConnection;
 const GCmdList : TCmdList = nil;
       GTaskList : TTaskList = nil;
 
-procedure waterArea( client : TClientConnection;
+procedure buildwaterArea( client : TClientConnection;
                      CenterX, CenterY : integer;
                      Radius : integer;
                      callback : TCommandCallback);
@@ -924,7 +924,7 @@ function cmdBuildTile( client : TClientConnection;
       Radius := 0;
       if parsetilexy( params, tilex, tiley ) and nextparam( params, param ) then
          Radius := intofstr( param );
-      buildArea( client, TileX, TileY, Radius, tileParams, callback );
+      buildTerrainArea( client, TileX, TileY, Radius, tileParams, callback );
     end;
  end;
 
@@ -941,7 +941,7 @@ function cmdWater( client : TClientConnection;
    Radius := 0;
    if parsetilexy( params, tilex, tiley ) and nextparam( params, param ) then
       Radius := intofstr( param );
-   WaterArea( client, TileX, TileY, Radius, callback );
+   buildWaterArea( client, TileX, TileY, Radius, callback );
  end;
 
 function cmdDig( client : TClientConnection;
