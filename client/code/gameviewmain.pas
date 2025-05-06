@@ -27,6 +27,7 @@ const
   tool_brush = 1;
   tool_dig   = 2;
   tool_pile  = 3;
+  tool_globe = 4;
 
 type
 
@@ -69,6 +70,7 @@ type
     ButtonBrush : TCastleButton;
     ButtonDig   : TCastleButton;
     ButtonPile  : TCastleButton;
+    ButtonGlobe : TCastleButton;
     ToolShape : TCastleShape;
     ToolPileIndicator : TCastleShape;
     ToolDigIndicator : TCastleShape;
@@ -84,6 +86,9 @@ type
     AltitudeLabel : TCastleLabel;
     ElevationIndicator : TCastleShape;
     AltitudeIndicator : TCastleShape;
+
+    WorldOptionsPanel : TCastleShape;
+    ViewRadiusSlider : TCastleIntegerSlider;
 
   private
     connectiontimeout : single;
@@ -107,6 +112,7 @@ type
   public
     activetool : integer;
     lockviewtoground : boolean;
+    viewanchor : TVector2;
     constructor Create(AOwner: TComponent); override;
     procedure Start; override;
     procedure Stop; override;
@@ -140,6 +146,7 @@ begin
   ConnectionTimeout := 0;
   lockviewtoground := false;
   activetool := tool_none;
+  viewanchor := vector2( 0, 0 );
 end;
 
 procedure TViewMain.Start;
@@ -182,6 +189,7 @@ begin
   ButtonBrush.OnClick := {$ifdef FPC}@{$endif} ClickTool;
   ButtonDig.OnClick := {$ifdef FPC}@{$endif} ClickTool;
   ButtonPile.OnClick := {$ifdef FPC}@{$endif} ClickTool;
+  ButtonGlobe.OnClick := {$ifdef FPC}@{$endif} ClickTool;
 
   MarkupLayer := TMarkupLayer.Create(Viewport1);
   MarkupLayer.terrainheight := {$ifdef fpc}@{$endif}HeightAboveTerrain;
@@ -194,9 +202,13 @@ begin
   TexturePreview2.Color := vector4(1,1,1,0.5);
   TexturePreview2.AlphaChannel := acAuto;
 
+  ColorPicker.Translation := vector2( 80, 0 );
   ColorPicker.Exists := false;
   ColorSliderChange( self );
   UpdatePositionIndicator;
+
+  WorldOptionsPanel.Translation := ColorPicker.Translation;
+  WorldOptionsPanel.Exists := false;
 
   glGetIntegerv(GL_MAX_VERTEX_UNIFORM_COMPONENTS, @MaxVertexUniformComponents);
   dbgwriteln(format('GL_MAX_VERTEX_UNIFORM_COMPONENTS: %d', [MaxVertexUniformComponents]));
@@ -480,6 +492,8 @@ procedure TViewMain.ClickTool( Sender:Tobject );
          buttonbrush.pressed := false;
       if thisbutton <> buttonpile then
          buttonpile.Pressed := false;
+      if thisbutton <> buttonglobe then
+         buttonglobe.Pressed := false;
     end;
    activetool := tool_none;
    if buttonbrush.pressed then
@@ -489,9 +503,12 @@ procedure TViewMain.ClickTool( Sender:Tobject );
       activetool := tool_dig
    else
    if buttonpile.pressed then
-      activetool := tool_pile;
+      activetool := tool_pile
+   else
+   if buttonglobe.pressed then
+      activetool := tool_globe;
    ColorPicker.Exists := activetool = tool_brush;
-   ColorPicker.Translation := vector2( 80, 0 );
+   WorldOptionsPanel.Exists := activetool = tool_globe;
    ColorSliderChange( self );
  end;
 
@@ -528,6 +545,8 @@ function TViewMain.MoveAllowed(const Sender: TCastleNavigation;
                                const OldPos, ProposedNewPos: TVector3; out NewPos: TVector3;
                                const Radius: Single; const BecauseOfGravity: Boolean): boolean;
  var terrainh : single;
+     pt : TPoint;
+     cmd : string;
  begin
    TerrainHeight( ProposedNewPos, TerrainH );
    NewPos := ProposedNewPos;
@@ -538,6 +557,16 @@ function TViewMain.MoveAllowed(const Sender: TCastleNavigation;
       MainNavigation.MoveHorizontalSpeed := sqrt(radius);
     end;
    UpdatePositionIndicator;
+
+   if ( abs( proposedNewpos.x - viewanchor.x ) > 60  ) or ( abs( proposedNewpos.z - viewanchor.y ) > 60 ) then
+    begin
+      viewanchor := vector2( ProposedNewPos.X, ProposedNewPos.Z );
+      begin
+        pt := GTileList.CalculateTileOffset( viewanchor );
+        cmd := 'build '+IntToStr( pt.x )+','+inttostr(pt.y)+','+inttostr(ViewRadiusSlider.Value);
+        FClient.Send(cmd);
+      end;
+    end;
    result := true;
  end;
 

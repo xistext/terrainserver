@@ -51,7 +51,6 @@ type
                                   AClient : TClientConnection );
 
     procedure HandleCommandCallback( Msg : string );
-
   public
     constructor Create(AOwner: TComponent); override;
     procedure Start; override;

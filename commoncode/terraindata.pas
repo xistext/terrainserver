@@ -93,6 +93,7 @@ type PTerTile = ^TTerTile;
         function gridStep : single;
         function tileid : string;
         function GetNeighbors : TTileNeighbors;
+        function WorldToLocal( const pos : TVector2 ) : TVector2;
 
         public
         {$ifdef terserver}
@@ -105,8 +106,6 @@ type PTerTile = ^TTerTile;
         function SaveToFile : boolean;
         function LoadFromFile : boolean;
         function DeleteMyFiles : boolean;
-
-        function WorldToLocal( const pos : TVector2 ) : TVector2;
 
         procedure Dig( const WorldPos : TVector2; Amount : single; Radius : integer = 1 );
         procedure Paint( const WorldPos : TVector2; EncodedColor : integer );
@@ -458,6 +457,19 @@ function TTerTile.getWorldSize : single;
    result := GDefGridCellCount * GDefGridStep;
  end;
 
+function TTerTile.WorldToLocal( const pos : TVector2 ) : TVector2;
+ var factor : single;
+     offset : TVector2;
+     tilesize : single;
+ begin
+   factor := 1/GridStep;
+   tilesize := getWorldSize;
+
+   offset := vector2( info.tilex * tilesize, info.tiley * tilesize );
+   result := vector2((( pos.x - Offset.x ) + tilesize * 0.5 )*factor,
+                     (( pos.y - Offset.y ) + tilesize * 0.5 )*factor );
+ end;
+
 {$ifdef terserver}
 function TTerTile.getTerrainGrid : TSingleGrid;
  begin
@@ -580,20 +592,6 @@ function TTerTile.DeleteMyFiles : boolean;
    result := fileexists( filename );
    if result then
       CheckDeleteFile( filename );
- end;
-
-
-function TTerTile.WorldToLocal( const pos : TVector2 ) : TVector2;
- var factor : single;
-     offset : TVector2;
-     tilesize : single;
- begin
-   factor := 1/GridStep;
-   tilesize := getWorldSize;
-
-   offset := vector2( info.tilex * tilesize, info.tiley * tilesize );
-   result := vector2((( pos.x - Offset.x ) + tilesize * 0.5 )*factor,
-                     (( pos.y - Offset.y ) + tilesize * 0.5 )*factor );
  end;
 
 

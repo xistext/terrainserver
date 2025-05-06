@@ -105,7 +105,7 @@ end;
      viewmain := TViewMain( data );
      buildwaterArea( Client,
                      tile.info.tilex, tile.info.tiley,
-                     0, 0, {$ifdef fpc}@{$endif} viewmain.HandleCommandCallback );
+                     0, LOD, {$ifdef fpc}@{$endif} viewmain.HandleCommandCallback );
 
     end;
 
