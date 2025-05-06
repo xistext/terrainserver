@@ -3,7 +3,9 @@ unit clientlist;
 interface
 
 uses Collect,
+     IdGlobal,
      CastleClientServer,
+     TerServerCommon,
      TerrainData;
 
 type TSubscription = record
@@ -13,12 +15,21 @@ type TSubscription = record
       end;
 
 
-     TTileSubscriber = class
+     TTileClient = class
 
         subscriptions : array of TSubscription;
 
         constructor create( const aclient : TClientConnection );
+        function equals( atileclient : TTileClient ) : boolean;
+        function connected : boolean;
 
+        procedure Send( const Buffer; BufLength : integer );
+        procedure SendBuffer( const buffer : TIdBytes; ALength : integer );
+        procedure SendString( AString : string );
+
+        procedure SendClientMsgHeader( msgtype : TMsgType;
+                                       msglen  : dword = 0;
+                                       requestid : dword = 0 );
         procedure setsubscription( atile : ttertile; iLOD : integer );
 
         protected
@@ -27,23 +38,33 @@ type TSubscription = record
 
       end;
 
-     TTileSubscribers = class( tcollection )
+     TTileClients = class( tcollection )
 
-        function getsubscriber( const aclient : TClientConnection ) : TTileSubscriber;
+        function getsubscriber( const aclient : TClientConnection ) : TTileClient;
         function removesubscriber( const aclient : TClientConnection ) : boolean;
 
       end;
 
-const GClientList : TTileSubscribers = nil;
+const GClientList : TTileClients = nil;
 
 implementation
 
-constructor TTileSubscriber.create( const aclient : TClientConnection );
+constructor TTileClient.create( const aclient : TClientConnection );
  begin
    fClient := aClient;
  end;
 
-procedure TTileSubscriber.setsubscription( atile : ttertile; iLOD : integer );
+function TTileClient.equals( atileclient : TTileClient ) : boolean;
+ begin
+   result := fClient.Context = atileclient.fClient.Context;
+ end;
+
+function TTileClient.connected : boolean;
+ begin
+   result := assigned( fClient.Context.Connection );
+ end;
+
+procedure TTileClient.setsubscription( atile : ttertile; iLOD : integer );
  var i, c : integer;
  begin
    i := 0;
@@ -67,32 +88,58 @@ procedure TTileSubscriber.setsubscription( atile : ttertile; iLOD : integer );
     end;
  end;
 
+procedure TTileClient.SendClientMsgHeader( msgtype : TMsgType;
+                                           msglen  : dword = 0;
+                                           requestid : dword = 0 );
+ var h : TMsgHeader;
+ begin
+   h.requestid := requestid;
+   h.msgtype := msgtype;
+   h.msglen := msglen;
+   fClient.Send( h, sizeof( h ));
+ end;
+
+procedure TTileClient.Send( const Buffer; BufLength : integer );
+ begin
+   fClient.Send( Buffer, BufLength );
+ end;
+
+procedure TTileClient.SendBuffer( const buffer : TIdBytes; ALength : integer );
+ begin
+   fClient.SendBuffer( buffer, ALength );
+ end;
+
+procedure TTileClient.SendString( AString : string );
+ begin
+   fClient.SendString( AString );
+ end;
+
 //-----------------------
 
-function TTileSubscribers.getsubscriber( const aclient : TClientConnection ) : TTileSubscriber;
+function TTileClients.getsubscriber( const aclient : TClientConnection ) : TTileClient;
  var i, c : integer;
  begin
    c := count;
    for i := 0 to c - 1 do
     begin
-      result := TTileSubscriber( at( i ));
+      result := TTileClient( at( i ));
       if result.fClient.Context = aclient.Context then
          exit; // found, exit
     end;
    // not found, create
-   result := TTileSubscriber.create( aclient );
+   result := TTileClient.create( aclient );
    insert( result );
  end;
 
-function TTileSubscribers.removesubscriber( const aclient : TClientConnection ) : boolean;
+function TTileClients.removesubscriber( const aclient : TClientConnection ) : boolean;
  var i, c : integer;
-     item : TTileSubscriber;
+     item : TTileClient;
  begin
    result := false;
    c := count;
    for i := 0 to c - 1 do
     begin
-      item := TTileSubscriber( at( i ));
+      item := TTileClient( at( i ));
       result := item.fClient.Context = aclient.Context;
       if result then
        begin
@@ -104,7 +151,7 @@ function TTileSubscribers.removesubscriber( const aclient : TClientConnection ) 
  end;
 
 initialization
-   GClientList := TTileSubscribers.create;
+   GClientList := TTileClients.create;
 finalization
    GClientList.Free;
 end.

@@ -7,13 +7,14 @@ uses Classes, SysUtils, Collect,
      BaseThread, StrTools,
      CastleClientServer, CastleVectors, castleterrain,
      TerServerCommon,
+     ClientList,
      TerrainParams, TerrainData,
      watergrid, waterflow, watercolor,
      debug;
 
 type TCommandCallback = procedure( msg : string ) of object;
 
-     TCommandFunc = function( client : TClientConnection;
+     TCommandFunc = function( client : TTileClient;
                               params : string;
                               callback : TCommandCallback) : integer;
 
@@ -27,7 +28,7 @@ type TCommandCallback = procedure( msg : string ) of object;
         function keyof( item : pointer ) : pointer; override;
         function compare( item1, item2 : pointer ) : integer; override;
         function registercmd( cmd : string; cmdfunc : TCommandFunc ) : boolean;
-        function executecommand( client : TClientConnection;
+        function executecommand( client : TTileClient;
                                  cmd : string;
                                  callback : TCommandCallback ) : integer;
       end;
@@ -38,9 +39,9 @@ type TCommandCallback = procedure( msg : string ) of object;
 
     TClientTaskItem = class( TTaskItem )
 
-       Client : TClientConnection;
+       Client : TTileClient;
 
-       constructor create( const iClient : TClientConnection );
+       constructor create( const iClient : TTileClient );
        function runtask : boolean; override;
 
      end;
@@ -51,15 +52,17 @@ type TCommandCallback = procedure( msg : string ) of object;
        function pop : TTaskItem;
        function item( i : integer ) : TTaskItem;
        procedure remove( ix, len : integer );
-       procedure removeclient( const AClient : TClientConnection );
+       procedure removeclient( const AClient : TTileClient );
        procedure AddTask( ATask : TTaskItem );
        procedure AddTasks( iTaskList : TTaskList );
      end;
 
+    { tasks triggered by commands }
+
     TTask_SendTile = class( TClientTaskItem )
         Tile   : TTerTile;
         LOD    : dword;
-        constructor create( const iClient : TClientConnection;
+        constructor create( const iClient : TTileClient;
                             iTile : TTerTile;
                             iLOD : dword );
         function runtask : boolean; override;
@@ -68,7 +71,7 @@ type TCommandCallback = procedure( msg : string ) of object;
      TTask_SendWater = class( TClientTaskItem )
         Tile   : TTerTile;
         LOD    : dword;
-        constructor create( const iClient : TClientConnection;
+        constructor create( const iClient : TTileClient;
                             iTile : TTerTile;
                             iLOD : dword );
         function runtask : boolean; override;
@@ -77,17 +80,16 @@ type TCommandCallback = procedure( msg : string ) of object;
      TTask_SendSplat = class( TClientTaskItem )
         Tile   : TTerTile;
         LOD    : dword;
-        constructor create( const iClient : TClientConnection;
+        constructor create( const iClient : TTileClient;
                             iTile : TTerTile;
                             iLOD : dword );
         function runtask : boolean; override;
       end;
 
-
     TTask_BuildTile = class( TClientTaskItem )
             Tile   : TTerTile;
             tileparams : TTerrainParams;
-            constructor create( const iClient : TClientConnection;
+            constructor create( const iClient : TTileClient;
                                 iTile : TTerTile;
                                 iParams : tTerrainparams );
             function runtask : boolean; override;
@@ -97,16 +99,11 @@ type TCommandCallback = procedure( msg : string ) of object;
         function runtask : boolean; override;
      end;
 
-procedure SendClientMsgHeader( AClient : TClientConnection;
-                               msgtype : TMsgType;
-                               msglen  : dword = 0;
-                               requestid : dword = 0 );
-
 
 const GCmdList : TCmdList = nil;
       GTaskList : TTaskList = nil;
 
-procedure buildwaterArea( client : TClientConnection;
+procedure buildwaterArea( client : TTileClient;
                           CenterX, CenterY : integer;
                           Radius : integer;
                           callback : TCommandCallback);
@@ -155,13 +152,13 @@ procedure iteratearea( X, Y, Radius : integer;
 
 type TIterateRec = record
                      CenterX, CenterY, Radius : integer;
-                     Client : TClientConnection;
+                     Client : TTileClient;
                      Params : TTerrainParams;
                      callback : TCommandCallback;
                     end;
 
     function initIteraterec( iCenterX, iCenterY, iRadius : integer;
-                             iClient : TClientConnection;
+                             iClient : TTileClient;
                              iParams : TTerrainParams;
                              icallback : TCommandCallback ) : TIterateRec;
      begin
@@ -203,18 +200,6 @@ type TIterateRec = record
       end;
      GTileList.Unlock;
    end;
-
-procedure SendClientMsgHeader( AClient : TClientConnection;
-                               msgtype : TMsgType;
-                               msglen  : dword = 0;
-                               requestid : dword = 0 );
- var h : TMsgHeader;
- begin
-   h.requestid := requestid;
-   h.msgtype := msgtype;
-   h.msglen := msglen;
-   AClient.Send( h, sizeof( h ));
- end;
 
 //----------------------------
 
@@ -268,7 +253,7 @@ procedure TTaskList.AddTasks( iTaskList : TTaskList );
    newlist.free;
  end;
 
-procedure TTaskList.removeclient( const AClient : TClientConnection );
+procedure TTaskList.removeclient( const AClient : TTileClient );
  var i, l : integer;
      it : TTaskItem;
  begin
@@ -277,7 +262,7 @@ procedure TTaskList.removeclient( const AClient : TClientConnection );
    while i < l do
     begin
       it := items[i];
-      if ( it is TClientTaskItem ) and ( TClientTaskItem( it ).Client.Context = AClient.Context ) then
+      if ( it is TClientTaskItem ) and TClientTaskItem( it ).Client.equals( AClient ) then
        begin
          remove( i, 1 );
          it.free;
@@ -297,7 +282,7 @@ function TTaskItem.runtask : boolean;
 
 
 //-----------------------------------
-constructor TClientTaskItem.create( const iClient : TClientConnection );
+constructor TClientTaskItem.create( const iClient : TTileClient );
  begin
    inherited create;
    Client := iClient;
@@ -305,12 +290,12 @@ constructor TClientTaskItem.create( const iClient : TClientConnection );
 
 function TClientTaskItem.runtask : boolean;
  begin
-   result := assigned( Client.Context.Connection );
+   result := Client.Connected;
  end;
 
 //-----------------------------------
 
-constructor TTask_BuildTile.create( const iClient : TClientConnection;
+constructor TTask_BuildTile.create( const iClient : TTileClient;
                                     iTile : TTerTile;
                                     iParams : tterrainparams );
 
@@ -598,7 +583,7 @@ function BuildResultSplatGrid( tile : ttertile;
 
 //------------------------
 
-constructor TTask_SendTile.create( const iClient : TClientConnection;
+constructor TTask_SendTile.create( const iClient : TTileClient;
                                    iTile : TTerTile;
                                    iLOD : dword );
  begin
@@ -626,7 +611,7 @@ function TTask_SendTile.RunTask : boolean;
    buflen := length( buffer );
 
    { send message + tile headers }
-   SendClientMsgHeader( client, msg_Tile, buflen + sizeof( TTileHeader ));
+   client.SendClientMsgHeader( msg_Tile, buflen + sizeof( TTileHeader ));
    client.Send( resulttileinfo, sizeof( TTileHeader ));
    client.SendBuffer( buffer, buflen );
 
@@ -635,7 +620,7 @@ function TTask_SendTile.RunTask : boolean;
 
 //----------------------------
 
-constructor TTask_SendWater.create( const iClient : TClientConnection;
+constructor TTask_SendWater.create( const iClient : TTileClient;
                                     iTile : TTerTile;
                                     iLOD : dword );
  begin
@@ -686,7 +671,7 @@ function TTask_SendWater.RunTask : boolean;
       Move( resultwater.depthptr^, buffer[bufpos], resultwater.wxh*sizeof(single));
       inc( bufpos, resultterrain.wxh*sizeof(single) );
       Move( resultflora.depthptr^, buffer[bufpos], resultflora.wxh*sizeof(single));
-      SendClientMsgHeader( client, msg_Water2, buflen + sizeof( TTileHeader ));
+      client.SendClientMsgHeader( msg_Water2, buflen + sizeof( TTileHeader ));
       resultterrain.free;
       resultflora.free;
     end
@@ -721,7 +706,7 @@ function TTask_SendWater.RunTask : boolean;
       Move( resultwatertex[0], buffer[bufpos], resultwater.wxh * sizeof( tvector2 ));
 
       { send message + tile headers }
-      SendClientMsgHeader( client, msg_Water, buflen + sizeof( TTileHeader ));
+      client.SendClientMsgHeader( msg_Water, buflen + sizeof( TTileHeader ));
     end;
    client.Send( resulttileinfo, sizeof( TTileHeader ));
    client.SendBuffer( buffer, buflen );
@@ -733,7 +718,7 @@ function TTask_SendWater.RunTask : boolean;
 
 //---------------------------
 
-constructor TTask_SendSplat.create( const iClient : TClientConnection;
+constructor TTask_SendSplat.create( const iClient : TTileClient;
                                     iTile : TTerTile;
                                     iLOD : dword );
  begin
@@ -767,14 +752,13 @@ function TTask_SendSplat.RunTask : boolean;
    Move( resultsplat.depthptr^, buffer[bufpos], buflen );
 
    { send message + tile headers }
-   SendClientMsgHeader( client, msg_Splat, buflen + sizeof( TTileHeader ));
+   client.SendClientMsgHeader( msg_Splat, buflen + sizeof( TTileHeader ));
    client.Send( resulttileinfo, sizeof( TTileHeader ));
    client.SendBuffer( buffer, buflen );
 
    resultsplat.free;
    result := true;
  end;
-
 
 //---------------------------------
 
@@ -814,7 +798,7 @@ function TCmdList.registercmd( cmd : string; cmdfunc : TCommandFunc ) : boolean;
      atinsert( i, TSrvCommand.create( cmd, cmdfunc ));
  end;
 
-function TCmdList.executecommand( client : TClientConnection;
+function TCmdList.executecommand( client : TTileClient;
                                   cmd : string;
                                  callback : TCommandCallback ) : integer;
  var i, l : integer;
@@ -871,7 +855,7 @@ function TCmdList.executecommand( client : TClientConnection;
        end;
     end;
 
-procedure buildTerrainArea( client : TClientConnection;
+procedure buildTerrainArea( client : TTileClient;
                             CenterX, CenterY : integer;
                             Radius : integer;
                             const Params : TTerrainParams;
@@ -884,7 +868,7 @@ procedure buildTerrainArea( client : TClientConnection;
    GTaskList.AddTask( TTask_SaveTiles.create );
  end;
 
-procedure buildWaterArea( client : TClientConnection;
+procedure buildWaterArea( client : TTileClient;
                           CenterX, CenterY : integer;
                           Radius : integer;
                           callback : TCommandCallback);
@@ -899,16 +883,16 @@ procedure buildWaterArea( client : TClientConnection;
 //---------------------------
 // Commands
 
-function cmdVersion( client : TClientConnection;
+function cmdVersion( client : TTileClient;
                      params : string;
                      callback : TCommandCallback ) : integer;
  begin
-   SendClientMsgHeader( client, msg_string, 0 );
+   client.SendClientMsgHeader( msg_string, 0 );
    client.SendString( version );
    Result := 1;
  end;
 
-function cmdBuildTile( client : TClientConnection;
+function cmdBuildTile( client : TTileClient;
                        params : string;
                        callback : TCommandCallback) : integer;
  var tileparams : TTerrainParams;
@@ -928,7 +912,7 @@ function cmdBuildTile( client : TClientConnection;
     end;
  end;
 
-function cmdWater( client : TClientConnection;
+function cmdWater( client : TTileClient;
                    params : string;
                    callback : TCommandCallback) : integer;
  var TileX, TileY : integer;
@@ -944,7 +928,7 @@ function cmdWater( client : TClientConnection;
    buildWaterArea( client, TileX, TileY, Radius, callback );
  end;
 
-function cmdDig( client : TClientConnection;
+function cmdDig( client : TTileClient;
                  params : string;
                  callback : TCommandCallback ) : integer;
  var worldpos : tvector2;
@@ -964,7 +948,7 @@ function cmdDig( client : TClientConnection;
     end;
  end;
 
-function cmdPile( client : TClientConnection;
+function cmdPile( client : TTileClient;
                  params : string;
                  callback : TCommandCallback ) : integer;
  var worldpos : tvector2;
@@ -981,7 +965,7 @@ function cmdPile( client : TClientConnection;
     end;
  end;
 
-function cmdPaint( client : TClientConnection;
+function cmdPaint( client : TTileClient;
                    params : string;
                    callback : TCommandCallback ) : integer;
  var worldpos : tvector2;

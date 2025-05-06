@@ -1,17 +1,6 @@
 { Terrain Server
-
-  Copyright 2018-2024 Benedikt Magnus, Michalis Kamburelis.
-
-  This file is part of "Castle Game Engine".
-
-  "Castle Game Engine" is free software; see the file COPYING.txt,
-  included in this distribution, for details about the copyright.
-
-  "Castle Game Engine" is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-  ----------------------------------------------------------------------------
+  This is based on the Castle Game Engine indy socket server demo.
+  erik@edj.net
 }
 
 { Main view, where most of the application logic takes place. }
@@ -175,14 +164,15 @@ procedure TViewMain.Update(const SecondsPassed: Single; var HandleInput: Boolean
 //     Application.ProcessMessage( false, false );
      task := GTaskList.Pop;
    end;
-
+                               (*
+                               replace this with checking subscriptions!
   if assigned( lastclient.context ) and WaterFlowThreads[0].DirtyTileList.nexttile( atile  ) then
    begin
      buildwaterArea( lastclient,
                      atile.info.tilex, atile.info.tiley,
                      0, {$ifdef fpc}@{$endif} HandleCommandCallback );
    end;
-
+                                 *)
 
 end;
 
@@ -194,18 +184,22 @@ end;
 
 procedure TViewMain.HandleDisconnected(AClient: TClientConnection);
 var success : boolean;
+    TileClient : TTileClient;
 begin
   Notification('Client disconnected');
+  TileClient := GClientList.getsubscriber( AClient );
+  GTaskList.removeclient( TileClient ); { remove any tasks queued by the client }
   success := GClientList.removesubscriber(AClient);
   assert( success );
-  GTaskList.removeclient( AClient ); { remove any tasks queued by the client }
 end;
 
 procedure TViewMain.HandleMessageReceived(const AMessage: String; AClient: TClientConnection);
+var TileClient : TTileClient;
 begin
   Notification('Client cmd: ' + AMessage);
   { prcess command }
-  GCmdList.executecommand( AClient, AMessage, {$ifdef FPC}@{$endif}HandleCommandCallback );
+  TileClient :=  GClientList.getsubscriber( AClient );
+  GCmdList.executecommand( TileClient, AMessage, {$ifdef FPC}@{$endif}HandleCommandCallback );
 end;
 
 procedure TViewMain.HandleCommandCallback( Msg : string );
