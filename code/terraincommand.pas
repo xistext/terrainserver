@@ -833,17 +833,7 @@ function TCmdList.executecommand( client : TClientConnection;
       result := TSrvCommand( at( i )).AFunc( client, params, callback );
  end;
 
-{ commands }
-
-function cmdVersion( client : TClientConnection;
-                     params : string;
-                     callback : TCommandCallback ) : integer;
- begin
-   SendClientMsgHeader( client, msg_string, 0 );
-   client.SendString( version );
-   Result := 1;
- end;
-
+//-----------------------------
 
     procedure SendTerrainTile( tx, ty : integer; data : pointer );
      var Tile : TTerTile;
@@ -863,19 +853,6 @@ function cmdVersion( client : TClientConnection;
         end;
      end;
 
-procedure buildArea( client : TClientConnection;
-                     CenterX, CenterY : integer;
-                     Radius : integer;
-                     const Params : TTerrainParams;
-                     callback : TCommandCallback);
- var IterateRec : TIterateRec;
- begin
-   iteraterec := initIterateRec( CenterX, CenterY, Radius, Client, Params, callback );
-   iteratearea( CenterX, CenterY, Radius,
-                @iteraterec, {$ifdef FPC}@{$endif}SendTerrainTile );
-   GTaskList.AddTask( TTask_SaveTiles.create );
- end;
-
    procedure SendWaterTile( tx, ty : integer; data : pointer );
     var Tile : TTerTile;
         LOD : dword;
@@ -894,17 +871,41 @@ procedure buildArea( client : TClientConnection;
        end;
     end;
 
+procedure buildTerrainArea( client : TClientConnection;
+                            CenterX, CenterY : integer;
+                            Radius : integer;
+                            const Params : TTerrainParams;
+                            callback : TCommandCallback);
+ var IterateRec : TIterateRec;
+ begin
+   iteraterec := initIterateRec( CenterX, CenterY, Radius, Client, Params, callback );
+   iteratearea( CenterX, CenterY, Radius,
+                @iteraterec, {$ifdef FPC}@{$endif}SendTerrainTile );
+   GTaskList.AddTask( TTask_SaveTiles.create );
+ end;
 
-procedure waterArea( client : TClientConnection;
-                     CenterX, CenterY : integer;
-                     Radius : integer;
-                     callback : TCommandCallback);
+procedure buildWaterArea( client : TClientConnection;
+                          CenterX, CenterY : integer;
+                          Radius : integer;
+                          callback : TCommandCallback);
  var TileY, TileY2 : Integer;
      IterateRec : TIterateRec;
  begin
    iteraterec := initIterateRec( CenterX, CenterY, Radius, Client, nil, callback );
    iteratearea( CenterX, CenterY, Radius,
                 @iteraterec, {$ifdef FPC}@{$endif}SendWaterTile );
+ end;
+
+//---------------------------
+// Commands
+
+function cmdVersion( client : TClientConnection;
+                     params : string;
+                     callback : TCommandCallback ) : integer;
+ begin
+   SendClientMsgHeader( client, msg_string, 0 );
+   client.SendString( version );
+   Result := 1;
  end;
 
 function cmdBuildTile( client : TClientConnection;
@@ -923,7 +924,7 @@ function cmdBuildTile( client : TClientConnection;
       Radius := 0;
       if parsetilexy( params, tilex, tiley ) and nextparam( params, param ) then
          Radius := intofstr( param );
-      buildArea( client, TileX, TileY, Radius, tileParams, callback );
+      buildTerrainArea( client, TileX, TileY, Radius, tileParams, callback );
     end;
  end;
 
@@ -940,7 +941,7 @@ function cmdWater( client : TClientConnection;
    Radius := 0;
    if parsetilexy( params, tilex, tiley ) and nextparam( params, param ) then
       Radius := intofstr( param );
-   WaterArea( client, TileX, TileY, Radius, callback );
+   buildWaterArea( client, TileX, TileY, Radius, callback );
  end;
 
 function cmdDig( client : TClientConnection;

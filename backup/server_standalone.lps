@@ -91,9 +91,10 @@
       <Unit11>
         <Filename Value="code\terraincommand.pas"/>
         <UnitName Value="TerrainCommand"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="848"/>
-        <CursorPos X="68" Y="905"/>
+        <TopLine Value="828"/>
+        <CursorPos X="6" Y="890"/>
         <UsageCount Value="101"/>
         <Loaded Value="True"/>
       </Unit11>
@@ -121,9 +122,8 @@
       </Unit14>
       <Unit15>
         <Filename Value="commoncode\terrainparams.pas"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="4"/>
-        <CursorPos X="16" Y="16"/>
+        <CursorPos X="52" Y="28"/>
         <UsageCount Value="117"/>
         <Loaded Value="True"/>
       </Unit15>

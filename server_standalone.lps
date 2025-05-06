@@ -91,9 +91,10 @@
       <Unit11>
         <Filename Value="code\terraincommand.pas"/>
         <UnitName Value="TerrainCommand"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="848"/>
-        <CursorPos X="68" Y="905"/>
+        <TopLine Value="888"/>
+        <CursorPos X="9" Y="944"/>
         <UsageCount Value="101"/>
         <Loaded Value="True"/>
       </Unit11>
@@ -121,7 +122,6 @@
       </Unit14>
       <Unit15>
         <Filename Value="commoncode\terrainparams.pas"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="4"/>
         <CursorPos X="52" Y="28"/>
         <UsageCount Value="117"/>
@@ -225,119 +225,119 @@
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
         <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="1013" Column="24" TopLine="978"/>
+        <Caret Line="1019" Column="18" TopLine="980"/>
       </Position1>
       <Position2>
         <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="1019" Column="18" TopLine="980"/>
+        <Caret Line="266" Column="22" TopLine="247"/>
       </Position2>
       <Position3>
         <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="266" Column="22" TopLine="247"/>
       </Position3>
       <Position4>
-        <Filename Value="code\terraincommand.pas"/>
-      </Position4>
-      <Position5>
         <Filename Value="code\gameviewmain.pas"/>
         <Caret Line="67" Column="15" TopLine="41"/>
+      </Position4>
+      <Position5>
+        <Filename Value="code\terraincommand.pas"/>
+        <Caret Line="140" Column="72" TopLine="97"/>
       </Position5>
       <Position6>
         <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="140" Column="72" TopLine="97"/>
       </Position6>
       <Position7>
         <Filename Value="code\terraincommand.pas"/>
+        <Caret Line="109" Column="20" TopLine="39"/>
       </Position7>
       <Position8>
         <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="109" Column="20" TopLine="39"/>
       </Position8>
       <Position9>
         <Filename Value="code\terraincommand.pas"/>
+        <Caret Line="120" Column="20" TopLine="43"/>
       </Position9>
       <Position10>
         <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="120" Column="20" TopLine="43"/>
+        <Caret Line="10" Column="15"/>
       </Position10>
       <Position11>
-        <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="10" Column="15"/>
-      </Position11>
-      <Position12>
         <Filename Value="commoncode\terrainparams.pas"/>
         <Caret Line="16" Column="16"/>
+      </Position11>
+      <Position12>
+        <Filename Value="code\terraincommand.pas"/>
       </Position12>
       <Position13>
         <Filename Value="code\terraincommand.pas"/>
+        <Caret Line="192" TopLine="115"/>
       </Position13>
       <Position14>
         <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="192" TopLine="115"/>
+        <Caret Line="160" Column="23" TopLine="121"/>
       </Position14>
       <Position15>
         <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="160" Column="23" TopLine="121"/>
+        <Caret Line="164" Column="26" TopLine="121"/>
       </Position15>
       <Position16>
         <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="164" Column="26" TopLine="121"/>
+        <Caret Line="174" Column="23" TopLine="121"/>
       </Position16>
       <Position17>
         <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="174" Column="23" TopLine="121"/>
+        <Caret Line="178" Column="26" TopLine="121"/>
       </Position17>
       <Position18>
         <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="178" Column="26" TopLine="121"/>
+        <Caret Line="188" Column="22" TopLine="121"/>
       </Position18>
       <Position19>
         <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="188" Column="22" TopLine="121"/>
+        <Caret Line="227" TopLine="155"/>
       </Position19>
       <Position20>
         <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="227" TopLine="155"/>
+        <Caret Column="16"/>
       </Position20>
       <Position21>
         <Filename Value="code\terraincommand.pas"/>
-        <Caret Column="16"/>
+        <Caret Line="196" Column="24" TopLine="126"/>
       </Position21>
       <Position22>
         <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="196" Column="24" TopLine="126"/>
+        <Caret Line="199" Column="27" TopLine="129"/>
       </Position22>
       <Position23>
         <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="199" Column="27" TopLine="129"/>
+        <Caret Line="223" Column="23" TopLine="153"/>
       </Position23>
       <Position24>
         <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="223" Column="23" TopLine="153"/>
+        <Caret Line="7" Column="23"/>
       </Position24>
       <Position25>
-        <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="7" Column="23"/>
-      </Position25>
-      <Position26>
         <Filename Value="commoncode\strtools.pas"/>
         <Caret Line="7" Column="39"/>
+      </Position25>
+      <Position26>
+        <Filename Value="code\terraincommand.pas"/>
+        <Caret Line="831" Column="50" TopLine="800"/>
       </Position26>
       <Position27>
         <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="831" Column="50" TopLine="800"/>
+        <Caret Line="840" Column="22" TopLine="801"/>
       </Position27>
       <Position28>
         <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="840" Column="22" TopLine="801"/>
+        <Caret Line="873" Column="68" TopLine="817"/>
       </Position28>
       <Position29>
         <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="873" Column="68" TopLine="817"/>
+        <Caret Line="905" Column="68" TopLine="848"/>
       </Position29>
       <Position30>
         <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="905" Column="68" TopLine="848"/>
+        <Caret Line="890" Column="6" TopLine="828"/>
       </Position30>
     </JumpHistory>
     <RunParams>

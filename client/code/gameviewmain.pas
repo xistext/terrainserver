@@ -73,6 +73,7 @@ type
     ToolPileIndicator : TCastleShape;
     ToolDigIndicator : TCastleShape;
 
+    ColorPicker : TCastleShape;
     TexturePreview1 : TCastleImageControl;
     TexturePreview2 : TCastleImageControl;
     TexturePreview3 : TCastleImageControl;
@@ -192,6 +193,7 @@ begin
   TexturePreview2.Color := vector4(1,1,1,0.5);
   TexturePreview2.AlphaChannel := acAuto;
 
+  ColorPicker.Exists := false;
   ColorSliderChange( self );
   UpdatePositionIndicator;
 
@@ -482,6 +484,8 @@ procedure TViewMain.ClickTool( Sender:Tobject );
    else
    if buttonpile.pressed then
       activetool := tool_pile;
+   ColorPicker.Exists := activetool = tool_brush;
+   ColorPicker.Translation := vector2( 80, 0 );
    ColorSliderChange( self );
  end;
 
