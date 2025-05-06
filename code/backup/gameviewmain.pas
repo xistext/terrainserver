@@ -99,6 +99,16 @@ begin
   inherited;
 end;
 
+   procedure updatewaterclient( Client : TTileClient; Tile : TTerTile; LOD : integer; data : pointer );
+    var viewmain : TViewMain;
+    begin
+     viewmain := TViewMain( data );
+     buildwaterArea( Client,
+                     tile.info.tilex, tile.info.tiley,
+                     0, 0, {$ifdef fpc}@{$endif} viewmain.HandleCommandCallback );
+
+    end;
+
 procedure TViewMain.Update(const SecondsPassed: Single; var HandleInput: Boolean);
  var connected : boolean;
      task : TTaskItem;
@@ -161,19 +171,11 @@ procedure TViewMain.Update(const SecondsPassed: Single; var HandleInput: Boolean
   while assigned( task ) do
    begin
      task.RunTask;
-//     Application.ProcessMessage( false, false );
+     Application.ProcessMessage( false, false );
      task := GTaskList.Pop;
    end;
-                               (*
-                               replace this with checking subscriptions!
-  if assigned( lastclient.context ) and WaterFlowThreads[0].DirtyTileList.nexttile( atile  ) then
-   begin
-     buildwaterArea( lastclient,
-                     atile.info.tilex, atile.info.tiley,
-                     0, {$ifdef fpc}@{$endif} HandleCommandCallback );
-   end;
-                                 *)
 
+  GClientList.IterateSubscriptions( {$ifdef FPC}@{$endif}updatewaterclient, self );
 end;
 
 procedure TViewMain.HandleConnected(AClient: TClientConnection);
@@ -194,10 +196,12 @@ begin
 end;
 
 procedure TViewMain.HandleMessageReceived(const AMessage: String; AClient: TClientConnection);
+var TileClient : TTileClient;
 begin
   Notification('Client cmd: ' + AMessage);
   { prcess command }
-  GCmdList.executecommand( AClient, AMessage, {$ifdef FPC}@{$endif}HandleCommandCallback );
+  TileClient :=  GClientList.getsubscriber( AClient );
+  GCmdList.executecommand( TileClient, AMessage, {$ifdef FPC}@{$endif}HandleCommandCallback );
 end;
 
 procedure TViewMain.HandleCommandCallback( Msg : string );

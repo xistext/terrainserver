@@ -11,9 +11,15 @@ uses Collect,
 type TSubscription = record
         LOD  : integer;
         Tile : TTerTile;
-        LastUpdateTime : integer;
+        LastUpdateTime : single;
       end;
 
+     TTileClient = class; { forward }
+
+     TSubscriptionProc = procedure( client : TTileClient;
+                                    tile   : TTerTile;
+                                    LOD    : integer;
+                                    data   : pointer );
 
      TTileClient = class
 
@@ -31,6 +37,7 @@ type TSubscription = record
                                        msglen  : dword = 0;
                                        requestid : dword = 0 );
         procedure setsubscription( atile : ttertile; iLOD : integer );
+        procedure iteratesubscriptions( callback : tsubscriptionproc; data : pointer );
 
         protected
 
@@ -42,6 +49,7 @@ type TSubscription = record
 
         function getsubscriber( const aclient : TClientConnection ) : TTileClient;
         function removesubscriber( const aclient : TClientConnection ) : boolean;
+        procedure iteratesubscriptions( callback : tsubscriptionproc; data : pointer );
 
       end;
 
@@ -74,7 +82,10 @@ procedure TTileClient.setsubscription( atile : ttertile; iLOD : integer );
       if tile = atile then
        begin
          if LOD <> iLOD then
+          begin
+            LOD := iLOD;
             LastUpdateTime := -1;
+          end;
          exit;
        end;
     end;
@@ -114,6 +125,21 @@ procedure TTileClient.SendString( AString : string );
    fClient.SendString( AString );
  end;
 
+procedure TTileClient.iteratesubscriptions( callback : tsubscriptionproc; data : pointer );
+ var i, c : integer;
+ begin
+   c := length( subscriptions );
+   for i := 0 to c - 1 do with subscriptions[i] do
+    begin
+      if (( LastUpdateTime < 0 ) and ( Tile.LastUpdateTime > 0 )) or
+         (( LastUpdateTime > 0 ) and ( LastUpdateTime < Tile.LastUpdateTime )) then
+       begin
+         callback( self, Tile, LOD, data );
+         LastUpdateTime := Tile.LastUpdateTime;
+       end;
+    end;
+ end;
+
 //-----------------------
 
 function TTileClients.getsubscriber( const aclient : TClientConnection ) : TTileClient;
@@ -149,6 +175,14 @@ function TTileClients.removesubscriber( const aclient : TClientConnection ) : bo
        end;
     end;
  end;
+
+procedure TTileClients.iteratesubscriptions( callback : tsubscriptionproc; data : pointer );
+ var i : integer;
+ begin
+   for i := 0 to count - 1 do
+      TTileClient( at( i )).iteratesubscriptions( callback, data );
+ end;
+
 
 initialization
    GClientList := TTileClients.create;

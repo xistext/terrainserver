@@ -106,6 +106,7 @@ const GCmdList : TCmdList = nil;
 procedure buildwaterArea( client : TTileClient;
                           CenterX, CenterY : integer;
                           Radius : integer;
+                          LOD : integer;
                           callback : TCommandCallback);
 
 
@@ -151,13 +152,13 @@ procedure iteratearea( X, Y, Radius : integer;
  end;
 
 type TIterateRec = record
-                     CenterX, CenterY, Radius : integer;
+                     CenterX, CenterY, Radius, LOD : integer;
                      Client : TTileClient;
                      Params : TTerrainParams;
                      callback : TCommandCallback;
                     end;
 
-    function initIteraterec( iCenterX, iCenterY, iRadius : integer;
+    function initIteraterec( iCenterX, iCenterY, iRadius, iLOD : integer;
                              iClient : TTileClient;
                              iParams : TTerrainParams;
                              icallback : TCommandCallback ) : TIterateRec;
@@ -167,6 +168,7 @@ type TIterateRec = record
           CenterX := iCenterX;
           CenterY := iCenterY;
           Radius := iRadius;
+          LOD := iLOD;
           Params := iParams;
           callback := icallback;
           Client := iclient;
@@ -832,6 +834,7 @@ function TCmdList.executecommand( client : TTileClient;
                 GTaskList.AddTask( TTask_BuildTile.create( client, Tile, Params ) );
              GTaskList.AddTask( TTask_SendTile.create( client, Tile, LOD ) );
              GTaskList.AddTask( TTask_SendSplat.create( client, Tile, 1 ) );
+             Client.setsubscription( Tile, LOD );
              Callback('');
            end;
         end;
@@ -839,18 +842,13 @@ function TCmdList.executecommand( client : TTileClient;
 
    procedure SendWaterTile( tx, ty : integer; data : pointer );
     var Tile : TTerTile;
-        LOD : dword;
     begin
       with  titeraterec( data^ ) do
        begin
-         LOD := trunc(sqrt( sqr( tx - CenterX ) + sqr( ty - CenterY )));
-         if LOD <= Radius then
+         if UpdateTile( tx, ty, tile, false ) then
           begin
-            if UpdateTile( tx, ty, tile, false ) then
-             begin
-               GTaskList.AddTask( TTask_SendWater.create( client, Tile, LOD ) );
-               Callback('');
-             end;
+            GTaskList.AddTask( TTask_SendWater.create( client, Tile, LOD ) );
+          //  Callback('');
           end;
        end;
     end;
@@ -862,7 +860,7 @@ procedure buildTerrainArea( client : TTileClient;
                             callback : TCommandCallback);
  var IterateRec : TIterateRec;
  begin
-   iteraterec := initIterateRec( CenterX, CenterY, Radius, Client, Params, callback );
+   iteraterec := initIterateRec( CenterX, CenterY, Radius, 1, Client, Params, callback );
    iteratearea( CenterX, CenterY, Radius,
                 @iteraterec, {$ifdef FPC}@{$endif}SendTerrainTile );
    GTaskList.AddTask( TTask_SaveTiles.create );
@@ -871,11 +869,11 @@ procedure buildTerrainArea( client : TTileClient;
 procedure buildWaterArea( client : TTileClient;
                           CenterX, CenterY : integer;
                           Radius : integer;
+                          LOD : integer;
                           callback : TCommandCallback);
- var TileY, TileY2 : Integer;
-     IterateRec : TIterateRec;
+ var IterateRec : TIterateRec;
  begin
-   iteraterec := initIterateRec( CenterX, CenterY, Radius, Client, nil, callback );
+   iteraterec := initIterateRec( CenterX, CenterY, Radius, LOD, Client, nil, callback );
    iteratearea( CenterX, CenterY, Radius,
                 @iteraterec, {$ifdef FPC}@{$endif}SendWaterTile );
  end;
@@ -925,7 +923,7 @@ function cmdWater( client : TTileClient;
    Radius := 0;
    if parsetilexy( params, tilex, tiley ) and nextparam( params, param ) then
       Radius := intofstr( param );
-   buildWaterArea( client, TileX, TileY, Radius, callback );
+   buildWaterArea( client, TileX, TileY, Radius, 1, callback );
  end;
 
 function cmdDig( client : TTileClient;
