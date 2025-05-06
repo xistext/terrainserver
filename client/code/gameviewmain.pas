@@ -123,6 +123,7 @@ type
                                 out Y: Single;
                                 heighttype : byte = 0 ): boolean;
     procedure UseTool( const pos : tvector3 );
+    procedure UpdateFPSLabel;
     procedure UpdatePositionIndicator;
    end;
 
@@ -220,8 +221,20 @@ procedure TViewMain.UpdatePositionIndicator;
    AltitudeIndicator.Translation := vector2( 0, ElevationIndicator.Height - 2 + agl );
  end;
 
-procedure TViewMain.Update(const SecondsPassed: Single; var HandleInput: Boolean);
+procedure TViewMain.UpdateFPSLabel;
  var fps : single;
+ begin
+   fps := Container.Fps.RealFps;
+   FPSLabel.Caption := Format('%2.0ffps', [fps]);
+   case trunc( fps / 30 ) of
+      0 : FPSLabel.Color := Vector4( 1, 0, 0, 0.5 );
+      1 : FPSLabel.Color := Vector4( 1, 1, 0, 0.5 );
+    else
+       FPSLabel.Color := vector4( 0, 1, 0, 0.5 );
+    end;
+ end;
+
+procedure TViewMain.Update(const SecondsPassed: Single; var HandleInput: Boolean);
  begin
   inherited;
   if connectionstatus = status_connecting then
@@ -238,16 +251,9 @@ procedure TViewMain.Update(const SecondsPassed: Single; var HandleInput: Boolean
         end
       end;
    end;
+  UpdateFPSlabel;
+
   MainNavigation.MouseLook := {( GActiveDrag = self ) and} ( buttonMiddle in Container.MousePressed );
-  fps := Container.Fps.RealFps;
-  FPSLabel.Caption := Format('%2.0ffps', [fps]);
-  if fps >= 60 then
-     FPSLabel.Color := vector4( 0, 1, 0, 1  )
-  else
-  if fps >= 30 then
-     FPSLabel.Color := Vector4( 1, 1, 0, 1 )
-  else
-     FPSLabel.Color := Vector4( 1, 0, 0, 1 )
 end;
 
 procedure TViewMain.HandleConnected;

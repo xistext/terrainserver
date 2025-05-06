@@ -23,6 +23,7 @@ uses Classes,
   idGlobal,
   CastleVectors, CastleWindow, CastleComponentSerialize, CastleUIControls, CastleControls,
   CastleKeysMouse, CastleClientServer, CastleNotifications,
+  ClientList,
   TerServerCommon, TerrainData, TerrainCommand,
   WaterFlow,
   liveTime,
@@ -187,13 +188,16 @@ end;
 
 procedure TViewMain.HandleConnected(AClient: TClientConnection);
 begin
-  LastClient := AClient;{!}
+  GClientList.getsubscriber( AClient );
   Notification('Client connected');
 end;
 
 procedure TViewMain.HandleDisconnected(AClient: TClientConnection);
+var success : boolean;
 begin
   Notification('Client disconnected');
+  success := GClientList.removesubscriber(AClient);
+  assert( success );
   GTaskList.removeclient( AClient ); { remove any tasks queued by the client }
 end;
 

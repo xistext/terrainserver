@@ -4,7 +4,7 @@ interface
 
 uses Classes, SysUtils, Collect, TerServerCommon, terrainparams,
      CastleVectors, CastleTerrain, watergrid, basetools,
-     math, castletransform, castlewindow,
+     math, castletransform, castlewindow, clientlist,
      {$ifdef terserver}castlefindfiles, castlefilesutils,{$endif}
      debug;
 
@@ -608,6 +608,8 @@ procedure TTerTile.Dig( const WorldPos : TVector2; Amount : single; radius : int
    MaxTileIx := TerrainGrid.wh - 1;
    LimitMax( TilePosI.X, MaxTileIx );
    LimitMax( TilePosI.Y, MaxTileIx );
+
+
    TerrainGrid.addxyvalue( tileposI.x, tileposI.y, amount );
  end;
 
