@@ -14,14 +14,8 @@ const buildradius : integer = 4; //4
 
     //  GSteepEmphasis : single = 10;
       GTerrainSeed   : integer = 0;
-
       freshdigcolor : integer = 0;
 
-         (*
-const transitionsize = 20; { how many base grid cells to use as transition zone
-                             around a tile where it borders a tile with different
-                             terraindata source }
-           *)
 type TTerrainNoiseParams = record
         Octaves    : single;
         Smoothness : single;
@@ -49,9 +43,34 @@ type TTerrainNoiseParams = record
         function keyof( item : pointer ) : pointer; override;
       end;
 
+function divofLOD( LOD : dword ) : dword;
+
 const TerrainTypes : TTerrainTypeList = nil;
 
 implementation
+
+function divofLOD( LOD : dword ) : dword;
+ begin
+   result := 60;
+   case LOD of
+      0, 1 : result := 1;
+      2 : result := 2;
+      3 : result := 3;
+      4 : result := 4;
+      5 : result := 5;
+      6 : result := 6;
+      7 : result := 8;
+      8 : result := 10;
+      9 : result := 12;
+      10 : result := 15;
+      11 : result := 20;
+      12 : result := 24;
+      13 : result := 30;
+      14 : result := 40;
+    end;
+ end;
+
+//-----------------------------
 
 function TTerrainTypeList.compare(item1, item2 : pointer) : integer;
  begin

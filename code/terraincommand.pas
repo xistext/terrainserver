@@ -4,7 +4,7 @@ interface
 
 uses Classes, SysUtils, Collect,
      IdGlobal,
-     BaseThread,
+     BaseThread, StrTools,
      CastleClientServer, CastleVectors, castleterrain,
      TerServerCommon,
      TerrainParams, TerrainData,
@@ -153,28 +153,28 @@ procedure iteratearea( X, Y, Radius : integer;
     end;
  end;
 
+type TIterateRec = record
+                     CenterX, CenterY, Radius : integer;
+                     Client : TClientConnection;
+                     Params : TTerrainParams;
+                     callback : TCommandCallback;
+                    end;
 
-
-  function divofLOD( LOD : dword ) : dword;
-   begin
-     result := 60;
-     case LOD of
-        0, 1 : result := 1;
-        2 : result := 2;
-        3 : result := 3;
-        4 : result := 4;
-        5 : result := 5;
-        6 : result := 6;
-        7 : result := 8;
-        8 : result := 10;
-        9 : result := 12;
-        10 : result := 15;
-        11 : result := 20;
-        12 : result := 24;
-        13 : result := 30;
-        14 : result := 40;
-      end;
-   end;
+    function initIteraterec( iCenterX, iCenterY, iRadius : integer;
+                             iClient : TClientConnection;
+                             iParams : TTerrainParams;
+                             icallback : TCommandCallback ) : TIterateRec;
+     begin
+       with result do
+        begin
+          CenterX := iCenterX;
+          CenterY := iCenterY;
+          Radius := iRadius;
+          Params := iParams;
+          callback := icallback;
+          Client := iclient;
+        end
+     end;
 
   function UpdateTile(       TileX, TileY : integer;
                          var ATile : TTerTile;
@@ -833,39 +833,6 @@ function TCmdList.executecommand( client : TClientConnection;
       result := TSrvCommand( at( i )).AFunc( client, params, callback );
  end;
 
-   procedure stripleadingspaces( var astr : string ); inline;
-    var spacecount : integer;
-        l : integer;
-    begin
-      spacecount := 0;
-      l := length( astr );
-      while ( spacecount < l ) and ( astr[spacecount+1] = ' ' ) do
-         inc( spacecount );
-      delete( astr, 1, spacecount );
-    end;
-
-function nextparam( var params : string;
-                    var param : string ) : boolean;
- var i : integer;
- begin
-   param := params;
-   i := pos( ',', params );
-   result := i > 0;
-   if result then
-    begin
-      param := copy( params, 1, i - 1 );
-      delete( params, 1, i );
-
-    end
-   else
-    begin
-      param := params;
-      params := '';
-      result := param <> '';
-    end;
-
- end;
-
 { commands }
 
 function cmdVersion( client : TClientConnection;
@@ -877,44 +844,24 @@ function cmdVersion( client : TClientConnection;
    Result := 1;
  end;
 
-function intofstr( astr : string ) : integer;
- var code : integer;
- begin
-   val( AStr, result, code );
- end;
 
-function singleofstr( astr : string ) : single;
-var code : integer;
- begin
-   val( AStr, result, code );
- end;
-
-type TIterateRec = record
-                     CenterX, CenterY, Radius : integer;
-                     Client : TClientConnection;
-                     Params : TTerrainParams;
-                     callback : TCommandCallback;
-                    end;
-
- procedure SendATile( tx, ty : integer; data : pointer );
-  var iteratedata : TIterateRec;
-      Tile : TTerTile;
-      LOD : dword;
-  begin
-    iteratedata := titeraterec( data^ );
-    with iteratedata do
+    procedure SendTerrainTile( tx, ty : integer; data : pointer );
+     var Tile : TTerTile;
+         LOD : dword;
      begin
-       LOD := trunc(sqrt( sqr( tx - CenterX ) + sqr( ty - CenterY )));
-       if LOD <= Radius then
+       with  titeraterec( data^ ) do
         begin
-          if UpdateTile( tx, ty, tile ) then { if the tile was created then we have to add a task to build it }
-             GTaskList.AddTask( TTask_BuildTile.create( client, Tile, Params ) );
-          GTaskList.AddTask( TTask_SendTile.create( client, Tile, LOD ) );
-          GTaskList.AddTask( TTask_SendSplat.create( client, Tile, 1 ) );
-          Callback('');
+          LOD := trunc(sqrt( sqr( tx - CenterX ) + sqr( ty - CenterY )));
+          if LOD <= Radius then
+           begin
+             if UpdateTile( tx, ty, tile ) then { if the tile was created then we have to add a task to build it }
+                GTaskList.AddTask( TTask_BuildTile.create( client, Tile, Params ) );
+             GTaskList.AddTask( TTask_SendTile.create( client, Tile, LOD ) );
+             GTaskList.AddTask( TTask_SendSplat.create( client, Tile, 1 ) );
+             Callback('');
+           end;
         end;
      end;
-  end;
 
 procedure buildArea( client : TClientConnection;
                      CenterX, CenterY : integer;
@@ -923,106 +870,42 @@ procedure buildArea( client : TClientConnection;
                      callback : TCommandCallback);
  var IterateRec : TIterateRec;
  begin
-   iteraterec.CenterX := CenterX;
-   iteraterec.CenterY := CenterY;
-   iteraterec.Radius := Radius;
-   iteraterec.Params := Params;
-   iteraterec.callback := callback;
-   iteraterec.Client := client;
+   iteraterec := initIterateRec( CenterX, CenterY, Radius, Client, Params, callback );
    iteratearea( CenterX, CenterY, Radius,
-                @iteraterec, {$ifdef FPC}@{$endif}SendATile );
+                @iteraterec, {$ifdef FPC}@{$endif}SendTerrainTile );
    GTaskList.AddTask( TTask_SaveTiles.create );
  end;
+
+   procedure SendWaterTile( tx, ty : integer; data : pointer );
+    var Tile : TTerTile;
+        LOD : dword;
+    begin
+      with  titeraterec( data^ ) do
+       begin
+         LOD := trunc(sqrt( sqr( tx - CenterX ) + sqr( ty - CenterY )));
+         if LOD <= Radius then
+          begin
+            if UpdateTile( tx, ty, tile, false ) then
+             begin
+               GTaskList.AddTask( TTask_SendWater.create( client, Tile, LOD ) );
+               Callback('');
+             end;
+          end;
+       end;
+    end;
+
 
 procedure waterArea( client : TClientConnection;
                      CenterX, CenterY : integer;
                      Radius : integer;
                      callback : TCommandCallback);
- procedure SendATile( tx, ty : integer );
-  var Tile : TTerTile;
-      LOD : dword;
-  begin
-    LOD := trunc(sqrt( sqr( tx - CenterX ) + sqr( ty - CenterY )));
-    if LOD <= Radius then
-     begin
-       if UpdateTile( tx, ty, tile, false ) then { if the tile was created then we have to add a task to build it }
-        begin
-          GTaskList.AddTask( TTask_SendWater.create( client, Tile, LOD ) );
-          Callback('');
-        end;
-     end;
-  end;
-
  var TileY, TileY2 : Integer;
-     i, r : integer;
+     IterateRec : TIterateRec;
  begin
-   SendATile( CenterX, CenterY );
-   for r := 1 to radius do
-    begin
-      TileY := CenterY - r;
-      TileY2 := CenterY + r;
-      { do long end top and bottom }
-      SendATile( CenterX, TileY );
-      SendATile( CenterX, CenterY + r );
-      { do sides left, right }
-      SendATile( CenterX - r, CenterY );
-      SendATile( CenterX + r, CenterY );
-      for i := 1 to r - 1 do
-        begin
-          SendATile( CenterX - i, TileY );
-          SendATile( CenterX + i, TileY );
-          SendATile( CenterX - i, TileY2 );
-          SendATile( CenterX + i, TileY2 );
-          SendATile( CenterX - r, CenterY - i );
-          SendATile( CenterX - r, CenterY + i );
-          SendATile( CenterX + r, CenterY - i );
-          SendATile( CenterX + r, CenterY + i );
-        end;
-      SendATile( CenterX - r, CenterY - r );
-      SendATile( CenterX - r, CenterY + r );
-      SendATile( CenterX + r, CenterY - r );
-      SendATile( CenterX + r, CenterY + r );
-    end;
+   iteraterec := initIterateRec( CenterX, CenterY, Radius, Client, nil, callback );
+   iteratearea( CenterX, CenterY, Radius,
+                @iteraterec, {$ifdef FPC}@{$endif}SendWaterTile );
  end;
-
-
-
-function parseTileXY( var params : string;
-                       var TileX, TileY : integer ) : boolean;
- var param : string;
- begin
-   result := nextparam( params, param );
-   if result then
-    begin
-      TileX := intofstr( param );
-      result := nextparam( params, param );
-      if result then
-         TileY := intofstr( param );
-    end;
- end;
-
-function parseWorldXY( var params : string;
-                       var WorldX, WorldY : single ) : boolean;
- var param : string;
- begin
-   result := nextparam( params, param );
-   if result then
-    begin
-      WorldX := singleofstr( param );
-      result := nextparam( params, param );
-      if result then
-         WorldY := singleofstr( param );
-    end;
- end;
-
-function parseInt( var params : string;
-                   var anint : integer ) : boolean;
-var param : string;
-begin
-  result := nextparam( params, param );
-  if result then
-     anint := intofstr( param );
-end;
 
 function cmdBuildTile( client : TClientConnection;
                        params : string;
