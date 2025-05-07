@@ -29,6 +29,8 @@ const
   tool_pile  = 3;
   tool_globe = 4;
 
+const fogfactor : single = 0.0;
+
 type
 
   { Main view, where most of the application logic takes place. }
@@ -54,6 +56,7 @@ type
     ButtonGrid    : TCastleButton;
      LabelGridScale : TCastleLabel;
     ButtonWater   : TCastleButton;
+    ButtonFog     : TCastleButton;
 
     ColorPreview : TCastleShape;
     RedSlider : TCastleIntegerSlider;
@@ -161,9 +164,12 @@ begin
   inherited;
   GParentComponent := Viewport1.Items;
   ButtonCreateClient.OnClick := {$ifdef FPC}@{$endif} ClickCreateClient;
+
   ButtonGrid.OnClick := {$ifdef FPC}@{$endif} ClickLayer;
   ButtonWater.OnClick := {$ifdef FPC}@{$endif} ClickLayer;
   ButtonContour.OnClick := {$ifdef FPC}@{$endif} ClickLayer;
+  ButtonFog.OnClick := {$ifdef FPC}@{$endif} ClickLayer;
+
   ButtonSend.OnClick := {$ifdef FPC}@{$endif} ClickSend;
 
   RedSlider.OnChange := {$ifdef FPC}@{$endif} ColorSliderChange;
@@ -216,7 +222,7 @@ begin
   WorldOptionsPanel.Exists := false;
 
   glGetIntegerv(GL_MAX_VERTEX_UNIFORM_COMPONENTS, @MaxVertexUniformComponents);
-  dbgwriteln(format('GL_MAX_VERTEX_UNIFORM_COMPONENTS: %d', [MaxVertexUniformComponents]));
+  infowrite('GL_MAX_VERTEX_UNIFORM_COMPONENTS: %d', [MaxVertexUniformComponents]);
 end;
 
 procedure TViewMain.Stop;
@@ -259,7 +265,7 @@ procedure TViewMain.Update(const SecondsPassed: Single; var HandleInput: Boolean
      connectiontimeout := connectiontimeout + secondspassed;
      if connectiontimeout > 1 then
       begin
-        dbgwriteln( 'Terrain server at '+GDefaulthost+':'+inttostr(GDefaultPort)+' not found.' );
+        infowrite( 'Terrain server at '+GDefaulthost+':'+inttostr(GDefaultPort)+' not found.' );
         if FClient <> nil then
         begin
           connectionstatus := status_disconnected;
@@ -275,7 +281,7 @@ end;
 
 procedure TViewMain.HandleConnected;
 begin
-  DbgWriteln('Connected to terrain server.');
+  InfoWrite('Connected to terrain server.');
   UpdateViewAnchor( vector2( 0, 0 ));
   connectionstatus := status_connected;
   SetCreateClientMode( connectionstatus, ButtonCreateClient );
@@ -284,7 +290,7 @@ end;
 
 procedure TViewMain.HandleDisconnected;
 begin
-  DbgWriteln('Disconnected from terrain server.');
+  InfoWrite('Disconnected from terrain server.');
   ButtonSend.Enabled := false;
   connectionstatus := status_disconnected;
   SetCreateClientMode( connectionstatus, ButtonCreateClient );
@@ -294,7 +300,7 @@ end;
 
 procedure TViewMain.HandleMessageReceived(const AMessage: String);
 begin
-  DbgWriteln('Received message: ' + AMessage);
+  InfoWrite('Received message: ' + AMessage);
 end;
 
 procedure TViewMain.ClickCreateClient(Sender: TObject);
@@ -302,7 +308,7 @@ begin
   case connectionstatus of
     status_disconnected :
     begin
-      DBGWriteln( 'Connecting to terrain server at '+GDefaultHost + ':' + IntToStr( GDefaultPort ) +'...');
+      InfoWrite( 'Connecting to terrain server at '+GDefaultHost + ':' + IntToStr( GDefaultPort ) +'...');
       FClient := TTerClient.Create;
       FClient.Hostname := GDefaultHost;
       FClient.Port := GDefaultPort;
@@ -330,14 +336,35 @@ begin
   SetCreateClientMode( connectionstatus, ButtonCreateClient );
 end;
 
+ procedure RemoveWaterMesh( Layer : TCastleTransform;
+                            Tile : TTerTile );
+  var g : TCastleTransform;
+  begin
+    g := Tile.WaterGraphics;
+    if assigned( g ) then
+     begin
+       Layer.Remove( g );
+       FreeAndNil( g );
+     end;
+  end;
+
+ procedure RemoveTerrainMesh( Layer : TCastleTransform;
+                              Tile : TTerTile );
+  var g : TCastleTransform;
+  begin
+    g := Tile.TerrainGraphics;
+    if assigned( g ) then
+     begin
+       Layer.Remove( g );
+       FreeAndNil( g );
+     end;
+  end;
+
+
  procedure CreateWaterMesh( Layer : TCastleTransform;
                             Tile : TTerTile );
   begin
-    if assigned( Tile.WaterGraphics ) then
-     begin
-       Layer.Remove( Tile.WaterGraphics );
-       Tile.WaterGraphics.Free;
-     end;
+    RemoveWaterMesh( Layer, Tile );
     Tile.WaterGraphics := TWaterMesh.Create2( Layer, Tile );
     Layer.Add( Tile.WaterGraphics );
   end;
@@ -345,11 +372,7 @@ end;
  procedure CreateTerrainMesh( Layer : TCastleTransform;
                               Tile : TTerTile );
   begin
-    if assigned( Tile.TerrainGraphics ) then
-     begin
-       Layer.Remove( Tile.TerrainGraphics );
-       Tile.TerrainGraphics.Free;
-     end;
+    RemoveTerrainMesh( Layer, Tile );
     Tile.TerrainGraphics := TTerrainMesh.Create2( Layer, Tile );
     Layer.Add( Tile.TerrainGraphics );
   end;
@@ -379,17 +402,27 @@ procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
                     TTerrainMesh( Tile.WaterGraphics ).UpdateVerticesTexture( texgrid );
                   end;
      msg_tile : begin
-                  if ( not assigned( Tile.TerrainGraphics )) or
-                     ( Tile.Info.TileSz <> tileInfo.TileSz ) then
+                  if not assigned( Tile.TerrainGraphics ) then
                    begin
                      Tile.Info := TileInfo;
                      CreateTerrainMesh( TerrainLayer, Tile );
+                     CreateWaterMesh( WaterLayer, Tile );
+                   end
+                  else
+                   begin
+                     if ( Tile.Info.TileSz <> tileInfo.TileSz ) then
+                      begin
+                        Tile.Info := TileInfo;
+                        CreateTerrainMesh( TerrainLayer, Tile );
+                        CreateWaterMesh( WaterLayer, Tile );
+                      end;
                    end;
                   { update tile graphics }
                   TTerrainMesh( Tile.TerrainGraphics ).UpdateFromGrid( TileGrid );
                 end;
-      msg_water2 : begin
+      msg_water2 : begin { this version of water sends the terrain, flora and water depth grids to calculate the water layer on the client }
                      assert( assigned( tilegrid ) and assigned( watergrid ) and assigned( floragrid ));
+                     { calculate water elevations }
                      waterh := watergrid.ptrix(0);
                      terrainh := tilegrid.ptrix(0);
                      florah := floragrid.ptrix(0);
@@ -406,12 +439,18 @@ procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
                            inc( terrainh );
                            inc( florah );
                          end;
-                     if ( not assigned( Tile.WaterGraphics )) or
-                       ( Tile.Info.TileSz <> tileInfo.TileSz ) then
+
+                     { build/update water and terrain as needed }
+                     if ( Tile.Info.TileSz <> tileinfo.tilesz ) then
                       begin
                         Tile.Info := TileInfo;
+                        CreateTerrainMesh( TerrainLayer, Tile );
+                        TTerrainMesh( Tile.TerrainGraphics ).UpdateFromGrid( tilegrid );
                         CreateWaterMesh( WaterLayer, Tile );
-                      end;
+                      end
+                     else
+                     if not assigned( tile.watergraphics ) then
+                        CreateWaterMesh( WaterLayer, Tile );
                      TTerrainMesh( Tile.WaterGraphics ).UpdateFromGrid( waterGrid );
                      TTerrainMesh( Tile.WaterGraphics ).UpdateVerticesTexture( texgrid );
                    end;
@@ -475,7 +514,18 @@ procedure TViewMain.ClickLayer(Sender: TObject);
       updateappearance := false;
       WaterLayer.Visible := Button.Pressed;
       Button.CustomBackground := not WaterLayer.Visible;
+    end
+   else
+   if button = buttonfog then
+    begin
+      updateappearance := false;
+      if Button.Pressed then
+         fogfactor := 1
+      else
+         fogfactor := 0;
+      UpdateFog;
     end;
+
   if updateappearance then for i := 0 to gtilelist.Count - 1 do
    begin
      Tile := TTerTile( gTileList.At( i ));
@@ -604,7 +654,10 @@ procedure TViewMain.UpdateViewAnchor( Pos : TVector2 );
 
 procedure TViewMain.UpdateFog;
  begin
-   Fog1.VisibilityRange := 60 * ViewRadiusSlider.Value + MainCamera.translation.y;
+   if fogfactor > 0 then
+      Fog1.VisibilityRange := ( 60 * ViewRadiusSlider.Value + MainCamera.translation.y )
+   else
+      Fog1.VisibilityRange := 1000;
  end;
 
 procedure TViewMain.ViewRadiusChange( sender : TObject );
@@ -822,5 +875,6 @@ begin
             end;
     end;
  end;
+
 
 end.

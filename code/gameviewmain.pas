@@ -230,14 +230,14 @@ begin
   FServer.OnConnected := {$ifdef FPC}@{$endif} HandleConnected;
   FServer.OnDisconnected := {$ifdef FPC}@{$endif} HandleDisconnected;
   FServer.OnMessageReceived := {$ifdef FPC}@{$endif} HandleMessageReceived;
-  dbgwriteln( 'Reading tiles...' );
+  infowrite( 'Reading tiles...' );
   FileCount := GTileList.ReadAllTerrainFiles( 'castle-data:/terrain' );
 
   FServer.Start;
-  dbgwriteln( inttostr( filecount )+' tiles read' );
+  Notification( inttostr( filecount )+' tiles read.' );
 
 //
-  Notification( 'Started' );
+  Notification( 'Started server.' );
 end;
 
 procedure TViewMain.ClickDestroyServer(Sender: TObject);
@@ -290,12 +290,15 @@ procedure TViewMain.ClickButtonDeleteTiles( Sender : TObject );
 procedure TViewMain.Notification( Msg : string );
  var alabel : TCastleLabel;
      item : TCastleUserInterface;
+     line : string;
  begin
    alabel := TCastleLabel.Create( VerticalGroup2 );
    alabel.FontSize := 12;
    alabel.AutoSize := true;
    alabel.Color := Vector4(1,1,1,1);
-   alabel.caption := FormatDateTime('yyyy.mm.dd hh:mm:ss', now )+ ' ' + Msg;
+   line := FormatDateTime('yyyy.mm.dd hh:mm:ss', now )+ ' ' + Msg;
+   alabel.caption := line ;
+   infowrite( line );
    VerticalGroup2.InsertBack( alabel );
    if VerticalGroup2.ControlsCount > 100 then
     begin

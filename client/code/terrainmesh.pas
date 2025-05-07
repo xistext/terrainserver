@@ -58,6 +58,10 @@ TTerrainMesh = class( TLiteMesh )
 
      function BuildTerrainEffect: TEffectNode;
 
+     public
+
+     property GridCount : integer read getGridCount write setGridCount;
+
    end;
 
 TWaterMesh = class( TTerrainMesh )
@@ -312,6 +316,7 @@ var i, j, c, posy : integer;
    posy := 0;
    c := grid.wh;
    l := vertices.count;
+   assert( grid.wxh = l );
    ix := 0;
    for i := c - 1 downto 0 do
     begin

@@ -5,7 +5,7 @@ interface
 uses
   Classes, SysUtils,
   CastleUtils, CastleVectors, CastleTransform, CastleScene, CastleTriangles,
-  x3dNodes, debug;
+  x3dNodes;
 
 type
 

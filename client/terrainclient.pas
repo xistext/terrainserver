@@ -8,8 +8,7 @@ uses Classes, Generics.Collections,
      CastleVectors, watergrid, CastleRenderOptions,
      TerrainData, BaseMesh, x3dnodes, TerrainShader,
      TerrainMesh,
-     IDTCPClient,
-     debug;
+     IDTCPClient;
 
 type
      TTexPoints = array of tvector2;

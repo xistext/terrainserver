@@ -347,6 +347,56 @@
                   },
                   "VerticalAnchorParent" : "vpTop",
                   "VerticalAnchorSelf" : "vpTop"
+                },
+                {
+                  "$$ClassName" : "TCastleButton",
+                  "CustomBackgroundDisabled" : {
+                    "$$ClassName" : "TCastleImagePersistent"
+                  },
+                  "CustomBackgroundFocused" : {
+                    "$$ClassName" : "TCastleImagePersistent"
+                  },
+                  "CustomBackgroundNormal" : {
+                    "$$ClassName" : "TCastleImagePersistent"
+                  },
+                  "CustomBackgroundPressed" : {
+                    "$$ClassName" : "TCastleImagePersistent",
+                    "AlphaChannel" : "acBlending",
+                    "ColorPersistent" : {
+                      "$$ClassName" : "TCastleColorPersistent",
+                      "Alpha" : 9.4117647409439087E-001,
+                      "Blue" : 0.0000000000000000E+000,
+                      "Red" : 0.0000000000000000E+000
+                    }
+                  },
+                  "CustomColorPressedPersistent" : {
+                    "$$ClassName" : "TCastleColorPersistent",
+                    "Alpha" : 4.9803921580314636E-001,
+                    "Green" : 1.0000000000000000E+000
+                  },
+                  "EditorSelectOnHover" : false,
+                  "Image" : {
+                    "$$ClassName" : "TCastleImagePersistent",
+                    "URL" : "castle-data:/icon/fogicon.png"
+                  },
+                  "ImageMargin" : 0.0000000000000000E+000,
+                  "Name" : "ButtonFog",
+                  "PaddingHorizontal" : 0.0000000000000000E+000,
+                  "PaddingVertical" : 0.0000000000000000E+000,
+                  "Pressed" : true,
+                  "TintPressedPersistent" : {
+                    "$$ClassName" : "TCastleColorPersistent",
+                    "Alpha" : 4.9803921580314636E-001,
+                    "Blue" : 0.0000000000000000E+000,
+                    "Red" : 0.0000000000000000E+000
+                  },
+                  "Toggle" : true,
+                  "TranslationPersistent" : {
+                    "$$ClassName" : "TCastleVector2Persistent",
+                    "Y" : -9.6000000000000000E+001
+                  },
+                  "VerticalAnchorParent" : "vpTop",
+                  "VerticalAnchorSelf" : "vpTop"
                 }
               ]
             },
@@ -590,7 +640,13 @@
                         "Red" : 1.0000000000000000E+000
                       },
                       "Thumb" : {
-                        "$$ClassName" : "TCastleImagePersistent"
+                        "$$ClassName" : "TCastleImagePersistent",
+                        "ColorPersistent" : {
+                          "$$ClassName" : "TCastleColorPersistent",
+                          "Blue" : 0.0000000000000000E+000,
+                          "Green" : 0.0000000000000000E+000,
+                          "Red" : 0.0000000000000000E+000
+                        }
                       },
                       "TranslationPersistent" : {
                         "$$ClassName" : "TCastleVector2Persistent",
@@ -1415,7 +1471,7 @@
                       "ColorPersistent" : {
                         "$$ClassName" : "TCastleColorPersistent",
                         "Alpha" : 4.9803921580314636E-001,
-                        "Blue" : 1.0000000000000000E+000
+                        "Green" : 4.9803921580314636E-001
                       },
                       "FontScale" : 5.0000000000000000E-001,
                       "HorizontalAnchorParent" : "hpRight",
@@ -1466,7 +1522,8 @@
                       "ColorPersistent" : {
                         "$$ClassName" : "TCastleColorPersistent",
                         "Alpha" : 4.9803921580314636E-001,
-                        "Green" : 0.0000000000000000E+000,
+                        "Blue" : 0.0000000000000000E+000,
+                        "Green" : 4.9803921580314636E-001,
                         "Red" : 0.0000000000000000E+000
                       },
                       "Height" : 4.0000000000000000E+000,

@@ -3,10 +3,10 @@ unit TerrainData;
 interface
 
 uses Classes, SysUtils, Collect, TerServerCommon, terrainparams,
-     CastleVectors, CastleTerrain, watergrid, basetools,
-     math, castletransform, castlewindow,
+     CastleVectors, CastleTerrain,
      {$ifdef terserver}castlefindfiles, castlefilesutils,{$endif}
-     debug;
+     math, castletransform, castlewindow,
+     watergrid, basetools;
 
 const terrainpath = 'data\terrain\';
       terrainext  = '.is.terra';
@@ -177,12 +177,12 @@ function TLockingCollection.lock : boolean;
       dec( timeout );
       if timeout > 0 then
        begin
-         dbgwrite('.');
+//         dbgwrite('.');
          sleep( 10 ); {!need timeout}
        end
       else
        begin
-         dbgwrite('!');
+//         dbgwrite('!');
          result := false;
          break;
        end;
@@ -349,7 +349,7 @@ procedure TTilelist.FoundTerFile( const FileInfo : TFileInfo; var StopSearch : b
    dotpos := pos( '.', filename );
    if dotpos > 0 then
       system.delete( filename, dotpos, length( filename ) - dotpos + 1 );
-   dbgwrite( filename + '  ' );
+//   dbgwrite( filename + '  ' );
    tilepos := parsetilepos( filename );
    tile := initxy( tilepos.x, tilepos.y, GDefGridCellCount );
    tile.LoadFromFile;
@@ -575,7 +575,7 @@ function TTerTile.SaveToFile : boolean;
       savegrid( fileroot + waterext, getWaterGrid );
       savegrid( fileroot + splatext, getSplatGrid );
       savegrid( fileroot + floraext, getFloraGrid );
-      dbgwrite( 'Saved '+tileid+'.  ' );
+//      dbgwrite( 'Saved '+tileid+'.  ' );
       if dirty then
          status := status xor tile_dirty;
     end;

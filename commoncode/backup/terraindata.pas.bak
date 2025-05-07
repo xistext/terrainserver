@@ -3,10 +3,10 @@ unit TerrainData;
 interface
 
 uses Classes, SysUtils, Collect, TerServerCommon, terrainparams,
-     CastleVectors, CastleTerrain, watergrid, basetools,
-     math, castletransform, castlewindow,
+     CastleVectors, CastleTerrain,
      {$ifdef terserver}castlefindfiles, castlefilesutils,{$endif}
-     debug;
+     math, castletransform, castlewindow,
+     watergrid, basetools;
 
 const terrainpath = 'data\terrain\';
       terrainext  = '.is.terra';
@@ -177,12 +177,12 @@ function TLockingCollection.lock : boolean;
       dec( timeout );
       if timeout > 0 then
        begin
-         dbgwrite('.');
+//         dbgwrite('.');
          sleep( 10 ); {!need timeout}
        end
       else
        begin
-         dbgwrite('!');
+//         dbgwrite('!');
          result := false;
          break;
        end;
@@ -227,7 +227,7 @@ procedure TTileList.iteratetiles( tileproc : TIterateTilesProc;
    while i < count do
     begin
       doremove := false;
-      tileproc( ttertile( at( i ), doremove, data );
+      tileproc( ttertile( at( i )), doremove, data );
       if doremove then
          atfree( i )
       else
@@ -349,7 +349,7 @@ procedure TTilelist.FoundTerFile( const FileInfo : TFileInfo; var StopSearch : b
    dotpos := pos( '.', filename );
    if dotpos > 0 then
       system.delete( filename, dotpos, length( filename ) - dotpos + 1 );
-   dbgwrite( filename + '  ' );
+//   dbgwrite( filename + '  ' );
    tilepos := parsetilepos( filename );
    tile := initxy( tilepos.x, tilepos.y, GDefGridCellCount );
    tile.LoadFromFile;
