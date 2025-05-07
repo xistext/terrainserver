@@ -36,6 +36,8 @@ type
   published
     { Components designed using CGE editor.
       These fields will be automatically initialized at Start. }
+    Fog1 : TCastleFog;
+
     LabelFps: TCastleLabel;
     EditHostname: TCastleEdit;
     EditPort: TCastleIntegerEdit;
@@ -133,6 +135,7 @@ type
     procedure UpdateFPSLabel;
     procedure UpdatePositionIndicator;
     procedure UpdateViewAnchor( Pos : TVector2 );
+    procedure UpdateFog;
    end;
 
 var
@@ -599,8 +602,14 @@ procedure TViewMain.UpdateViewAnchor( Pos : TVector2 );
    GTileList.iteratetiles( {$ifdef fpc}@{$endif} removedistanttile, @removerec );
  end;
 
+procedure TViewMain.UpdateFog;
+ begin
+   Fog1.VisibilityRange := 60 * ViewRadiusSlider.Value + MainCamera.translation.y;
+ end;
+
 procedure TViewMain.ViewRadiusChange( sender : TObject );
  begin
+   UpdateFog;
    updateviewanchor( viewanchor );
  end;
 
@@ -725,6 +734,7 @@ procedure TViewMain.Mousewheel( direction : integer );
       MainNavigation.MoveHorizontalSpeed := sqrt(amt);
     MainCamera.Translation := pos;
     UpdatePositionIndicator;
+    UpdateFog;
  end;
 
 function TViewMain.Press(const Event: TInputPressRelease): boolean;

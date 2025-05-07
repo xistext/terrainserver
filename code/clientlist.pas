@@ -23,12 +23,11 @@ type TSubscription = record
 
      TTileClient = class
 
-        subscriptions : array of TSubscription;
-
         constructor create( const aclient : TClientConnection );
         function equals( atileclient : TTileClient ) : boolean;
         function connected : boolean;
 
+        { send data handling }
         procedure Send( const Buffer; BufLength : integer );
         procedure SendBuffer( const buffer : TIdBytes; ALength : integer );
         procedure SendString( AString : string );
@@ -36,13 +35,17 @@ type TSubscription = record
         procedure SendClientMsgHeader( msgtype : TMsgType;
                                        msglen  : dword = 0;
                                        requestid : dword = 0 );
+
+        { subscription management }
         procedure setsubscription( atile : ttertile; iLOD : integer );
+        procedure removesubscription( atile : ttertile );
         function getsubscription( atile : ttertile; var subscription : TSubscription ) : boolean;
         procedure iteratesubscriptions( callback : tsubscriptionproc; data : pointer );
 
         protected
 
         fClient : TClientConnection;
+        subscriptions : array of TSubscription;
 
       end;
 
@@ -111,6 +114,18 @@ procedure TTileClient.setsubscription( atile : ttertile; iLOD : integer );
       LastUpdateTime := -1;
       LOD := iLOD;
     end;
+ end;
+
+procedure TTileClient.removesubscription( atile : ttertile );
+ var i : integer;
+ begin
+   i := 0;
+   for i := 0 to length( subscriptions ) - 1 do
+      if subscriptions[i].tile = atile then
+       begin
+         delete( subscriptions, i, 1 );
+         exit;
+       end;
  end;
 
 procedure TTileClient.SendClientMsgHeader( msgtype : TMsgType;

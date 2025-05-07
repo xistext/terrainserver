@@ -846,7 +846,10 @@ function TCmdList.executecommand( client : TTileClient;
                 Client.setsubscription( Tile, LOD );
                 Callback('');
               end;
-           end;
+           end
+          else
+          if updatetile( tx, ty, tile, false ) then
+             Client.RemoveSubscription( tile );
         end;
      end;
 

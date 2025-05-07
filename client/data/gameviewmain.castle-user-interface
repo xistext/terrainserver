@@ -16,6 +16,7 @@
           "$$ClassName" : "TCastleViewport",
           "Background" : "Background1",
           "Camera" : "MainCamera",
+          "Fog" : "Fog1",
           "FullSize" : true,
           "Height" : 3.0000000000000000E+002,
           "HeightFraction" : 8.9999997615814209E-001,
@@ -87,13 +88,36 @@
           "$NonVisualComponents" : [
             {
               "$$ClassName" : "TCastleBackground",
+              "GroundBottomColorPersistent" : {
+                "$$ClassName" : "TCastleColorRGBPersistent",
+                "Blue" : 4.3529412150382996E-001,
+                "Green" : 4.9803921580314636E-001,
+                "Red" : 4.9803921580314636E-001
+              },
               "GroundEquatorColorPersistent" : {
                 "$$ClassName" : "TCastleColorRGBPersistent",
                 "Blue" : 4.3529412150382996E-001,
                 "Green" : 4.9803921580314636E-001,
                 "Red" : 4.9803921580314636E-001
               },
-              "Name" : "Background1"
+              "Name" : "Background1",
+              "SkyEquatorColorPersistent" : {
+                "$$ClassName" : "TCastleColorRGBPersistent",
+                "Blue" : 6.8627452850341797E-001,
+                "Green" : 6.2352943420410156E-001,
+                "Red" : 6.2352943420410156E-001
+              }
+            },
+            {
+              "$$ClassName" : "TCastleFog",
+              "ColorPersistent" : {
+                "$$ClassName" : "TCastleColorRGBPersistent",
+                "Blue" : 4.3529412150382996E-001,
+                "Green" : 4.9803921580314636E-001,
+                "Red" : 4.9803921580314636E-001
+              },
+              "Name" : "Fog1",
+              "VisibilityRange" : 1.8000000000000000E+002
             }
           ],
           "$Children" : [
