@@ -1396,7 +1396,8 @@
                     {
                       "$$ClassName" : "TCastleIntegerSlider",
                       "Background" : {
-                        "$$ClassName" : "TCastleImagePersistent"
+                        "$$ClassName" : "TCastleImagePersistent",
+                        "URL" : "castle-data:/grid3.png"
                       },
                       "FontScale" : 5.0000000000000000E-001,
                       "Height" : 1.0000000000000000E+001,
@@ -1548,17 +1549,14 @@
                     "Green" : 1.2156862765550613E-001,
                     "Red" : 1.2156862765550613E-001
                   },
-                  "Height" : 2.5000000000000000E+001,
+                  "Height" : 2.0000000000000000E+001,
                   "HorizontalAnchorParent" : "hpRight",
                   "HorizontalAnchorSelf" : "hpRight",
                   "Name" : "ServerPanel",
                   "TranslationPersistent" : {
                     "$$ClassName" : "TCastleVector2Persistent",
-                    "X" : -8.0000000000000000E+001,
-                    "Y" : -5.5000000000000000E+001
+                    "X" : -8.0000000000000000E+001
                   },
-                  "VerticalAnchorParent" : "vpTop",
-                  "VerticalAnchorSelf" : "vpTop",
                   "Width" : 2.4000000000000000E+002,
                   "$Children" : [
                     {
@@ -1572,7 +1570,7 @@
                       "CaptureAllInput" : false,
                       "FontScale" : 5.0000000000000000E-001,
                       "Frame" : false,
-                      "Height" : 1.9000000000000000E+001,
+                      "Height" : 2.0000000000000000E+001,
                       "Name" : "EditSend",
                       "OutlineColorPersistent" : {
                         "$$ClassName" : "TCastleColorPersistent",
@@ -1581,8 +1579,7 @@
                       "Text" : "build 0,0,3",
                       "TranslationPersistent" : {
                         "$$ClassName" : "TCastleVector2Persistent",
-                        "X" : 2.0000000000000000E+001,
-                        "Y" : 6.0000000000000000E+000
+                        "X" : 2.0000000000000000E+001
                       },
                       "Width" : 1.9000000000000000E+002
                     },
@@ -1642,8 +1639,7 @@
                       },
                       "TranslationPersistent" : {
                         "$$ClassName" : "TCastleVector2Persistent",
-                        "X" : 2.1000000000000000E+002,
-                        "Y" : 5.3000001907348633E+000
+                        "X" : 2.1000000000000000E+002
                       },
                       "Width" : 3.0000000000000000E+001
                     },
@@ -1681,10 +1677,6 @@
                         "URL" : "castle-data:/icon/connecticon.png"
                       },
                       "Name" : "ButtonCreateClient",
-                      "TranslationPersistent" : {
-                        "$$ClassName" : "TCastleVector2Persistent",
-                        "Y" : 5.0000000000000000E+000
-                      },
                       "Width" : 2.0000000000000000E+001
                     }
                   ]
@@ -1716,9 +1708,9 @@
             },
             "TranslationPersistent" : {
               "$$ClassName" : "TCastleVector3Persistent",
-              "X" : 1.2141436767578125E+003,
-              "Y" : 1.0247335205078125E+003,
-              "Z" : 9.9996527099609375E+002
+              "X" : 1.3020008544921875E+003,
+              "Y" : 1.0250401611328125E+003,
+              "Z" : 1.0001185913085938E+003
             }
           },
           "InternalDesignNavigations[dnFly]" : {

@@ -375,6 +375,7 @@ var Appearance : TAppearanceNode;
     EffectNode : TEffectNode;
 begin
   Appearance := TAppearanceNode( rootnode.FindNode( TAppearanceNode, true ));
+  tphysicalmaterialnode( appearance.material ).Roughness := 1;
 
   EffectNode := TEffectNode( Appearance.fdEffects[0] );
   TSFFloat( EffectNode.Field( 'contour_scale' )).Value := ord( GShowContour ) * GContourScale;
