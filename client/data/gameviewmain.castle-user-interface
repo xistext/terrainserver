@@ -1320,7 +1320,8 @@
                       },
                       "FontScale" : 5.0000000000000000E-001,
                       "Height" : 1.0000000000000000E+001,
-                      "Max" : 4,
+                      "Max" : 9,
+                      "Min" : 1,
                       "Name" : "ViewRadiusSlider",
                       "Thumb" : {
                         "$$ClassName" : "TCastleImagePersistent"
@@ -1330,6 +1331,7 @@
                         "X" : 8.0000000000000000E+001,
                         "Y" : 6.0000000000000000E+001
                       },
+                      "Value" : 3,
                       "Width" : 1.0000000000000000E+002
                     }
                   ]

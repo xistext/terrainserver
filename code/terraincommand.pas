@@ -823,19 +823,29 @@ function TCmdList.executecommand( client : TTileClient;
 
     procedure SendTerrainTile( tx, ty : integer; data : pointer );
      var Tile : TTerTile;
-         LOD : dword;
+         LOD : integer;
+         lastLOD : integer;
+         subscription : TSubscription;
+         rebuild : boolean;
      begin
        with  titeraterec( data^ ) do
         begin
           LOD := trunc(sqrt( sqr( tx - CenterX ) + sqr( ty - CenterY )));
-          if LOD <= Radius then
+          if ( LOD <= Radius ) then
            begin
+             lastLOD := -1;
              if UpdateTile( tx, ty, tile ) then { if the tile was created then we have to add a task to build it }
-                GTaskList.AddTask( TTask_BuildTile.create( client, Tile, Params ) );
-             GTaskList.AddTask( TTask_SendTile.create( client, Tile, LOD ) );
-             GTaskList.AddTask( TTask_SendSplat.create( client, Tile, 1 ) );
-             Client.setsubscription( Tile, LOD );
-             Callback('');
+                GTaskList.AddTask( TTask_BuildTile.create( client, Tile, Params ) )
+             else
+             if Client.getSubscription( Tile, subscription ) then
+                lastLOD := subscription.LOD;
+             if lastLOD <> LOD then
+              begin
+                GTaskList.AddTask( TTask_SendTile.create( client, Tile, LOD ) );
+                GTaskList.AddTask( TTask_SendSplat.create( client, Tile, 1 ) );
+                Client.setsubscription( Tile, LOD );
+                Callback('');
+              end;
            end;
         end;
      end;

@@ -24,6 +24,10 @@ type PTerTile = ^TTerTile;
      TTerTile = class; { forward }
      TTileNeighbors = array[0..7] of TTerTile;
 
+     TIterateTilesProc = procedure( atile : ttertile;
+                                    var doremove : boolean;
+                                    data : pointer );
+
      TLockingCollection = class( tsortedcollection )
         constructor Create;
         function lock : boolean;
@@ -55,6 +59,8 @@ type PTerTile = ^TTerTile;
 
         function findtile( x, y : integer;
                            var ix : integer ) : boolean;
+
+        procedure iteratetiles( tileproc : TIterateTilesProc; data : pointer );
 
         {$ifdef terserver}
         function readallterrainfiles( path : string ) : integer;
@@ -93,6 +99,7 @@ type PTerTile = ^TTerTile;
         function gridStep : single;
         function tileid : string;
         function GetNeighbors : TTileNeighbors;
+        function WorldToLocal( const pos : TVector2 ) : TVector2;
 
         public
         {$ifdef terserver}
@@ -105,8 +112,6 @@ type PTerTile = ^TTerTile;
         function SaveToFile : boolean;
         function LoadFromFile : boolean;
         function DeleteMyFiles : boolean;
-
-        function WorldToLocal( const pos : TVector2 ) : TVector2;
 
         procedure Dig( const WorldPos : TVector2; Amount : single; Radius : integer = 1 );
         procedure Paint( const WorldPos : TVector2; EncodedColor : integer );
@@ -210,6 +215,24 @@ function TTileList.compare( item1, item2 : pointer ) : integer;
    result := compareint( h1.TileY, h2.TileY );
    if result = 0 then
       result := compareint( h1.TileX, h2.TileX );
+ end;
+
+procedure TTileList.iteratetiles( tileproc : TIterateTilesProc;
+                                  data : pointer );
+
+ var i : integer;
+     doremove : boolean;
+ begin
+   i := 0;
+   while i < count do
+    begin
+      doremove := false;
+      tileproc( ttertile( at( i ), doremove, data );
+      if doremove then
+         atfree( i )
+      else
+         inc( i );
+    end;
  end;
 
 function TTileList.findtile( x, y : integer;
@@ -458,6 +481,19 @@ function TTerTile.getWorldSize : single;
    result := GDefGridCellCount * GDefGridStep;
  end;
 
+function TTerTile.WorldToLocal( const pos : TVector2 ) : TVector2;
+ var factor : single;
+     offset : TVector2;
+     tilesize : single;
+ begin
+   factor := 1/GridStep;
+   tilesize := getWorldSize;
+
+   offset := vector2( info.tilex * tilesize, info.tiley * tilesize );
+   result := vector2((( pos.x - Offset.x ) + tilesize * 0.5 )*factor,
+                     (( pos.y - Offset.y ) + tilesize * 0.5 )*factor );
+ end;
+
 {$ifdef terserver}
 function TTerTile.getTerrainGrid : TSingleGrid;
  begin
@@ -580,20 +616,6 @@ function TTerTile.DeleteMyFiles : boolean;
    result := fileexists( filename );
    if result then
       CheckDeleteFile( filename );
- end;
-
-
-function TTerTile.WorldToLocal( const pos : TVector2 ) : TVector2;
- var factor : single;
-     offset : TVector2;
-     tilesize : single;
- begin
-   factor := 1/GridStep;
-   tilesize := getWorldSize;
-
-   offset := vector2( info.tilex * tilesize, info.tiley * tilesize );
-   result := vector2((( pos.x - Offset.x ) + tilesize * 0.5 )*factor,
-                     (( pos.y - Offset.y ) + tilesize * 0.5 )*factor );
  end;
 
 

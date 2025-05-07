@@ -37,6 +37,7 @@ type TSubscription = record
                                        msglen  : dword = 0;
                                        requestid : dword = 0 );
         procedure setsubscription( atile : ttertile; iLOD : integer );
+        function getsubscription( atile : ttertile; var subscription : TSubscription ) : boolean;
         procedure iteratesubscriptions( callback : tsubscriptionproc; data : pointer );
 
         protected
@@ -70,6 +71,19 @@ function TTileClient.equals( atileclient : TTileClient ) : boolean;
 function TTileClient.connected : boolean;
  begin
    result := assigned( fClient.Context.Connection );
+ end;
+
+function TTileClient.getsubscription( atile : ttertile; var subscription : TSubscription ) : boolean;
+ var i : integer;
+ begin
+   result := false;
+   for i := 0 to length( subscriptions ) - 1 do
+    begin
+      subscription := subscriptions[i];
+      result := subscription.tile = atile;
+      if result then
+         exit;
+    end;
  end;
 
 procedure TTileClient.setsubscription( atile : ttertile; iLOD : integer );

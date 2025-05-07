@@ -108,6 +108,7 @@ type
     procedure ClickSend(Sender: TObject);
     procedure ClickTool( Sender: TObject );
     procedure ColorSliderChange( sender : TObject );
+    procedure ViewRadiusChange( sender : TObject );
 
   public
     activetool : integer;
@@ -131,6 +132,7 @@ type
     procedure UseTool( const pos : tvector3 );
     procedure UpdateFPSLabel;
     procedure UpdatePositionIndicator;
+    procedure UpdateViewAnchor( Pos : TVector2 );
    end;
 
 var
@@ -146,7 +148,6 @@ begin
   ConnectionTimeout := 0;
   lockviewtoground := false;
   activetool := tool_none;
-  viewanchor := vector2( 0, 0 );
 end;
 
 procedure TViewMain.Start;
@@ -171,6 +172,7 @@ begin
   AlphaSlider3.OnChange :=  {$ifdef FPC}@{$endif} ColorSliderChange;
   AlphaSlider4.OnChange :=  {$ifdef FPC}@{$endif} ColorSliderChange;
   ToolRadiusSlider.OnChange :=  {$ifdef FPC}@{$endif} ColorSliderChange;
+  ViewRadiusSlider.OnChange := {$ifdef FPC}@{$endif} ViewRadiusChange;
 
   RedSlider.Value := trunc(ColorPreview.Color.X *15);
   GreenSlider.Value := trunc(ColorPreview.Color.Y *15);
@@ -271,7 +273,7 @@ end;
 procedure TViewMain.HandleConnected;
 begin
   DbgWriteln('Connected to terrain server.');
-  ClickSend( self );
+  UpdateViewAnchor( vector2( 0, 0 ));
   connectionstatus := status_connected;
   SetCreateClientMode( connectionstatus, ButtonCreateClient );
   ButtonSend.Enabled := FClient <> nil;
@@ -541,12 +543,71 @@ procedure TViewMain.ColorSliderChange( sender : TObject );
    ToolDigIndicator.Exists := activetool = tool_dig;
  end;
 
+
+  type tremovetilerecord = record
+          ViewMain : TViewMain;
+          cpt    : tpoint;
+          radius  : integer;
+        end;
+
+  procedure removedistanttile( atile : ttertile;
+                               var doremove : boolean;
+                               data : pointer );
+   var d : integer;
+       g : TCastleTransform;
+   begin
+     with tremovetilerecord( data^ ) do
+      begin
+        d := trunc( sqrt( sqr( cpt.x - atile.info.tilex ) + sqr( cpt.y - atile.info.tiley )));
+        doremove := d > radius;
+        if doremove then
+         begin
+           g := atile.terraingraphics;
+           if assigned( g ) then
+            begin
+              ViewMain.TerrainLayer.Remove( g );
+              g.free;
+              atile.terraingraphics := nil;
+            end;
+           g := atile.watergraphics;
+           if assigned( g ) then
+            begin
+              ViewMain.TerrainLayer.Remove( g );
+              g.free;
+              atile.watergraphics := nil;
+            end;
+         end;
+      end;
+   end;
+
+procedure TViewMain.UpdateViewAnchor( Pos : TVector2 );
+ var pt : TPoint;
+    cmd : string;
+    radius : integer; { radius in tile index unites }
+    removerec : tremovetilerecord;
+ begin
+   viewanchor := pos;
+   pt := GTileList.CalculateTileOffset( viewanchor );
+   radius := ViewRadiusSlider.Value;
+   cmd := 'build '+IntToStr( pt.x )+','+inttostr(pt.y)+','+inttostr(radius);
+   FClient.Send(cmd);
+
+   { remove distant tiles }
+   removerec.ViewMain := self;
+   removerec.radius := radius;
+   removerec.cpt := pt;
+   GTileList.iteratetiles( {$ifdef fpc}@{$endif} removedistanttile, @removerec );
+ end;
+
+procedure TViewMain.ViewRadiusChange( sender : TObject );
+ begin
+   updateviewanchor( viewanchor );
+ end;
+
 function TViewMain.MoveAllowed(const Sender: TCastleNavigation;
                                const OldPos, ProposedNewPos: TVector3; out NewPos: TVector3;
                                const Radius: Single; const BecauseOfGravity: Boolean): boolean;
  var terrainh : single;
-     pt : TPoint;
-     cmd : string;
  begin
    TerrainHeight( ProposedNewPos, TerrainH );
    NewPos := ProposedNewPos;
@@ -559,14 +620,7 @@ function TViewMain.MoveAllowed(const Sender: TCastleNavigation;
    UpdatePositionIndicator;
 
    if ( abs( proposedNewpos.x - viewanchor.x ) > 60  ) or ( abs( proposedNewpos.z - viewanchor.y ) > 60 ) then
-    begin
-      viewanchor := vector2( ProposedNewPos.X, ProposedNewPos.Z );
-      begin
-        pt := GTileList.CalculateTileOffset( viewanchor );
-        cmd := 'build '+IntToStr( pt.x )+','+inttostr(pt.y)+','+inttostr(ViewRadiusSlider.Value);
-        FClient.Send(cmd);
-      end;
-    end;
+      updateviewanchor( vector2( ProposedNewPos.X, ProposedNewPos.Z ));
    result := true;
  end;
 

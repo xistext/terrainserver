@@ -24,6 +24,10 @@ type PTerTile = ^TTerTile;
      TTerTile = class; { forward }
      TTileNeighbors = array[0..7] of TTerTile;
 
+     TIterateTilesProc = procedure( atile : ttertile;
+                                    var doremove : boolean;
+                                    data : pointer );
+
      TLockingCollection = class( tsortedcollection )
         constructor Create;
         function lock : boolean;
@@ -55,6 +59,8 @@ type PTerTile = ^TTerTile;
 
         function findtile( x, y : integer;
                            var ix : integer ) : boolean;
+
+        procedure iteratetiles( tileproc : TIterateTilesProc; data : pointer );
 
         {$ifdef terserver}
         function readallterrainfiles( path : string ) : integer;
@@ -209,6 +215,24 @@ function TTileList.compare( item1, item2 : pointer ) : integer;
    result := compareint( h1.TileY, h2.TileY );
    if result = 0 then
       result := compareint( h1.TileX, h2.TileX );
+ end;
+
+procedure TTileList.iteratetiles( tileproc : TIterateTilesProc;
+                                  data : pointer );
+
+ var i : integer;
+     doremove : boolean;
+ begin
+   i := 0;
+   while i < count do
+    begin
+      doremove := false;
+      tileproc( ttertile( at( i )), doremove, data );
+      if doremove then
+         atfree( i )
+      else
+         inc( i );
+    end;
  end;
 
 function TTileList.findtile( x, y : integer;
