@@ -13,6 +13,8 @@ You will need to set the server unit path to
   \TerrainServer\code and \TerrainServer\commoncode and to indy and cge.
 <p>
 You will want to set the client and server output paths to the
+  \TerrainServer\build\client and \TerrainServer\build\server folders so the
+  builds don't step on each other at common files.
 <p>
 Though client/server, it is currently only configured to work on the local
 machine.  Your firewall may need you to enable the port it uses, but it is only

@@ -4,7 +4,7 @@
     <PathDelim Value="\"/>
     <Version Value="12"/>
     <BuildModes Active="Debug"/>
-    <Units Count="44">
+    <Units Count="45">
       <Unit0>
         <Filename Value="client_standalone.dpr"/>
         <IsPartOfProject Value="True"/>
@@ -43,7 +43,7 @@
       <Unit5>
         <Filename Value="code\terrainmesh.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="14"/>
+        <EditorIndex Value="15"/>
         <TopLine Value="344"/>
         <CursorPos X="101" Y="403"/>
         <UsageCount Value="200"/>
@@ -52,7 +52,7 @@
       <Unit6>
         <Filename Value="..\commoncode\castleclientserver.pas"/>
         <UnitName Value="CastleClientServer"/>
-        <EditorIndex Value="17"/>
+        <EditorIndex Value="18"/>
         <TopLine Value="211"/>
         <CursorPos Y="249"/>
         <UsageCount Value="100"/>
@@ -70,7 +70,7 @@
         <EditorIndex Value="6"/>
         <TopLine Value="425"/>
         <CursorPos Y="440"/>
-        <UsageCount Value="90"/>
+        <UsageCount Value="92"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit8>
@@ -84,17 +84,16 @@
       <Unit10>
         <Filename Value="terrainclient.pas"/>
         <UnitName Value="TerrainClient"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="11"/>
         <TopLine Value="90"/>
-        <CursorPos X="95" Y="124"/>
+        <CursorPos X="94" Y="124"/>
         <UsageCount Value="110"/>
         <Loaded Value="True"/>
       </Unit10>
       <Unit11>
         <Filename Value="..\commoncode\terraindata.pas"/>
         <UnitName Value="TerrainData"/>
-        <EditorIndex Value="12"/>
+        <EditorIndex Value="13"/>
         <TopLine Value="54"/>
         <CursorPos X="70" Y="86"/>
         <UsageCount Value="107"/>
@@ -152,7 +151,7 @@
       </Unit18>
       <Unit19>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <EditorIndex Value="16"/>
+        <EditorIndex Value="17"/>
         <TopLine Value="83"/>
         <CursorPos Y="117"/>
         <UsageCount Value="103"/>
@@ -198,7 +197,7 @@
       </Unit24>
       <Unit25>
         <Filename Value="data\water\water.fs"/>
-        <EditorIndex Value="15"/>
+        <EditorIndex Value="16"/>
         <TopLine Value="107"/>
         <CursorPos X="42" Y="180"/>
         <UsageCount Value="102"/>
@@ -258,7 +257,7 @@
         <EditorIndex Value="7"/>
         <TopLine Value="1174"/>
         <CursorPos X="84" Y="1179"/>
-        <UsageCount Value="33"/>
+        <UsageCount Value="35"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit33>
@@ -289,7 +288,7 @@
         <EditorIndex Value="5"/>
         <TopLine Value="256"/>
         <CursorPos Y="322"/>
-        <UsageCount Value="61"/>
+        <UsageCount Value="63"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit37>
@@ -298,7 +297,7 @@
         <EditorIndex Value="4"/>
         <TopLine Value="866"/>
         <CursorPos Y="877"/>
-        <UsageCount Value="32"/>
+        <UsageCount Value="34"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit38>
@@ -307,17 +306,17 @@
         <EditorIndex Value="8"/>
         <TopLine Value="407"/>
         <CursorPos Y="444"/>
-        <UsageCount Value="32"/>
+        <UsageCount Value="34"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit39>
       <Unit40>
         <Filename Value="..\commoncode\collect.pas"/>
         <UnitName Value="Collect"/>
-        <EditorIndex Value="13"/>
+        <EditorIndex Value="14"/>
         <TopLine Value="149"/>
         <CursorPos Y="197"/>
-        <UsageCount Value="15"/>
+        <UsageCount Value="17"/>
         <Loaded Value="True"/>
       </Unit40>
       <Unit41>
@@ -333,17 +332,26 @@
         <EditorIndex Value="3"/>
         <TopLine Value="69"/>
         <CursorPos X="34" Y="144"/>
-        <UsageCount Value="12"/>
+        <UsageCount Value="14"/>
         <Loaded Value="True"/>
       </Unit42>
       <Unit43>
         <Filename Value="..\commoncode\debug.bak"/>
         <EditorIndex Value="2"/>
         <CursorPos Y="82"/>
-        <UsageCount Value="12"/>
+        <UsageCount Value="14"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit43>
+      <Unit44>
+        <Filename Value="..\readme.md"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="12"/>
+        <CursorPos X="51" Y="17"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="None"/>
+      </Unit44>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
