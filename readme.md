@@ -18,7 +18,8 @@ You will want to set the client and server output paths to the
 <p>
 Though client/server, it is currently only configured to work on the local
 machine.  Your firewall may need you to enable the port it uses, but it is only
-connecting from localhost, sending commands and receiving terrain data.
+connecting from localhost, sending commands and receiving terrain data.  Run
+the server first, or click the client's connect button.
 <p>
 This prototype is proof-of-concept code and will contain bugs.  You may use it
 as you see fit with the understanding that it is incomplete.  It builds a world
