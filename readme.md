@@ -6,6 +6,12 @@ versions of these in order to build.
 Server is \TerrainServer\server_standalone.lpi (lazarus) or .dpr (delphi)
 Client is \TerrainServer\client\client_standalone.lpi (lazarus) or .dpr (delphi)
 
+You will need to set the client unit path to
+  \TerrainServer\client\code and \TerrainServer\commoncode and to indy and cge.
+
+You will need to set the server unit path to
+  \TerrainServer\code and \TerrainServer\commoncode and to indy and cge.
+
 Though client/server, it is currently only configured to work on the local
 machine.  Your firewall may need you to enable the port it uses, but it is only
 connecting from localhost, sending commands and receiving terrain data.
