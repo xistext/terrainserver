@@ -1,5 +1,5 @@
-This is a terrain client/server demo is implemented using the
-Castle Game Engine and Indy libraries and builds with Lazarus/FPC though it
+This is terrain client/server demo is implemented using the
+Castle Game Engine and Indy libraries and builds with Lazarus/FPC and
 should build with Delphi. You will need to download and install the current
 versions of these in order to build.
 <p>
