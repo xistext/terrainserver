@@ -4,7 +4,7 @@ interface
 
 uses Classes, SysUtils, Collect, TerServerCommon, terrainparams,
      CastleVectors, CastleTerrain,
-     {$ifdef terserver}castlefindfiles, castlefilesutils,livetime,{$endif}
+     {$ifdef terserver}castlefindfiles, castlefilesutils,{$endif}
      math, castletransform, castlewindow,
      watergrid, basetools;
 
@@ -112,7 +112,11 @@ type PTerTile = ^TTerTile;
         { server stores all and manages the data }
         Status : TTileStatus;
         datalayers : TDataLayers;
+//        LastUpdateTime : single;
+        LastResulttilesz : integer; {? store per client or compute on client?}
 
+        function getLastUpdateTime( layerid : integer ) : single;
+        procedure setLastUpdateTime( layerid : integer; updatetime : single );
         procedure UpdateTerrainGridFromSource( Source : TCastleTerrainNoise );
 
         { file handling }
@@ -129,15 +133,11 @@ type PTerTile = ^TTerTile;
         function getWaterGrid : TSingleGrid;
         function getSplatGrid : TIntGrid;
         function getFloraGrid : TSingleGrid;
-        function getWaterUpdateTime : single;
-        procedure setWaterUpdateTime( updatetime : single );
         public
         property TerrainGrid : TSingleGrid read getTerrainGrid;
         property WaterGrid : TSingleGrid read getWaterGrid;
         property FloraGrid : TSingleGrid read getFloraGrid;
         property SplatGrid : TIntGrid read getSplatGrid;
-
-        property WaterUpdateTime : single read getWaterUpdateTime write setWaterUpdateTime;
         {$else}
         { client links to graphics }
         TerrainGraphics : TCastleTransform;
@@ -379,7 +379,7 @@ function TTileList.ReadAllTerrainFiles( path : string ) : integer;
 
 constructor TDataLayer.create( igridsz : dword );
  begin
-   LastUpdateTime := gametime;
+   LastUpdateTime := -1;
    initgrid( igridsz );
  end;
 
@@ -430,6 +430,8 @@ constructor TTerTile.create( const iInfo : TTileHeader );
    datalayers[layer_flora] := layer;
 
    status := 0;
+   //lastupdatetime := -1;
+   lastresulttilesz := 0;
    WaterToFlowList_high.addtask( TWaterTask.create( self ));
    {$else}
    TerrainGraphics := nil;
@@ -528,14 +530,14 @@ function TTerTile.getFloraGrid : TSingleGrid;
    Result := TSingleGrid( datalayers[layer_flora].DataGrid );
  end;
 
-function TTerTile.getWaterUpdateTime : single;
+function TTerTile.getLastUpdateTime( layerid : integer ) : single;
  begin
-   result := datalayers[layer_water].LastUpdateTime
+   Result := datalayers[layerid].LastUpdateTime;
  end;
 
-procedure TTerTile.setWaterUpdateTime( updatetime : single );
+procedure TTerTile.setLastUpdateTime( layerid : integer; updatetime : single );
  begin
-   datalayers[layer_water].LastUpdateTime := updatetime;
+   datalayers[layerid].LastUpdateTime := updatetime;
  end;
 
 procedure TTerTile.UpdateTerrainGridFromSource( Source : TCastleTerrainNoise );

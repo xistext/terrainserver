@@ -79,7 +79,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="165"/>
         <CursorPos Y="218"/>
-        <UsageCount Value="8"/>
+        <UsageCount Value="7"/>
       </Unit9>
       <Unit10>
         <Filename Value="terrainclient.pas"/>
@@ -104,14 +104,14 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="528"/>
         <CursorPos Y="561"/>
-        <UsageCount Value="6"/>
+        <UsageCount Value="5"/>
       </Unit12>
       <Unit13>
         <Filename Value="E:\wyrdforest\code\watergrid.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="77"/>
         <CursorPos X="104" Y="84"/>
-        <UsageCount Value="3"/>
+        <UsageCount Value="2"/>
       </Unit13>
       <Unit14>
         <Filename Value="..\commoncode\terrainparams.pas"/>
@@ -125,21 +125,21 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="6030"/>
         <CursorPos X="83" Y="6041"/>
-        <UsageCount Value="109"/>
+        <UsageCount Value="108"/>
       </Unit15>
       <Unit16>
         <Filename Value="E:\cge\src\base\castlerenderoptions_globals.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="205"/>
         <CursorPos X="5" Y="242"/>
-        <UsageCount Value="3"/>
+        <UsageCount Value="2"/>
       </Unit16>
       <Unit17>
         <Filename Value="E:\cge\src\transform\castletransform_initial_types.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="44"/>
         <CursorPos X="3" Y="81"/>
-        <UsageCount Value="43"/>
+        <UsageCount Value="42"/>
       </Unit17>
       <Unit18>
         <Filename Value="..\commoncode\basemesh.pas"/>
@@ -154,7 +154,7 @@
         <UnitName Value="CastleCameras"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="78" Y="12"/>
-        <UsageCount Value="5"/>
+        <UsageCount Value="4"/>
       </Unit19>
       <Unit20>
         <Filename Value="E:\cge\src\scene\castleterrain.pas"/>
@@ -162,14 +162,14 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="1634"/>
         <CursorPos X="7" Y="1669"/>
-        <UsageCount Value="69"/>
+        <UsageCount Value="68"/>
       </Unit20>
       <Unit21>
         <Filename Value="E:\cge\examples\deprecated_to_upgrade\fixed_camera_game\code\gamelocations.pas"/>
         <UnitName Value="GameLocations"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="3" Y="95"/>
-        <UsageCount Value="14"/>
+        <UsageCount Value="13"/>
       </Unit21>
       <Unit22>
         <Filename Value="data\terrain\textures\terrain.fs"/>
@@ -193,34 +193,34 @@
         <Filename Value="..\commoncode\waterparams.pas"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="73" Y="6"/>
-        <UsageCount Value="24"/>
+        <UsageCount Value="23"/>
       </Unit24>
       <Unit25>
         <Filename Value="..\commoncode\watergrid.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="123"/>
         <CursorPos X="5" Y="124"/>
-        <UsageCount Value="95"/>
+        <UsageCount Value="94"/>
       </Unit25>
       <Unit26>
         <Filename Value="..\commoncode\watercolor.pas"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="4" Y="12"/>
-        <UsageCount Value="86"/>
+        <UsageCount Value="85"/>
       </Unit26>
       <Unit27>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdBuffer.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="495"/>
         <CursorPos Y="532"/>
-        <UsageCount Value="85"/>
+        <UsageCount Value="84"/>
       </Unit27>
       <Unit28>
         <Filename Value="..\commoncode\layermarkup.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="35"/>
         <CursorPos X="38" Y="49"/>
-        <UsageCount Value="44"/>
+        <UsageCount Value="43"/>
       </Unit28>
       <Unit29>
         <Filename Value="E:\cge\src\ui\castlekeysmouse.pas"/>
@@ -228,14 +228,14 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="342"/>
         <CursorPos X="32" Y="378"/>
-        <UsageCount Value="42"/>
+        <UsageCount Value="41"/>
       </Unit29>
       <Unit30>
         <Filename Value="..\commoncode\x3dtools.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="210"/>
         <CursorPos X="41" Y="270"/>
-        <UsageCount Value="42"/>
+        <UsageCount Value="41"/>
       </Unit30>
       <Unit31>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdIOHandler.pas"/>
@@ -250,7 +250,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="225"/>
         <CursorPos X="33" Y="257"/>
-        <UsageCount Value="3"/>
+        <UsageCount Value="2"/>
       </Unit32>
       <Unit33>
         <Filename Value="E:\cge\src\images\castleimages.pas"/>
@@ -258,14 +258,14 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="89"/>
         <CursorPos X="3" Y="122"/>
-        <UsageCount Value="3"/>
+        <UsageCount Value="2"/>
       </Unit33>
       <Unit34>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\System\IdGlobal.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="5495"/>
         <CursorPos Y="5526"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit34>
       <Unit35>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdSocketHandle.pas"/>
@@ -280,7 +280,7 @@
         <EditorIndex Value="4"/>
         <TopLine Value="866"/>
         <CursorPos Y="877"/>
-        <UsageCount Value="49"/>
+        <UsageCount Value="50"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit36>
@@ -298,7 +298,7 @@
         <EditorIndex Value="9"/>
         <TopLine Value="149"/>
         <CursorPos Y="197"/>
-        <UsageCount Value="32"/>
+        <UsageCount Value="33"/>
         <Loaded Value="True"/>
       </Unit38>
       <Unit39>
@@ -307,21 +307,21 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="51844"/>
         <CursorPos X="29" Y="51899"/>
-        <UsageCount Value="7"/>
+        <UsageCount Value="6"/>
       </Unit39>
       <Unit40>
         <Filename Value="E:\cge\src\base\castleutils_read_write.inc"/>
         <EditorIndex Value="3"/>
         <TopLine Value="69"/>
         <CursorPos X="34" Y="144"/>
-        <UsageCount Value="29"/>
+        <UsageCount Value="30"/>
         <Loaded Value="True"/>
       </Unit40>
       <Unit41>
         <Filename Value="..\commoncode\debug.bak"/>
         <EditorIndex Value="2"/>
         <CursorPos Y="82"/>
-        <UsageCount Value="29"/>
+        <UsageCount Value="30"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit41>

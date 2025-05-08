@@ -870,6 +870,7 @@ procedure buildTerrainArea( client : TTileClient;
    iteratearea( CenterX, CenterY, Radius,
                 @iteraterec, {$ifdef FPC}@{$endif}SendTerrainTile );
    GTaskList.AddTask( TTask_SaveTiles.create );
+   Client.UnsubdistantTiles( point( centerx, centery ), radius );
  end;
 
 procedure buildWaterArea( client : TTileClient;

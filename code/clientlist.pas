@@ -2,7 +2,8 @@ unit clientlist;
 
 interface
 
-uses Collect,
+uses Classes,
+     Collect,
      IdGlobal,
      CastleClientServer,
      TerServerCommon,
@@ -41,6 +42,8 @@ type TSubscription = record
         procedure removesubscription( atile : ttertile );
         function getsubscription( atile : ttertile; var subscription : TSubscription ) : boolean;
         procedure iteratesubscriptions( callback : tsubscriptionproc; data : pointer );
+
+        procedure unsubdistanttiles( const pos : tpoint; radius : integer );
 
         protected
 
@@ -169,6 +172,23 @@ procedure TTileClient.iteratesubscriptions( callback : tsubscriptionproc; data :
          callback( self, Tile, LOD, data );
          LastUpdateTime := TileUpdateTime;
        end;
+    end;
+ end;
+
+procedure TTileClient.unsubdistanttiles( const pos : tpoint; radius : integer );
+ var i : integer;
+     item : TSubscription;
+     d : integer;
+ begin
+   i := 0;
+   while i < length( subscriptions ) do
+    begin
+      item := subscriptions[i];
+      d := trunc( sqrt( sqr( item.Tile.Info.TileX - pos.x ) + sqr( item.Tile.Info.TileY - pos.y )));
+      if d > radius then
+         delete( subscriptions, i, 1 )
+      else
+         inc( i );
     end;
  end;
 
