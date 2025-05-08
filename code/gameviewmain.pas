@@ -170,7 +170,7 @@ procedure TViewMain.Update(const SecondsPassed: Single; var HandleInput: Boolean
   while assigned( task ) do
    begin
      task.RunTask;
-     Application.ProcessMessage( false, false );
+//     Application.ProcessMessage( false, false );!!! breathing here can cause stack overflow.  messages are also checked during command callback, so won't choke
      task := GTaskList.Pop;
    end;
 

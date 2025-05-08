@@ -501,11 +501,13 @@ function TWaterTask.flowtile( amounttoflow : single ) : boolean;
 procedure TWaterTask.RunTask;
  var UpdateTime : single;
      Delta : single;
+     TileUpdateTime : single;
  begin
    UpdateTime := GameTime;
-   if ( TimeSpeed > 1E-5 ) and ( not cancelflow ) and ( WaterTile.LastUpdateTime >= 0 ) then
+   TileUpdateTime := WaterTile.WaterUpdateTime;
+   if ( TimeSpeed > 1E-5 ) and ( not cancelflow ) and ( TileUpdateTime >= 0 ) then
     begin
-      Delta := UpdateTime - WaterTile.LastUpdateTime;
+      Delta := UpdateTime - TileUpdateTime;
       if delta < 0.1 then
          exit;
       Delta := Delta * flowfactor;
@@ -513,7 +515,7 @@ procedure TWaterTask.RunTask;
     end;
    if cancelflow then
       exit;
-   WaterTile.LastUpdateTime := UpdateTime;
+   WaterTile.WaterUpdateTime := UpdateTime;
  end;
 
 initialization //===============================================================

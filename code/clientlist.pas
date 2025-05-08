@@ -156,15 +156,18 @@ procedure TTileClient.SendString( AString : string );
 
 procedure TTileClient.iteratesubscriptions( callback : tsubscriptionproc; data : pointer );
  var i, c : integer;
+     tileupdatetime : single;
  begin
    c := length( subscriptions );
    for i := 0 to c - 1 do with subscriptions[i] do
     begin
-      if (( LastUpdateTime < 0 ) and ( Tile.LastUpdateTime > 0 )) or
-         (( LastUpdateTime > 0 ) and ( LastUpdateTime < Tile.LastUpdateTime )) then
+      TileUpdateTime := Tile.WaterUpdateTime;
+
+      if (( LastUpdateTime < 0 ) and ( TileUpdateTime > 0 )) or
+         (( LastUpdateTime > 0 ) and ( LastUpdateTime < TileUpdateTime )) then
        begin
          callback( self, Tile, LOD, data );
-         LastUpdateTime := Tile.LastUpdateTime;
+         LastUpdateTime := TileUpdateTime;
        end;
     end;
  end;

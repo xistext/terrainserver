@@ -4,7 +4,7 @@ interface
 
 uses Classes, SysUtils, Collect, TerServerCommon, terrainparams,
      CastleVectors, CastleTerrain,
-     {$ifdef terserver}castlefindfiles, castlefilesutils,{$endif}
+     {$ifdef terserver}castlefindfiles, castlefilesutils,livetime,{$endif}
      math, castletransform, castlewindow,
      watergrid, basetools;
 
@@ -15,10 +15,12 @@ const terrainpath = 'data\terrain\';
       floraext    = '.is.flora';
       rootpath = 'e:\terrainserver\';
 
-      layer_terrain = 0;
-      layer_splat   = 1;
-      layer_water   = 2;
-      layer_flora   = 3;
+      { defined tile layers }
+
+      layer_terrain = 0; { height map  120x120 single }
+      layer_splat   = 1; { splat map    60x60 integer }
+      layer_water   = 2; { water depth 120x120 single }
+      layer_flora   = 3; { flora depth 120x120 single }
 
 type PTerTile = ^TTerTile;
      TTerTile = class; { forward }
@@ -35,6 +37,11 @@ type PTerTile = ^TTerTile;
         private
         locks : integer;
       end;
+
+     { TTilelist manages all the tiles and is essentially the World.
+       On the server this stores all the data for all the tiles.
+       On the client this indexes the graphics used to represent
+         the data received from the server }
 
      TTileList = class( TLockingCollection )
 
@@ -75,6 +82,8 @@ type PTerTile = ^TTerTile;
 
      TDataLayer = class
         DataGrid : TBaseDataGrid;
+        LastUpdateTime : single;
+        constructor create( igridsz : dword );
         procedure initgrid( igridsz : dword ); dynamic;
         function gridsz : dword;
       end;
@@ -88,9 +97,6 @@ type PTerTile = ^TTerTile;
      TTerTile = class
 
         Info   : TTileHeader;
-        {$ifdef terserver}
-        Status : TTileStatus;
-        {$endif}
 
         constructor create( const iInfo : TTileHeader );
         destructor destroy; override;
@@ -103,16 +109,18 @@ type PTerTile = ^TTerTile;
 
         public
         {$ifdef terserver}
+        { server stores all and manages the data }
+        Status : TTileStatus;
         datalayers : TDataLayers;
-        LastUpdateTime : single;
-        LastResulttilesz : integer; {? store per client or compute on client?}
 
         procedure UpdateTerrainGridFromSource( Source : TCastleTerrainNoise );
 
+        { file handling }
         function SaveToFile : boolean;
         function LoadFromFile : boolean;
         function DeleteMyFiles : boolean;
 
+        { tools }
         procedure Dig( const WorldPos : TVector2; Amount : single; Radius : integer = 1 );
         procedure Paint( const WorldPos : TVector2; EncodedColor : integer );
 
@@ -121,12 +129,17 @@ type PTerTile = ^TTerTile;
         function getWaterGrid : TSingleGrid;
         function getSplatGrid : TIntGrid;
         function getFloraGrid : TSingleGrid;
+        function getWaterUpdateTime : single;
+        procedure setWaterUpdateTime( updatetime : single );
         public
         property TerrainGrid : TSingleGrid read getTerrainGrid;
         property WaterGrid : TSingleGrid read getWaterGrid;
         property FloraGrid : TSingleGrid read getFloraGrid;
         property SplatGrid : TIntGrid read getSplatGrid;
+
+        property WaterUpdateTime : single read getWaterUpdateTime write setWaterUpdateTime;
         {$else}
+        { client links to graphics }
         TerrainGraphics : TCastleTransform;
         WaterGraphics : TCastleTransform;
         {$endif}
@@ -364,6 +377,12 @@ function TTileList.ReadAllTerrainFiles( path : string ) : integer;
 
 //-------------------------------
 
+constructor TDataLayer.create( igridsz : dword );
+ begin
+   LastUpdateTime := gametime;
+   initgrid( igridsz );
+ end;
+
 procedure TDataLayer.initgrid( igridsz : dword );
  begin
    DataGrid := tsinglegrid.create( 0, igridsz );
@@ -392,31 +411,25 @@ constructor TTerTile.create( const iInfo : TTileHeader );
    {$ifdef terserver}
    SetLength( datalayers, 4 );
    { intialize terrain layer }
-   layer := TDataLayer.create;
-   layer.initgrid( Info.TileSz );
+   layer := TDataLayer.create( Info.TileSz );
    datalayers[layer_terrain] := layer;
-   { initialize splat layer }
-   layer := TIntLayer.create;
-   layer.initgrid(60 { Info.TileSz } );
+   { initialize splat layer with randomized subdued colors and textures }
+   layer := TIntLayer.create( 60 );
    for x := 0 to 59 do for y := 0 to 59 do
       TIntGrid(layer.DataGrid).setvaluexy( x, y,
           encodesplatcell( random(6), random(8), random(6), random(6), random(4), random(16)));
 
    datalayers[layer_splat] := layer;
    { initialize water layer }
-   layer := TDataLayer.create;
-   layer.initgrid( Info.TileSz );
+   layer := TDataLayer.create( Info.TileSz );
    TSingleGrid( layer.DataGrid ).setvalue( 0.1 );
    datalayers[layer_water] := layer;
    { initialize flora layer }
-   layer := TDataLayer.create;
-   layer.initgrid( Info.TileSz );
+   layer := TDataLayer.create( Info.TileSz );
    TSingleGrid( layer.DataGrid ).setvalue( 0.01 );
    datalayers[layer_flora] := layer;
 
    status := 0;
-   lastupdatetime := -1;
-   lastresulttilesz := 0;
    WaterToFlowList_high.addtask( TWaterTask.create( self ));
    {$else}
    TerrainGraphics := nil;
@@ -515,14 +528,21 @@ function TTerTile.getFloraGrid : TSingleGrid;
    Result := TSingleGrid( datalayers[layer_flora].DataGrid );
  end;
 
+function TTerTile.getWaterUpdateTime : single;
+ begin
+   result := datalayers[layer_water].LastUpdateTime
+ end;
+
+procedure TTerTile.setWaterUpdateTime( updatetime : single );
+ begin
+   datalayers[layer_water].LastUpdateTime := updatetime;
+ end;
+
 procedure TTerTile.UpdateTerrainGridFromSource( Source : TCastleTerrainNoise );
- var y, x, factor : dword;
-     step, sz2 : single;
-     pos : TVector2;
-     h0 : single;
+ var step, sz2, h0, tilesize : single;
+     pos, queryoffset : TVector2;
+     y, x, factor : dword;
      Grid : TSingleGrid;
-     QueryOffset : TVector2;
-     tilesize : single;
  begin
    assert( assigned( source ));
    tilesize := getWorldSize;

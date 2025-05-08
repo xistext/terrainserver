@@ -607,7 +607,6 @@ function TTask_SendTile.RunTask : boolean;
    resulttileinfo := Tile.info;
 
    tilesz := GDefGridCellCount div loddiv;
-   Tile.lastresulttilesz := tilesz;
    resulttileinfo.tilesz := tilesz + 1;
    buffer := BuildResultBuffer( tile, resulttileinfo, LOD );
    buflen := length( buffer );
@@ -650,14 +649,8 @@ function TTask_SendWater.RunTask : boolean;
    if not result then
       exit;
    resulttileinfo := Tile.info;
-   tilesz := tile.lastresulttilesz;
-   if tilesz = 0 then
-    begin
-      loddiv := divOfLOD( LOD );
-      tilesz := GDefGridCellCount div loddiv;
-    end
-   else
-      loddiv := GDefGridCellCount div tilesz;
+   loddiv := divOfLOD( LOD );
+   tilesz := GDefGridCellCount div loddiv;
 
    resulttileinfo.tilesz := tilesz + 1;
    resultwater := BuildResultGrid( tile, resulttileinfo, LODdiv, layer_water );
