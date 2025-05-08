@@ -57,6 +57,7 @@ type
     procedure Stop; override;
     procedure Update(const SecondsPassed: Single; var HandleInput: Boolean); override;
     procedure Notification( Msg : string );
+    procedure CloseQuery(AContainer: TCastleContainer);
   end;
 
 var
@@ -80,6 +81,7 @@ end;
 procedure TViewMain.Start;
 begin
   inherited;
+  Application.MainWindow.OnCloseQuery := {$ifdef FPC}@{$endif} CloseQuery;
   ButtonCreateServer.OnClick := {$ifdef FPC}@{$endif} ClickCreateServer;
   ButtonDestroyServer.OnClick := {$ifdef FPC}@{$endif} ClickDestroyServer;
   ButtonSend.OnClick := {$ifdef FPC}@{$endif} ClickSend;
@@ -244,7 +246,8 @@ procedure TViewMain.ClickDestroyServer(Sender: TObject);
 begin
   if FServer <> nil then
   begin
-    FServer.Stop;
+    if FServer.IsConnected then
+       FServer.Stop;
     FreeAndNil(FServer);
     Notification( 'Stopped server.' );
   end;
@@ -306,6 +309,15 @@ procedure TViewMain.Notification( Msg : string );
       VerticalGroup2.RemoveControl(item);
       item.free;
     end;
+ end;
+
+procedure TViewMain.CloseQuery(AContainer: TCastleContainer);
+ begin
+  Notification( 'Stop water flow threads.' );
+  StopWaterFlowThreads;
+  Sleep(100); { give water flow thread chance to stop }
+  ClickDestroyServer( self );
+  Application.MainWindow.Close(true);
  end;
 
 end.
