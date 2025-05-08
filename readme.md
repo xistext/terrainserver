@@ -64,7 +64,9 @@ Halting the client or server in the middle of a message may cause the ide to
 Not implemented yet:<br>
   Water isn't doesn't update the file, so flow restarts if you rerun the server.<br>
   Only the 'sand' texture in the brush palette is wired.  The others don't do
-    anything yet even though supported internally.
+    anything yet even though supported internally.<br>
+  The tool radius control, though wired to change the command, that command isn't handled
+    yet in the server so the tools is one vertex in size (or one splat cell for brush).
 <P>
 
 erik@edj.net
