@@ -130,10 +130,10 @@ procedure TViewMain.Update(const SecondsPassed: Single; var HandleInput: Boolean
    begin
      flowdelta := GameTime - FlowStartTime;
      if flowdelta > 0 then
-       astr := Format( '%0f/sec', [flowcounter / flowdelta] );
+       astr := Format( '%0f', [flowcounter / flowdelta] );
    end
   else
-     astr := 'stopped';
+     astr := 'off';
   FlowLabel.caption := astr;
 
   if ord( connected ) <> connectstatus then

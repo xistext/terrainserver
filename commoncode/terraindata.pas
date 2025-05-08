@@ -4,7 +4,8 @@ interface
 
 uses Classes, SysUtils, Collect, TerServerCommon, terrainparams,
      CastleVectors, CastleTerrain,
-     {$ifdef terserver}castlefindfiles, castlefilesutils,livetime,{$endif}
+     {$ifdef terserver}castlefindfiles, castlefilesutils,{$endif}
+     livetime,
      math, castletransform, castlewindow,
      watergrid, basetools;
 

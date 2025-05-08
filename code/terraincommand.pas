@@ -630,8 +630,7 @@ constructor TTask_SendWater.create( const iClient : TTileClient;
    LOD := iLOD;
  end;
 
-const zmargin : single = 0.03;
-      sendall : boolean = true;
+const sendall : boolean = true;
 
 function TTask_SendWater.RunTask : boolean;
  var buffer : TIdBytes;
@@ -671,7 +670,7 @@ function TTask_SendWater.RunTask : boolean;
       resultflora.free;
     end
    else
-    begin
+    begin  { deprecated?  It seems better to calcdepthandtexture on the client }
       waterh := resultwater.ptrix(0);
       terrainh := resultterrain.ptrix(0);
       florah := resultflora.ptrix(0);
