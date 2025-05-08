@@ -15,8 +15,7 @@ uses Classes,
   ClientList,
   TerServerCommon, TerrainData, TerrainCommand,
   WaterFlow,
-  liveTime,
-  debug;
+  liveTime;
 
 type
   { Main view, where most of the application logic takes place. }
@@ -109,7 +108,6 @@ end;
 procedure TViewMain.Update(const SecondsPassed: Single; var HandleInput: Boolean);
  var connected : boolean;
      task : TTaskItem;
-     atile : ttertile;
      flowdelta : single;
      astr : string;
  const connectstatus : integer = -1;
@@ -134,18 +132,12 @@ procedure TViewMain.Update(const SecondsPassed: Single; var HandleInput: Boolean
 
   if ord( connected ) <> connectstatus then
    begin
-     case connected of
-       false : begin
-             ConnectedIndicator.Color := vector4(0.5,0,0,1);
-             ButtonCreateServer.Enabled := true;
-             ButtonDestroyServer.Enabled := false;
-           end;
-       true : begin
-             ConnectedIndicator.Color := vector4(0,0.5,0,1);
-             ButtonCreateServer.Enabled := false;
-             ButtonDestroyServer.Enabled := true;
-           end;
-       end;
+     ButtonCreateServer.Enabled := not connected;
+     ButtonDestroyServer.Enabled := connected;
+     if connected then
+        ConnectedIndicator.Color := vector4(0,0.5,0,1)
+     else
+        ConnectedIndicator.Color := vector4(0.5,0,0,1);
      connectstatus := ord( connected );
    end;
   if connected  then
@@ -201,8 +193,6 @@ end;
 
 procedure TViewMain.HandleCommandCallback( Msg : string );
  begin
-(*   if msg <> '' then
-     dbgwrite( Msg +'. ' );*)
    Application.ProcessMessage( false, false );
  end;
 
@@ -226,7 +216,7 @@ begin
   FServer.OnConnected := {$ifdef FPC}@{$endif} HandleConnected;
   FServer.OnDisconnected := {$ifdef FPC}@{$endif} HandleDisconnected;
   FServer.OnMessageReceived := {$ifdef FPC}@{$endif} HandleMessageReceived;
-  infowrite( 'Reading tiles...' );
+//  infowrite( 'Reading tiles...' );
   FileCount := GTileList.ReadAllTerrainFiles( 'castle-data:/terrain' );
 
   FServer.Start;
@@ -290,7 +280,7 @@ procedure TViewMain.Notification( Msg : string );
    alabel.Color := Vector4(1,1,1,1);
    line := FormatDateTime('yyyy.mm.dd hh:mm:ss', now )+ ' ' + Msg;
    alabel.caption := line ;
-   infowrite( line );
+//   infowrite( line );
    VerticalGroup2.InsertBack( alabel );
    if VerticalGroup2.ControlsCount > 100 then
     begin
@@ -306,7 +296,7 @@ procedure TViewMain.CloseQuery(AContainer: TCastleContainer);
   StopWaterFlowThreads;
   Sleep(100); { give water flow thread chance to stop }
   ClickDestroyServer( self );
-  Application.MainWindow.Close(true);
+  Application.MainWindow.Close;
  end;
 
 end.

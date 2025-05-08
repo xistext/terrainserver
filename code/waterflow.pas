@@ -11,8 +11,7 @@ uses
   livetime, BaseTools,
   basethread,
   waterparams, water_low, watergrid,
-  TerrainParams, TerrainData,
-  debug;
+  TerrainParams, TerrainData;
 
 const FlowStartTime : single = -1;
       FlowCounter   : dword = 0;
@@ -71,9 +70,9 @@ procedure StartWaterFlowThreads;
    FlowStartTime := gametime;
    FlowCounter   := 0;
 
-   if WaterFlowThreads[0].Suspended then
+(*   if WaterFlowThreads[0].Suspended then
       WaterFlowthreads[0].Resume
-   else
+   else*)
       WaterFlowThreads[0].Start;
 (*   if WaterFlowThreads[1].Suspended then
       WaterFlowthreads[1].Resume
@@ -86,7 +85,7 @@ procedure StopWaterFlowThreads;
    cancelflow := true;
    sleep(10);
    FlowRunning := false;
-   WaterFlowThreads[0].Suspend;
+   WaterFlowThreads[0].Terminate;
    WaterFlowThreads[0].DirtyTileList.DeleteAll;;
 (*   WaterFlowThreads[1].Suspend;
    WaterFlowThreads[1].DirtyTileList.DeleteAll;;*)

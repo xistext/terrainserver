@@ -19,8 +19,7 @@ uses Classes, SysUtils,
   CastleViewport, CastleCameras, CastleTransform, CastleWindow, CastleImages,
   { terrain client }
   TerServerCommon, TerrainData, TerrainParams, TerrainShader, TerrainMesh,
-  watergrid, BaseMesh, TerrainClient, watercolor, layermarkup,
-  debug;
+  watergrid, BaseMesh, TerrainClient, watercolor, layermarkup;
 
 const
   tool_none  = 0;
@@ -221,8 +220,8 @@ begin
   WorldOptionsPanel.Translation := ColorPicker.Translation;
   WorldOptionsPanel.Exists := false;
 
-  glGetIntegerv(GL_MAX_VERTEX_UNIFORM_COMPONENTS, @MaxVertexUniformComponents);
-  infowrite('GL_MAX_VERTEX_UNIFORM_COMPONENTS: %d', [MaxVertexUniformComponents]);
+(*  glGetIntegerv(GL_MAX_VERTEX_UNIFORM_COMPONENTS, @MaxVertexUniformComponents);
+  infowrite('GL_MAX_VERTEX_UNIFORM_COMPONENTS: %d', [MaxVertexUniformComponents]);*)
 end;
 
 procedure TViewMain.Stop;
@@ -265,7 +264,7 @@ procedure TViewMain.Update(const SecondsPassed: Single; var HandleInput: Boolean
      connectiontimeout := connectiontimeout + secondspassed;
      if connectiontimeout > 1 then
       begin
-        infowrite( 'Terrain server at '+GDefaulthost+':'+inttostr(GDefaultPort)+' not found.' );
+//        infowrite( 'Terrain server at '+GDefaulthost+':'+inttostr(GDefaultPort)+' not found.' );
         if FClient <> nil then
         begin
           connectionstatus := status_disconnected;
@@ -281,7 +280,7 @@ end;
 
 procedure TViewMain.HandleConnected;
 begin
-  InfoWrite('Connected to terrain server.');
+//  InfoWrite('Connected to terrain server.');
   UpdateViewAnchor( vector2( 0, 0 ));
   connectionstatus := status_connected;
   SetCreateClientMode( connectionstatus, ButtonCreateClient );
@@ -290,7 +289,7 @@ end;
 
 procedure TViewMain.HandleDisconnected;
 begin
-  InfoWrite('Disconnected from terrain server.');
+//  InfoWrite('Disconnected from terrain server.');
   ButtonSend.Enabled := false;
   connectionstatus := status_disconnected;
   SetCreateClientMode( connectionstatus, ButtonCreateClient );
@@ -300,7 +299,7 @@ end;
 
 procedure TViewMain.HandleMessageReceived(const AMessage: String);
 begin
-  InfoWrite('Received message: ' + AMessage);
+//  InfoWrite('Received message: ' + AMessage);
 end;
 
 procedure TViewMain.ClickCreateClient(Sender: TObject);
@@ -308,7 +307,7 @@ begin
   case connectionstatus of
     status_disconnected :
     begin
-      InfoWrite( 'Connecting to terrain server at '+GDefaultHost + ':' + IntToStr( GDefaultPort ) +'...');
+//      InfoWrite( 'Connecting to terrain server at '+GDefaultHost + ':' + IntToStr( GDefaultPort ) +'...');
       FClient := TTerClient.Create;
       FClient.Hostname := GDefaultHost;
       FClient.Port := GDefaultPort;

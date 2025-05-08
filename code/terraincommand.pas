@@ -9,8 +9,7 @@ uses Classes, SysUtils, Collect,
      TerServerCommon,
      ClientList,
      TerrainParams, TerrainData,
-     watergrid, waterflow, watercolor,
-     debug;
+     watergrid, waterflow, watercolor;
 
 type TCommandCallback = procedure( msg : string ) of object;
 
@@ -725,10 +724,8 @@ function TTask_SendSplat.RunTask : boolean;
  var buffer : TIdBytes;
      resulttileinfo : TTileHeader;
      buflen : integer;
-     tilesz, loddiv : integer;
+     tilesz : integer;
      resultsplat : TSingleGrid;
-     x, y : integer;
-     h : single;
      bufpos : integer;
  begin
    result := inherited Runtask;
@@ -939,6 +936,7 @@ function cmdDig( client : TTileClient;
      radius : integer;
      tile : ttertile;
  begin
+   result :=0;
    WorldPos := vector2( 0, 0 );
    if parseworldxy( params, worldpos.x, worldpos.y ) then
     begin
@@ -958,6 +956,7 @@ function cmdPile( client : TTileClient;
  var worldpos : tvector2;
      tile : ttertile;
  begin
+   result :=0;
    WorldPos := vector2( 0, 0 );
    if parseworldxy( params, worldpos.x, worldpos.y ) then
     begin
@@ -977,6 +976,7 @@ function cmdPaint( client : TTileClient;
      EncodedColor : integer;
      param : string;
  begin
+   result :=0;
    WorldPos := vector2( 0, 0 );
    if parseworldxy( params, worldpos.x, worldpos.y ) then
     begin

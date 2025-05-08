@@ -83,6 +83,7 @@
                 },
                 {
                   "$$ClassName" : "TCastleButton",
+                  "AutoSize" : false,
                   "Caption" : "Start",
                   "CustomBackgroundDisabled" : {
                     "$$ClassName" : "TCastleImagePersistent"
@@ -97,6 +98,7 @@
                     "$$ClassName" : "TCastleImagePersistent"
                   },
                   "FontSize" : 1.6000000000000000E+001,
+                  "Height" : 2.4000000000000000E+001,
                   "Image" : {
                     "$$ClassName" : "TCastleImagePersistent"
                   },
@@ -108,10 +110,12 @@
                     "X" : 1.2200000000000000E+002
                   },
                   "VerticalAnchorParent" : "vpMiddle",
-                  "VerticalAnchorSelf" : "vpMiddle"
+                  "VerticalAnchorSelf" : "vpMiddle",
+                  "Width" : 6.0000000000000000E+001
                 },
                 {
                   "$$ClassName" : "TCastleButton",
+                  "AutoSize" : false,
                   "Caption" : "Stop",
                   "CustomBackgroundDisabled" : {
                     "$$ClassName" : "TCastleImagePersistent"
@@ -126,6 +130,7 @@
                     "$$ClassName" : "TCastleImagePersistent"
                   },
                   "FontSize" : 1.6000000000000000E+001,
+                  "Height" : 2.4000000000000000E+001,
                   "Image" : {
                     "$$ClassName" : "TCastleImagePersistent"
                   },
@@ -134,36 +139,24 @@
                   "PaddingVertical" : 5.0000000000000000E+000,
                   "TranslationPersistent" : {
                     "$$ClassName" : "TCastleVector2Persistent",
-                    "X" : 1.7119999694824219E+002
+                    "X" : 1.8200000000000000E+002
                   },
                   "VerticalAnchorParent" : "vpMiddle",
-                  "VerticalAnchorSelf" : "vpMiddle"
-                }
-              ]
-            },
-            {
-              "$$ClassName" : "TCastleHorizontalGroup",
-              "AutoSizeHeight" : false,
-              "AutoSizeToChildren" : true,
-              "Height" : 2.0000000000000000E+001,
-              "Name" : "PerformanceControlBar",
-              "TranslationPersistent" : {
-                "$$ClassName" : "TCastleVector2Persistent",
-                "X" : 1.0000000000000000E+001,
-                "Y" : -4.5200000762939453E+001
-              },
-              "VerticalAnchorParent" : "vpTop",
-              "VerticalAnchorSelf" : "vpTop",
-              "$Children" : [
+                  "VerticalAnchorSelf" : "vpMiddle",
+                  "Width" : 5.0000000000000000E+001
+                },
                 {
                   "$$ClassName" : "TCastleShape",
-                  "AutoSizeToChildren" : true,
                   "ColorPersistent" : {
                     "$$ClassName" : "TCastleColorPersistent",
                     "Blue" : 0.0000000000000000E+000
                   },
-                  "Height" : 3.4000000000000000E+001,
+                  "Height" : 2.4000000000000000E+001,
                   "Name" : "ConnectedIndicator",
+                  "TranslationPersistent" : {
+                    "$$ClassName" : "TCastleVector2Persistent",
+                    "X" : 2.3200000000000000E+002
+                  },
                   "VerticalAnchorParent" : "vpMiddle",
                   "VerticalAnchorSelf" : "vpMiddle",
                   "$Children" : [
@@ -175,8 +168,8 @@
                         "Green" : 1.0000000000000000E+000,
                         "Red" : 1.0000000000000000E+000
                       },
-                      "FontScale" : 2.0000000000000000E+000,
-                      "FontSize" : 1.0000000000000000E+001,
+                      "FontScale" : 6.0000002384185791E-001,
+                      "Height" : 2.4000000000000000E+001,
                       "Name" : "ClientsLabel",
                       "Text" : [
                         "ClientsLabel"
@@ -190,7 +183,23 @@
                       "VerticalAnchorSelf" : "vpMiddle"
                     }
                   ]
-                },
+                }
+              ]
+            },
+            {
+              "$$ClassName" : "TCastleHorizontalGroup",
+              "AutoSizeHeight" : false,
+              "AutoSizeToChildren" : true,
+              "Height" : 2.0000000000000000E+001,
+              "Name" : "PerformanceControlBar",
+              "TranslationPersistent" : {
+                "$$ClassName" : "TCastleVector2Persistent",
+                "X" : 1.0000000000000000E+001,
+                "Y" : -4.4000000000000000E+001
+              },
+              "VerticalAnchorParent" : "vpTop",
+              "VerticalAnchorSelf" : "vpTop",
+              "$Children" : [
                 {
                   "$$ClassName" : "TCastleShape",
                   "ColorPersistent" : {
@@ -201,10 +210,6 @@
                   },
                   "Height" : 2.4000000000000000E+001,
                   "Name" : "TilesIndicator",
-                  "TranslationPersistent" : {
-                    "$$ClassName" : "TCastleVector2Persistent",
-                    "X" : 1.3300000000000000E+002
-                  },
                   "VerticalAnchorParent" : "vpMiddle",
                   "VerticalAnchorSelf" : "vpMiddle",
                   "Width" : 1.5000000000000000E+002,
@@ -295,7 +300,7 @@
                   "Name" : "FlowIndicator",
                   "TranslationPersistent" : {
                     "$$ClassName" : "TCastleVector2Persistent",
-                    "X" : 2.8300000000000000E+002
+                    "X" : 1.5000000000000000E+002
                   },
                   "VerticalAnchorParent" : "vpMiddle",
                   "VerticalAnchorSelf" : "vpMiddle",
@@ -395,7 +400,7 @@
                   "Toggle" : true,
                   "TranslationPersistent" : {
                     "$$ClassName" : "TCastleVector2Persistent",
-                    "X" : 4.3300000000000000E+002
+                    "X" : 3.0000000000000000E+002
                   },
                   "VerticalAnchorParent" : "vpMiddle",
                   "VerticalAnchorSelf" : "vpMiddle",
@@ -417,7 +422,7 @@
               "TranslationPersistent" : {
                 "$$ClassName" : "TCastleVector2Persistent",
                 "X" : 1.0000000000000000E+001,
-                "Y" : -7.9199996948242188E+001
+                "Y" : -7.8000000000000000E+001
               },
               "VerticalAnchorParent" : "vpTop",
               "VerticalAnchorSelf" : "vpTop",

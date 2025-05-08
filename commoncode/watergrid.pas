@@ -237,8 +237,6 @@ function Tsinglegrid.depthptr : psingle;
  end;
 
 function Tsinglegrid.ptrxy( x, y : dword ) : psingle;
- var dptr : psingle;
-     ix : integer;
  begin
    assert (( x < wh ) and ( y < wh ));
    result := @depth^[x*wh+y];
@@ -410,7 +408,7 @@ procedure Tsmalligrid.addvalue( value : smallint;
                                 minvalue : smallint = 0 );
  var dptr : psmallint;
      depthvalue : smallint;
-     i,c : dword;
+     i : dword;
  begin
    dptr := psmallint( data );
    for i := wxh shr 2 - 1 downto 0 do
