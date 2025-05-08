@@ -83,16 +83,16 @@
       <Unit10>
         <Filename Value="terrainclient.pas"/>
         <UnitName Value="TerrainClient"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="7"/>
         <TopLine Value="90"/>
-        <CursorPos X="94" Y="124"/>
+        <CursorPos Y="124"/>
         <UsageCount Value="110"/>
         <Loaded Value="True"/>
       </Unit10>
       <Unit11>
         <Filename Value="..\commoncode\terraindata.pas"/>
         <UnitName Value="TerrainData"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="8"/>
         <CursorPos X="15" Y="8"/>
         <UsageCount Value="107"/>
@@ -452,7 +452,7 @@
       </Position29>
       <Position30>
         <Filename Value="..\commoncode\terraindata.pas"/>
-        <Caret Line="8" Column="6"/>
+        <Caret Line="8" Column="15"/>
       </Position30>
     </JumpHistory>
     <RunParams>

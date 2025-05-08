@@ -28,8 +28,6 @@ type
     EditPort: TCastleIntegerEdit;
     ButtonCreateServer: TCastleButton;
     ButtonDestroyServer: TCastleButton;
-    EditSend: TCastleEdit;
-    ButtonSend: TCastleButton;
     VerticalGroup2 : TCastleVerticalGroup;
     ConnectedIndicator : TCastleShape;
     ClientsLabel : TCastleLabel;
@@ -44,7 +42,6 @@ type
     procedure HandleMessageReceived(const AMessage: String; AClient: TClientConnection);
     procedure ClickCreateServer(Sender: TObject);
     procedure ClickDestroyServer(Sender: TObject);
-    procedure ClickSend(Sender: TObject);
     procedure ClickButtonFlow( Sender : TObject );
     procedure ClickButtonDeleteTiles( Sender : TObject );
     procedure SendStringToClient( AMessage : string;
@@ -84,7 +81,6 @@ begin
   Application.MainWindow.OnCloseQuery := {$ifdef FPC}@{$endif} CloseQuery;
   ButtonCreateServer.OnClick := {$ifdef FPC}@{$endif} ClickCreateServer;
   ButtonDestroyServer.OnClick := {$ifdef FPC}@{$endif} ClickDestroyServer;
-  ButtonSend.OnClick := {$ifdef FPC}@{$endif} ClickSend;
   ButtonFlow.OnClick := {$ifdef FPC}@{$endif} ClickButtonFlow;
   ButtonDeleteTiles.OnClick := {$ifdef FPC}@{$endif} ClickButtonDeleteTiles;
 
@@ -143,13 +139,11 @@ procedure TViewMain.Update(const SecondsPassed: Single; var HandleInput: Boolean
              ConnectedIndicator.Color := vector4(0.5,0,0,1);
              ButtonCreateServer.Enabled := true;
              ButtonDestroyServer.Enabled := false;
-             ButtonSend.Enabled := false;
            end;
        true : begin
              ConnectedIndicator.Color := vector4(0,0.5,0,1);
              ButtonCreateServer.Enabled := false;
              ButtonDestroyServer.Enabled := true;
-             ButtonSend.Enabled := true;
            end;
        end;
      connectstatus := ord( connected );
@@ -251,11 +245,6 @@ begin
     FreeAndNil(FServer);
     Notification( 'Stopped server.' );
   end;
-end;
-
-procedure TViewMain.ClickSend(Sender: TObject);
-begin
-  FServer.SendToAll(EditSend.Text);
 end;
 
 procedure TViewMain.ClickButtonFlow( Sender : TObject );
