@@ -121,7 +121,7 @@ function TTerClientThread.ProcessMessage( const msgheader : TmsgHeader;
        MsgLen := msgheader.msglen;
        if MsgLen > 0 then
         begin
-          assert( MsgLen < 200000 );
+          assert( MsgLen < 200000 );   {! crashes here when you increase view radius too fast}
           FClient.IOHandler.ReadBytes( Buffer, MsgLen, true );
           assert( length( buffer ) = MsgLen + SizeOf( msgheader ));
 
@@ -202,7 +202,7 @@ procedure TTerClient.Send(const AMessage: String);
    {???  how insure it is safe to send }
    while glocksend do
     begin
-      writeln('.');
+//      writeln('.');
       FClientThread.Yield;
     end;
    inherited send( AMessage );

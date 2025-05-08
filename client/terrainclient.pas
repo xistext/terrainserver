@@ -177,7 +177,8 @@ function TTerClient.CreateClientThread : TCastleTCPClientThread;
  begin
    FClientThread := TTerClientThread.Create(FClient,
      {$ifdef FPC}@{$endif} ClientOnMessageReceived, FOnConnected, FOnDisconnected);
-   TTerClientThread( FClientThread ).FOnTileReceived := {$ifdef FPC}@{$endif} ClientOnTileReceived;;
+   TTerClientThread( FClientThread ).FOnTileReceived := {$ifdef FPC}@{$endif} ClientOnTileReceived;
+   Result := FClientThread;
  end;
 
 procedure TTerClient.ClientOnTileReceived;
@@ -202,7 +203,7 @@ procedure TTerClient.Send(const AMessage: String);
    {???  how insure it is safe to send }
    while glocksend do
     begin
-      writeln('.');
+//      writeln('.');
       FClientThread.Yield;
     end;
    inherited send( AMessage );

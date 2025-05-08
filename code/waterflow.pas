@@ -305,7 +305,7 @@ const _invalid = 0;
 function tflowrunner.validateneighbor( localneighborix : integer ) : boolean; overload;
  { will get local neighbor and if that is out of bounds, look to neighboring tile }
  begin
-   result := not cancelflow and Cellneighbors[localneighborix].valid;
+   result := Cellneighbors[localneighborix].valid;
  end;
 
 
@@ -364,7 +364,7 @@ function TFlowRunner.flowtodistantneighbor( distantneighbor : TTerTile;
      ix : integer;
  begin
    result := false;
-   if not cancelflow and assigned( distantneighbor ) then
+   if assigned( distantneighbor ) then
     begin
       ix := x * distantneighbor.watergrid.wh + y;
       flowptrs.hptr := distantneighbor.terraingrid.ptrix( ix );
@@ -383,7 +383,7 @@ function TFlowRunner.flowtoneighbor( var neighbor : TCellData) : boolean;
       delta := ( TerrainAndWater - (Neighbor.waterdepth + Neighbor.terrainheight))*0.5 * amounttoflow;
       { limit delta to water depth }
       limitmax( delta, waterdepth );
-      Result := ( delta > 0 ) and not cancelflow;
+      Result := ( delta > 0 );
       if Result then
        begin
          snowfactor := terrainheight - Defaultsnowline;
@@ -410,11 +410,11 @@ function TFlowRunner.flowtoneighbors( x,y : integer ) : boolean;
    tileneighbors := parentgrid.getneighbors;
    calcneighbors( x, y );
    neighbor := pneighbor( neighborlist.firstptr );
-   for i := 0 to neighborlist.count - 1 do if not cancelflow then
+   for i := 0 to neighborlist.count - 1 do
     begin
       result := flowtoneighbor( Cellneighbors[ neighbor^.neighborix ]) or result;
       inc( neighbor );
-      if ( celldata.waterdepth <= mindepth ) or cancelflow then
+      if ( celldata.waterdepth <= mindepth ) then
          break;
     end;
    neighborlist.FreeAll;
@@ -440,7 +440,7 @@ destructor TWaterFlowThread.Destroy;
 function TWaterFlowThread.DoTaskFromList : boolean;
  var Task : TThreadTask;
  begin
-   result := ( not Terminated ) and ( not cancelflow ) and ( TaskList.Count > 0 );
+   result := ( not Terminated ) and ( TaskList.Count > 0 );
    if result then
     begin
       flowix := flowix mod TaskList.Count;
@@ -469,7 +469,7 @@ constructor TWaterTask.create( iwatertile : TTerTile );
    parentThread := nil;
  end;
 
-function TWaterTask.flowtile( amounttoflow : single ) : boolean;
+function TWaterTask.FlowTile( amounttoflow : single ) : boolean;
      { local copies of grid parameters }
  var x, y : integer;
      FlowRunner : TFlowRunner;
@@ -481,13 +481,12 @@ function TWaterTask.flowtile( amounttoflow : single ) : boolean;
       FlowRunner := TFlowRunner.create( twaterflowthread( parentthread ), watertile );
       FlowRunner.amounttoflow := amounttoflow;
       for x := 0 to flowrunner.linesz - 1 do for y := 0 to flowrunner.linesz - 1 do
-      if not cancelflow then
        begin
          if FlowRunner.CellData.waterdepth > mindepth then
             Result := FlowRunner.FlowToNeighbors( x, y ) or Result;
          FlowRunner.NextCell; { walk the pointer and positions }
        end;
-      if ( not cancelflow ) and Result then
+      if Result then
        begin
          inc( flowcounter );
          watertile.WaterGrid.addgrid(DeltaGrid);
@@ -512,8 +511,6 @@ procedure TWaterTask.RunTask;
       Delta := Delta * flowfactor;
       FlowTile( Delta );
     end;
-   if cancelflow then
-      exit;
    WaterTile.WaterUpdateTime := UpdateTime;
  end;
 
