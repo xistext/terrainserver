@@ -258,6 +258,27 @@
                         "Green" : 1.0000000000000000E+000,
                         "Red" : 1.0000000000000000E+000
                       },
+                      "FontScale" : 6.0000002384185791E-001,
+                      "Name" : "Label3",
+                      "Text" : [
+                        "Tiles"
+                      ],
+                      "TranslationPersistent" : {
+                        "$$ClassName" : "TCastleVector2Persistent",
+                        "X" : 5.0000000000000000E+000
+                      },
+                      "VerticalAlignment" : "vpMiddle",
+                      "VerticalAnchorParent" : "vpMiddle",
+                      "VerticalAnchorSelf" : "vpMiddle"
+                    },
+                    {
+                      "$$ClassName" : "TCastleLabel",
+                      "ColorPersistent" : {
+                        "$$ClassName" : "TCastleColorPersistent",
+                        "Blue" : 1.0000000000000000E+000,
+                        "Green" : 1.0000000000000000E+000,
+                        "Red" : 1.0000000000000000E+000
+                      },
                       "FontScale" : 2.0000000000000000E+000,
                       "FontSize" : 1.0000000000000000E+001,
                       "Height" : 1.0000000000000000E+001,
@@ -267,7 +288,7 @@
                       ],
                       "TranslationPersistent" : {
                         "$$ClassName" : "TCastleVector2Persistent",
-                        "X" : 1.0000000000000000E+001
+                        "X" : 4.0000000000000000E+001
                       },
                       "VerticalAlignment" : "vpMiddle",
                       "VerticalAnchorParent" : "vpMiddle",
@@ -294,7 +315,7 @@
                       "HorizontalAnchorSelf" : "hpRight",
                       "Image" : {
                         "$$ClassName" : "TCastleImagePersistent",
-                        "URL" : "castle-data:/trash_black.png"
+                        "URL" : "castle-data:/trash_white.png"
                       },
                       "Name" : "ButtonDeleteTiles",
                       "VerticalAnchorParent" : "vpMiddle",
