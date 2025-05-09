@@ -505,10 +505,9 @@ procedure TWaterTask.RunTask;
    TileUpdateTime := WaterTile.WaterUpdateTime;
    if ( TimeSpeed > 1E-5 ) and ( not cancelflow ) and ( TileUpdateTime >= 0 ) then
     begin
-      Delta := UpdateTime - TileUpdateTime;
+      Delta := ( UpdateTime - TileUpdateTime ) * flowfactor;;
       if delta < 0.1 then
          exit;
-      Delta := Delta * flowfactor;
       FlowTile( Delta );
     end;
    WaterTile.WaterUpdateTime := UpdateTime;

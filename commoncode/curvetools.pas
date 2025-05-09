@@ -374,7 +374,7 @@ procedure TCurveStepInfo.calculateStepInfo;
 
 procedure TCurveStepInfo.setLR( var pL, pR : TVector3;
                                 Offset : single );
- var r2, sr, cr : single;
+ var r2 : single;
  begin
    r2 := radius + offset;
    PL := Vector3( center.x - dir * Fcosa * r2, 0, center.y - dir * Fsina * r2 );

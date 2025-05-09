@@ -184,7 +184,7 @@ procedure TTileClient.unsubdistanttiles( const pos : tpoint; radius : integer );
    while i < length( subscriptions ) do
     begin
       item := subscriptions[i];
-      d := trunc( sqrt( sqr( item.Tile.Info.TileX - pos.x ) + sqr( item.Tile.Info.TileY - pos.y )));
+      d := item.Tile.TileDist( pos );
       if d > radius then
          delete( subscriptions, i, 1 )
       else

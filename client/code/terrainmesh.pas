@@ -204,7 +204,7 @@ function TTerrainMesh.offset : TVector2;
    if assigned( LinkedTile ) then
     begin
       sz := LinkedTile.GetWorldSize;
-      result := vector2(  LinkedTile.Info.TileX * sz, LinkedTile.Info.TileY * sz )
+      result := vector2(  LinkedTile.TileX * sz, LinkedTile.TileY * sz )
     end
    else
       result := inherited Offset;

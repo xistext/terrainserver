@@ -110,6 +110,12 @@ type PTerTile = ^TTerTile;
         function GetNeighbors : TTileNeighbors;
         function WorldToLocal( const pos : TVector2 ) : TVector2;
 
+        property TileX : smallint read Info.TileX;
+        property TileY : smallint read Info.TileY;
+        property GridCellCount : word read Info.TileSz;
+
+        function TileDist( const pos : tpoint ) : integer;
+
         public
         {$ifdef terserver}
         { server stores all and manages the data }
@@ -117,6 +123,8 @@ type PTerTile = ^TTerTile;
         datalayers : TDataLayers;
 
         procedure UpdateTerrainGridFromSource( Source : TCastleTerrainNoise );
+
+        { calculates distance between tiles in tile ix units }
 
         { file handling }
         function SaveToFile : boolean;
@@ -128,13 +136,16 @@ type PTerTile = ^TTerTile;
         procedure Paint( const WorldPos : TVector2; EncodedColor : integer );
 
         private
+
         function getTerrainGrid : TSingleGrid;
         function getWaterGrid : TSingleGrid;
         function getSplatGrid : TIntGrid;
         function getFloraGrid : TSingleGrid;
         function getWaterUpdateTime : single;
         procedure setWaterUpdateTime( updatetime : single );
+
         public
+
         property TerrainGrid : TSingleGrid read getTerrainGrid;
         property WaterGrid : TSingleGrid read getWaterGrid;
         property FloraGrid : TSingleGrid read getFloraGrid;
@@ -168,8 +179,8 @@ procedure sethxy( var h : TTileHeader; x, y : smallint; sz : word = 1 ); inline;
  end;
 
 function worldtotile( wpos : tvector2 ) : tvector2;
-var sizefactor : single;
-    tilesz : single;
+ var sizefactor : single;
+     tilesz : single;
  begin
    tilesz := GDefGridCellCount * GDefGridStep;
    sizefactor := 1/tilesz;
@@ -323,8 +334,8 @@ function TTileList.getneighbor( tile : TTerTile;
      x, y : integer;
  begin
    result := nil;
-   x := tile.Info.TileX + dx;
-   y := tile.Info.TileY + dy;
+   x := tile.TileX + dx;
+   y := tile.TileY + dy;
    lock;
    if findtile( x, y, ix ) then
       result := TTerTile( at( ix ));
@@ -479,14 +490,14 @@ function zeropad( value : integer; len : integer  = 2 ) : string;
 function TTerTile.tileid : string;
  var token1, token2 : string;
  begin
-   if info.TileX < 0 then
-      token1 := 'W'+zeropad( abs( info.Tilex ))
+   if TileX < 0 then
+      token1 := 'W'+zeropad( abs( Tilex ))
    else
-      token1 := 'E'+zeropad( info.tilex );
-   if info.TileY < 0 then
-      token2 := 'S'+zeropad( abs( info.Tiley ))
+      token1 := 'E'+zeropad( tilex );
+   if TileY < 0 then
+      token2 := 'S'+zeropad( abs( Tiley ))
    else
-      token2 := 'N'+zeropad( info.tiley );
+      token2 := 'N'+zeropad( Tiley );
    result := token1+token2;
  end;
 
@@ -510,10 +521,16 @@ function TTerTile.WorldToLocal( const pos : TVector2 ) : TVector2;
    factor := 1/GridStep;
    tilesize := getWorldSize;
 
-   offset := vector2( info.tilex * tilesize, info.tiley * tilesize );
+   offset := vector2( tilex * tilesize, tiley * tilesize );
    result := vector2((( pos.x - Offset.x ) + tilesize * 0.5 )*factor,
                      (( pos.y - Offset.y ) + tilesize * 0.5 )*factor );
  end;
+
+function TTerTile.TileDist( const pos : tpoint ) : integer;
+ begin
+   result := trunc( sqrt( sqr( pos.x - tilex ) + sqr( pos.y - tiley )));
+ end;
+
 
 {$ifdef terserver}
 function TTerTile.getTerrainGrid : TSingleGrid;
@@ -556,7 +573,7 @@ procedure TTerTile.UpdateTerrainGridFromSource( Source : TCastleTerrainNoise );
    tilesize := getWorldSize;
    sz2 := tilesize * 0.5;
    factor := GDefGridCellCount div Info.TileSz;
-   QueryOffset := Vector2( Info.TileX * tilesize, Info.TileY * tilesize);
+   QueryOffset := Vector2( TileX * tilesize, TileY * tilesize);
    pos := Vector2( queryoffset.x-sz2, queryoffset.y-sz2 );
    step := GridStep * factor;
    Grid := TerrainGrid;
@@ -687,8 +704,8 @@ function TTerTile.GetNeighbors : TTileNeighbors;
  { get tile's neighbors }
  var iY, iX : integer;
  begin
-   iX := Info.TileX;
-   iY := Info.TileY;
+   iX := TileX;
+   iY := TileY;
    result[0] := GTileList.tilexy( iX, iY - 1);
    result[1] := GTileList.tilexy( iX + 1, iY - 1);
    result[2] := GTileList.tilexy( iX + 1, iY );

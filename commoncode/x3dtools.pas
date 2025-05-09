@@ -457,7 +457,6 @@ procedure Tshapebuilder.addface( const v0, v1, v2, v3 : TVector3 ); overload;
 procedure TShapeBuilder.addface( const v0, v1, v2, v3 : TVector3;
                                  const t0, t1, t2, t3 : TVector2 ); overload; { add unindexed vertexes to define face }
  var texturescale : single;
-     tscaled : TVector2;
      facew, faceh : single;
      scale : tvector2;
  begin

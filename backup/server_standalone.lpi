@@ -24,7 +24,7 @@
           <SearchPaths>
             <IncludeFiles Value="code;$(ProjOutDir);e:/cge/src/common_includes/"/>
             <Libraries Value="e:/cge/src/files/indy/"/>
-            <OtherUnitFiles Value="code;C:/Users/erik/AppData/Local/lazarus/onlinepackagemanager/packages/Indy10/Core/;C:/Users/erik/AppData/Local/lazarus/onlinepackagemanager/packages/Indy10/System/;e:/cge/src/files/indy/;e:/cge/src/common_includes/;commoncode;e:/wyrdforest/code/lib/edjlib/;e:/wyrdforest/code/elib/;e:/wyrdforest/code/"/>
+            <OtherUnitFiles Value="code;C:/Users/erik/AppData/Local/lazarus/onlinepackagemanager/packages/Indy10/Core/;C:/Users/erik/AppData/Local/lazarus/onlinepackagemanager/packages/Indy10/System/;e:/cge/src/files/indy/;e:/cge/src/common_includes/;commoncode"/>
             <UnitOutputDirectory Value="build/server"/>
           </SearchPaths>
           <CodeGeneration>

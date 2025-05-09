@@ -59,8 +59,6 @@ type
 var
   ViewMain: TViewMain;
 
-var lastclient : TClientConnection; { !kludge to test pushing water }
-
 implementation
 
 uses SysUtils,
@@ -96,12 +94,10 @@ begin
 end;
 
    procedure updatewaterclient( Client : TTileClient; Tile : TTerTile; LOD : integer; data : pointer );
-    var viewmain : TViewMain;
     begin
-     viewmain := TViewMain( data );
      buildwaterArea( Client,
-                     tile.info.tilex, tile.info.tiley,
-                     0, LOD, {$ifdef fpc}@{$endif} viewmain.HandleCommandCallback );
+                     tile.tilex, tile.tiley,
+                     0, LOD, {$ifdef fpc}@{$endif}  TViewMain( data ).HandleCommandCallback );
 
     end;
 

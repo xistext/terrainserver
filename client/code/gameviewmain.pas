@@ -13,7 +13,7 @@ uses Classes, SysUtils,
   idGlobal,
   { cge }
   {$ifdef OpenGLES} CastleGLES {$else} CastleGL {$endif},
-  CastleUtils,
+  CastleUtils, CastleLog,
   CastleVectors, CastleComponentSerialize, CastleUIControls, CastleControls,
   CastleKeysMouse, CastleClientServer, CastleTerrain, CastleScene,
   CastleViewport, CastleCameras, CastleTransform, CastleWindow, CastleImages,
@@ -28,7 +28,7 @@ const
   tool_pile  = 3;
   tool_globe = 4;
 
-const fogfactor : single = 0.0;
+  fogfactor : single = 0.0; { used to turn fog on/off }
 
 type
 
@@ -153,6 +153,7 @@ begin
   ConnectionTimeout := 0;
   lockviewtoground := false;
   activetool := tool_none;
+  InitializeLog;
 end;
 
 procedure TViewMain.Start;
@@ -220,8 +221,8 @@ begin
   WorldOptionsPanel.Translation := ColorPicker.Translation;
   WorldOptionsPanel.Exists := false;
 
-(*  glGetIntegerv(GL_MAX_VERTEX_UNIFORM_COMPONENTS, @MaxVertexUniformComponents);
-  infowrite('GL_MAX_VERTEX_UNIFORM_COMPONENTS: %d', [MaxVertexUniformComponents]);*)
+  glGetIntegerv(GL_MAX_VERTEX_UNIFORM_COMPONENTS, @MaxVertexUniformComponents);
+  WritelnLog('GL_MAX_VERTEX_UNIFORM_COMPONENTS: %d', [MaxVertexUniformComponents]);
 end;
 
 procedure TViewMain.Stop;
@@ -610,7 +611,7 @@ procedure TViewMain.ColorSliderChange( sender : TObject );
    begin
      with tremovetilerecord( data^ ) do
       begin
-        d := trunc( sqrt( sqr( cpt.x - atile.info.tilex ) + sqr( cpt.y - atile.info.tiley )));
+        d := atile.tiledist( cpt );
         doremove := d > radius;
         if doremove then
          begin

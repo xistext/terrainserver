@@ -92,10 +92,8 @@ procedure TMarkupLayer.clear;
  end;
 
 function TMarkupLayer.addx3dNode( x3dnode : TX3dRootNode ) : TCastleScene;
- var s : integer;
  begin
    Result := TCastleScene.Create( self );
-   s := result.instancesize;
    Result.Pickable := false;
    Result.Collides := false;
    Result.Load( x3dnode, true );

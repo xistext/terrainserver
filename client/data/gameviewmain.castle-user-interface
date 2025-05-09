@@ -1412,7 +1412,7 @@
                         "X" : 8.0000000000000000E+001,
                         "Y" : 6.0000000000000000E+001
                       },
-                      "Value" : 3,
+                      "Value" : 1,
                       "Width" : 1.0000000000000000E+002
                     }
                   ]
@@ -1576,7 +1576,7 @@
                         "$$ClassName" : "TCastleColorPersistent",
                         "Alpha" : 0.0000000000000000E+000
                       },
-                      "Text" : "build 0,0,3",
+                      "Text" : "build 0,0,1",
                       "TranslationPersistent" : {
                         "$$ClassName" : "TCastleVector2Persistent",
                         "X" : 2.0000000000000000E+001

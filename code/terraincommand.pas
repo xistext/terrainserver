@@ -174,9 +174,9 @@ type TIterateRec = record
         end
      end;
 
-  function UpdateTile(       TileX, TileY : integer;
-                         var ATile : TTerTile;
-                             docreate : boolean = true ) : boolean;
+  function UpdateTile(     TileX, TileY : integer;
+                       var ATile : TTerTile;
+                           docreate : boolean = true ) : boolean;
   { returns true if created }
    var tileix : integer;
        tileinfo : TTileHeader;
@@ -555,7 +555,7 @@ function BuildResultSplatGrid( tile : ttertile;
            bufptr^ := gridvaluexy(ngrid, x,0)
         else
            bufptr^ := gridvaluexy(thisgrid, x, tilesz-1);
-        inc( bufptr, 1 ); {!!! why does this need to be 2 to make splat align properly?! but if 2 it crashes on last row}
+        inc( bufptr, 1 );
       end;
      { last row }
      neighbor := GTileList.getNeighbor( tile, 1, 0 );
@@ -812,15 +812,14 @@ function TCmdList.executecommand( client : TTileClient;
 
     procedure SendTerrainTile( tx, ty : integer; data : pointer );
      var Tile : TTerTile;
-         LOD : integer;
+         thisLOD : integer;
          lastLOD : integer;
          subscription : TSubscription;
-         rebuild : boolean;
      begin
        with  titeraterec( data^ ) do
         begin
-          LOD := trunc(sqrt( sqr( tx - CenterX ) + sqr( ty - CenterY )));
-          if ( LOD <= Radius ) then
+          thisLOD := trunc(sqrt( sqr( tx - CenterX ) + sqr( ty - CenterY )));
+          if ( thisLOD <= Radius ) then
            begin
              lastLOD := -1;
              if UpdateTile( tx, ty, tile ) then { if the tile was created then we have to add a task to build it }
@@ -828,11 +827,11 @@ function TCmdList.executecommand( client : TTileClient;
              else
              if Client.getSubscription( Tile, subscription ) then
                 lastLOD := subscription.LOD;
-             if lastLOD <> LOD then
+             if lastLOD <> thisLOD then
               begin
                 GTaskList.AddTask( TTask_SendTile.create( client, Tile, LOD ) );
                 GTaskList.AddTask( TTask_SendSplat.create( client, Tile, 1 ) );
-                Client.setsubscription( Tile, LOD );
+                Client.setsubscription( Tile, thisLOD );
                 Callback('');
               end;
            end
