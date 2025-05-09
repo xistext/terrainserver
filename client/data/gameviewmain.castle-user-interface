@@ -350,6 +350,7 @@
                 },
                 {
                   "$$ClassName" : "TCastleButton",
+                  "CustomBackground" : true,
                   "CustomBackgroundDisabled" : {
                     "$$ClassName" : "TCastleImagePersistent"
                   },
@@ -721,12 +722,63 @@
                       "Toggle" : true,
                       "TranslationPersistent" : {
                         "$$ClassName" : "TCastleVector2Persistent",
-                        "X" : 5.2000000000000000E+001,
-                        "Y" : -3.9999923706054688E+000
+                        "X" : 5.4000000000000000E+001,
+                        "Y" : -4.0000000000000000E+000
                       },
                       "VerticalAlignment" : "vpTop",
                       "VerticalAnchorParent" : "vpTop",
                       "VerticalAnchorSelf" : "vpTop",
+                      "Width" : 2.2000000000000000E+001
+                    },
+                    {
+                      "$$ClassName" : "TCastleButton",
+                      "AutoSize" : false,
+                      "CustomBackgroundDisabled" : {
+                        "$$ClassName" : "TCastleImagePersistent"
+                      },
+                      "CustomBackgroundFocused" : {
+                        "$$ClassName" : "TCastleImagePersistent"
+                      },
+                      "CustomBackgroundNormal" : {
+                        "$$ClassName" : "TCastleImagePersistent",
+                        "ColorPersistent" : {
+                          "$$ClassName" : "TCastleColorPersistent",
+                          "Blue" : 0.0000000000000000E+000,
+                          "Red" : 0.0000000000000000E+000
+                        }
+                      },
+                      "CustomBackgroundPressed" : {
+                        "$$ClassName" : "TCastleImagePersistent"
+                      },
+                      "CustomColorPressedPersistent" : {
+                        "$$ClassName" : "TCastleColorPersistent",
+                        "Alpha" : 9.3333333730697632E-001,
+                        "Red" : 1.0000000000000000E+000
+                      },
+                      "Height" : 2.2000000000000000E+001,
+                      "Image" : {
+                        "$$ClassName" : "TCastleImagePersistent",
+                        "URL" : "castle-data:/icon/eyeicon.png"
+                      },
+                      "ImageMargin" : 0.0000000000000000E+000,
+                      "ImageScale" : 7.5000000000000000E-001,
+                      "Name" : "ButtonView",
+                      "TintNormalPersistent" : {
+                        "$$ClassName" : "TCastleColorPersistent",
+                        "Alpha" : 0.0000000000000000E+000
+                      },
+                      "TintPressedPersistent" : {
+                        "$$ClassName" : "TCastleColorPersistent",
+                        "Alpha" : 4.9803921580314636E-001,
+                        "Blue" : 0.0000000000000000E+000,
+                        "Red" : 0.0000000000000000E+000
+                      },
+                      "Toggle" : true,
+                      "TranslationPersistent" : {
+                        "$$ClassName" : "TCastleVector2Persistent",
+                        "X" : 5.4000000000000000E+001
+                      },
+                      "VerticalAlignment" : "vpBottom",
                       "Width" : 2.2000000000000000E+001
                     },
                     {
@@ -1382,7 +1434,80 @@
                     {
                       "$$ClassName" : "TCastleLabel",
                       "FontScale" : 5.0000000000000000E-001,
-                      "Name" : "Label2",
+                      "Name" : "Label4",
+                      "Text" : [
+                        "Snow Line"
+                      ],
+                      "TranslationPersistent" : {
+                        "$$ClassName" : "TCastleVector2Persistent",
+                        "X" : 9.9999694824218750E+000,
+                        "Y" : 6.0000000000000000E+001
+                      }
+                    },
+                    {
+                      "$$ClassName" : "TCastleFloatSlider",
+                      "Background" : {
+                        "$$ClassName" : "TCastleImagePersistent",
+                        "URL" : "castle-data:/grid3.png"
+                      },
+                      "FontScale" : 5.0000000000000000E-001,
+                      "Height" : 1.0000000000000000E+001,
+                      "Max" : 2.0000000000000000E+001,
+                      "Name" : "SnowLineSlider",
+                      "Thumb" : {
+                        "$$ClassName" : "TCastleImagePersistent"
+                      },
+                      "TranslationPersistent" : {
+                        "$$ClassName" : "TCastleVector2Persistent",
+                        "X" : 8.0000000000000000E+001,
+                        "Y" : -1.0000000000000000E+001
+                      },
+                      "VerticalAnchorParent" : "vpTop",
+                      "VerticalAnchorSelf" : "vpTop",
+                      "Width" : 1.0000000000000000E+002
+                    }
+                  ]
+                },
+                {
+                  "$$ClassName" : "TCastleShape",
+                  "ColorPersistent" : {
+                    "$$ClassName" : "TCastleColorPersistent",
+                    "Alpha" : 1.2156862765550613E-001
+                  },
+                  "Exists" : false,
+                  "Height" : 8.0000000000000000E+001,
+                  "Name" : "ViewOptionsPanel",
+                  "TranslationPersistent" : {
+                    "$$ClassName" : "TCastleVector2Persistent",
+                    "X" : 2.8000000000000000E+002
+                  },
+                  "VerticalAnchorParent" : "vpTop",
+                  "VerticalAnchorSelf" : "vpTop",
+                  "Width" : 2.0000000000000000E+002,
+                  "$Children" : [
+                    {
+                      "$$ClassName" : "TCastleImageControl",
+                      "ClipChildren" : true,
+                      "Content" : {
+                        "$$ClassName" : "TCastleImagePersistent",
+                        "Clip" : true,
+                        "ColorPersistent" : {
+                          "$$ClassName" : "TCastleColorPersistent",
+                          "Alpha" : 4.9803921580314636E-001
+                        },
+                        "URL" : "castle-data:/grid3.png"
+                      },
+                      "FullSize" : true,
+                      "Height" : 4.0000000000000000E+001,
+                      "Name" : "ImageControl5",
+                      "ProportionalScaling" : "psEnclose",
+                      "Stretch" : true,
+                      "Width" : 4.0000000000000000E+001
+                    },
+                    {
+                      "$$ClassName" : "TCastleLabel",
+                      "FontScale" : 5.0000000000000000E-001,
+                      "Name" : "Label3",
                       "Text" : [
                         "View Radius"
                       ],
@@ -1707,9 +1832,9 @@
             },
             "TranslationPersistent" : {
               "$$ClassName" : "TCastleVector3Persistent",
-              "X" : 1.3020008544921875E+003,
+              "X" : 1.3022972412109375E+003,
               "Y" : 1.0250401611328125E+003,
-              "Z" : 1.0001185913085938E+003
+              "Z" : 1.0001191406250000E+003
             }
           },
           "InternalDesignNavigations[dnFly]" : {

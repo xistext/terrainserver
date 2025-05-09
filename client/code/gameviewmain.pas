@@ -18,8 +18,10 @@ uses Classes, SysUtils,
   CastleKeysMouse, CastleClientServer, CastleTerrain, CastleScene,
   CastleViewport, CastleCameras, CastleTransform, CastleWindow, CastleImages,
   { terrain client }
+  watergrid,
   TerServerCommon, TerrainData, TerrainParams, TerrainShader, TerrainMesh,
-  watergrid, BaseMesh, TerrainClient, watercolor, layermarkup;
+  WaterParams,
+  BaseMesh, TerrainClient, watercolor, layermarkup;
 
 const
   tool_none  = 0;
@@ -27,6 +29,7 @@ const
   tool_dig   = 2;
   tool_pile  = 3;
   tool_globe = 4;
+  tool_view  = 5;
 
   fogfactor : single = 0.0; { used to turn fog on/off }
 
@@ -75,6 +78,7 @@ type
     ButtonDig   : TCastleButton;
     ButtonPile  : TCastleButton;
     ButtonGlobe : TCastleButton;
+    ButtonView  : TCastleButton;
     ToolShape : TCastleShape;
     ToolPileIndicator : TCastleShape;
     ToolDigIndicator : TCastleShape;
@@ -92,7 +96,9 @@ type
     AltitudeIndicator : TCastleShape;
 
     WorldOptionsPanel : TCastleShape;
+    ViewOptionsPanel : TCastleShape;
     ViewRadiusSlider : TCastleIntegerSlider;
+    SnowLineSlider   : TCastleFloatSlider;
 
   private
     connectiontimeout : single;
@@ -163,15 +169,13 @@ procedure TViewMain.Start;
 begin
   inherited;
   GParentComponent := Viewport1.Items;
+  Viewport1.OnMotion := {$ifdef FPC}@{$endif} HandleMotion;
   ButtonCreateClient.OnClick := {$ifdef FPC}@{$endif} ClickCreateClient;
-
   ButtonGrid.OnClick := {$ifdef FPC}@{$endif} ClickLayer;
   ButtonWater.OnClick := {$ifdef FPC}@{$endif} ClickLayer;
   ButtonContour.OnClick := {$ifdef FPC}@{$endif} ClickLayer;
   ButtonFog.OnClick := {$ifdef FPC}@{$endif} ClickLayer;
-
   ButtonSend.OnClick := {$ifdef FPC}@{$endif} ClickSend;
-
   RedSlider.OnChange := {$ifdef FPC}@{$endif} ColorSliderChange;
   BlueSlider.OnChange := {$ifdef FPC}@{$endif} ColorSliderChange;
   GreenSlider.OnChange := {$ifdef FPC}@{$endif} ColorSliderChange;
@@ -182,13 +186,16 @@ begin
   AlphaSlider4.OnChange :=  {$ifdef FPC}@{$endif} ColorSliderChange;
   ToolRadiusSlider.OnChange :=  {$ifdef FPC}@{$endif} ColorSliderChange;
   ViewRadiusSlider.OnChange := {$ifdef FPC}@{$endif} ViewRadiusChange;
+  ButtonBrush.OnClick := {$ifdef FPC}@{$endif} ClickTool;
+  ButtonDig.OnClick := {$ifdef FPC}@{$endif} ClickTool;
+  ButtonPile.OnClick := {$ifdef FPC}@{$endif} ClickTool;
+  ButtonGlobe.OnClick := {$ifdef FPC}@{$endif} ClickTool;
+  ButtonView.OnClick := {$ifdef FPC}@{$endif} ClickTool;
 
   RedSlider.Value := trunc(ColorPreview.Color.X *15);
   GreenSlider.Value := trunc(ColorPreview.Color.Y *15);
   BlueSlider.Value := trunc(ColorPreview.Color.Z *15);
   AlphaSlider.Value := trunc(ColorPreview.Color.W *15);
-
-  Viewport1.OnMotion := {$ifdef FPC}@{$endif} HandleMotion;
 
   ClickCreateClient( self );
   MainNavigation.Input_Jump.Assign(keyNone);
@@ -197,10 +204,7 @@ begin
   LabelContourScale.Caption := '';
   LabelGridScale.Caption := '';
 
-  ButtonBrush.OnClick := {$ifdef FPC}@{$endif} ClickTool;
-  ButtonDig.OnClick := {$ifdef FPC}@{$endif} ClickTool;
-  ButtonPile.OnClick := {$ifdef FPC}@{$endif} ClickTool;
-  ButtonGlobe.OnClick := {$ifdef FPC}@{$endif} ClickTool;
+  SnowLineSlider.Value := defaultSnowLine;
 
   MarkupLayer := TMarkupLayer.Create(Viewport1);
   MarkupLayer.terrainheight := {$ifdef fpc}@{$endif}HeightAboveTerrain;
@@ -220,6 +224,8 @@ begin
 
   WorldOptionsPanel.Translation := ColorPicker.Translation;
   WorldOptionsPanel.Exists := false;
+  ViewOptionsPanel.Translation := ColorPicker.Translation;
+  ViewOptionsPanel.Exists := false;
 
   glGetIntegerv(GL_MAX_VERTEX_UNIFORM_COMPONENTS, @MaxVertexUniformComponents);
   WritelnLog('GL_MAX_VERTEX_UNIFORM_COMPONENTS: %d', [MaxVertexUniformComponents]);
@@ -551,6 +557,8 @@ procedure TViewMain.ClickTool( Sender:Tobject );
          buttonpile.Pressed := false;
       if thisbutton <> buttonglobe then
          buttonglobe.Pressed := false;
+      if thisbutton <> buttonview then
+         buttonview.Pressed := false;
     end;
    activetool := tool_none;
    if buttonbrush.pressed then
@@ -563,9 +571,13 @@ procedure TViewMain.ClickTool( Sender:Tobject );
       activetool := tool_pile
    else
    if buttonglobe.pressed then
-      activetool := tool_globe;
+      activetool := tool_globe
+   else
+   if buttonview.pressed then
+      activetool := tool_view;
    ColorPicker.Exists := activetool = tool_brush;
    WorldOptionsPanel.Exists := activetool = tool_globe;
+   ViewOptionsPanel.Exists := activetool = tool_view;
    ColorSliderChange( self );
  end;
 
@@ -663,13 +675,13 @@ procedure TViewMain.UpdateFog;
    if fogfactor > 0 then
       Fog1.VisibilityRange := ( 60 * ViewRadiusSlider.Value + MainCamera.translation.y )
    else
-      Fog1.VisibilityRange := 1000;
+      Fog1.VisibilityRange := 1000; { essentially 'no fog' }
  end;
 
 procedure TViewMain.ViewRadiusChange( sender : TObject );
  begin
    UpdateFog;
-   updateviewanchor( vector2( MainCamera.Translation.x, MainCamera.Translation.z ));
+   updateviewanchor( vector2( MainCamera.Translation.x, MainCamera.Translation.z ), true );
  end;
 
 function TViewMain.MoveAllowed(const Sender: TCastleNavigation;

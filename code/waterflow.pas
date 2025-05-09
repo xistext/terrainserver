@@ -70,14 +70,8 @@ procedure StartWaterFlowThreads;
    FlowStartTime := gametime;
    FlowCounter   := 0;
 
-(*   if WaterFlowThreads[0].Suspended then
-      WaterFlowthreads[0].Resume
-   else*)
-      WaterFlowThreads[0].Start;
-(*   if WaterFlowThreads[1].Suspended then
-      WaterFlowthreads[1].Resume
-   else
-      WaterFlowThreads[1].Start;*)
+   WaterFlowThreads[0].Start;
+   WaterFlowThreads[1].Start;
  end;
 
 procedure StopWaterFlowThreads;
@@ -86,9 +80,9 @@ procedure StopWaterFlowThreads;
    sleep(10);
    FlowRunning := false;
    WaterFlowThreads[0].Terminate;
-   WaterFlowThreads[0].DirtyTileList.DeleteAll;;
-(*   WaterFlowThreads[1].Suspend;
-   WaterFlowThreads[1].DirtyTileList.DeleteAll;;*)
+   WaterFlowThreads[0].DirtyTileList.DeleteAll;
+   WaterFlowThreads[1].Terminate;
+   WaterFlowThreads[1].DirtyTileList.DeleteAll;
  end;
 
 constructor TDirtyList.create;
@@ -515,16 +509,16 @@ procedure TWaterTask.RunTask;
 
 initialization //===============================================================
   isqrt2 := 1/sqrt(2);
-  //WaterToFlowList_low := TThreadTaskList.create;
+  WaterToFlowList_low := TThreadTaskList.create;
   WaterToFlowList_high := TThreadTaskList.create;
   WaterFlowThreads[0] := TWaterFlowThread.Create;
   WaterFlowThreads[0].TaskList:= WaterToFlowList_high;
-(*  WaterFlowThreads[1] := TWaterFlowThread.Create;
-  WaterFlowThreads[1].TaskList:= WaterToFlowList_low;*)
+  WaterFlowThreads[1] := TWaterFlowThread.Create;
+  WaterFlowThreads[1].TaskList:= WaterToFlowList_low;
 finalization
   WaterFlowThreads[0].free;
-//  WaterFlowThreads[1].free;
-//  WaterToFlowList_low.Free;
+  WaterFlowThreads[1].free;
+  WaterToFlowList_low.Free;
   WaterToFlowList_high.Free;
 end.
 

@@ -10,8 +10,9 @@ interface
 
 uses Classes,
   idGlobal,
-  CastleVectors, CastleWindow, CastleComponentSerialize, CastleUIControls, CastleControls,
-  CastleKeysMouse, CastleClientServer, CastleNotifications,
+  Windows, { for allocconsole to view debug }
+  CastleVectors, CastleWindow, CastleComponentSerialize, CastleLog, CastleControls,
+  CastleUIControls, CastleKeysMouse, CastleClientServer, CastleNotifications,
   ClientList,
   TerServerCommon, TerrainData, TerrainCommand,
   WaterFlow,
@@ -45,14 +46,18 @@ type
     procedure ClickButtonDeleteTiles( Sender : TObject );
     procedure SendStringToClient( AMessage : string;
                                   AClient : TClientConnection );
-
     procedure HandleCommandCallback( Msg : string );
   public
     constructor Create(AOwner: TComponent); override;
     procedure Start; override;
-    procedure Stop; override;
+
+    procedure StartServer;
+    procedure StopServer;
+    procedure StopServerAndExit;
+
     procedure Update(const SecondsPassed: Single; var HandleInput: Boolean); override;
-    procedure Notification( Msg : string );
+    procedure ShowNotification( Msg : string );
+
     procedure CloseQuery(AContainer: TCastleContainer);
   end;
 
@@ -70,27 +75,21 @@ constructor TViewMain.Create(AOwner: TComponent);
 begin
   inherited;
   DesignUrl := 'castle-data:/gameviewmain.castle-user-interface';
+  Application.MainWindow.OnCloseQuery := {$ifdef FPC}@{$endif} CloseQuery;
 end;
 
 procedure TViewMain.Start;
 begin
   inherited;
-  Application.MainWindow.OnCloseQuery := {$ifdef FPC}@{$endif} CloseQuery;
   ButtonCreateServer.OnClick := {$ifdef FPC}@{$endif} ClickCreateServer;
   ButtonDestroyServer.OnClick := {$ifdef FPC}@{$endif} ClickDestroyServer;
   ButtonFlow.OnClick := {$ifdef FPC}@{$endif} ClickButtonFlow;
   ButtonDeleteTiles.OnClick := {$ifdef FPC}@{$endif} ClickButtonDeleteTiles;
-
-  ClickCreateServer( self );
+  InitializeLog;
+  StartServer;
   ConnectedIndicator.exists := true;
   Container.UIScaling := usNone;
   EditPort.Enabled := false;
-end;
-
-procedure TViewMain.Stop;
-begin
-  EditPort.Enabled := false;
-  inherited;
 end;
 
    procedure updatewaterclient( Client : TTileClient; Tile : TTerTile; LOD : integer; data : pointer );
@@ -164,14 +163,14 @@ end;
 procedure TViewMain.HandleConnected(AClient: TClientConnection);
 begin
   GClientList.getsubscriber( AClient );
-  Notification('Client connected');
+  ShowNotification('Client connected');
 end;
 
 procedure TViewMain.HandleDisconnected(AClient: TClientConnection);
 var success : boolean;
     TileClient : TTileClient;
 begin
-  Notification('Client disconnected');
+  ShowNotification('Client disconnected');
   TileClient := GClientList.getsubscriber( AClient );
   GTaskList.removeclient( TileClient ); { remove any tasks queued by the client }
   success := GClientList.removesubscriber(AClient);
@@ -181,7 +180,7 @@ end;
 procedure TViewMain.HandleMessageReceived(const AMessage: String; AClient: TClientConnection);
 var TileClient : TTileClient;
 begin
-  Notification('Client cmd: ' + AMessage);
+  ShowNotification('Client cmd: ' + AMessage);
   { prcess command }
   TileClient :=  GClientList.getsubscriber( AClient );
   GCmdList.executecommand( TileClient, AMessage, {$ifdef FPC}@{$endif}HandleCommandCallback );
@@ -203,34 +202,39 @@ procedure TViewMain.SendStringToClient( AMessage : string;
    FServer.SendToClient( AMessage, AClient );
  end;
 
-procedure TViewMain.ClickCreateServer(Sender: TObject);
-var filecount : integer;
-begin
+procedure TViewMain.StartServer;
+ var filecount : integer;
+ begin
   FServer := TCastleTCPServer.Create;
   FServer.Port := EditPort.Value;
-
   FServer.OnConnected := {$ifdef FPC}@{$endif} HandleConnected;
   FServer.OnDisconnected := {$ifdef FPC}@{$endif} HandleDisconnected;
   FServer.OnMessageReceived := {$ifdef FPC}@{$endif} HandleMessageReceived;
-//  infowrite( 'Reading tiles...' );
   FileCount := GTileList.ReadAllTerrainFiles( 'castle-data:/terrain' );
-
+  ShowNotification( inttostr( filecount )+' tiles read.' );
   FServer.Start;
-  Notification( inttostr( filecount )+' tiles read.' );
+  ShowNotification( 'Started server.' );
+ end;
 
-//
-  Notification( 'Started server.' );
+procedure TViewMain.StopServer;
+ begin
+   if FServer <> nil then
+    begin
+      if FServer.IsConnected then
+         FServer.Stop;
+      FreeAndNil(FServer);
+      ShowNotification( 'Stopped server.' );
+    end;
+ end;
+
+procedure TViewMain.ClickCreateServer(Sender: TObject);
+begin
+  StartServer;
 end;
 
 procedure TViewMain.ClickDestroyServer(Sender: TObject);
 begin
-  if FServer <> nil then
-  begin
-    if FServer.IsConnected then
-       FServer.Stop;
-    FreeAndNil(FServer);
-    Notification( 'Stopped server.' );
-  end;
+  StopServer;
 end;
 
 procedure TViewMain.ClickButtonFlow( Sender : TObject );
@@ -238,12 +242,12 @@ procedure TViewMain.ClickButtonFlow( Sender : TObject );
    ButtonFlow.Pressed := not ButtonFlow.Pressed;
    if ButtonFlow.Pressed then
     begin
-      Notification( 'Start water flow threads.' );
+      ShowNotification( 'Start water flow threads.' );
       StartWaterFlowThreads;
     end
    else
     begin
-      Notification( 'Stop water flow threads.' );
+      ShowNotification( 'Stop water flow threads.' );
       StopWaterFlowThreads;
     end;
  end;
@@ -261,11 +265,11 @@ procedure TViewMain.ClickButtonDeleteTiles( Sender : TObject );
       atile.DeleteMyFiles;
     end;
    gtilelist.freeall;
-   Notification('Cleared terrain.');
+   ShowNotification('Cleared terrain.');
    assert( WaterFlowThreads[0].TaskList.Count = 0 );
  end;
 
-procedure TViewMain.Notification( Msg : string );
+procedure TViewMain.ShowNotification( Msg : string );
  var alabel : TCastleLabel;
      item : TCastleUserInterface;
      line : string;
@@ -275,6 +279,8 @@ procedure TViewMain.Notification( Msg : string );
    alabel.AutoSize := true;
    alabel.Color := Vector4(1,1,1,1);
    line := FormatDateTime('yyyy.mm.dd hh:mm:ss', now )+ ' ' + Msg;
+   writelnlog( line );
+
    alabel.caption := line ;
 //   infowrite( line );
    VerticalGroup2.InsertBack( alabel );
@@ -286,13 +292,24 @@ procedure TViewMain.Notification( Msg : string );
     end;
  end;
 
-procedure TViewMain.CloseQuery(AContainer: TCastleContainer);
+procedure TViewMain.StopServerAndExit;
  begin
-  Notification( 'Stop water flow threads.' );
+  ShowNotification( 'Stop water flow threads.' );
   StopWaterFlowThreads;
-  Sleep(100); { give water flow thread chance to stop }
-  ClickDestroyServer( self );
+//  Sleep(100); { give water flow thread chance to stop }
+  StopServer;
   Application.MainWindow.Close;
  end;
 
+procedure TViewMain.CloseQuery(AContainer: TCastleContainer);
+ begin
+   StopServerAndExit;
+ end;
+
+initialization
+ AllocConsole;
+ {$ifdef fpc}
+ IsConsole := True; // in System unit
+ SysInitStdIO;      // in System unit
+ {$endif}
 end.

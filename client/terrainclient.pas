@@ -121,7 +121,7 @@ function TTerClientThread.ProcessMessage( const msgheader : TmsgHeader;
        MsgLen := msgheader.msglen;
        if MsgLen > 0 then
         begin
-          assert( MsgLen < 200000 );   {! crashes here when you increase view radius too fast}
+          assert( MsgLen < 200000 );   {! crashes here when you increase view radius too fast. somehow the stream is out of sync}
           FClient.IOHandler.ReadBytes( Buffer, MsgLen, true );
           assert( length( buffer ) = MsgLen + SizeOf( msgheader ));
 

@@ -4,7 +4,7 @@ interface
 
 { data grid, not just for water, but anything
   optimized for walking pointers
-  supports types single, smallint }
+  supports types single, smallint, 32bit integer }
 
 uses
   {$ifndef FPC}System.types,{$endif}
@@ -320,8 +320,6 @@ function Tsinglegrid.samplemax( samplex, sampley, samplew, sampleh : dword ) : s
     end;
  end;
 
-
-
 procedure Tsinglegrid.addgrid( added : Tsinglegrid );
  var srcptr, destptr : PSingle;
      i : dword;
@@ -372,7 +370,6 @@ VAR Ratio1, Ratio2, Ratio3, Ratio4 : single;
        END;
     END;
  END;
-
 
 
 //-------------------------------------
