@@ -117,7 +117,7 @@ type
   public
     activetool : integer;
     lockviewtoground : boolean;
-    viewanchor : TVector2;
+    viewanchor : TPoint;
     constructor Create(AOwner: TComponent); override;
     procedure Start; override;
     procedure Stop; override;
@@ -136,7 +136,7 @@ type
     procedure UseTool( const pos : tvector3 );
     procedure UpdateFPSLabel;
     procedure UpdatePositionIndicator;
-    procedure UpdateViewAnchor( Pos : TVector2 );
+    procedure UpdateViewAnchor( Pos : TVector2; ForceRebuild : boolean = false );
     procedure UpdateFog;
    end;
 
@@ -223,6 +223,8 @@ begin
 
   glGetIntegerv(GL_MAX_VERTEX_UNIFORM_COMPONENTS, @MaxVertexUniformComponents);
   WritelnLog('GL_MAX_VERTEX_UNIFORM_COMPONENTS: %d', [MaxVertexUniformComponents]);
+
+  UpdateFog;
 end;
 
 procedure TViewMain.Stop;
@@ -282,7 +284,7 @@ end;
 procedure TViewMain.HandleConnected;
 begin
 //  InfoWrite('Connected to terrain server.');
-  UpdateViewAnchor( vector2( 0, 0 ));
+  UpdateViewAnchor( vector2( 0, 0 ), true );
   connectionstatus := status_connected;
   SetCreateClientMode( connectionstatus, ButtonCreateClient );
   ButtonSend.Enabled := FClient <> nil;
@@ -633,23 +635,27 @@ procedure TViewMain.ColorSliderChange( sender : TObject );
       end;
    end;
 
-procedure TViewMain.UpdateViewAnchor( Pos : TVector2 );
- var pt : TPoint;
-    cmd : string;
-    radius : integer; { radius in tile index unites }
-    removerec : tremovetilerecord;
+procedure TViewMain.UpdateViewAnchor( Pos : TVector2; ForceRebuild : boolean = false );
+ { rebuilds terrain around you if you move into a different tile or if forced }
+ var cmd : string;
+     radius : integer; { radius in tile index units }
+     removerec : tremovetilerecord;
+     newanchor : tpoint;
  begin
-   viewanchor := pos;
-   pt := GTileList.CalculateTileOffset( viewanchor );
-   radius := ViewRadiusSlider.Value;
-   cmd := 'build '+IntToStr( pt.x )+','+inttostr(pt.y)+','+inttostr(radius);
-   FClient.Send(cmd);
+   newanchor := GTileList.CalculateTileOffset( pos );
+   if forcerebuild or ( viewanchor.X <> newanchor.x ) or ( viewanchor.Y <> newanchor.y ) then
+    begin
+      viewanchor := newanchor;
+      radius := ViewRadiusSlider.Value;
+      cmd := 'build '+IntToStr( viewanchor.x )+','+inttostr(viewanchor.y)+','+inttostr(radius);
+      FClient.Send(cmd);
 
-   { remove distant tiles }
-   removerec.ViewMain := self;
-   removerec.radius := radius;
-   removerec.cpt := pt;
-   GTileList.iteratetiles( {$ifdef fpc}@{$endif} removedistanttile, @removerec );
+      { remove distant tiles }
+      removerec.ViewMain := self;
+      removerec.radius := radius;
+      removerec.cpt := viewanchor;
+      GTileList.iteratetiles( {$ifdef fpc}@{$endif} removedistanttile, @removerec );
+    end;
  end;
 
 procedure TViewMain.UpdateFog;
@@ -663,7 +669,7 @@ procedure TViewMain.UpdateFog;
 procedure TViewMain.ViewRadiusChange( sender : TObject );
  begin
    UpdateFog;
-   updateviewanchor( viewanchor );
+   updateviewanchor( vector2( MainCamera.Translation.x, MainCamera.Translation.z ));
  end;
 
 function TViewMain.MoveAllowed(const Sender: TCastleNavigation;
@@ -680,9 +686,7 @@ function TViewMain.MoveAllowed(const Sender: TCastleNavigation;
       MainNavigation.MoveHorizontalSpeed := sqrt(radius);
     end;
    UpdatePositionIndicator;
-
-   if ( abs( proposedNewpos.x - viewanchor.x ) > 60  ) or ( abs( proposedNewpos.z - viewanchor.y ) > 60 ) then
-      updateviewanchor( vector2( ProposedNewPos.X, ProposedNewPos.Z ));
+   UpdateViewAnchor( vector2( ProposedNewPos.X, ProposedNewPos.Z ));
    result := true;
  end;
 

@@ -383,7 +383,6 @@
                   "Name" : "ButtonFog",
                   "PaddingHorizontal" : 0.0000000000000000E+000,
                   "PaddingVertical" : 0.0000000000000000E+000,
-                  "Pressed" : true,
                   "TintPressedPersistent" : {
                     "$$ClassName" : "TCastleColorPersistent",
                     "Alpha" : 4.9803921580314636E-001,
