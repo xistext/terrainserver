@@ -9,7 +9,7 @@ uses Classes, SysUtils, Collect,
      TerServerCommon,
      ClientList,
      TerrainParams, TerrainData,
-     watergrid, waterflow, watercolor;
+     watergrid, waterflow, waterparams, watercolor;
 
 type TCommandCallback = procedure( msg : string ) of object;
 
@@ -991,6 +991,16 @@ function cmdPaint( client : TTileClient;
     end;
  end;
 
+function cmdSnowline( client : TTileClient;
+                      params : string;
+                      callback : TCommandCallback ) : integer;
+ var newsnowline : single;
+ begin
+   result := 0;
+   if parsesingle( params, newsnowline ) then
+      DefaultSnowLine := newsnowline;
+ end;
+
 
 initialization
   GCmdList := TCmdList.Create;
@@ -1001,6 +1011,7 @@ initialization
   GCmdList.RegisterCmd( 'dig', @cmdDig );
   GCmdList.RegisterCmd( 'pile', @cmdPile );
   GCmdList.RegisterCmd( 'paint', @cmdPaint );
+  GCmdList.RegisterCmd( 'snowline', @cmdSnowline );
 
 //  GCmdList.RegisterCmd( 'save', @cmdSave );
 finalization

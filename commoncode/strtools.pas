@@ -8,6 +8,8 @@ function singleofstr( astr : string ) : single;
 function intofstr( astr : string ) : integer;
 function parseInt( var params : string;
                    var anint : integer ) : boolean;
+function parseSingle( var params : string;
+                      var asingle : single ) : boolean;
 function parseWorldXY( var params : string;
                        var WorldX, WorldY : single ) : boolean;
 function parseTileXY( var params : string;
@@ -87,6 +89,15 @@ begin
   result := nextparam( params, param );
   if result then
      anint := intofstr( param );
+end;
+
+function parseSingle( var params : string;
+                      var asingle : single ) : boolean;
+var param : string;
+begin
+  result := nextparam( params, param );
+  if result then
+     asingle := singleofstr( param );
 end;
 
 function intofstr( astr : string ) : integer;

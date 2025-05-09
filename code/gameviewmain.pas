@@ -282,7 +282,6 @@ procedure TViewMain.ShowNotification( Msg : string );
    writelnlog( line );
 
    alabel.caption := line ;
-//   infowrite( line );
    VerticalGroup2.InsertBack( alabel );
    if VerticalGroup2.ControlsCount > 100 then
     begin
@@ -307,9 +306,9 @@ procedure TViewMain.CloseQuery(AContainer: TCastleContainer);
  end;
 
 initialization
- AllocConsole;
+(* AllocConsole;
  {$ifdef fpc}
  IsConsole := True; // in System unit
  SysInitStdIO;      // in System unit
- {$endif}
+ {$endif}*)
 end.

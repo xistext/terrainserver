@@ -18,9 +18,8 @@ uses Classes, SysUtils,
   CastleKeysMouse, CastleClientServer, CastleTerrain, CastleScene,
   CastleViewport, CastleCameras, CastleTransform, CastleWindow, CastleImages,
   { terrain client }
-  watergrid,
+  watergrid, WaterParams,
   TerServerCommon, TerrainData, TerrainParams, TerrainShader, TerrainMesh,
-  WaterParams,
   BaseMesh, TerrainClient, watercolor, layermarkup;
 
 const
@@ -119,6 +118,7 @@ type
     procedure ClickTool( Sender: TObject );
     procedure ColorSliderChange( sender : TObject );
     procedure ViewRadiusChange( sender : TObject );
+    procedure SnowLineChange( sender : TObject );
 
   public
     activetool : integer;
@@ -186,6 +186,7 @@ begin
   AlphaSlider4.OnChange :=  {$ifdef FPC}@{$endif} ColorSliderChange;
   ToolRadiusSlider.OnChange :=  {$ifdef FPC}@{$endif} ColorSliderChange;
   ViewRadiusSlider.OnChange := {$ifdef FPC}@{$endif} ViewRadiusChange;
+  SnowLineSlider.OnChange := {$ifdef FPC}@{$endif} SnowLineChange;
   ButtonBrush.OnClick := {$ifdef FPC}@{$endif} ClickTool;
   ButtonDig.OnClick := {$ifdef FPC}@{$endif} ClickTool;
   ButtonPile.OnClick := {$ifdef FPC}@{$endif} ClickTool;
@@ -682,6 +683,14 @@ procedure TViewMain.ViewRadiusChange( sender : TObject );
  begin
    UpdateFog;
    updateviewanchor( vector2( MainCamera.Translation.x, MainCamera.Translation.z ), true );
+ end;
+
+procedure TViewMain.SnowLineChange( sender : TObject );
+ var cmd : string;
+ begin
+   DefaultSnowline := SnowLineSlider.Value;
+   cmd := 'snowline '+FloatToStr( DefaultSnowline );
+   FClient.Send(cmd);
  end;
 
 function TViewMain.MoveAllowed(const Sender: TCastleNavigation;
