@@ -77,6 +77,129 @@
               {
                 "$$ClassName" : "TCastleTransform",
                 "Name" : "WaterLayer"
+              },
+              {
+                "$$ClassName" : "TCastleScene",
+                "ExposeTransforms" : [
+                ],
+                "Name" : "Scene1",
+                "RenderOptions" : {
+                  "$$ClassName" : "TCastleScene.TSceneRenderOptions"
+                }
+              },
+              {
+                "$$ClassName" : "TCastleTransform",
+                "Name" : "GridPlane",
+                "$Children" : [
+                  {
+                    "$$ClassName" : "TCastlePlane",
+                    "CastShadows" : false,
+                    "Collides" : false,
+                    "Material" : "pmUnlit",
+                    "Name" : "GridPlane1",
+                    "Pickable" : false,
+                    "RenderOptions" : {
+                      "$$ClassName" : "TCastleScene.TSceneRenderOptions",
+                      "Lighting" : false
+                    },
+                    "RotationPersistent" : {
+                      "$$ClassName" : "TCastleVector4RotationPersistent",
+                      "Z" : 1.0000000000000000E+000
+                    },
+                    "SizePersistent" : {
+                      "$$ClassName" : "TCastleVector2Persistent",
+                      "X" : 6.0000000000000000E+002,
+                      "Y" : 6.0000000000000000E+002
+                    },
+                    "Texture" : "castle-data:/grid3.png",
+                    "TranslationPersistent" : {
+                      "$$ClassName" : "TCastleVector3Persistent",
+                      "X" : 3.0000000000000000E+002,
+                      "Z" : -3.0000000000000000E+002
+                    }
+                  },
+                  {
+                    "$$ClassName" : "TCastlePlane",
+                    "CastShadows" : false,
+                    "Collides" : false,
+                    "Material" : "pmUnlit",
+                    "Name" : "GridPlane2",
+                    "Pickable" : false,
+                    "RenderOptions" : {
+                      "$$ClassName" : "TCastleScene.TSceneRenderOptions",
+                      "Lighting" : false
+                    },
+                    "RotationPersistent" : {
+                      "$$ClassName" : "TCastleVector4RotationPersistent",
+                      "Z" : 1.0000000000000000E+000
+                    },
+                    "SizePersistent" : {
+                      "$$ClassName" : "TCastleVector2Persistent",
+                      "X" : 6.0000000000000000E+002,
+                      "Y" : 6.0000000000000000E+002
+                    },
+                    "Texture" : "castle-data:/grid3.png",
+                    "TranslationPersistent" : {
+                      "$$ClassName" : "TCastleVector3Persistent",
+                      "X" : -3.0000000000000000E+002,
+                      "Z" : -3.0000000000000000E+002
+                    }
+                  },
+                  {
+                    "$$ClassName" : "TCastlePlane",
+                    "CastShadows" : false,
+                    "Collides" : false,
+                    "Material" : "pmUnlit",
+                    "Name" : "GridPlane3",
+                    "Pickable" : false,
+                    "RenderOptions" : {
+                      "$$ClassName" : "TCastleScene.TSceneRenderOptions",
+                      "Lighting" : false
+                    },
+                    "RotationPersistent" : {
+                      "$$ClassName" : "TCastleVector4RotationPersistent",
+                      "Z" : 1.0000000000000000E+000
+                    },
+                    "SizePersistent" : {
+                      "$$ClassName" : "TCastleVector2Persistent",
+                      "X" : 6.0000000000000000E+002,
+                      "Y" : 6.0000000000000000E+002
+                    },
+                    "Texture" : "castle-data:/grid3.png",
+                    "TranslationPersistent" : {
+                      "$$ClassName" : "TCastleVector3Persistent",
+                      "X" : 3.0000000000000000E+002,
+                      "Z" : 3.0000000000000000E+002
+                    }
+                  },
+                  {
+                    "$$ClassName" : "TCastlePlane",
+                    "CastShadows" : false,
+                    "Collides" : false,
+                    "Material" : "pmUnlit",
+                    "Name" : "GridPlane4",
+                    "Pickable" : false,
+                    "RenderOptions" : {
+                      "$$ClassName" : "TCastleScene.TSceneRenderOptions",
+                      "Lighting" : false
+                    },
+                    "RotationPersistent" : {
+                      "$$ClassName" : "TCastleVector4RotationPersistent",
+                      "Z" : 1.0000000000000000E+000
+                    },
+                    "SizePersistent" : {
+                      "$$ClassName" : "TCastleVector2Persistent",
+                      "X" : 6.0000000000000000E+002,
+                      "Y" : 6.0000000000000000E+002
+                    },
+                    "Texture" : "castle-data:/grid3.png",
+                    "TranslationPersistent" : {
+                      "$$ClassName" : "TCastleVector3Persistent",
+                      "X" : -3.0000000000000000E+002,
+                      "Z" : 3.0000000000000000E+002
+                    }
+                  }
+                ]
               }
             ]
           },
@@ -1819,22 +1942,20 @@
             },
             "RotationPersistent" : {
               "$$ClassName" : "TCastleVector4RotationPersistent",
-              "W" : 1.5690534114837646E+000,
-              "X" : -2.0463033579289913E-003,
-              "Y" : 9.9999684095382690E-001,
-              "Z" : 1.4468767913058400E-003
+              "W" : 2.0966482162475586E+000,
+              "X" : -1.3337739510461688E-003,
+              "Y" : 9.9999791383743286E-001,
+              "Z" : 1.5560318715870380E-003
             },
             "ScalePersistent" : {
               "$$ClassName" : "TCastleVector3Persistent",
-              "X" : 1.0000001192092896E+000,
-              "Y" : 1.0000001192092896E+000,
-              "Z" : 1.0000001192092896E+000
+              "Y" : 1.0000002384185791E+000
             },
             "TranslationPersistent" : {
               "$$ClassName" : "TCastleVector3Persistent",
-              "X" : 1.3022972412109375E+003,
-              "Y" : 1.0250401611328125E+003,
-              "Z" : 1.0001191406250000E+003
+              "X" : 1.2144400634765625E+003,
+              "Y" : 1.0247335205078125E+003,
+              "Z" : 9.9996582031250000E+002
             }
           },
           "InternalDesignNavigations[dnFly]" : {

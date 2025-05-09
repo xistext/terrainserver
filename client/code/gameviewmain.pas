@@ -98,6 +98,7 @@ type
     ViewOptionsPanel : TCastleShape;
     ViewRadiusSlider : TCastleIntegerSlider;
     SnowLineSlider   : TCastleFloatSlider;
+    GridPlane : TCastleTransform;
 
   private
     connectiontimeout : single;
@@ -659,6 +660,9 @@ procedure TViewMain.UpdateViewAnchor( Pos : TVector2; ForceRebuild : boolean = f
    if forcerebuild or ( viewanchor.X <> newanchor.x ) or ( viewanchor.Y <> newanchor.y ) then
     begin
       viewanchor := newanchor;
+
+//      GridPlane.Translation := vector3( viewanchor.X * 60 - 30, 0, viewanchor.Y * 60 - 30 );
+
       radius := ViewRadiusSlider.Value;
       cmd := 'build '+IntToStr( viewanchor.x )+','+inttostr(viewanchor.y)+','+inttostr(radius);
       FClient.Send(cmd);
