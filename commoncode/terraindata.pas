@@ -19,9 +19,9 @@ const terrainpath = 'data\terrain\';
       { defined tile layers }
 
       layer_terrain = 0; { height map  120x120 single }
-      layer_splat   = 1; { splat map    60x60 integer }
-      layer_water   = 2; { water depth 120x120 single }
-      layer_flora   = 3; { flora depth 120x120 single }
+      layer_water   = 1; { water depth 120x120 single }
+      layer_flora   = 2; { flora depth 120x120 single }
+      layer_splat   = 3; { splat map    60x60 integer }
 
 type PTerTile = ^TTerTile;
      TTerTile = class; { forward }
@@ -100,6 +100,7 @@ type PTerTile = ^TTerTile;
      TTerTile = class
 
         Info   : TTileHeader;
+        datalayers : TDataLayers;
 
         constructor create( const iInfo : TTileHeader );
         destructor destroy; override;
@@ -120,7 +121,6 @@ type PTerTile = ^TTerTile;
         {$ifdef terserver}
         { server stores all and manages the data }
         Status : TTileStatus;
-        datalayers : TDataLayers;
 
         procedure UpdateTerrainGridFromSource( Source : TCastleTerrainNoise );
 
@@ -135,28 +135,29 @@ type PTerTile = ^TTerTile;
         procedure Dig( const WorldPos : TVector2; Amount : single; Radius : integer = 1 );
         procedure Paint( const WorldPos : TVector2; EncodedColor : integer );
 
+        function getWaterUpdateTime : single;
+        {$endif}
         private
 
         function getTerrainGrid : TSingleGrid;
         function getWaterGrid : TSingleGrid;
         function getSplatGrid : TIntGrid;
         function getFloraGrid : TSingleGrid;
-        function getWaterUpdateTime : single;
-        procedure setWaterUpdateTime( updatetime : single );
 
         public
-
-        property TerrainGrid : TSingleGrid read getTerrainGrid;
-        property WaterGrid : TSingleGrid read getWaterGrid;
-        property FloraGrid : TSingleGrid read getFloraGrid;
-        property SplatGrid : TIntGrid read getSplatGrid;
-
+        {$ifdef terserver}
+        procedure setWaterUpdateTime( updatetime : single );
         property WaterUpdateTime : single read getWaterUpdateTime write setWaterUpdateTime;
         {$else}
         { client links to graphics }
         TerrainGraphics : TCastleTransform;
         WaterGraphics : TCastleTransform;
         {$endif}
+
+        property TerrainGrid : TSingleGrid read getTerrainGrid;
+        property WaterGrid : TSingleGrid read getWaterGrid;
+        property FloraGrid : TSingleGrid read getFloraGrid;
+        property SplatGrid : TIntGrid read getSplatGrid;
       end;
 
 procedure sethxy( var h : TTileHeader; x, y : smallint; sz : word = 1 );
@@ -457,13 +458,14 @@ constructor TTerTile.create( const iInfo : TTileHeader );
  end;
 
 destructor TTerTile.destroy;
- {$ifdef terserver}var i : integer; item : TWaterTask;{$endif}
+ var i : integer;
+     {$ifdef terserver}item : TWaterTask;{$endif}
  begin
    inherited;
-   {$ifdef terserver}
    for i := 0 to length( datalayers ) - 1 do
       datalayers[i].Free;
    setlength( datalayers, 0 );
+   {$ifdef terserver}
    i := 0;
    while i < WaterToFlowList_high.Count do
     begin
@@ -531,8 +533,6 @@ function TTerTile.TileDist( const pos : tpoint ) : integer;
    result := trunc( sqrt( sqr( pos.x - tilex ) + sqr( pos.y - tiley )));
  end;
 
-
-{$ifdef terserver}
 function TTerTile.getTerrainGrid : TSingleGrid;
  begin
    Result := TSingleGrid( datalayers[layer_terrain].DataGrid );
@@ -553,6 +553,7 @@ function TTerTile.getFloraGrid : TSingleGrid;
    Result := TSingleGrid( datalayers[layer_flora].DataGrid );
  end;
 
+{$ifdef terserver}
 function TTerTile.getWaterUpdateTime : single;
  begin
    result := datalayers[layer_water].LastUpdateTime
