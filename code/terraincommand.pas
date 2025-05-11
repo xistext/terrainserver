@@ -827,9 +827,9 @@ function TCmdList.executecommand( client : TTileClient;
                 lastLOD := subscription.LOD;
              if lastLOD <> thisLOD then
               begin
-                GTaskList.AddTask( TTask_SendLODUpdateTile.create( client, Tile, LOD ) );
-                GTaskList.AddTask( TTask_SendSplat.create( client, Tile, 1 ) ); { splatmap is always LOD 1 }
                 Client.setsubscription( Tile, thisLOD );
+                GTaskList.AddTask( TTask_SendLODUpdateTile.create( client, Tile, thisLOD ) );
+                GTaskList.AddTask( TTask_SendSplat.create( client, Tile, 1 ) ); { splatmap is always LOD 1 }
                 Callback('');
               end;
            end
