@@ -419,6 +419,7 @@ function TFlowRunner.flowtoneighbors( x,y : integer ) : boolean;
 constructor TWaterFlowThread.Create;
  begin
    inherited Create( true {suspended} );
+   priority := tpHigher;
    FlowIx := 0;
    deltagrid := tsinglegrid.create(0, GDefGridCellCount );
    DirtyTileList := TDirtyList.Create;
@@ -480,6 +481,7 @@ function TWaterTask.FlowTile( amounttoflow : single ) : boolean;
             Result := FlowRunner.FlowToNeighbors( x, y ) or Result;
          FlowRunner.NextCell; { walk the pointer and positions }
        end;
+      result := true;
      if Result then
        begin
          inc( flowcounter );
@@ -500,8 +502,8 @@ procedure TWaterTask.RunTask;
    if ( TimeSpeed > 1E-5 ) and ( not cancelflow ) and ( TileUpdateTime >= 0 ) then
     begin
       Delta := ( UpdateTime - TileUpdateTime ) * flowfactor;;
-      if delta < 0.1 then
-         exit;
+   (*   if delta < 0.1 then
+         exit;*)
       FlowTile( Delta );
     end;
    WaterTile.WaterUpdateTime := UpdateTime;
