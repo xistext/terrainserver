@@ -539,21 +539,22 @@ function BuildResultSplatGrid( tile : ttertile;
  var tilesz : integer;
      bufptr : ^single;
      ThisGrid : TSingleGrid;
-     neighbor : TTerTile;
   procedure fullresolutionsample;
    var x : integer;
        ngrid : TSingleGrid;
+       neighbor : TTerTile;
    begin
+     neighbor := GTileList.getneighbor( tile, 1, 1 );
      ngrid := neighborlayer( neighbor, layer_splat );
      for x := 0 to tilesz - 1 do
       begin
         move( ThisGrid.ptrxy(x,0)^, bufptr^, tilesz * sizeof( single ));
         { last point in line }
         inc( bufptr, TileSz );
-        if assigned( ngrid ) then
-           bufptr^ := gridvaluexy(ngrid, x,0)
-        else
-           bufptr^ := gridvaluexy(thisgrid, x, tilesz-1);
+        (*if assigned( ngrid ) then
+           bufptr^ := gridvaluexy(ngrid, x, 0)
+        else*)
+           bufptr^ := 65535;//gridvaluexy(thisgrid, x, tilesz-1);
         inc( bufptr, 1 );
       end;
      { last row }
@@ -576,7 +577,6 @@ function BuildResultSplatGrid( tile : ttertile;
     ThisGrid := Tile.SplatGrid;
     Result := TSingleGrid.Create( 0, resultinfo.tilesz );
     bufptr := Result.ptrix(0);
-    neighbor := GTileList.getneighbor( tile, 0, 1 );
     fullresolutionsample
  end;
 
@@ -807,6 +807,23 @@ function TCmdList.executecommand( client : TTileClient;
  end;
 
 //-----------------------------
+      procedure BuildTerrainTile( tx, ty : integer; data : pointer );
+       var Tile : TTerTile;
+           thisLOD : integer;
+           lastLOD : integer;
+           subscription : TSubscription;
+       begin
+         with  titeraterec( data^ ) do
+          begin
+            thisLOD := trunc(sqrt( sqr( tx - CenterX ) + sqr( ty - CenterY )));
+            if ( thisLOD <= Radius ) then
+             begin
+               lastLOD := -1;
+               if UpdateTile( tx, ty, tile ) then { if the tile was created then we have to add a task to build it }
+                  GTaskList.AddTask( TTask_BuildTile.create( client, Tile, Params ) )
+             end
+          end;
+       end;
 
     procedure SendTerrainTile( tx, ty : integer; data : pointer );
      var Tile : TTerTile;
@@ -820,9 +837,7 @@ function TCmdList.executecommand( client : TTileClient;
           if ( thisLOD <= Radius ) then
            begin
              lastLOD := -1;
-             if UpdateTile( tx, ty, tile ) then { if the tile was created then we have to add a task to build it }
-                GTaskList.AddTask( TTask_BuildTile.create( client, Tile, Params ) )
-             else
+             UpdateTile( tx, ty, tile );
              if Client.getSubscription( Tile, subscription ) then
                 lastLOD := subscription.LOD;
              if lastLOD <> thisLOD then
@@ -860,6 +875,8 @@ procedure buildTerrainArea( client : TTileClient;
  var IterateRec : TIterateRec;
  begin
    iteraterec := initIterateRec( CenterX, CenterY, Radius, 1, Client, Params, callback );
+   iteratearea( CenterX, CenterY, Radius,
+                @iteraterec, {$ifdef FPC}@{$endif}BuildTerrainTile );
    iteratearea( CenterX, CenterY, Radius,
                 @iteraterec, {$ifdef FPC}@{$endif}SendTerrainTile );
    GTaskList.AddTask( TTask_SaveTiles.create );

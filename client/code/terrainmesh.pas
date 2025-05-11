@@ -240,11 +240,13 @@ function TTerrainMesh.BuildTerrainEffect : TEffectNode;
    Result.Language := slGLSL;
    Result.UniformMissing := umIgnore;
 
+   { parameters for the 4 textures, one vector4 for each parameter }
    Result.AddCustomField(TSFVec4f.Create(Result, true, 'uv_scale', Vector4( 0.11, 0.26, 0.36, 0.36)));
    Result.AddCustomField(TSFVec4f.Create(Result, true, 'metallic', Vector4( 1, 1, 1, 1)));
    Result.AddCustomField(TSFVec4f.Create(Result, true, 'roughness', Vector4( 1, 1, 1, 1)));
 
-   Result.AddCustomField(TSFBool.Create(Result, true, 'blur', true ));
+   { enable splat map blurring }
+   Result.AddCustomField(TSFBool.Create(Result, true, 'blur', false ));
 
    Result.AddCustomField(TSFFloat.Create(Result, true, 'height_1', 4));
    Result.AddCustomField(TSFFloat.Create(Result, true, 'height_2', 8));
@@ -270,7 +272,7 @@ function TTerrainMesh.BuildTerrainEffect : TEffectNode;
    splatmap.items.Count := 61 * 61;
    for ix := 0 to 60 do
        for iy := 0 to 60 do
-           splatmap.items[ix*60+iy] := encodesplatcell( 0, 0, 0, 0, 0, 0 );
+           splatmap.items[ix*61+iy] := 0;
    Result.AddCustomField(splatmap);
 
    Result.AddCustomField(TSFFloat.Create(Result, true, 'grid_scale', ord( GShowGrid ) * GGridScale ));

@@ -56,7 +56,6 @@ type TDirtyList = class( tcollection ) { of TTerTile }
 
 const WaterToFlowList_High : TThreadTaskList = nil;  { list of LOD=1 unowned tiles }
       WaterToFlowList_Low  : TThreadTaskList = nil;  { list of LOD>1 unowned tiles }
-      cancelflow : boolean = false;
 var   WaterFlowThreads : array[0..1] of TWaterFlowThread ; { thread for flowing the LOD=1 tiles }
 
 implementation //===============================================================
@@ -65,7 +64,6 @@ const isqrt2 : single = 0;
 
 procedure StartWaterFlowThreads;
  begin
-   cancelflow := false;
    FlowRunning := true;
    FlowStartTime := gametime;
    FlowCounter   := 0;
@@ -76,7 +74,6 @@ procedure StartWaterFlowThreads;
 
 procedure StopWaterFlowThreads;
  begin
-   cancelflow := true;
    sleep(10);
    FlowRunning := false;
    WaterFlowThreads[0].Terminate;
@@ -453,7 +450,7 @@ procedure TWaterFlowThread.Execute;
    repeat
       if not DoTaskFromList then
          yield
-    until Terminated or cancelflow or finished;
+    until Terminated or finished;
  end;
 
 //---------------------------------
@@ -499,7 +496,7 @@ procedure TWaterTask.RunTask;
  begin
    UpdateTime := GameTime;
    TileUpdateTime := WaterTile.WaterUpdateTime;
-   if ( TimeSpeed > 1E-5 ) and ( not cancelflow ) and ( TileUpdateTime >= 0 ) then
+   if ( TimeSpeed > 1E-5 ) and ( TileUpdateTime >= 0 ) then
     begin
       Delta := ( UpdateTime - TileUpdateTime ) * flowfactor;;
    (*   if delta < 0.1 then

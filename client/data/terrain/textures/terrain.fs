@@ -78,25 +78,13 @@ vec4 decodecolor( int c, out vec4 texture )
   }
 
 vec4 getsplatcolor( int ax, int ay, out vec4 texture )
- { int c = splatmap[( ax * (splat_sz) ) + ay];
-   return decodecolor( c, texture );
-  }
-
-void mixsplat( inout vec3 terrain_color,
-               int ax, int ay,
-               float splatalpha,
-               float texalpha,
-               float edgealpha )
- { vec4 texture;
-   edgealpha = edgealpha * 0.5;
-   vec4 c1 = getsplatcolor( ax, ay, texture );
-   texalpha = mix( texalpha, texture.a, edgealpha );
-   splatalpha = mix( splatalpha, c1.a, edgealpha );
-
-   terrain_color = mix( terrain_color, texture.rgb, texalpha * edgealpha );
-   terrain_color = mix( terrain_color, c1.rgb, splatalpha * edgealpha );
-
-  //terrain_color = mix( terrain_color, vec3(0,1,0), edgealpha );
+ { if (( ax < splat_sz ) && ( ay < splat_sz ))
+    { int c = splatmap[( ax * splat_sz ) + ay];
+      return decodecolor( c, texture );
+      }
+   else
+    { return decodecolor( 65535, texture );
+     }
   }
 
 vec4 bilerp( int ax, int ay, in vec2 pos, int steps, out vec4 texture )
@@ -218,10 +206,6 @@ void drawcontourstripe( inout vec3 terrain_color,
         }
   }
 
-float modPos(float x, float y) {
-    return mod(x, y) + (x < 0.0 ? y : 0.0);
-}
-
 void PLUG_main_texture_apply(inout vec4 fragment_color, const in vec3 normal)
 {
   float h = terrain_position.y;
@@ -255,15 +239,11 @@ void PLUG_main_texture_apply(inout vec4 fragment_color, const in vec3 normal)
      int ax = int( floor( splatpos.x ));
      int ay = int( floor( splatpos.y ));
 
-     splatpos.x = fract( splatpos.x );
-     splatpos.y = fract( splatpos.y );
-
-
-//     terrain_color = mix( terrain_color, splatcolor, splatalpha  );
-
      if ( blur )
       {
         vec2 posincell = splatpos;
+        posincell.x = fract( splatpos.x );
+        posincell.y = fract( splatpos.y );
 	float shadepct = 0.50;
         int steps = 0;
 	float ishadepct = 1/shadepct;
@@ -308,8 +288,7 @@ void PLUG_main_texture_apply(inout vec4 fragment_color, const in vec3 normal)
               terrain_color = mix( terrain_color, c1.rgb, c1.a );
              }
             else //l
-             { //mixsplat( terrain_color, ax - 1, ay, splatalpha, texalpha, xedgealpha );
-              vec4 c1 = lerpx( ax-1, ay, 0.5 + 0.5 * posincell.x/shadepct, steps, t1 );
+             { vec4 c1 = lerpx( ax-1, ay, 0.5 + 0.5 * posincell.x/shadepct, steps, t1 );
               terrain_color = mix( terrain_color, t1.rgb, t1.a );
               terrain_color = mix( terrain_color, c1.rgb, c1.a  );
               }
@@ -320,7 +299,6 @@ void PLUG_main_texture_apply(inout vec4 fragment_color, const in vec3 normal)
              vec4 c1 = lerpy( ax, ay, 0.5 * ( posincell.y - ( 1-shadepct))/shadepct, steps, t1 );
              terrain_color = mix( terrain_color, t1.rgb, t1.a );
              terrain_color = mix( terrain_color, c1.rgb, c1.a  );
-
            }
          else
           if (( ay > 0 ) && ( posincell.y < shadepct ))
@@ -328,7 +306,6 @@ void PLUG_main_texture_apply(inout vec4 fragment_color, const in vec3 normal)
               vec4 c1 = lerpy( ax, ay-1, 0.5 + 0.5 * posincell.y/shadepct, steps, t1 );
               terrain_color = mix( terrain_color, t1.rgb, t1.a );
               terrain_color = mix( terrain_color, c1.rgb, c1.a );
-
            }
          else
           { vec4 c = getsplatcolor( ax, ay, t1 );
@@ -340,6 +317,8 @@ void PLUG_main_texture_apply(inout vec4 fragment_color, const in vec3 normal)
       { vec4 c = getsplatcolor( ax, ay, t1 );
         terrain_color = mix( terrain_color, t1.rgb, t1.a );
         terrain_color = mix( terrain_color, c.rgb, c.a  );
+
+        terrain_color = mix( terrain_color, vec3(1,0,0), 1-splatpos.x / 60 );
        }
     }
 

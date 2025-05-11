@@ -461,6 +461,7 @@ uses
           Synchronize(FOnDisconnected); //Must be synchronize, not queue, because queued messages get lost.
       end;
     end;
+
     FClient.Disconnect;
     if FreeClientOnTerminate then
       FClient.Free;
