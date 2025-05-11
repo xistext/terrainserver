@@ -111,8 +111,7 @@ type
                                   const tileinfo : TTileHeader;
                                   tilegrid : TSingleGrid;
                                   watergrid : TSingleGrid;
-                                  floragrid : TSingleGrid;
-                                  texgrid : TTexPoints );
+                                  floragrid : TSingleGrid );
     procedure ClickCreateClient(Sender: TObject);
     procedure ClickLayer(Sender: TObject);
     procedure ClickSend(Sender: TObject);
@@ -391,16 +390,34 @@ procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
                                         const tileinfo : TTileHeader;
                                         tilegrid : TSingleGrid;
                                         watergrid : TSingleGrid;
-                                        floragrid : TSingleGrid;
-                                        texgrid : TTexPoints );
+                                        floragrid : TSingleGrid );
  var tile : TTerTile;
      x,y : integer;
+     TexGrid : array of tvector2;
      waterh, terrainh, florah : psingle;
      h : single;
  begin
    Tile := GTileList.GetInitTile( tileinfo );
    if assigned( tile ) then case msginfo.msgtype of
      msg_water : begin  { obsolete in favor of msg_water2? }
+                    { calculate water elevations }
+                    WaterGrid := tilegrid;
+                    waterh := WaterGrid.ptrix(0);
+                    terrainh := Tile.TerrainGrid.ptrix(0);
+                    florah := Tile.FloraGrid.ptrix(0);
+                    setlength( texgrid, watergrid.wxh );
+                    assert( watergrid.wxh = tilegrid.wxh );
+                    for x := 0 to watergrid.wh - 1 do
+                     for y := 0 to watergrid.wh - 1 do
+                        begin
+                          h := waterh^;
+                          texgrid[ y * watergrid.wh + x ] := CalcDepthAndTexture( h, florah^, terrainh^, true );
+                          waterh^ := terrainh^ + h;
+                          { calculate water texture index }
+                          inc( waterh );
+                          inc( terrainh );
+                          inc( florah );
+                        end;
                     if ( not assigned( Tile.WaterGraphics )) or
                        ( Tile.Info.TileSz <> tileInfo.TileSz ) then
                      begin
@@ -408,8 +425,11 @@ procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
                        CreateWaterMesh( WaterLayer, Tile );
                      end;
                     { update tile graphics }
-                    TTerrainMesh( Tile.WaterGraphics ).UpdateFromGrid( TileGrid );
-                    TTerrainMesh( Tile.WaterGraphics ).UpdateVerticesTexture( texgrid );
+                    TTerrainMesh( Tile.WaterGraphics ).UpdateFromGrid( WaterGrid );
+                    TTerrainMesh( Tile.WaterGraphics ).UpdateVerticesTexture(TexGrid);
+                    Tile.SetWaterGrid( WaterGrid );
+                    WaterGrid := nil;
+                    TileGrid := nil;
                   end;
      msg_tile : begin
                   if not assigned( Tile.TerrainGraphics ) then
@@ -429,8 +449,11 @@ procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
                    end;
                   { update tile graphics }
                   TTerrainMesh( Tile.TerrainGraphics ).UpdateFromGrid( TileGrid );
+                  Tile.SetTerrainGrid( TileGrid );
+                  TileGrid := nil;
                 end;
-      msg_water2 : begin { this version of water sends the terrain, flora and water depth grids to calculate the water layer on the client }
+
+      msg_water2 : begin { all layers, this should be repurposed for LOD changes }
                      assert( assigned( tilegrid ) and assigned( watergrid ) and assigned( floragrid ));
                      { calculate water elevations }
                      waterh := watergrid.ptrix(0);
@@ -467,6 +490,10 @@ procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
       msg_splat : begin
                     if assigned( tile.TerrainGraphics ) then
                        TTerrainMesh( Tile.TerrainGraphics ).UpdateSplatmap( tilegrid )
+                  end;
+      msg_flora : begin
+                    tile.SetFloraGrid( tilegrid );
+                    tilegrid := nil;
                   end;
     end;
    { free the sent data when finished }

@@ -154,9 +154,13 @@ type PTerTile = ^TTerTile;
         WaterGraphics : TCastleTransform;
         {$endif}
 
-        property TerrainGrid : TSingleGrid read getTerrainGrid;
-        property WaterGrid : TSingleGrid read getWaterGrid;
-        property FloraGrid : TSingleGrid read getFloraGrid;
+        procedure setTerrainGrid( aGrid : TSingleGrid );
+        procedure setWaterGrid( aGrid : TSingleGrid );
+        procedure setFloraGrid( aGrid : TSingleGrid );
+
+        property TerrainGrid : TSingleGrid read getTerrainGrid write setTerrainGrid;
+        property WaterGrid : TSingleGrid read getWaterGrid write setWaterGrid;
+        property FloraGrid : TSingleGrid read getFloraGrid write setFloraGrid;
         property SplatGrid : TIntGrid read getSplatGrid;
       end;
 
@@ -425,30 +429,33 @@ procedure TIntLayer.initgrid( igridsz : dword );
 //-------------------------------
 constructor TTerTile.create( const iInfo : TTileHeader );
  var layer : TDataLayer;
-     x, y : integer;
+     {$ifdef terserver}x, y : integer;{$endif}
  begin
    Info := iInfo;
    {$ifdef terserver}
    SetLength( datalayers, 4 );
+   {$else}
+   SetLength( datalayers, 3 ); { client doesn't store splatmap }
+   {$endif}
    { intialize terrain layer }
    layer := TDataLayer.create( Info.TileSz );
    datalayers[layer_terrain] := layer;
+   { initialize water layer }
+   layer := TDataLayer.create( Info.TileSz );
+   datalayers[layer_water] := layer;
+   { initialize flora layer }
+   layer := TDataLayer.create( Info.TileSz );
+   datalayers[layer_flora] := layer;
+
+   {$ifdef terserver}
+   TSingleGrid( datalayers[layer_water].DataGrid ).setvalue( 0.1 );
+   TSingleGrid( datalayers[layer_flora].DataGrid ).setvalue( 0.01 );
    { initialize splat layer with randomized subdued colors and textures }
    layer := TIntLayer.create( 60 );
    for x := 0 to 59 do for y := 0 to 59 do
       TIntGrid(layer.DataGrid).setvaluexy( x, y,
           encodesplatcell( random(6), random(8), random(6), random(6), random(4), random(16)));
-
    datalayers[layer_splat] := layer;
-   { initialize water layer }
-   layer := TDataLayer.create( Info.TileSz );
-   TSingleGrid( layer.DataGrid ).setvalue( 0.1 );
-   datalayers[layer_water] := layer;
-   { initialize flora layer }
-   layer := TDataLayer.create( Info.TileSz );
-   TSingleGrid( layer.DataGrid ).setvalue( 0.01 );
-   datalayers[layer_flora] := layer;
-
    status := 0;
    WaterToFlowList_high.addtask( TWaterTask.create( self ));
    {$else}
@@ -506,6 +513,7 @@ function TTerTile.tileid : string;
 function TTerTile.gridStep : single;
  var loddiv : integer;
  begin
+   { client gets all tiles 1 row+col larger to handle seams, but still same 'cell count' }
    loddiv := GDefGridCellCount div ( Info.TileSz{$ifndef terserver}-1{$endif} );
    result := GDefGridStep * loddiv;
  end;
@@ -551,6 +559,33 @@ function TTerTile.getSplatGrid : TIntGrid;
 function TTerTile.getFloraGrid : TSingleGrid;
  begin
    Result := TSingleGrid( datalayers[layer_flora].DataGrid );
+ end;
+
+procedure TTerTile.setTerrainGrid( aGrid : TSingleGrid );
+ var layer : TDataLayer;
+ begin
+   layer := datalayers[layer_terrain];
+   if assigned( layer.datagrid ) then
+      layer.datagrid.free;
+   layer.datagrid := aGrid;
+ end;
+
+procedure TTerTile.setWaterGrid( aGrid : TSingleGrid );
+ var layer : TDataLayer;
+ begin
+   layer := datalayers[layer_water];
+   if assigned( layer.datagrid ) then
+      layer.datagrid.free;
+   layer.datagrid := aGrid;
+ end;
+
+procedure TTerTile.setFloraGrid( aGrid : TSingleGrid );
+ var layer : TDataLayer;
+ begin
+   layer := datalayers[layer_flora];
+   if assigned( layer.datagrid ) then
+      layer.datagrid.free;
+   layer.datagrid := aGrid;
  end;
 
 {$ifdef terserver}

@@ -76,6 +76,15 @@ type TCommandCallback = procedure( msg : string ) of object;
         function runtask : boolean; override;
       end;
 
+     TTask_SendFlora = class( TClientTaskItem )
+        Tile   : TTerTile;
+        LOD    : dword;
+        constructor create( const iClient : TTileClient;
+                            iTile : TTerTile;
+                            iLOD : dword );
+        function runtask : boolean; override;
+      end;
+
      TTask_SendSplat = class( TClientTaskItem )
         Tile   : TTerTile;
         LOD    : dword;
@@ -629,8 +638,7 @@ constructor TTask_SendWater.create( const iClient : TTileClient;
    LOD := iLOD;
  end;
 
-const sendall : boolean = true;
-
+       (*  this should become a task to send all data layers in one message for LOD change
 function TTask_SendWater.RunTask : boolean;
  var buffer : TIdBytes;
      resulttileinfo : TTileHeader;
@@ -654,58 +662,85 @@ function TTask_SendWater.RunTask : boolean;
    resultwater := BuildResultGrid( tile, resulttileinfo, LODdiv, layer_water );
    resultterrain := BuildResultGrid( tile, resulttileinfo, LODdiv, layer_terrain );
    resultflora := BuildResultGrid( tile, resulttileinfo, LODdiv, layer_flora );
-   if sendall then
-    begin
-      buflen := resultwater.wxh * sizeof( single ) * 3;
-      setlength( buffer, buflen );
-      bufpos := 0;
-      Move( resultterrain.depthptr^, buffer[bufpos], resultterrain.wxh*sizeof(single));
-      inc( bufpos, resultwater.wxh*sizeof(single) );
-      Move( resultwater.depthptr^, buffer[bufpos], resultwater.wxh*sizeof(single));
-      inc( bufpos, resultterrain.wxh*sizeof(single) );
-      Move( resultflora.depthptr^, buffer[bufpos], resultflora.wxh*sizeof(single));
-      client.SendClientMsgHeader( msg_Water2, buflen + sizeof( TTileHeader ));
-      resultterrain.free;
-      resultflora.free;
-    end
-   else
-    begin  { deprecated?  It seems better to calcdepthandtexture on the client }
-      waterh := resultwater.ptrix(0);
-      terrainh := resultterrain.ptrix(0);
-      florah := resultflora.ptrix(0);
-      setlength( resultwatertex, resultwater.wxh );
+   buflen := resultwater.wxh * sizeof( single ) * 3;
+   setlength( buffer, buflen );
+   bufpos := 0;
+   Move( resultterrain.depthptr^, buffer[bufpos], resultterrain.wxh*sizeof(single));
+   inc( bufpos, resultwater.wxh*sizeof(single) );
+   Move( resultwater.depthptr^, buffer[bufpos], resultwater.wxh*sizeof(single));
+   inc( bufpos, resultterrain.wxh*sizeof(single) );
+   Move( resultflora.depthptr^, buffer[bufpos], resultflora.wxh*sizeof(single));
+   client.SendClientMsgHeader( msg_Water2, buflen + sizeof( TTileHeader ));
+   resultterrain.free;
+   resultflora.free;
+ end;
+*)
 
-      for x := 0 to resultwater.wh - 1 do
-       for y := 0 to resultwater.wh - 1 do
-       begin
-         h := waterh^;
-         resultwatertex[ y * resultwater.wh + x ] := CalcDepthAndTexture( h, florah^, terrainh^, false );
-         waterh^ := terrainh^ + h;
+function TTask_SendWater.RunTask : boolean;
+ var buffer : TIdBytes;
+     resulttileinfo : TTileHeader;
+     buflen : integer;
+     tilesz, loddiv : integer;
+     resultwater : TSingleGrid;
+     bufpos : integer;
+ begin
+   result := inherited Runtask;
+   if not result then
+      exit;
+   resulttileinfo := Tile.info;
+   loddiv := divOfLOD( LOD );
+   tilesz := GDefGridCellCount div loddiv;
 
-         { calculate water texture index }
-         inc( waterh );
-         inc( terrainh );
-         inc( florah );
-       end;
-      resultterrain.free;
-      resultflora.free;
-
-      buflen := resultwater.wxh*sizeof(single) + resultwater.wxh * sizeof( tvector2 );
-      setlength( buffer, buflen );
-      bufpos := 0;
-      Move( resultwater.depthptr^, buffer[bufpos], resultwater.wxh*sizeof(single));
-      inc( bufpos, resultwater.wxh*sizeof(single));
-
-      Move( resultwatertex[0], buffer[bufpos], resultwater.wxh * sizeof( tvector2 ));
-
-      { send message + tile headers }
-      client.SendClientMsgHeader( msg_Water, buflen + sizeof( TTileHeader ));
-    end;
+   resulttileinfo.tilesz := tilesz + 1;
+   resultwater := BuildResultGrid( tile, resulttileinfo, LODdiv, layer_water );
+   buflen := resultwater.wxh * sizeof( single );
+   setlength( buffer, buflen );
+   bufpos := 0;
+   Move( resultwater.depthptr^, buffer[bufpos], resultwater.wxh*sizeof(single));
+   client.SendClientMsgHeader( msg_water, buflen + sizeof( TTileHeader ));
    client.Send( resulttileinfo, sizeof( TTileHeader ));
    client.SendBuffer( buffer, buflen );
-
    resultwater.free;
+   result := true;
+ end;
 
+
+//---------------------------
+
+constructor TTask_SendFlora.create( const iClient : TTileClient;
+                                    iTile : TTerTile;
+                                    iLOD : dword );
+ begin
+   inherited create( iClient );
+   Tile := iTile;
+   LOD := iLOD;
+ end;
+
+function TTask_SendFlora.RunTask : boolean;
+ var buffer : TIdBytes;
+     resulttileinfo : TTileHeader;
+     buflen : integer;
+     tilesz, loddiv : integer;
+     resultflora : TSingleGrid;
+     bufpos : integer;
+ begin
+   result := inherited Runtask;
+   if not result then
+      exit;
+   resulttileinfo := Tile.info;
+   loddiv := divOfLOD( LOD );
+   tilesz := GDefGridCellCount div loddiv;
+
+   resulttileinfo.tilesz := tilesz + 1;
+   resultflora := BuildResultGrid( tile, resulttileinfo, LODdiv, layer_flora );
+   buflen := resultflora.wxh * sizeof( single );
+   setlength( buffer, buflen );
+   bufpos := 0;
+   Move( resultflora.depthptr^, buffer[bufpos], resultflora.wxh*sizeof(single));
+   client.SendClientMsgHeader( msg_Flora, buflen + sizeof( TTileHeader ));
+   client.Send( resulttileinfo, sizeof( TTileHeader ));
+   client.SendBuffer( buffer, buflen );
+   resultflora.free;
    result := true;
  end;
 
@@ -830,7 +865,8 @@ function TCmdList.executecommand( client : TTileClient;
              if lastLOD <> thisLOD then
               begin
                 GTaskList.AddTask( TTask_SendTile.create( client, Tile, LOD ) );
-                GTaskList.AddTask( TTask_SendSplat.create( client, Tile, 1 ) );
+                GTaskList.AddTask( TTask_SendSplat.create( client, Tile, 1 ) ); { splatmap is always LOD 1 }
+                GTaskList.AddTask( TTask_SendFlora.create( client, Tile, LOD ) );
                 Client.setsubscription( Tile, thisLOD );
                 Callback('');
               end;
@@ -1003,8 +1039,8 @@ function cmdSnowline( client : TTileClient;
 
 
 initialization
-  GCmdList := TCmdList.Create;
   GTaskList := TTaskList.Create;
+  GCmdList := TCmdList.Create;
   GCmdList.RegisterCmd( 'version', @cmdVersion );
   GCmdList.RegisterCmd( 'build', @cmdBuildTile );
   GCmdList.RegisterCmd( 'water', @cmdWater );

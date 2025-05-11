@@ -350,7 +350,6 @@ var Appearance : TAppearanceNode;
     SplatMap : TMFLong;
     x, y : integer;
     i : integer;
-    c : integer;
  begin
    if assigned( rootnode ) then
     begin
@@ -358,7 +357,6 @@ var Appearance : TAppearanceNode;
       EffectNode := TEffectNode( Appearance.fdEffects[0] );
 
       splatmap := TMFLong( EffectNode.Field('splatmap', false ));
-      c := splatmap.items.count;
       for x := 0 to splatgrid.wh - 1 do
          for y := 0 to splatgrid.wh -1 do
           begin

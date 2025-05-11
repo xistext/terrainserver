@@ -295,7 +295,6 @@ procedure TViewMain.StopServerAndExit;
  begin
   ShowNotification( 'Stop water flow threads.' );
   StopWaterFlowThreads;
-//  Sleep(100); { give water flow thread chance to stop }
   StopServer;
   Application.MainWindow.Close;
  end;

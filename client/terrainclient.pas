@@ -19,7 +19,6 @@ type
         tilegrid : TSingleGrid;
         watergrid : TSingleGrid;
         floragrid : TSingleGrid;
-        texgrid : TTexPoints;
       end;
 
      TSynchronisedTileList = {$ifdef FPC}specialize{$endif} TThreadList<TTileRec>;
@@ -28,8 +27,7 @@ type
                                      const tileinfo : TTileHeader;
                                            tilegrid : TSingleGrid;
                                            watergrid : TSingleGrid;
-                                           floragrid : TSingleGrid;
-                                           texgrid : TTexPoints) of object;
+                                           floragrid : TSingleGrid) of object;
 
      TTerClientThread = class( TCastleTCPClientThread )
         constructor Create(const AClient: TIdTCPClient;
@@ -126,7 +124,7 @@ function TTerClientThread.ProcessMessage( const msgheader : TmsgHeader;
           assert( length( buffer ) = MsgLen + SizeOf( msgheader ));
 
           case msgheader.msgtype of
-              msg_Tile, msg_water, msg_water2, msg_splat  :
+              msg_Tile, msg_water, msg_water2, msg_splat, msg_flora  :
                  sendtile( msgheader, buffer, MsgLen + SizeOf( msgheader ));
           end;
         end;
@@ -154,10 +152,6 @@ procedure TTerClientThread.SendTile( const msgheader : TMsgHeader;
    Move( buffer[bufpos], tilerec.tileGrid.data^, tilesz * sizeof( single ));
    inc( bufpos, tilesz * sizeof( single ));
    case msgheader.msgtype of
-      msg_water : begin { send calculated water and texcoords. obsolete? }
-                    setlength( tilerec.texgrid, tilesz );
-                    Move( buffer[bufpos], tilerec.texgrid[0], tilesz * sizeof(tvector2));
-                  end;
       msg_water2: begin { send terrain + water depth + flora heihgt and let client build the water and texcoords }
                     tilerec.waterGrid := TSingleGrid.createsize( tilerec.tileinfo.TileSz );
                     Move( buffer[bufpos], tilerec.waterGrid.data^, tilesz * sizeof( single ));
@@ -189,7 +183,7 @@ procedure TTerClient.ClientOnTileReceived;
       for TileRec in TTerClientThread( FClientThread ).fTileList.LockList do
        begin
          FOnTileReceived( tilerec.msginfo, tilerec.tileinfo,
-                          tilerec.tilegrid, tilerec.watergrid, tilerec.floragrid, tilerec.texgrid );
+                          tilerec.tilegrid, tilerec.watergrid, tilerec.floragrid );
 
        end;
       TTerClientThread( FClientThread ).fTileList.Clear;
