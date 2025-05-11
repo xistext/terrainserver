@@ -401,16 +401,18 @@ procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
    if assigned( tile ) then case msginfo.msgtype of
      msg_water : begin  { obsolete in favor of msg_water2? }
                     { calculate water elevations }
-                    if ( tilegrid.wh = tile.TerrainGrid.wh ) and
-                       ( tilegrid.wh = tile.FloraGrid.wh ) and
-                       ( tilegrid.wh = tile.WaterGrid.wh ) then { ignore water messages of mismatch lod }
+                    if ( tilegrid.wh <> tile.TerrainGrid.wh ) or
+                       ( tilegrid.wh <> tile.FloraGrid.wh ) or
+                       ( tilegrid.wh <> tile.WaterGrid.wh ) then
+                     begin
+                       { water lod mismatch, currently ignores the message, the next one should be the right LOD }
+                     end
+                    else
                      begin
                        waterh := TileGrid.ptrix(0);
                        terrainh := Tile.TerrainGrid.ptrix(0);
                        florah := Tile.FloraGrid.ptrix(0);
                        setlength( texgrid, tilegrid.wxh );
-
-                       //assert(( watergrid.wxh = tilegrid.wxh ) and ( tilegrid.wxh = tile.floragrid.wxh ));
                        for x := 0 to tilegrid.wh - 1 do
                         for y := 0 to tilegrid.wh - 1 do
                            begin
@@ -457,8 +459,12 @@ procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
                   TileGrid := nil;
                 end;
 
-      msg_LODUpdate : begin { LOD change.  Message has all affect layers }
+      msg_LODUpdate : begin { LOD change.  Message has all effected layers }
                      assert( assigned( tilegrid ) and assigned( watergrid ) and assigned( floragrid ));
+                     Tile.SetTerrainGrid( TileGrid );
+                     Tile.SetWaterGrid( WaterGrid );
+                     Tile.SetFloraGrid( FloraGrid );
+
                      { calculate water elevations }
                      waterh := watergrid.ptrix(0);
                      terrainh := tilegrid.ptrix(0);
@@ -497,9 +503,6 @@ procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
                      TTerrainMesh( Tile.WaterGraphics ).UpdateFromGrid( waterGrid );
                      TTerrainMesh( Tile.WaterGraphics ).UpdateVerticesTexture( texgrid );
 
-                     Tile.SetTerrainGrid( TileGrid );
-                     Tile.SetWaterGrid( WaterGrid );
-                     Tile.SetFloraGrid( FloraGrid );
                      TileGrid := nil;
                      WaterGrid := nil;
                      FloraGrid := nil;

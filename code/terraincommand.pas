@@ -58,48 +58,32 @@ type TCommandCallback = procedure( msg : string ) of object;
 
     { tasks triggered by commands }
 
-    TTask_SendTile = class( TClientTaskItem )
+    { parent class for tasks that work with tiles, doesn't do anything }
+    TTask_Tile = class( TClientTaskItem )
         Tile   : TTerTile;
         LOD    : dword;
         constructor create( const iClient : TTileClient;
                             iTile : TTerTile;
                             iLOD : dword );
+    end;
+
+    TTask_SendTile = class( TTask_Tile )
         function runtask : boolean; override;
       end;
 
-     TTask_SendWater = class( TClientTaskItem )
-        Tile   : TTerTile;
-        LOD    : dword;
-        constructor create( const iClient : TTileClient;
-                            iTile : TTerTile;
-                            iLOD : dword );
+     TTask_SendWater = class( TTask_Tile )
         function runtask : boolean; override;
       end;
 
-     TTask_SendFlora = class( TClientTaskItem )
-        Tile   : TTerTile;
-        LOD    : dword;
-        constructor create( const iClient : TTileClient;
-                            iTile : TTerTile;
-                            iLOD : dword );
+     TTask_SendFlora = class( TTask_Tile )
         function runtask : boolean; override;
       end;
 
-     TTask_SendSplat = class( TClientTaskItem )
-        Tile   : TTerTile;
-        LOD    : dword;
-        constructor create( const iClient : TTileClient;
-                            iTile : TTerTile;
-                            iLOD : dword );
+     TTask_SendSplat = class( TTask_Tile )
         function runtask : boolean; override;
       end;
 
-     TTask_SendLODUpdateTile = class( TClientTaskItem )
-        Tile   : TTerTile;
-        LOD    : dword;
-        constructor create( const iClient : TTileClient;
-                            iTile : TTerTile;
-                            iLOD : dword );
+     TTask_SendLODUpdateTile = class( TTask_Tile )
         function runtask : boolean; override;
       end;
 
@@ -602,14 +586,16 @@ function BuildResultSplatGrid( tile : ttertile;
 
 //------------------------
 
-constructor TTask_SendTile.create( const iClient : TTileClient;
-                                   iTile : TTerTile;
-                                   iLOD : dword );
+constructor TTask_Tile.create( const iClient : TTileClient;
+                               iTile : TTerTile;
+                               iLOD : dword );
  begin
    inherited create( iClient );
    Tile := iTile;
    LOD := iLOD;
  end;
+
+//------------------------
 
 function TTask_SendTile.RunTask : boolean;
  var buffer : TIdBytes;
@@ -637,15 +623,6 @@ function TTask_SendTile.RunTask : boolean;
  end;
 
 //----------------------------
-
-constructor TTask_SendWater.create( const iClient : TTileClient;
-                                    iTile : TTerTile;
-                                    iLOD : dword );
- begin
-   inherited create( iClient );
-   Tile := iTile;
-   LOD := iLOD;
- end;
 
 function TTask_SendWater.RunTask : boolean;
  var buffer : TIdBytes;
@@ -676,17 +653,8 @@ function TTask_SendWater.RunTask : boolean;
  end;
 
 
-constructor TTask_SendLODUpdateTile.create( const iClient : TTileClient;
-                                            iTile : TTerTile;
-                                            iLOD : dword );
- begin
-   inherited create( iClient );
-   Tile := iTile;
-   LOD := iLOD;
- end;
-
-       { send all data layers in one message for LOD change }
 function TTask_SendLODUpdateTile.RunTask : boolean;
+{ send all data layers in one message for LOD change }
  var buffer : TIdBytes;
      resulttileinfo : TTileHeader;
      buflen : integer;
@@ -723,18 +691,7 @@ function TTask_SendLODUpdateTile.RunTask : boolean;
    resultwater.free;
  end;
 
-
-
 //---------------------------
-
-constructor TTask_SendFlora.create( const iClient : TTileClient;
-                                    iTile : TTerTile;
-                                    iLOD : dword );
- begin
-   inherited create( iClient );
-   Tile := iTile;
-   LOD := iLOD;
- end;
 
 function TTask_SendFlora.RunTask : boolean;
  var buffer : TIdBytes;
@@ -765,15 +722,6 @@ function TTask_SendFlora.RunTask : boolean;
  end;
 
 //---------------------------
-
-constructor TTask_SendSplat.create( const iClient : TTileClient;
-                                    iTile : TTerTile;
-                                    iLOD : dword );
- begin
-   inherited create( iClient );
-   Tile := iTile;
-   LOD := iLOD;
- end;
 
 function TTask_SendSplat.RunTask : boolean;
  var buffer : TIdBytes;
