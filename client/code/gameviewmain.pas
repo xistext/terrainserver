@@ -386,16 +386,40 @@ end;
     Layer.Add( Tile.TerrainGraphics );
   end;
 
+
+type TTexGrid = array of tvector2;
+
+function CalculateWater( Tile : TTerTile ) : TTexGrid;
+ { calculates water heights and tex map }
+ var x, y : integer;
+     h : single;
+     waterh, terrainh, florah : psingle;
+     watergrid : TSingleGrid;
+ begin
+   watergrid := Tile.WaterGrid;
+   waterh := watergrid.ptrix(0);
+   terrainh := Tile.TerrainGrid.ptrix(0);
+   florah := Tile.FloraGrid.ptrix(0);
+   setlength( result, watergrid.wxh );
+   for x := 0 to watergrid.wh - 1 do for y := 0 to watergrid.wh - 1 do
+    begin
+      h := waterh^;
+      result[ y * watergrid.wh + x ] := CalcDepthAndTexture( h, florah^, terrainh^, true );
+      waterh^ := terrainh^ + h;
+      { calculate water texture index }
+      inc( waterh );
+      inc( terrainh );
+      inc( florah );
+    end;
+ end;
+
 procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
                                         const tileinfo : TTileHeader;
                                         tilegrid : TSingleGrid;
                                         watergrid : TSingleGrid;
                                         floragrid : TSingleGrid );
  var tile : TTerTile;
-     x,y : integer;
-     TexGrid : array of tvector2;
-     waterh, terrainh, florah : psingle;
-     h : single;
+     TexGrid : TTexGrid;
  begin
    Tile := GTileList.GetInitTile( tileinfo );
    if assigned( tile ) then case msginfo.msgtype of
@@ -409,21 +433,9 @@ procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
                      end
                     else
                      begin
-                       waterh := TileGrid.ptrix(0);
-                       terrainh := Tile.TerrainGrid.ptrix(0);
-                       florah := Tile.FloraGrid.ptrix(0);
-                       setlength( texgrid, tilegrid.wxh );
-                       for x := 0 to tilegrid.wh - 1 do
-                        for y := 0 to tilegrid.wh - 1 do
-                           begin
-                             h := waterh^;
-                             texgrid[ y * tilegrid.wh + x ] := CalcDepthAndTexture( h, florah^, terrainh^, true );
-                             waterh^ := terrainh^ + h;
-                             { calculate water texture index }
-                             inc( waterh );
-                             inc( terrainh );
-                             inc( florah );
-                           end;
+                       Tile.SetWaterGrid( TileGrid );
+                       TileGrid := nil;
+                       TexGrid := CalculateWater( Tile );
                        if ( not assigned( Tile.WaterGraphics )) or
                           ( Tile.Info.TileSz <> tileInfo.TileSz ) then
                         begin
@@ -431,10 +443,8 @@ procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
                           CreateWaterMesh( WaterLayer, Tile );
                         end;
                        { update tile graphics }
-                       TTerrainMesh( Tile.WaterGraphics ).UpdateFromGrid( TileGrid );
+                       TTerrainMesh( Tile.WaterGraphics ).UpdateFromGrid( Tile.WaterGrid );
                        TTerrainMesh( Tile.WaterGraphics ).UpdateVerticesTexture(TexGrid);
-                       Tile.SetWaterGrid( TileGrid );
-                       TileGrid := nil;
                      end;
                   end;
      msg_tile : begin
@@ -466,22 +476,7 @@ procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
                      Tile.SetFloraGrid( FloraGrid );
 
                      { calculate water elevations }
-                     waterh := watergrid.ptrix(0);
-                     terrainh := tilegrid.ptrix(0);
-                     florah := floragrid.ptrix(0);
-                     setlength( texgrid, watergrid.wxh );
-                     assert( watergrid.wxh = tilegrid.wxh );
-                     for x := 0 to watergrid.wh - 1 do
-                      for y := 0 to watergrid.wh - 1 do
-                         begin
-                           h := waterh^;
-                           texgrid[ y * watergrid.wh + x ] := CalcDepthAndTexture( h, florah^, terrainh^, true );
-                           waterh^ := terrainh^ + h;
-                           { calculate water texture index }
-                           inc( waterh );
-                           inc( terrainh );
-                           inc( florah );
-                         end;
+                     TexGrid := CalculateWater( Tile );
 
                      { build/update water and terrain as needed }
                      if ( Tile.Info.TileSz <> tileinfo.tilesz ) then
@@ -502,7 +497,6 @@ procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
                      TTerrainMesh( Tile.TerrainGraphics ).UpdateFromGrid( TileGrid );
                      TTerrainMesh( Tile.WaterGraphics ).UpdateFromGrid( waterGrid );
                      TTerrainMesh( Tile.WaterGraphics ).UpdateVerticesTexture( texgrid );
-
                      TileGrid := nil;
                      WaterGrid := nil;
                      FloraGrid := nil;

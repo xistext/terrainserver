@@ -209,12 +209,12 @@ function TLockingCollection.lock : boolean;
       dec( timeout );
       if timeout > 0 then
        begin
-//         dbgwrite('.');
+         write('.');
          sleep( 10 ); {!need timeout}
        end
       else
        begin
-//         dbgwrite('!');
+         write('!');
          result := false;
          break;
        end;

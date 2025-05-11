@@ -153,7 +153,6 @@ procedure TViewMain.Update(const SecondsPassed: Single; var HandleInput: Boolean
   while assigned( task ) do
    begin
      task.RunTask;
-//     Application.ProcessMessage( false, false );!!! breathing here can cause stack overflow.  messages are also checked during command callback, so won't choke
      task := GTaskList.Pop;
    end;
 
@@ -305,9 +304,9 @@ procedure TViewMain.CloseQuery(AContainer: TCastleContainer);
  end;
 
 initialization
-(* AllocConsole;
+ AllocConsole;
  {$ifdef fpc}
  IsConsole := True; // in System unit
  SysInitStdIO;      // in System unit
- {$endif}*)
+ {$endif}
 end.

@@ -71,7 +71,7 @@ procedure StartWaterFlowThreads;
    FlowCounter   := 0;
 
    WaterFlowThreads[0].Start;
-   WaterFlowThreads[1].Start;
+//   WaterFlowThreads[1].Start;
  end;
 
 procedure StopWaterFlowThreads;
@@ -81,8 +81,8 @@ procedure StopWaterFlowThreads;
    FlowRunning := false;
    WaterFlowThreads[0].Terminate;
    WaterFlowThreads[0].DirtyTileList.DeleteAll;
-   WaterFlowThreads[1].Terminate;
-   WaterFlowThreads[1].DirtyTileList.DeleteAll;
+//   WaterFlowThreads[1].Terminate;
+//   WaterFlowThreads[1].DirtyTileList.DeleteAll;
  end;
 
 constructor TDirtyList.create;
@@ -480,7 +480,7 @@ function TWaterTask.FlowTile( amounttoflow : single ) : boolean;
             Result := FlowRunner.FlowToNeighbors( x, y ) or Result;
          FlowRunner.NextCell; { walk the pointer and positions }
        end;
-      if Result then
+     if Result then
        begin
          inc( flowcounter );
          watertile.WaterGrid.addgrid(DeltaGrid);
@@ -513,11 +513,11 @@ initialization //===============================================================
   WaterToFlowList_high := TThreadTaskList.create;
   WaterFlowThreads[0] := TWaterFlowThread.Create;
   WaterFlowThreads[0].TaskList:= WaterToFlowList_high;
-  WaterFlowThreads[1] := TWaterFlowThread.Create;
-  WaterFlowThreads[1].TaskList:= WaterToFlowList_low;
+//  WaterFlowThreads[1] := TWaterFlowThread.Create;
+//  WaterFlowThreads[1].TaskList:= WaterToFlowList_low;
 finalization
   WaterFlowThreads[0].free;
-  WaterFlowThreads[1].free;
+//  WaterFlowThreads[1].free;
   WaterToFlowList_low.Free;
   WaterToFlowList_high.Free;
 end.

@@ -522,15 +522,12 @@ function BuildResultGrid( tile : ttertile;
       layer_terrain : ThisGrid := Tile.TerrainGrid;
       layer_water  : ThisGrid := Tile.WaterGrid;
       layer_flora  : ThisGrid := Tile.FloraGrid;
-      layer_splat  : begin
-                       ThisGrid := Tile.SplatGrid;
-                       tilesz := 60;
-                     end;
+      layer_splat  : assert( false ); { use BuildResultSplatGrid }
      end;
     Result := TSingleGrid.Create( 0, resultinfo.tilesz );
     bufptr := Result.ptrix(0);
     neighbor := GTileList.getneighbor( tile, 0, 1 );
-    if ( loddiv = 1 ) or ( layer = layer_splat ) then { full resolution }
+    if ( loddiv = 1 ) then { full resolution }
        fullresolutionsample
     else
        reducedresolutionsample;
@@ -660,8 +657,6 @@ function TTask_SendLODUpdateTile.RunTask : boolean;
      buflen : integer;
      tilesz, loddiv : integer;
      resultwater, resultterrain, resultflora : TSingleGrid;
-     x, y : integer;
-     h : single;
      bufpos : integer;
  begin
    result := inherited Runtask;
