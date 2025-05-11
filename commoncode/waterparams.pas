@@ -2,7 +2,7 @@ unit waterparams;
 
 interface
 
-const DefaultSnowLine : single = 8;
+const DefaultSnowLine : single = 8; { 8 world units is about halfway up the default mountains }
       StartWaterDepth   = 0.1;
       StartFloraDepth = 0.02;
       //ErosionFactor = 0.01;

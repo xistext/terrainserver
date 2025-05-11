@@ -18,9 +18,9 @@ const { message types the terrain server sends for different responses }
       msg_binary    = 3;
       msg_tile      = 4;
       msg_water     = 5;
-      msg_water2    = 6;  { contains terrain + water + flora }
-      msg_splat     = 7;
-      msg_flora     = 8;
+      msg_splat     = 6;
+      msg_flora     = 7;
+      msg_LODUpdate = 8;  { contains terrain + water + flora }
 
       { tile status }
       tile_built    = 1;

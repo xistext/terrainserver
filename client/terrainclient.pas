@@ -124,7 +124,7 @@ function TTerClientThread.ProcessMessage( const msgheader : TmsgHeader;
           assert( length( buffer ) = MsgLen + SizeOf( msgheader ));
 
           case msgheader.msgtype of
-              msg_Tile, msg_water, msg_water2, msg_splat, msg_flora  :
+              msg_Tile, msg_water, msg_flora, msg_LODUpdate, msg_splat, msg_flora  :
                  sendtile( msgheader, buffer, MsgLen + SizeOf( msgheader ));
           end;
         end;
@@ -152,7 +152,7 @@ procedure TTerClientThread.SendTile( const msgheader : TMsgHeader;
    Move( buffer[bufpos], tilerec.tileGrid.data^, tilesz * sizeof( single ));
    inc( bufpos, tilesz * sizeof( single ));
    case msgheader.msgtype of
-      msg_water2: begin { send terrain + water depth + flora heihgt and let client build the water and texcoords }
+      msg_LODUpdate: begin { send terrain + water depth + flora heihgt and let client build the water and texcoords }
                     tilerec.waterGrid := TSingleGrid.createsize( tilerec.tileinfo.TileSz );
                     Move( buffer[bufpos], tilerec.waterGrid.data^, tilesz * sizeof( single ));
                     inc( bufpos, tilesz * sizeof( single ));
