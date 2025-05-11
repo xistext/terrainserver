@@ -551,10 +551,10 @@ function BuildResultSplatGrid( tile : ttertile;
         move( ThisGrid.ptrxy(x,0)^, bufptr^, tilesz * sizeof( single ));
         { last point in line }
         inc( bufptr, TileSz );
-        (*if assigned( ngrid ) then
+        if assigned( ngrid ) then
            bufptr^ := gridvaluexy(ngrid, x, 0)
-        else*)
-           bufptr^ := 65535;//gridvaluexy(thisgrid, x, tilesz-1);
+        else
+           bufptr^ := gridvaluexy(thisgrid, x, tilesz-1);
         inc( bufptr, 1 );
       end;
      { last row }

@@ -42,8 +42,6 @@ Mousewheel moves you up and down.  It is currently possible to move faster than
 the tile updates can keep up, especially if the data isn't already generated.
 <p>
 Known bugs: <br>
-The splatmap has a seam between tiles,mixing splat from the opposite side of the
-  tile. <br>
 If you increase the view radius too fast, it may hit an assertion that the msg
    size is a huge number.  Somehow the stream is getting out of sync when this
    happens. <br>

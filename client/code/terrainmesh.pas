@@ -246,7 +246,7 @@ function TTerrainMesh.BuildTerrainEffect : TEffectNode;
    Result.AddCustomField(TSFVec4f.Create(Result, true, 'roughness', Vector4( 1, 1, 1, 1)));
 
    { enable splat map blurring }
-   Result.AddCustomField(TSFBool.Create(Result, true, 'blur', false ));
+   Result.AddCustomField(TSFBool.Create(Result, true, 'blur', true ));
 
    Result.AddCustomField(TSFFloat.Create(Result, true, 'height_1', 4));
    Result.AddCustomField(TSFFloat.Create(Result, true, 'height_2', 8));

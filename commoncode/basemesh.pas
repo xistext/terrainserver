@@ -317,7 +317,7 @@ procedure TLiteMesh.InitVertices( Coord : TCoordinateNode );
    Vertices := TVector3List.Create;
    Vertices.Count := vcount;
    VertexPtr := Vertices.Ptr(0);
-   sz2 := gcount * Step * 0.5;
+   sz2 := ( gcount - 1 ) * Step * 0.5;
    vertex.y := 0;
    vertex.z := aoffset.y-sz2;
    for i := 0 to GCount - 1 do

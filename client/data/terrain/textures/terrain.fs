@@ -318,7 +318,7 @@ void PLUG_main_texture_apply(inout vec4 fragment_color, const in vec3 normal)
         terrain_color = mix( terrain_color, t1.rgb, t1.a );
         terrain_color = mix( terrain_color, c.rgb, c.a  );
 
-        terrain_color = mix( terrain_color, vec3(1,0,0), 1-splatpos.x / 60 );
+    //    terrain_color = mix( terrain_color, vec3(1,0,0), 1-splatpos.x / 60 );
        }
     }
 
