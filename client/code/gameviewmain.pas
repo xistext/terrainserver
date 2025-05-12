@@ -20,7 +20,8 @@ uses Classes, SysUtils,
   { terrain client }
   watergrid, WaterParams,
   TerServerCommon, TerrainData, TerrainParams, TerrainShader, TerrainMesh,
-  BaseMesh, TerrainClient, watercolor, layermarkup;
+  BaseMesh, TerrainClient, watercolor, layermarkup,
+  TreeBuilder;
 
 const
   tool_none  = 0;
@@ -777,29 +778,14 @@ function TViewMain.HeightAboveTerrain(Pos: TVector3;
 
 procedure TViewMain.UseTool( var pos : tvector3 );
  var params : string;
-     g : TCastlePlane;
-     b : TCastleBillboard;
-     treesz : single;
+     g : TCastleTransform;
  begin
    params := FormatFloat( '0.###', pos.x )+','+FormatFloat( '0.###', pos.z );
    case activetool of
       tool_none : begin
                     { place a test tree billboard }
-                    g := TCastlePlane.Create(Viewport1);
-                    g.Texture := 'castle-data:/testtree.png';
-                    treesz := random + random;
-                    g.Size := Vector2( treesz, treesz );
-                    g.Axis := 2;
-                    pos.y := pos.y + g.Size.Y * 0.5;
-                    g.Translation := pos;
-                   // g.Orientation := otUpZDirectionX;
-
-//                    g.Direction := vector3( 1, 0, 0 );
-                    b  := TCastleBillboard.Create( g );
-                    b.AxisOfRotation := vector3( 0, 1, 0 );
-                    g.AddBehavior( b );
+                    g := GTreeBuilder.BuildTree( Viewport1, pos, 1 );
                     Viewport1.Items.Add( g );
-
                   end;
       tool_brush : fClient.Send( 'paint '+params+','+
                                   inttostr( encodesplatcell( RedSlider.Value, GreenSlider.Value, BlueSlider.Value, AlphaSlider.Value, 0, AlphaSlider1.Value ))+','+
