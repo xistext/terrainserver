@@ -30,8 +30,7 @@
         <Filename Value="code\gameviewmain.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="GameViewMain"/>
-        <TopLine Value="360"/>
-        <CursorPos X="72" Y="394"/>
+        <CursorPos X="45" Y="253"/>
         <UsageCount Value="203"/>
         <Loaded Value="True"/>
       </Unit3>
@@ -45,10 +44,8 @@
       <Unit5>
         <Filename Value="code\terrainmesh.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="12"/>
-        <TopLine Value="390"/>
-        <CursorPos X="8" Y="424"/>
+        <CursorPos X="71" Y="47"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
       </Unit5>
@@ -118,9 +115,10 @@
       </Unit13>
       <Unit14>
         <Filename Value="..\commoncode\basemesh.pas"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="13"/>
-        <TopLine Value="298"/>
-        <CursorPos X="32" Y="349"/>
+        <TopLine Value="364"/>
+        <CursorPos X="32" Y="418"/>
         <UsageCount Value="103"/>
         <Loaded Value="True"/>
       </Unit14>
@@ -130,7 +128,7 @@
         <EditorIndex Value="14"/>
         <TopLine Value="860"/>
         <CursorPos X="93" Y="868"/>
-        <UsageCount Value="68"/>
+        <UsageCount Value="69"/>
         <Loaded Value="True"/>
       </Unit15>
       <Unit16>
@@ -154,7 +152,7 @@
         <Filename Value="..\commoncode\waterparams.pas"/>
         <EditorIndex Value="4"/>
         <CursorPos X="96" Y="5"/>
-        <UsageCount Value="88"/>
+        <UsageCount Value="89"/>
         <Loaded Value="True"/>
       </Unit18>
       <Unit19>
@@ -286,7 +284,7 @@
         <EditorIndex Value="3"/>
         <TopLine Value="123"/>
         <CursorPos X="10" Y="115"/>
-        <UsageCount Value="79"/>
+        <UsageCount Value="80"/>
         <Loaded Value="True"/>
       </Unit36>
       <Unit37>
@@ -302,7 +300,7 @@
         <EditorIndex Value="17"/>
         <TopLine Value="428"/>
         <CursorPos X="36" Y="431"/>
-        <UsageCount Value="27"/>
+        <UsageCount Value="28"/>
         <Loaded Value="True"/>
       </Unit38>
       <Unit39>

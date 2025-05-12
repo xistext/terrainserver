@@ -393,23 +393,20 @@ begin
 //  dirty := false;
 end;
 
-function GetInputCoord3D(const X, Z: Single): TVector3;
-var
-  InputCoord, IgnoredTexCoord: TVector2;
-begin
-  GTileList.WaterAtPos( vector2( x, z ), result.Y );
-  Result.X := X;
-  Result.Z := Z;
-end;
-
+   function GetInputCoord3D(const X, Z: Single): TVector3;
+   var
+     InputCoord, IgnoredTexCoord: TVector2;
+   begin
+     GTileList.WaterAtPos( vector2( x, z ), result.Y );
+     Result.X := X;
+     Result.Z := Z;
+   end;
 
 procedure TTerrainMesh.updatenormals( Triangle : TIndexedTriangleSetNode );
 var normalnode : TNormalNode;
-    i, gCount : integer;
-    ix, iix : integer;
+    ix, gCount : integer;
     p, px, pz : tvector3;
     Coord : TCoordinateNode;
-    Normal : TVector3;
     X, Z : single;
 begin
   NormalNode := TNormalNode( Triangle.Normal );
@@ -420,11 +417,10 @@ begin
    begin
      X := Coord.FdPoint.Items[ix].X;
      Z := Coord.FdPoint.Items[ix].Z;
-     p  := GetInputCoord3d( X - 0.5, Z - 0.5 );
-     pX := GetInputCoord3d( X + 0.5, Z - 0.5 );
+     p  := GetInputCoord3D( X - 0.5, Z - 0.5 );
+     pX := GetInputCoord3D( X + 0.5, Z - 0.5 );
      PZ := GetInputCoord3D(X - 0.5, Z + 0.5);
-     Normal := TVector3.CrossProduct( (PZ - P), (PX - P)).Normalize;
-     NormalNode.FdVector.items[ix] := Normal;
+     NormalNode.FdVector.items[ix] := TVector3.CrossProduct( (PZ - P), (PX - P)).Normalize;
      inc( ix );
    end;
   NormalNode.FdVector.changed; { trigger mesh to rebuild }

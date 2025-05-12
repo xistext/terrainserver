@@ -250,12 +250,12 @@ procedure TViewMain.UpdatePositionIndicator;
    TerrainHeight( MainCamera.Translation, terrainh );
    GTileList.WaterAtPos( Vector2( MainCamera.Translation.X, MainCamera.Translation.Z ), waterh );
    agl := MainCamera.Translation.Y - terrainh;
-   PositionLabel.Caption := Format( '%f x %)', [MainCamera.Translation.X, MainCamera.Translation.Z] );
+   PositionLabel.Caption := Format( '%f x %f', [MainCamera.Translation.X, MainCamera.Translation.Z] );
    ElevationLabel.Caption := Format( '%f', [TerrainH] );
    AltitudeLabel.Caption := Format( '%f', [MainCamera.Translation.Y] );
-   ElevationIndicator.Height := 8 + TerrainH;
-   AltitudeIndicator.Translation := vector2( 0, ElevationIndicator.Height - 2 + agl );
-   WaterIndicator.Height := waterh;
+   ElevationIndicator.Height := 4 + TerrainH * 2;
+   AltitudeIndicator.Translation := vector2( 0, ElevationIndicator.Height - 2 + agl*2 );
+   WaterIndicator.Height := waterh * 2;
    WaterIndicator.Translation := vector2( 0, ElevationIndicator.Translation.Y + ElevationIndicator.Height );
  end;
 
