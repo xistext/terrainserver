@@ -72,6 +72,9 @@ type PTerTile = ^TTerTile;
 
         procedure iteratetiles( tileproc : TIterateTilesProc; data : pointer );
 
+        function ElevationAtPos( const Pos : TVector2;
+                                 out Elevation : single ) : boolean;
+
         {$ifdef terserver}
         function readallterrainfiles( path : string ) : integer;
 
@@ -116,6 +119,11 @@ type PTerTile = ^TTerTile;
         property GridCellCount : word read Info.TileSz;
 
         function TileDist( const pos : tpoint ) : integer;
+
+        function ElevationAtPos( const Pos : TVector2;
+                                 out Elevation : single ) : boolean;
+        function WaterAtPos( const Pos : TVector2;
+                             out WaterDepth : single ) : boolean;
 
         public
         {$ifdef terserver}
@@ -365,6 +373,14 @@ function TTileList.findtileatlocation( const Pos : TVector2;
    result := assigned( tile );
  end;
 
+function TTileList.ElevationAtPos( const Pos : TVector2;
+                                   out Elevation : single ) : boolean;
+ var tile : TTerTile;
+ begin
+   result := FindTileAtLocation( Pos, tile ) and
+             tile.ElevationAtPos( Pos, Elevation );
+ end;
+
 function parsetilepos( tilestr : string ) : tpoint;
  begin
    result := Point(0,0);
@@ -535,6 +551,30 @@ function TTerTile.WorldToLocal( const pos : TVector2 ) : TVector2;
    result := vector2((( pos.x - Offset.x ) + tilesize * 0.5 )*factor,
                      (( pos.y - Offset.y ) + tilesize * 0.5 )*factor );
  end;
+
+function TTerTile.ElevationAtPos( const Pos : TVector2;
+                                  out Elevation : single ) : boolean;
+ var LocalPos : TVector2;
+ begin
+   LocalPos := worldtolocal( Pos );
+   result := ( LocalPos.x >= 0 ) and ( LocalPos.x < self.GridCellCount ) and
+             ( LocalPos.y >= 0 ) and ( LocalPos.y < self.GridCellCount );
+   if result then
+      Elevation := TerrainGrid.value_LinearInterpolate( LocalPos.x, LocalPos.y );
+ end;
+
+function TTerTile.WaterAtPos( const Pos : TVector2;
+                              out WaterDepth : single ) : boolean;
+ var LocalPos : TVector2;
+ begin
+   LocalPos := worldtolocal( Pos );
+   result := ( LocalPos.x >= 0 ) and ( LocalPos.x < self.GridCellCount ) and
+             ( LocalPos.y >= 0 ) and ( LocalPos.y < self.GridCellCount );
+   if result then
+      WaterDepth := WaterGrid.value_LinearInterpolate( LocalPos.x, LocalPos.y ) -
+                    TerrainGrid.value_LinearInterpolate( LocalPos.x, LocalPos.y );
+ end;
+
 
 function TTerTile.TileDist( const pos : tpoint ) : integer;
  begin

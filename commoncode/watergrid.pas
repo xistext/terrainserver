@@ -13,7 +13,7 @@ uses
 
 const defaultdepthscale : single = 1000; { 1000 allows +- 32.767 in 0.001 increments }
 
-TYPE { never instantiated, used to typecase pointer }
+TYPE { never instantiated, used to typecast pointer }
      Tsingledata = array[0..99999999] of single;
      Tsmallidata = array[0..99999999] of smallint;
 
@@ -145,8 +145,6 @@ TYPE { never instantiated, used to typecase pointer }
 
 
 implementation //===============================================================
-
-//-----------------------------------
 
 constructor tbasedatagrid.Create( initialSize : dword );
  begin
