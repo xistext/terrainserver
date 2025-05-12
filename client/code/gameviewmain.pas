@@ -13,7 +13,7 @@ uses Classes, SysUtils,
   idGlobal,
   { cge }
   {$ifdef OpenGLES} CastleGLES {$else} CastleGL {$endif},
-  CastleUtils, CastleLog,
+  CastleUtils, CastleLog, CastleBehaviors,
   CastleVectors, CastleComponentSerialize, CastleUIControls, CastleControls,
   CastleKeysMouse, CastleClientServer, CastleTerrain, CastleScene,
   CastleViewport, CastleCameras, CastleTransform, CastleWindow, CastleImages,
@@ -121,6 +121,9 @@ type
     procedure ViewRadiusChange( sender : TObject );
     procedure SnowLineChange( sender : TObject );
 
+    procedure ViewportPressed(const Sender: TCastleUserInterface;
+                              const Event: TInputPressRelease; var Handled: Boolean);
+
   public
     activetool : integer;
     lockviewtoground : boolean;
@@ -140,7 +143,7 @@ type
     function HeightAboveTerrain(Pos: TVector3;
                                 out Y: Single;
                                 heighttype : byte = 0 ): boolean;
-    procedure UseTool( const pos : tvector3 );
+    procedure UseTool( var pos : tvector3 );
     procedure UpdateFPSLabel;
     procedure UpdatePositionIndicator;
     procedure UpdateViewAnchor( Pos : TVector2; ForceRebuild : boolean = false );
@@ -171,6 +174,8 @@ begin
   inherited;
   GParentComponent := Viewport1.Items;
   Viewport1.OnMotion := {$ifdef FPC}@{$endif} HandleMotion;
+  Viewport1.OnPress :=   {$ifdef FPC}@{$endif} ViewportPressed;
+;
   ButtonCreateClient.OnClick := {$ifdef FPC}@{$endif} ClickCreateClient;
   ButtonGrid.OnClick := {$ifdef FPC}@{$endif} ClickLayer;
   ButtonWater.OnClick := {$ifdef FPC}@{$endif} ClickLayer;
@@ -770,12 +775,32 @@ function TViewMain.HeightAboveTerrain(Pos: TVector3;
    result := true
  end;
 
-procedure TViewMain.UseTool( const pos : tvector3 );
+procedure TViewMain.UseTool( var pos : tvector3 );
  var params : string;
+     g : TCastlePlane;
+     b : TCastleBillboard;
+     treesz : single;
  begin
    params := FormatFloat( '0.###', pos.x )+','+FormatFloat( '0.###', pos.z );
    case activetool of
-      tool_none : exit;
+      tool_none : begin
+                    { place a test tree billboard }
+                    g := TCastlePlane.Create(Viewport1);
+                    g.Texture := 'castle-data:/testtree.png';
+                    treesz := random + random;
+                    g.Size := Vector2( treesz, treesz );
+                    g.Axis := 2;
+                    pos.y := pos.y + g.Size.Y * 0.5;
+                    g.Translation := pos;
+                   // g.Orientation := otUpZDirectionX;
+
+//                    g.Direction := vector3( 1, 0, 0 );
+                    b  := TCastleBillboard.Create( g );
+                    b.AxisOfRotation := vector3( 0, 1, 0 );
+                    g.AddBehavior( b );
+                    Viewport1.Items.Add( g );
+
+                  end;
       tool_brush : fClient.Send( 'paint '+params+','+
                                   inttostr( encodesplatcell( RedSlider.Value, GreenSlider.Value, BlueSlider.Value, AlphaSlider.Value, 0, AlphaSlider1.Value ))+','+
                                   inttostr( toolradiusslider.value )
@@ -833,6 +858,53 @@ procedure TViewMain.HandleMotion(const Sender: TCastleUserInterface;
        end;
     end;
  end;
+
+
+procedure TViewMain.ViewportPressed(const Sender: TCastleUserInterface;
+                                    const Event: TInputPressRelease; var Handled: Boolean);
+ var MouseRayOrigin, MouseRayDirection : TVector3;
+     i : integer;
+     pos : TVector3;
+     thistile : ttertile;
+     MousePosition : TVector2;
+     Neighbors : TTileNeighbors;
+ begin
+   if ( event.EventType = itMouseButton ) and ( event.IsMouseButton( ButtonLeft )) then
+    begin
+      if GTileList.findtileatlocation( vector2( MainCamera.translation.x, MainCamera.translation.z ), thistile ) and
+         assigned( thistile.TerrainGraphics ) then
+       begin
+         MousePosition := Container.MousePosition;
+//         if Viewport1.MousePosition(MousePosition) then
+          begin
+            Viewport1.PositionToRay(MousePosition, true, MouseRayOrigin, MouseRayDirection );
+
+            if TTerrainMesh( thistile.TerrainGraphics ).raycast2( MouseRayOrigin, MouseRayDirection, Pos ) then
+               UseTool( Pos )
+            else
+            begin
+              Neighbors := thistile.GetNeighbors;
+              for i := 0 to 7 do
+               begin
+                 if assigned( Neighbors[i] ) and assigned( Neighbors[i].terraingraphics ) and
+                    TTerrainMesh( Neighbors[i].terraingraphics ).raycast2( MouseRayOrigin, MouseRayDirection, Pos ) then
+                  begin
+                    UseTool( Pos );
+                    break;
+
+
+                  end;
+               end;
+
+            end;
+          end;
+       end;
+    end;
+ end;
+
+
+
+
 
 procedure TViewMain.Mousewheel( direction : integer );
  var h, amt : single;

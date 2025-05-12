@@ -46,6 +46,9 @@ type tterobjinfo = packed record
     { holds a list of TTerObject by type }
     TTerObjTypeList = class( TSortedCollection ) { of TTerObject }
        objtype  : dword;
+
+
+
        function keyof( item : pointer ) : pointer; override;
        function compare( item1, item2 : pointer ) : integer; override;
 
