@@ -4,13 +4,13 @@
     <PathDelim Value="\"/>
     <Version Value="12"/>
     <BuildModes Active="Debug"/>
-    <Units Count="39">
+    <Units Count="41">
       <Unit0>
         <Filename Value="client_standalone.dpr"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="2"/>
         <TopLine Value="2"/>
-        <CursorPos Y="70"/>
+        <CursorPos X="46" Y="30"/>
         <UsageCount Value="203"/>
         <Loaded Value="True"/>
       </Unit0>
@@ -45,17 +45,16 @@
       <Unit5>
         <Filename Value="code\terrainmesh.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="12"/>
-        <TopLine Value="195"/>
-        <CursorPos X="53" Y="226"/>
+        <TopLine Value="287"/>
+        <CursorPos X="16" Y="348"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
       </Unit5>
       <Unit6>
         <Filename Value="..\commoncode\castleclientserver.pas"/>
         <UnitName Value="CastleClientServer"/>
-        <EditorIndex Value="14"/>
+        <EditorIndex Value="18"/>
         <TopLine Value="430"/>
         <CursorPos X="5" Y="464"/>
         <UsageCount Value="100"/>
@@ -73,7 +72,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="425"/>
         <CursorPos Y="440"/>
-        <UsageCount Value="73"/>
+        <UsageCount Value="70"/>
       </Unit8>
       <Unit9>
         <Filename Value="terrainclient.pas"/>
@@ -105,7 +104,7 @@
         <EditorIndex Value="1"/>
         <TopLine Value="6033"/>
         <CursorPos Y="6067"/>
-        <UsageCount Value="97"/>
+        <UsageCount Value="100"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit12>
@@ -114,23 +113,25 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="44"/>
         <CursorPos X="3" Y="81"/>
-        <UsageCount Value="27"/>
+        <UsageCount Value="24"/>
       </Unit13>
       <Unit14>
         <Filename Value="..\commoncode\basemesh.pas"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="13"/>
-        <TopLine Value="275"/>
-        <CursorPos X="25" Y="320"/>
+        <TopLine Value="319"/>
+        <CursorPos X="11" Y="347"/>
         <UsageCount Value="103"/>
         <Loaded Value="True"/>
       </Unit14>
       <Unit15>
         <Filename Value="E:\cge\src\scene\castleterrain.pas"/>
         <UnitName Value="CastleTerrain"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="1634"/>
-        <CursorPos X="7" Y="1669"/>
-        <UsageCount Value="53"/>
+        <EditorIndex Value="14"/>
+        <TopLine Value="860"/>
+        <CursorPos X="93" Y="868"/>
+        <UsageCount Value="67"/>
+        <Loaded Value="True"/>
       </Unit15>
       <Unit16>
         <Filename Value="data\terrain\textures\terrain.fs"/>
@@ -146,14 +147,14 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="107"/>
         <CursorPos X="42" Y="180"/>
-        <UsageCount Value="92"/>
+        <UsageCount Value="89"/>
         <DefaultSyntaxHighlighter Value="C++"/>
       </Unit17>
       <Unit18>
         <Filename Value="..\commoncode\waterparams.pas"/>
         <EditorIndex Value="4"/>
         <CursorPos X="96" Y="5"/>
-        <UsageCount Value="70"/>
+        <UsageCount Value="87"/>
         <Loaded Value="True"/>
       </Unit18>
       <Unit19>
@@ -161,28 +162,28 @@
         <EditorIndex Value="11"/>
         <TopLine Value="132"/>
         <CursorPos Y="166"/>
-        <UsageCount Value="84"/>
+        <UsageCount Value="101"/>
         <Loaded Value="True"/>
       </Unit19>
       <Unit20>
         <Filename Value="..\commoncode\watercolor.pas"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="4" Y="12"/>
-        <UsageCount Value="70"/>
+        <UsageCount Value="67"/>
       </Unit20>
       <Unit21>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdBuffer.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="496"/>
         <CursorPos X="86" Y="512"/>
-        <UsageCount Value="100"/>
+        <UsageCount Value="97"/>
       </Unit21>
       <Unit22>
         <Filename Value="..\commoncode\layermarkup.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="62"/>
         <CursorPos Y="97"/>
-        <UsageCount Value="90"/>
+        <UsageCount Value="86"/>
       </Unit22>
       <Unit23>
         <Filename Value="E:\cge\src\ui\castlekeysmouse.pas"/>
@@ -190,14 +191,14 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="342"/>
         <CursorPos X="32" Y="378"/>
-        <UsageCount Value="26"/>
+        <UsageCount Value="23"/>
       </Unit23>
       <Unit24>
         <Filename Value="..\commoncode\x3dtools.pas"/>
         <EditorIndex Value="5"/>
         <TopLine Value="426"/>
         <CursorPos Y="460"/>
-        <UsageCount Value="90"/>
+        <UsageCount Value="107"/>
         <Loaded Value="True"/>
       </Unit24>
       <Unit25>
@@ -205,35 +206,35 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="1808"/>
         <CursorPos Y="1842"/>
-        <UsageCount Value="71"/>
+        <UsageCount Value="68"/>
       </Unit25>
       <Unit26>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\System\IdGlobal.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="5495"/>
         <CursorPos Y="5526"/>
-        <UsageCount Value="55"/>
+        <UsageCount Value="52"/>
       </Unit26>
       <Unit27>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdSocketHandle.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="256"/>
         <CursorPos Y="322"/>
-        <UsageCount Value="44"/>
+        <UsageCount Value="41"/>
       </Unit27>
       <Unit28>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\System\IdStack.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="866"/>
         <CursorPos Y="877"/>
-        <UsageCount Value="66"/>
+        <UsageCount Value="63"/>
       </Unit28>
       <Unit29>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\System\IdStackBSDBase.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="407"/>
         <CursorPos Y="444"/>
-        <UsageCount Value="15"/>
+        <UsageCount Value="12"/>
       </Unit29>
       <Unit30>
         <Filename Value="..\commoncode\collect.pas"/>
@@ -241,20 +242,20 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="149"/>
         <CursorPos Y="197"/>
-        <UsageCount Value="75"/>
+        <UsageCount Value="72"/>
       </Unit30>
       <Unit31>
         <Filename Value="E:\cge\src\base\castleutils_read_write.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="69"/>
         <CursorPos X="54" Y="86"/>
-        <UsageCount Value="17"/>
+        <UsageCount Value="14"/>
       </Unit31>
       <Unit32>
         <Filename Value="..\commoncode\debug.bak"/>
         <EditorIndex Value="-1"/>
         <CursorPos Y="82"/>
-        <UsageCount Value="17"/>
+        <UsageCount Value="14"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit32>
       <Unit33>
@@ -263,14 +264,14 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="110"/>
         <CursorPos X="52" Y="144"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="18"/>
       </Unit33>
       <Unit34>
         <Filename Value="..\commoncode\curvetools.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="319"/>
         <CursorPos X="8" Y="377"/>
-        <UsageCount Value="29"/>
+        <UsageCount Value="26"/>
       </Unit34>
       <Unit35>
         <Filename Value="E:\cge\src\base\castlelog.pas"/>
@@ -278,152 +279,171 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="133"/>
         <CursorPos X="83" Y="15"/>
-        <UsageCount Value="29"/>
+        <UsageCount Value="26"/>
       </Unit35>
       <Unit36>
-        <Filename Value="E:\cge\src\base\castlevectors_generic_float_record.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="7"/>
-        <CursorPos X="11" Y="335"/>
-        <UsageCount Value="2"/>
-      </Unit36>
-      <Unit37>
         <Filename Value="C:\lazarus\fpc\3.2.2\source\rtl\objpas\sysutils\sysstrh.inc"/>
         <EditorIndex Value="3"/>
         <TopLine Value="123"/>
         <CursorPos X="10" Y="115"/>
-        <UsageCount Value="61"/>
+        <UsageCount Value="78"/>
         <Loaded Value="True"/>
-      </Unit37>
-      <Unit38>
+      </Unit36>
+      <Unit37>
         <Filename Value="E:\cge\src\scene\load\collada\x3dloadinternalcollada.pas"/>
         <UnitName Value="X3DLoadInternalCollada"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="243"/>
         <CursorPos Y="311"/>
-        <UsageCount Value="12"/>
+        <UsageCount Value="8"/>
+      </Unit37>
+      <Unit38>
+        <Filename Value="E:\cge\src\scene\x3d\x3dnodes_standard_rendering.inc"/>
+        <EditorIndex Value="17"/>
+        <TopLine Value="428"/>
+        <CursorPos X="36" Y="431"/>
+        <UsageCount Value="26"/>
+        <Loaded Value="True"/>
       </Unit38>
+      <Unit39>
+        <Filename Value="E:\cge\src\scene\castlescene.pas"/>
+        <UnitName Value="CastleScene"/>
+        <EditorIndex Value="16"/>
+        <TopLine Value="1069"/>
+        <CursorPos X="45" Y="1087"/>
+        <UsageCount Value="25"/>
+        <Loaded Value="True"/>
+      </Unit39>
+      <Unit40>
+        <Filename Value="E:\cge\src\transform\castletriangles.pas"/>
+        <UnitName Value="CastleTriangles"/>
+        <EditorIndex Value="15"/>
+        <TopLine Value="130"/>
+        <CursorPos Y="164"/>
+        <UsageCount Value="24"/>
+        <Loaded Value="True"/>
+      </Unit40>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="194" Column="13" TopLine="133"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="344" TopLine="287"/>
       </Position1>
       <Position2>
-        <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="215" TopLine="154"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="346" TopLine="287"/>
       </Position2>
       <Position3>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="278" TopLine="244"/>
+        <Caret Line="347" TopLine="287"/>
       </Position3>
       <Position4>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="279" TopLine="244"/>
+        <Caret Line="348" TopLine="287"/>
       </Position4>
       <Position5>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="281" TopLine="244"/>
+        <Caret Line="351" Column="46" TopLine="288"/>
       </Position5>
       <Position6>
-        <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="259" TopLine="244"/>
+        <Filename Value="code\terrainmesh.pas"/>
+        <Caret Column="11"/>
       </Position6>
       <Position7>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="260" TopLine="244"/>
+        <Caret Line="350" Column="43" TopLine="290"/>
       </Position7>
       <Position8>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="261" TopLine="244"/>
+        <Caret Line="353" Column="41" TopLine="290"/>
       </Position8>
       <Position9>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="262" TopLine="244"/>
+        <Caret Line="351" TopLine="318"/>
       </Position9>
       <Position10>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="263" TopLine="244"/>
+        <Caret Line="346" Column="22" TopLine="317"/>
       </Position10>
       <Position11>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="264" TopLine="244"/>
+        <Caret Line="351" Column="44" TopLine="318"/>
       </Position11>
       <Position12>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="265" TopLine="244"/>
+        <Caret Line="355" TopLine="318"/>
       </Position12>
       <Position13>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="282" TopLine="244"/>
+        <Caret Line="2" Column="29"/>
       </Position13>
       <Position14>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="289" TopLine="244"/>
+        <Caret Line="24" Column="24"/>
       </Position14>
       <Position15>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="312" TopLine="275"/>
+        <Caret Line="115" Column="35" TopLine="47"/>
       </Position15>
       <Position16>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="313" TopLine="275"/>
+        <Caret Line="354" Column="46" TopLine="303"/>
       </Position16>
       <Position17>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="314" TopLine="275"/>
+        <Caret Line="365" Column="17" TopLine="303"/>
       </Position17>
       <Position18>
-        <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="229" TopLine="195"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="357" TopLine="303"/>
       </Position18>
       <Position19>
-        <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="230" TopLine="195"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="343" Column="23" TopLine="309"/>
       </Position19>
       <Position20>
-        <Filename Value="..\commoncode\terraindata.pas"/>
-        <Caret Line="515" TopLine="481"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="344" TopLine="310"/>
       </Position20>
       <Position21>
-        <Filename Value="..\commoncode\terraindata.pas"/>
-        <Caret Line="517" TopLine="481"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="355" Column="34" TopLine="309"/>
       </Position21>
       <Position22>
-        <Filename Value="..\commoncode\terraindata.pas"/>
-        <Caret Line="518" TopLine="481"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Column="60"/>
       </Position22>
       <Position23>
-        <Filename Value="..\commoncode\terraindata.pas"/>
-        <Caret Line="519" TopLine="481"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="351" Column="68" TopLine="312"/>
       </Position23>
       <Position24>
-        <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="231" TopLine="195"/>
+        <Filename Value="E:\cge\src\scene\castleterrain.pas"/>
+        <Caret Line="899" Column="12" TopLine="865"/>
       </Position24>
       <Position25>
-        <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="315" TopLine="275"/>
+        <Filename Value="E:\cge\src\scene\castleterrain.pas"/>
+        <Caret Line="941" Column="59" TopLine="903"/>
       </Position25>
       <Position26>
-        <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="224" TopLine="195"/>
+        <Filename Value="E:\cge\src\scene\castleterrain.pas"/>
+        <Caret Line="889" Column="17" TopLine="847"/>
       </Position26>
       <Position27>
-        <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="225" TopLine="195"/>
+        <Filename Value="E:\cge\src\scene\castleterrain.pas"/>
+        <Caret Line="868" Column="93" TopLine="860"/>
       </Position27>
       <Position28>
-        <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="226" TopLine="195"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="121" Column="109" TopLine="87"/>
       </Position28>
       <Position29>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="316" TopLine="275"/>
+        <Caret Line="166" Column="106" TopLine="132"/>
       </Position29>
       <Position30>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="320" Column="25" TopLine="275"/>
+        <Caret Line="344" Column="40" TopLine="319"/>
       </Position30>
     </JumpHistory>
     <RunParams>

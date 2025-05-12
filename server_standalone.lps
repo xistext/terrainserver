@@ -4,7 +4,7 @@
     <PathDelim Value="\"/>
     <Version Value="12"/>
     <BuildModes Active="Release"/>
-    <Units Count="33">
+    <Units Count="29">
       <Unit0>
         <Filename Value="server_standalone.dpr"/>
         <IsPartOfProject Value="True"/>
@@ -51,31 +51,30 @@
       </Unit5>
       <Unit6>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdIOHandler.pas"/>
-        <EditorIndex Value="10"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="1669"/>
         <CursorPos Y="1703"/>
-        <UsageCount Value="32"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="29"/>
       </Unit6>
       <Unit7>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\System\IdGlobal.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="3057"/>
         <CursorPos Y="3077"/>
-        <UsageCount Value="95"/>
+        <UsageCount Value="92"/>
       </Unit7>
       <Unit8>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\System\IdWinsock2.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="6033"/>
         <CursorPos Y="6067"/>
-        <UsageCount Value="40"/>
+        <UsageCount Value="37"/>
       </Unit8>
       <Unit9>
         <Filename Value="commoncode\terservercommon.pas"/>
         <EditorIndex Value="4"/>
         <CursorPos X="20" Y="23"/>
-        <UsageCount Value="93"/>
+        <UsageCount Value="110"/>
         <Loaded Value="True"/>
       </Unit9>
       <Unit10>
@@ -103,12 +102,12 @@
         <EditorIndex Value="-1"/>
         <WindowIndex Value="-1"/>
         <CursorPos Y="3"/>
-        <UsageCount Value="30"/>
+        <UsageCount Value="27"/>
       </Unit12>
       <Unit13>
         <Filename Value="commoncode\terraindata.pas"/>
         <UnitName Value="TerrainData"/>
-        <EditorIndex Value="8"/>
+        <EditorIndex Value="7"/>
         <TopLine Value="559"/>
         <CursorPos Y="595"/>
         <UsageCount Value="142"/>
@@ -119,7 +118,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="7"/>
         <CursorPos X="10" Y="46"/>
-        <UsageCount Value="93"/>
+        <UsageCount Value="90"/>
       </Unit14>
       <Unit15>
         <Filename Value="commoncode\watergrid.pas"/>
@@ -135,247 +134,207 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="21"/>
         <CursorPos Y="74"/>
-        <UsageCount Value="55"/>
+        <UsageCount Value="52"/>
       </Unit16>
       <Unit17>
         <Filename Value="commoncode\collect.pas"/>
         <UnitName Value="Collect"/>
-        <EditorIndex Value="12"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="319"/>
         <CursorPos Y="362"/>
-        <UsageCount Value="71"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="68"/>
       </Unit17>
       <Unit18>
-        <Filename Value="E:\cge\src\window\castlewindow.pas"/>
-        <UnitName Value="CastleWindow"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="1387"/>
-        <CursorPos X="41" Y="1420"/>
-        <UsageCount Value="1"/>
-      </Unit18>
-      <Unit19>
         <Filename Value="E:\wyrdforest\code\water_low.pas"/>
         <EditorIndex Value="-1"/>
         <CursorPos Y="132"/>
-        <UsageCount Value="58"/>
-      </Unit19>
-      <Unit20>
+        <UsageCount Value="55"/>
+      </Unit18>
+      <Unit19>
         <Filename Value="code\waterflow.pas"/>
-        <EditorIndex Value="9"/>
+        <EditorIndex Value="8"/>
         <TopLine Value="438"/>
         <CursorPos X="28" Y="499"/>
         <UsageCount Value="100"/>
         <Loaded Value="True"/>
-      </Unit20>
-      <Unit21>
+      </Unit19>
+      <Unit20>
         <Filename Value="commoncode\livetime.pas"/>
         <EditorIndex Value="-1"/>
         <CursorPos Y="27"/>
-        <UsageCount Value="33"/>
-      </Unit21>
-      <Unit22>
+        <UsageCount Value="29"/>
+      </Unit20>
+      <Unit21>
         <Filename Value="commoncode\waterparams.pas"/>
         <EditorIndex Value="6"/>
         <UsageCount Value="116"/>
         <Loaded Value="True"/>
-      </Unit22>
-      <Unit23>
+      </Unit21>
+      <Unit22>
         <Filename Value="commoncode\basetools.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="360"/>
         <CursorPos X="45" Y="541"/>
-        <UsageCount Value="45"/>
-      </Unit23>
-      <Unit24>
+        <UsageCount Value="42"/>
+      </Unit22>
+      <Unit23>
         <Filename Value="commoncode\basethread.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="2"/>
         <CursorPos Y="22"/>
-        <UsageCount Value="11"/>
-      </Unit24>
-      <Unit25>
-        <Filename Value="commoncode\strtools.pas"/>
-        <UnitName Value="StrTools"/>
-        <EditorIndex Value="-1"/>
-        <CursorPos Y="13"/>
-        <UsageCount Value="0"/>
-      </Unit25>
-      <Unit26>
+        <UsageCount Value="8"/>
+      </Unit23>
+      <Unit24>
         <Filename Value="code\clientlist.pas"/>
-        <EditorIndex Value="13"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="9"/>
         <TopLine Value="111"/>
         <CursorPos X="65" Y="128"/>
         <UsageCount Value="104"/>
         <Loaded Value="True"/>
-      </Unit26>
-      <Unit27>
-        <Filename Value="E:\cge\src\ui\castleuicontrols_initial_types.inc"/>
-        <EditorIndex Value="-1"/>
-        <CursorPos X="77" Y="31"/>
-        <UsageCount Value="0"/>
-      </Unit27>
-      <Unit28>
+      </Unit24>
+      <Unit25>
         <Filename Value="client\code\gameviewmain.pas"/>
         <UnitName Value="GameViewMain"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="579"/>
         <CursorPos X="35" Y="613"/>
-        <UsageCount Value="9"/>
-      </Unit28>
-      <Unit29>
+        <UsageCount Value="6"/>
+      </Unit25>
+      <Unit26>
         <Filename Value="client\code\terrainmesh.pas"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="7"/>
-        <TopLine Value="187"/>
-        <CursorPos X="78" Y="224"/>
-        <UsageCount Value="65"/>
-        <Loaded Value="True"/>
-      </Unit29>
-      <Unit30>
-        <Filename Value="E:\cge\src\ui\castleuicontrols_view.inc"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="42"/>
-        <CursorPos X="31" Y="82"/>
-        <UsageCount Value="0"/>
-      </Unit30>
-      <Unit31>
+        <CursorPos X="79" Y="6"/>
+        <UsageCount Value="62"/>
+      </Unit26>
+      <Unit27>
         <Filename Value="E:\cge\src\base\castlelog.pas"/>
         <UnitName Value="CastleLog"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="106" Y="14"/>
-        <UsageCount Value="56"/>
-      </Unit31>
-      <Unit32>
+        <UsageCount Value="53"/>
+      </Unit27>
+      <Unit28>
         <Filename Value="C:\lazarus\fpc\3.2.2\source\rtl\objpas\classes\classesh.inc"/>
-        <EditorIndex Value="11"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="1665"/>
         <CursorPos X="67" Y="1700"/>
-        <UsageCount Value="14"/>
-        <Loaded Value="True"/>
-      </Unit32>
+        <UsageCount Value="10"/>
+      </Unit28>
     </Units>
-    <JumpHistory Count="30" HistoryIndex="29">
+    <JumpHistory Count="28" HistoryIndex="27">
       <Position1>
-        <Filename Value="code\gameviewmain.pas"/>
-        <Caret Line="159" TopLine="101"/>
+        <Filename Value="code\clientlist.pas"/>
+        <Caret Line="235" TopLine="175"/>
       </Position1>
       <Position2>
         <Filename Value="code\clientlist.pas"/>
-        <Caret Line="235" TopLine="175"/>
+        <Caret Line="172" Column="33" TopLine="138"/>
       </Position2>
       <Position3>
         <Filename Value="code\clientlist.pas"/>
-        <Caret Line="172" Column="33" TopLine="138"/>
+        <Caret Line="35" Column="30"/>
       </Position3>
       <Position4>
         <Filename Value="code\clientlist.pas"/>
-        <Caret Line="35" Column="30"/>
+        <Caret Line="41" Column="34"/>
       </Position4>
       <Position5>
         <Filename Value="code\clientlist.pas"/>
-        <Caret Line="41" Column="34"/>
+        <Caret Column="38"/>
       </Position5>
       <Position6>
         <Filename Value="code\clientlist.pas"/>
-        <Caret Column="38"/>
+        <Caret Line="41" Column="34"/>
       </Position6>
       <Position7>
-        <Filename Value="code\clientlist.pas"/>
-        <Caret Line="41" Column="34"/>
-      </Position7>
-      <Position8>
         <Filename Value="code\terraincommand.pas"/>
         <Caret Line="6" Column="12"/>
+      </Position7>
+      <Position8>
+        <Filename Value="code\waterflow.pas"/>
+        <Caret Column="63"/>
       </Position8>
       <Position9>
         <Filename Value="code\waterflow.pas"/>
-        <Caret Column="63"/>
+        <Caret Line="59"/>
       </Position9>
       <Position10>
         <Filename Value="code\waterflow.pas"/>
-        <Caret Line="59"/>
+        <Caret Line="67" TopLine="6"/>
       </Position10>
       <Position11>
         <Filename Value="code\waterflow.pas"/>
-        <Caret Line="67" TopLine="6"/>
+        <Caret Line="77" TopLine="16"/>
       </Position11>
       <Position12>
         <Filename Value="code\waterflow.pas"/>
-        <Caret Line="77" TopLine="16"/>
+        <Caret Line="453" Column="22" TopLine="392"/>
       </Position12>
       <Position13>
         <Filename Value="code\waterflow.pas"/>
-        <Caret Line="453" Column="22" TopLine="392"/>
+        <Caret Line="499" Column="28" TopLine="438"/>
       </Position13>
       <Position14>
-        <Filename Value="code\waterflow.pas"/>
-        <Caret Line="499" Column="28" TopLine="438"/>
+        <Filename Value="code\terraincommand.pas"/>
+        <Caret Line="879" Column="67" TopLine="831"/>
       </Position14>
       <Position15>
         <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="879" Column="67" TopLine="831"/>
+        <Caret Line="840" Column="14" TopLine="795"/>
       </Position15>
       <Position16>
         <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="840" Column="14" TopLine="795"/>
+        <Caret Line="11" Column="111" TopLine="6"/>
       </Position16>
       <Position17>
         <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="11" Column="111" TopLine="6"/>
+        <Caret Line="82" Column="21" TopLine="21"/>
       </Position17>
       <Position18>
         <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="82" Column="21" TopLine="21"/>
+        <Caret Line="333" Column="47" TopLine="272"/>
       </Position18>
       <Position19>
         <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="333" Column="47" TopLine="272"/>
+        <Caret Line="345" Column="18" TopLine="284"/>
       </Position19>
       <Position20>
         <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="345" Column="18" TopLine="284"/>
+        <Caret Line="525" Column="61" TopLine="465"/>
       </Position20>
       <Position21>
         <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="525" Column="61" TopLine="465"/>
+        <Caret Line="555" Column="15" TopLine="523"/>
       </Position21>
       <Position22>
-        <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="555" Column="15" TopLine="523"/>
-      </Position22>
-      <Position23>
         <Filename Value="server_standalone.dpr"/>
         <Caret Line="70" TopLine="2"/>
+      </Position22>
+      <Position23>
+        <Filename Value="code\terraincommand.pas"/>
+        <Caret Line="556" Column="13" TopLine="523"/>
       </Position23>
       <Position24>
         <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="556" Column="13" TopLine="523"/>
+        <Caret Line="557" Column="68" TopLine="523"/>
       </Position24>
       <Position25>
         <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="557" Column="68" TopLine="523"/>
+        <Caret Line="555" Column="46" TopLine="523"/>
       </Position25>
       <Position26>
         <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="555" Column="46" TopLine="523"/>
+        <Caret Line="557" Column="66" TopLine="523"/>
       </Position26>
       <Position27>
         <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="557" Column="66" TopLine="523"/>
+        <Caret Line="556" Column="15" TopLine="520"/>
       </Position27>
       <Position28>
         <Filename Value="code\terraincommand.pas"/>
-        <Caret Line="556" Column="15" TopLine="520"/>
-      </Position28>
-      <Position29>
-        <Filename Value="code\terraincommand.pas"/>
         <Caret Line="557" Column="23" TopLine="520"/>
-      </Position29>
-      <Position30>
-        <Filename Value="client\code\terrainmesh.pas"/>
-        <Caret Line="126" Column="69" TopLine="115"/>
-      </Position30>
+      </Position28>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>

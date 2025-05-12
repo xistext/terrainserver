@@ -39,6 +39,8 @@ TAbstractMesh = class( TCastleScene )
 
    public
 
+   procedure initnormals( Triangle : TIndexedTriangleSetNode );
+   procedure updatenormals( Triangle : TIndexedTriangleSetNode );
    procedure InitVertices( Coord : TCoordinateNode ); dynamic; abstract;
 
    property GridCount : integer read getGridCount write setGridCount;
@@ -260,6 +262,7 @@ function TAbstractMesh.inittriangles : TIndexedTriangleSetNode;
    Indexes := initindexes;
    Result := TIndexedTriangleSetNode.Create;
    Result.Coord := TCoordinateNode.Create;
+
    Result.SetIndex( Indexes );
    Indexes.Free;
  end;
@@ -267,6 +270,95 @@ function TAbstractMesh.inittriangles : TIndexedTriangleSetNode;
 procedure TAbstractMesh.UpdateMeshProperties;
  begin
  end;
+
+(*
+function TAbstractMesh.raycast2( const raypos : TVector3;
+                                const raydir : TVector3;
+                                var pos : TVector3 ) : boolean;
+function checktriangle( const triangle : TTriangle3 ) : boolean;
+ var intersection : tvector3;
+ begin
+   result := TryTriangleRayCollision( Intersection,
+                                      Triangle,
+                                      Triangle.Plane,
+                                      raypos, raydir );
+   if result then
+      pos := Intersection;
+ end;
+ var IndexedTriangleSetNode : TIndexedTriangleSetNode;
+    c, ix : integer;
+    p0, p1, p2 : tvector3;
+    Coord : TCoordinateNode;
+ begin
+   result := false;
+   IndexedTriangleSetNode := TIndexedTriangleSetNode( rootnode.FindNode( TIndexedTriangleSetNode, false ));
+   Coord := TCoordinateNode( IndexedTriangleSetNode.Coord );
+   c := IndexedTriangleSetNode.FdIndex.Count;
+   ix := 0;
+   while ix < c do
+    begin
+      p0 := translation + Coord.FdPoint.Items[IndexedTriangleSetNode.FdIndex.Items[ix]];
+      inc( ix );
+      p1 := translation + Coord.FdPoint.Items[IndexedTriangleSetNode.FdIndex.Items[ix]];
+      inc( ix );
+      p2 := translation + Coord.FdPoint.Items[IndexedTriangleSetNode.FdIndex.Items[ix]];
+      inc( ix );
+      result := checktriangle( Triangle3( p0, p1, p2 ));
+      if result then
+         exit;
+    end;
+ end;*)
+
+
+procedure TAbstractMesh.InitNormals( Triangle : TIndexedTriangleSetNode );
+ var normalnode : TNormalNode;
+     Normals : TVector3List;
+     gCount : integer;
+     ix : integer;
+ begin
+   NormalNode := TNormalNode.Create;
+   Normals := TVector3List.Create;
+   gCount := Triangle.Coord.CoordCount;
+   Normals.Count := gCount;
+   ix := 0;
+   while ix < gcount do
+    begin
+      Normals[ix] := Vector3(0,1,0);
+      inc( ix );
+    end;
+   NormalNode.SetVector(Normals);
+   Triangle.Normal := NormalNode;
+ end;
+
+procedure TAbstractMesh.UpdateNormals( Triangle : TIndexedTriangleSetNode );
+ var normalnode : TNormalNode;
+     i, gCount : integer;
+     ix, iix : integer;
+     p0, p1, p2 : tvector3;
+     Coord : TCoordinateNode;
+     Normal : TVector3;
+     Tri : TTriangle3;
+ begin
+   NormalNode := TNormalNode( Triangle.Normal );
+   Coord := TCoordinateNode(Triangle.Coord );
+   gCount := Triangle.FdIndex.Count - 3;
+   ix := 0;
+   iix := 0;
+   while iix < gcount do
+    begin
+      p0 := Coord.FdPoint.Items[Triangle.FdIndex.Items[iix]];
+      p1 := Coord.FdPoint.Items[Triangle.FdIndex.Items[iix+1]];
+      p2 := Coord.FdPoint.Items[Triangle.FdIndex.Items[iix+2]];
+      Tri := Triangle3( p0, p1, p2 );
+      assert( tri.IsValid );
+      Normal := tri.Normal;
+      NormalNode.FdVector.items[Triangle.FdIndex.Items[iix]] := Normal;
+      inc( iix, 3 );
+      inc( ix );
+    end;
+   NormalNode.FdVector.changed; { trigger mesh to rebuild }
+ end;
+
 
 //-------------------------------------
 
@@ -284,9 +376,13 @@ procedure TLiteMesh.initializedata( texture : boolean = false );
       Triangles.TexCoord := TTextureCoordinateNode.Create;
       initverticeswithtexture(TCoordinateNode( Triangles.Coord ),
                               TTextureCoordinateNode(Triangles.TexCoord));
+      initnormals( Triangles );
     end
    else
+    begin
       initvertices( TCoordinateNode( Triangles.Coord ));
+      initnormals( Triangles );
+    end;
 
    Shape := TShapeNode.Create;
    Shape.Geometry := Triangles;
@@ -300,6 +396,7 @@ procedure TLiteMesh.initializedata( texture : boolean = false );
    Load(Root, true );
    UpdateMeshProperties;
  end;
+
 
 procedure TLiteMesh.InitVertices( Coord : TCoordinateNode );
  var Vertices  : TVector3List;
@@ -317,7 +414,7 @@ procedure TLiteMesh.InitVertices( Coord : TCoordinateNode );
    Vertices := TVector3List.Create;
    Vertices.Count := vcount;
    VertexPtr := Vertices.Ptr(0);
-   sz2 := ( gcount - 1 ) * Step * 0.5;
+   sz2 := CellCount * Step * 0.5;
    vertex.y := 0;
    vertex.z := aoffset.y-sz2;
    for i := 0 to GCount - 1 do

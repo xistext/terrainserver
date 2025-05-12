@@ -336,13 +336,16 @@ var i, j, c, posy : integer;
  end;
 
 procedure TTerrainMesh.updatefromgrid( TerrainGrid : TSingleGrid );
-var coord : TCoordinateNode;
+var Triangle : TIndexedTriangleSetNode;
+    Coord : TCoordinateNode;
 begin
-  coord := CoordinateNode;
+  Triangle := TIndexedTriangleSetNode( rootnode.FindNode( TIndexedTriangleSetNode, false ));
+  Coord := TCoordinateNode( Triangle.Coord );
   assert( gridcount = terraingrid.wh );
   buildvertexlistsfromgrid( TerrainGrid,
                             Coord.FdPoint.Items );
   Coord.FdPoint.changed; { trigger mesh to rebuild }
+  UpdateNormals( Triangle );
 //  dirty := false;
 end;
 
