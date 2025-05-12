@@ -40,7 +40,7 @@ TAbstractMesh = class( TCastleScene )
    public
 
    procedure initnormals( Triangle : TIndexedTriangleSetNode );
-   procedure updatenormals( Triangle : TIndexedTriangleSetNode );
+   procedure updatenormals( Triangle : TIndexedTriangleSetNode ); dynamic;
    procedure InitVertices( Coord : TCoordinateNode ); dynamic; abstract;
 
    property GridCount : integer read getGridCount write setGridCount;

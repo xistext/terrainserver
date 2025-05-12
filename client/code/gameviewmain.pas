@@ -92,6 +92,7 @@ type
     Elevationlabel : TCastleLabel;
     AltitudeLabel : TCastleLabel;
     ElevationIndicator : TCastleShape;
+    WaterIndicator     : TCastleShape;
     AltitudeIndicator : TCastleShape;
 
     WorldOptionsPanel : TCastleShape;
@@ -241,16 +242,21 @@ begin
 end;
 
 procedure TViewMain.UpdatePositionIndicator;
- var terrainh : single;
+ var terrainh, waterh : single;
      agl : single;
  begin
+   terrainh := 0;
+   waterh := 0;
    TerrainHeight( MainCamera.Translation, terrainh );
+   GTileList.WaterAtPos( Vector2( MainCamera.Translation.X, MainCamera.Translation.Z ), waterh );
    agl := MainCamera.Translation.Y - terrainh;
    PositionLabel.Caption := Format( '%f x %)', [MainCamera.Translation.X, MainCamera.Translation.Z] );
    ElevationLabel.Caption := Format( '%f', [TerrainH] );
    AltitudeLabel.Caption := Format( '%f', [MainCamera.Translation.Y] );
    ElevationIndicator.Height := 8 + TerrainH;
    AltitudeIndicator.Translation := vector2( 0, ElevationIndicator.Height - 2 + agl );
+   WaterIndicator.Height := waterh;
+   WaterIndicator.Translation := vector2( 0, ElevationIndicator.Translation.Y + ElevationIndicator.Height );
  end;
 
 procedure TViewMain.UpdateFPSLabel;

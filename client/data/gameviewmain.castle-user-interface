@@ -564,7 +564,7 @@
                       },
                       "FullSize" : true,
                       "Height" : 4.0000000000000000E+001,
-                      "Name" : "ImageControl2",
+                      "Name" : "BackgroundToolSizePicker",
                       "ProportionalScaling" : "psEnclose",
                       "Stretch" : true,
                       "TranslationPersistent" : {
@@ -991,7 +991,7 @@
                       },
                       "FullSize" : true,
                       "Height" : 4.0000000000000000E+001,
-                      "Name" : "ImageControl3",
+                      "Name" : "BackgroundColorPicker",
                       "ProportionalScaling" : "psEnclose",
                       "Stretch" : true,
                       "Width" : 4.0000000000000000E+001
@@ -1549,7 +1549,7 @@
                       },
                       "FullSize" : true,
                       "Height" : 4.0000000000000000E+001,
-                      "Name" : "ImageControl4",
+                      "Name" : "BackgroundWorldOptions",
                       "ProportionalScaling" : "psEnclose",
                       "Stretch" : true,
                       "Width" : 4.0000000000000000E+001
@@ -1622,7 +1622,7 @@
                       },
                       "FullSize" : true,
                       "Height" : 4.0000000000000000E+001,
-                      "Name" : "ImageControl5",
+                      "Name" : "BackgroundViewOptions",
                       "ProportionalScaling" : "psEnclose",
                       "Stretch" : true,
                       "Width" : 4.0000000000000000E+001
@@ -1693,7 +1693,7 @@
                         "URL" : "castle-data:/grid3.png"
                       },
                       "FullSize" : true,
-                      "Name" : "ImageControl1"
+                      "Name" : "BackgroundPositionGauge"
                     },
                     {
                       "$$ClassName" : "TCastleLabel",
@@ -1748,6 +1748,23 @@
                       },
                       "Height" : 2.0000000000000000E+001,
                       "Name" : "ElevationIndicator",
+                      "Width" : 8.0000000000000000E+001
+                    },
+                    {
+                      "$$ClassName" : "TCastleShape",
+                      "ColorPersistent" : {
+                        "$$ClassName" : "TCastleColorPersistent",
+                        "Alpha" : 6.2352943420410156E-001,
+                        "Blue" : 5.6862747669219971E-001,
+                        "Green" : 4.1176471114158630E-001,
+                        "Red" : 1.1764705926179886E-001
+                      },
+                      "Height" : 5.0000000000000000E+000,
+                      "Name" : "WaterIndicator",
+                      "TranslationPersistent" : {
+                        "$$ClassName" : "TCastleVector2Persistent",
+                        "Y" : 2.0000000000000000E+001
+                      },
                       "Width" : 8.0000000000000000E+001
                     },
                     {

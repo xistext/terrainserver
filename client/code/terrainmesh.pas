@@ -45,7 +45,10 @@ TTerrainMesh = class( TLiteMesh )
      procedure updatesplatmap( SplatGrid : TSingleGrid );
 
      procedure UpdateAppearance;
+     procedure updatenormals( Triangle : TIndexedTriangleSetNode ); override;
+
      function InitAppearance : TAppearanceNode; override;
+
      public
      LinkedTile : TTerTile;
 
@@ -388,6 +391,43 @@ begin
   ChangedAll( true );
 
 //  dirty := false;
+end;
+
+function GetInputCoord3D(const X, Z: Single): TVector3;
+var
+  InputCoord, IgnoredTexCoord: TVector2;
+begin
+  GTileList.WaterAtPos( vector2( x, z ), result.Y );
+  Result.X := X;
+  Result.Z := Z;
+end;
+
+
+procedure TTerrainMesh.updatenormals( Triangle : TIndexedTriangleSetNode );
+var normalnode : TNormalNode;
+    i, gCount : integer;
+    ix, iix : integer;
+    p, px, pz : tvector3;
+    Coord : TCoordinateNode;
+    Normal : TVector3;
+    X, Z : single;
+begin
+  NormalNode := TNormalNode( Triangle.Normal );
+  Coord := TCoordinateNode(Triangle.Coord );
+  gCount := Coord.CoordCount;;
+  ix := 0;
+  while ix < gcount do
+   begin
+     X := Coord.FdPoint.Items[ix].X;
+     Z := Coord.FdPoint.Items[ix].Z;
+     p  := GetInputCoord3d( X - 0.5, Z - 0.5 );
+     pX := GetInputCoord3d( X + 0.5, Z - 0.5 );
+     PZ := GetInputCoord3D(X - 0.5, Z + 0.5);
+     Normal := TVector3.CrossProduct( (PZ - P), (PX - P)).Normalize;
+     NormalNode.FdVector.items[ix] := Normal;
+     inc( ix );
+   end;
+  NormalNode.FdVector.changed; { trigger mesh to rebuild }
 end;
 
 //-------------------------

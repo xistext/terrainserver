@@ -74,6 +74,8 @@ type PTerTile = ^TTerTile;
 
         function ElevationAtPos( const Pos : TVector2;
                                  out Elevation : single ) : boolean;
+        function WaterAtPos( const Pos : TVector2;
+                             out WaterDepth : single ) : boolean;
 
         {$ifdef terserver}
         function readallterrainfiles( path : string ) : integer;
@@ -380,6 +382,15 @@ function TTileList.ElevationAtPos( const Pos : TVector2;
    result := FindTileAtLocation( Pos, tile ) and
              tile.ElevationAtPos( Pos, Elevation );
  end;
+
+function TTileList.WaterAtPos( const Pos : TVector2;
+                               out WaterDepth : single ) : boolean;
+ var tile : TTerTile;
+ begin
+   result := FindTileAtLocation( Pos, tile ) and
+             tile.WaterAtPos( Pos, WaterDepth );
+ end;
+
 
 function parsetilepos( tilestr : string ) : tpoint;
  begin
