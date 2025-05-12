@@ -193,7 +193,6 @@ function TAbstractMesh.ElevationAtPos( Pos : TVector2;
    function checktriangle( const triangle : TTriangle3 ) : boolean;
     var intersection : tvector3;
     begin
-      {why does this only work on the center tile???}
       result := IsPointWithinTriangle2D( Pos, triangle2( vector2( triangle[0].x, triangle[0].z ),
                                                   vector2( triangle[1].x, triangle[1].z ),
                                                   vector2( triangle[2].x, triangle[2].z )));

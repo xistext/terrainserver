@@ -2,12 +2,13 @@ unit TerrainData;
 
 interface
 
-uses Classes, SysUtils, Collect, TerServerCommon, terrainparams,
+uses Classes, SysUtils, Collect,
      CastleVectors, CastleTerrain,
      {$ifdef terserver}castlefindfiles, castlefilesutils,{$endif}
      livetime,
      math, castletransform, castlewindow,
-     watergrid, basetools;
+     watergrid, basetools,
+     TerServerCommon, terrainparams, TerrainObjects;
 
 const terrainpath = 'data\terrain\';
       terrainext  = '.is.terra';
