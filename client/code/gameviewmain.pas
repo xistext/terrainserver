@@ -71,6 +71,7 @@ type
     AlphaSlider4 : TCastleIntegerSlider;
     ToolRadiusSlider : TCastleIntegerSlider;
 
+    PointLight1 : TCastlePointLight;
     TerrainLayer : TCastleTransform;
     WaterLayer   : TCastleTransform;
 
@@ -99,6 +100,7 @@ type
     WorldOptionsPanel : TCastleShape;
     ViewOptionsPanel : TCastleShape;
     ViewRadiusSlider : TCastleIntegerSlider;
+    CheckboxShadows : TCastleCheckbox;
     SnowLineSlider   : TCastleFloatSlider;
     GridPlane : TCastleTransform;
 
@@ -121,6 +123,7 @@ type
     procedure ColorSliderChange( sender : TObject );
     procedure ViewRadiusChange( sender : TObject );
     procedure SnowLineChange( sender : TObject );
+    procedure ShadowsChange( sender : TObject );
 
     procedure ViewportPressed(const Sender: TCastleUserInterface;
                               const Event: TInputPressRelease; var Handled: Boolean);
@@ -193,6 +196,7 @@ begin
   AlphaSlider4.OnChange :=  {$ifdef FPC}@{$endif} ColorSliderChange;
   ToolRadiusSlider.OnChange :=  {$ifdef FPC}@{$endif} ColorSliderChange;
   ViewRadiusSlider.OnChange := {$ifdef FPC}@{$endif} ViewRadiusChange;
+  CheckboxShadows.OnChange := {$ifdef FPC}@{$endif} ShadowsChange;
   SnowLineSlider.OnChange := {$ifdef FPC}@{$endif} SnowLineChange;
   ButtonBrush.OnClick := {$ifdef FPC}@{$endif} ClickTool;
   ButtonDig.OnClick := {$ifdef FPC}@{$endif} ClickTool;
@@ -748,6 +752,11 @@ procedure TViewMain.SnowLineChange( sender : TObject );
    DefaultSnowline := SnowLineSlider.Value;
    cmd := 'snowline '+FloatToStr( DefaultSnowline );
    FClient.Send(cmd);
+ end;
+
+procedure TViewMain.ShadowsChange( sender : TObject );
+ begin
+   PointLight1.Shadows := CheckBoxShadows.Checked;
  end;
 
 function TViewMain.MoveAllowed(const Sender: TCastleNavigation;

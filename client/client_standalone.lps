@@ -4,7 +4,7 @@
     <PathDelim Value="\"/>
     <Version Value="12"/>
     <BuildModes Active="Debug"/>
-    <Units Count="45">
+    <Units Count="52">
       <Unit0>
         <Filename Value="client_standalone.dpr"/>
         <IsPartOfProject Value="True"/>
@@ -29,8 +29,8 @@
         <Filename Value="code\gameviewmain.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="GameViewMain"/>
-        <TopLine Value="46"/>
-        <CursorPos X="49" Y="787"/>
+        <TopLine Value="696"/>
+        <CursorPos X="50" Y="709"/>
         <UsageCount Value="203"/>
         <Loaded Value="True"/>
       </Unit3>
@@ -45,15 +45,15 @@
         <Filename Value="code\terrainmesh.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="4"/>
-        <TopLine Value="387"/>
-        <CursorPos X="64" Y="451"/>
+        <TopLine Value="159"/>
+        <CursorPos Y="189"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
       </Unit5>
       <Unit6>
         <Filename Value="..\commoncode\castleclientserver.pas"/>
         <UnitName Value="CastleClientServer"/>
-        <EditorIndex Value="11"/>
+        <EditorIndex Value="18"/>
         <TopLine Value="430"/>
         <CursorPos X="5" Y="464"/>
         <UsageCount Value="100"/>
@@ -63,7 +63,7 @@
         <Filename Value="..\commoncode\terservercommon.pas"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="25" Y="23"/>
-        <UsageCount Value="103"/>
+        <UsageCount Value="102"/>
       </Unit7>
       <Unit8>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdIOHandlerStack.pas"/>
@@ -78,7 +78,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="88"/>
         <CursorPos X="94" Y="119"/>
-        <UsageCount Value="110"/>
+        <UsageCount Value="109"/>
       </Unit9>
       <Unit10>
         <Filename Value="..\commoncode\terraindata.pas"/>
@@ -92,11 +92,11 @@
         <Filename Value="..\commoncode\terrainparams.pas"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="21" Y="7"/>
-        <UsageCount Value="101"/>
+        <UsageCount Value="100"/>
       </Unit11>
       <Unit12>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\System\IdWinsock2.pas"/>
-        <EditorIndex Value="7"/>
+        <EditorIndex Value="14"/>
         <TopLine Value="6033"/>
         <CursorPos Y="6067"/>
         <UsageCount Value="101"/>
@@ -112,18 +112,18 @@
       <Unit14>
         <Filename Value="..\commoncode\basemesh.pas"/>
         <EditorIndex Value="5"/>
-        <TopLine Value="181"/>
-        <CursorPos Y="247"/>
+        <TopLine Value="341"/>
+        <CursorPos Y="403"/>
         <UsageCount Value="103"/>
         <Loaded Value="True"/>
       </Unit14>
       <Unit15>
         <Filename Value="E:\cge\src\scene\castleterrain.pas"/>
         <UnitName Value="CastleTerrain"/>
-        <EditorIndex Value="8"/>
-        <TopLine Value="860"/>
+        <EditorIndex Value="15"/>
+        <TopLine Value="870"/>
         <CursorPos X="93" Y="868"/>
-        <UsageCount Value="74"/>
+        <UsageCount Value="77"/>
         <Loaded Value="True"/>
       </Unit15>
       <Unit16>
@@ -131,7 +131,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="223"/>
         <CursorPos X="7" Y="321"/>
-        <UsageCount Value="107"/>
+        <UsageCount Value="106"/>
         <DefaultSyntaxHighlighter Value="C++"/>
       </Unit16>
       <Unit17>
@@ -151,7 +151,6 @@
       <Unit19>
         <Filename Value="..\commoncode\watergrid.pas"/>
         <EditorIndex Value="3"/>
-        <TopLine Value="312"/>
         <CursorPos Y="370"/>
         <UsageCount Value="101"/>
         <Loaded Value="True"/>
@@ -174,7 +173,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="62"/>
         <CursorPos Y="97"/>
-        <UsageCount Value="85"/>
+        <UsageCount Value="84"/>
       </Unit22>
       <Unit23>
         <Filename Value="E:\cge\src\ui\castlekeysmouse.pas"/>
@@ -182,13 +181,13 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="344"/>
         <CursorPos X="35" Y="378"/>
-        <UsageCount Value="24"/>
+        <UsageCount Value="23"/>
       </Unit23>
       <Unit24>
         <Filename Value="..\commoncode\x3dtools.pas"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="181"/>
-        <CursorPos Y="218"/>
+        <TopLine Value="257"/>
+        <CursorPos X="70" Y="320"/>
         <UsageCount Value="107"/>
         <Loaded Value="True"/>
       </Unit24>
@@ -285,23 +284,23 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="243"/>
         <CursorPos Y="311"/>
-        <UsageCount Value="7"/>
+        <UsageCount Value="6"/>
       </Unit37>
       <Unit38>
         <Filename Value="E:\cge\src\scene\x3d\x3dnodes_standard_rendering.inc"/>
-        <EditorIndex Value="10"/>
+        <EditorIndex Value="17"/>
         <TopLine Value="653"/>
         <CursorPos X="3" Y="635"/>
-        <UsageCount Value="33"/>
+        <UsageCount Value="36"/>
         <Loaded Value="True"/>
       </Unit38>
       <Unit39>
         <Filename Value="E:\cge\src\scene\castlescene.pas"/>
         <UnitName Value="CastleScene"/>
-        <EditorIndex Value="9"/>
+        <EditorIndex Value="16"/>
         <TopLine Value="1069"/>
         <CursorPos X="45" Y="1087"/>
-        <UsageCount Value="33"/>
+        <UsageCount Value="35"/>
         <Loaded Value="True"/>
       </Unit39>
       <Unit40>
@@ -317,13 +316,13 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="1252"/>
         <CursorPos X="35" Y="1285"/>
-        <UsageCount Value="13"/>
+        <UsageCount Value="12"/>
       </Unit41>
       <Unit42>
         <Filename Value="E:\cge\src\ui\castleuicontrols_initial_types.inc"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="75" Y="37"/>
-        <UsageCount Value="13"/>
+        <UsageCount Value="12"/>
       </Unit42>
       <Unit43>
         <Filename Value="E:\cge\src\transform\castletransform_transform.inc"/>
@@ -338,132 +337,189 @@
         <UnitName Value="TreeBuilder"/>
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="6"/>
-        <TopLine Value="108"/>
-        <CursorPos X="23" Y="154"/>
-        <UsageCount Value="26"/>
+        <TopLine Value="189"/>
+        <CursorPos Y="224"/>
+        <UsageCount Value="31"/>
         <Loaded Value="True"/>
       </Unit44>
+      <Unit45>
+        <Filename Value="E:\cge\src\scene\x3d\auto_generated_node_helpers\x3dnodes_x3dcomposedgeometrynode.inc"/>
+        <EditorIndex Value="13"/>
+        <TopLine Value="66"/>
+        <CursorPos X="54" Y="100"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+      </Unit45>
+      <Unit46>
+        <Filename Value="E:\cge\src\scene\x3d\auto_generated_node_helpers\x3dnodes_appearance.inc"/>
+        <EditorIndex Value="11"/>
+        <TopLine Value="80"/>
+        <CursorPos X="31" Y="114"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+      </Unit46>
+      <Unit47>
+        <Filename Value="E:\cge\src\scene\x3d\x3dnodes_standard_shape.inc"/>
+        <EditorIndex Value="12"/>
+        <CursorPos X="5" Y="62"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+      </Unit47>
+      <Unit48>
+        <Filename Value="E:\cge\src\scene\load\x3dloadinternalgltf.pas"/>
+        <UnitName Value="X3DLoadInternalGltf"/>
+        <EditorIndex Value="9"/>
+        <TopLine Value="1758"/>
+        <CursorPos X="68" Y="1790"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit48>
+      <Unit49>
+        <Filename Value="E:\cge\src\scene\castleinternalarraysgenerator.pas"/>
+        <UnitName Value="CastleInternalArraysGenerator"/>
+        <EditorIndex Value="10"/>
+        <TopLine Value="2432"/>
+        <CursorPos X="20" Y="2489"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit49>
+      <Unit50>
+        <Filename Value="E:\cge\src\base\castlerenderoptions_renderoptions.inc"/>
+        <EditorIndex Value="7"/>
+        <TopLine Value="397"/>
+        <CursorPos X="37" Y="429"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit50>
+      <Unit51>
+        <Filename Value="E:\cge\src\base\castlerenderoptions_globals.inc"/>
+        <EditorIndex Value="8"/>
+        <TopLine Value="172"/>
+        <CursorPos X="20" Y="211"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit51>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="code\treebuilder.pas"/>
-        <Caret Line="128" TopLine="108"/>
+        <Filename Value="code\gameviewmain.pas"/>
+        <Caret Line="103" Column="20" TopLine="44"/>
       </Position1>
       <Position2>
-        <Filename Value="code\treebuilder.pas"/>
-        <Caret Line="130" TopLine="108"/>
+        <Filename Value="code\gameviewmain.pas"/>
+        <Caret Line="126" Column="22" TopLine="66"/>
       </Position2>
       <Position3>
-        <Filename Value="code\treebuilder.pas"/>
-        <Caret Line="131" TopLine="108"/>
+        <Filename Value="code\gameviewmain.pas"/>
+        <Caret Line="199" Column="66" TopLine="138"/>
       </Position3>
       <Position4>
         <Filename Value="code\treebuilder.pas"/>
-        <Caret Line="132" TopLine="108"/>
+        <Caret Line="198" TopLine="155"/>
       </Position4>
       <Position5>
         <Filename Value="code\treebuilder.pas"/>
-        <Caret Line="133" TopLine="108"/>
+        <Caret Line="174" Column="45" TopLine="162"/>
       </Position5>
       <Position6>
         <Filename Value="code\treebuilder.pas"/>
-        <Caret Line="134" TopLine="108"/>
+        <Caret Line="167" TopLine="159"/>
       </Position6>
       <Position7>
         <Filename Value="code\treebuilder.pas"/>
-        <Caret Line="154" Column="25" TopLine="108"/>
+        <Caret Line="168" TopLine="159"/>
       </Position7>
       <Position8>
         <Filename Value="code\treebuilder.pas"/>
-        <Caret Line="127" TopLine="108"/>
+        <Caret Line="169" TopLine="159"/>
       </Position8>
       <Position9>
         <Filename Value="code\treebuilder.pas"/>
-        <Caret Line="128" TopLine="108"/>
+        <Caret Line="170" TopLine="159"/>
       </Position9>
       <Position10>
         <Filename Value="code\treebuilder.pas"/>
-        <Caret Line="130" TopLine="108"/>
+        <Caret Line="171" TopLine="159"/>
       </Position10>
       <Position11>
         <Filename Value="code\treebuilder.pas"/>
-        <Caret Line="131" TopLine="108"/>
+        <Caret Line="172" TopLine="159"/>
       </Position11>
       <Position12>
         <Filename Value="code\treebuilder.pas"/>
-        <Caret Line="132" TopLine="108"/>
+        <Caret Line="173" TopLine="159"/>
       </Position12>
       <Position13>
         <Filename Value="code\treebuilder.pas"/>
-        <Caret Line="133" TopLine="108"/>
+        <Caret Line="174" TopLine="159"/>
       </Position13>
       <Position14>
         <Filename Value="code\treebuilder.pas"/>
-        <Caret Line="134" TopLine="108"/>
+        <Caret Line="175" TopLine="159"/>
       </Position14>
       <Position15>
         <Filename Value="code\treebuilder.pas"/>
-        <Caret Line="135" TopLine="108"/>
+        <Caret Line="176" TopLine="159"/>
       </Position15>
       <Position16>
         <Filename Value="code\treebuilder.pas"/>
-        <Caret Line="136" TopLine="108"/>
+        <Caret Line="177" TopLine="159"/>
       </Position16>
       <Position17>
         <Filename Value="code\treebuilder.pas"/>
-        <Caret Line="138" TopLine="108"/>
+        <Caret Line="179" TopLine="159"/>
       </Position17>
       <Position18>
         <Filename Value="code\treebuilder.pas"/>
-        <Caret Line="139" TopLine="108"/>
+        <Caret Line="168" Column="14" TopLine="133"/>
       </Position18>
       <Position19>
         <Filename Value="code\treebuilder.pas"/>
-        <Caret Line="141" TopLine="108"/>
+        <Caret Line="164" Column="84" TopLine="151"/>
       </Position19>
       <Position20>
-        <Filename Value="code\treebuilder.pas"/>
-        <Caret Line="143" TopLine="108"/>
+        <Filename Value="E:\cge\src\scene\load\x3dloadinternalgltf.pas"/>
+        <Caret Line="1790" Column="68" TopLine="1758"/>
       </Position20>
       <Position21>
-        <Filename Value="..\commoncode\x3dtools.pas"/>
-        <Caret Line="215" TopLine="181"/>
+        <Filename Value="E:\cge\src\scene\castleinternalarraysgenerator.pas"/>
+        <Caret Line="2489" Column="20" TopLine="2432"/>
       </Position21>
       <Position22>
-        <Filename Value="..\commoncode\x3dtools.pas"/>
-        <Caret Line="216" TopLine="181"/>
+        <Filename Value="code\treebuilder.pas"/>
+        <Caret Line="203" Column="48" TopLine="168"/>
       </Position22>
       <Position23>
         <Filename Value="..\commoncode\x3dtools.pas"/>
-        <Caret Line="217" TopLine="181"/>
+        <Caret Column="47"/>
       </Position23>
       <Position24>
         <Filename Value="..\commoncode\x3dtools.pas"/>
-        <Caret Line="218" TopLine="181"/>
+        <Caret Line="71" Column="20" TopLine="10"/>
       </Position24>
       <Position25>
-        <Filename Value="code\treebuilder.pas"/>
-        <Caret Line="145" TopLine="108"/>
+        <Filename Value="..\commoncode\x3dtools.pas"/>
+        <Caret Line="361" Column="24" TopLine="300"/>
       </Position25>
       <Position26>
         <Filename Value="code\treebuilder.pas"/>
-        <Caret Line="147" TopLine="108"/>
+        <Caret Line="230" Column="28" TopLine="166"/>
       </Position26>
       <Position27>
-        <Filename Value="code\treebuilder.pas"/>
-        <Caret Line="148" TopLine="108"/>
+        <Filename Value="E:\cge\src\base\castlerenderoptions_renderoptions.inc"/>
+        <Caret Line="429" Column="37" TopLine="397"/>
       </Position27>
       <Position28>
-        <Filename Value="code\treebuilder.pas"/>
-        <Caret Line="150" TopLine="108"/>
+        <Filename Value="E:\cge\src\base\castlerenderoptions_globals.inc"/>
+        <Caret Line="211" Column="20" TopLine="172"/>
       </Position28>
       <Position29>
         <Filename Value="code\treebuilder.pas"/>
-        <Caret Line="151" TopLine="108"/>
+        <Caret Line="246" Column="26" TopLine="188"/>
       </Position29>
       <Position30>
         <Filename Value="code\treebuilder.pas"/>
-        <Caret Line="155" TopLine="108"/>
+        <Caret Line="224" Column="20" TopLine="190"/>
       </Position30>
     </JumpHistory>
     <RunParams>

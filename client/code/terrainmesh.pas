@@ -184,6 +184,8 @@ constructor TTerrainMesh.create( aowner : TComponent );
  begin
    inherited create( aowner );
    LinkedTile := nil;
+   renderoptions.WholeSceneManifold := true;
+   self.ReceiveShadowVolumes := true;
  end;
 
 constructor TTerrainMesh.create2( aowner : TComponent;

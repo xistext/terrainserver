@@ -60,10 +60,12 @@
                   "Z" : 0.0000000000000000E+000
                 },
                 "CastShadows" : false,
+                "Collides" : false,
                 "Intensity" : 5.0000000000000000E+000,
                 "Name" : "PointLight1",
                 "Pickable" : false,
                 "Radius" : 5.0000000000000000E+003,
+                "Shadows" : true,
                 "TranslationPersistent" : {
                   "$$ClassName" : "TCastleVector3Persistent",
                   "Y" : 2.0000000000000000E+003,
@@ -71,21 +73,38 @@
                 }
               },
               {
+                "$$ClassName" : "TCastlePointLight",
+                "AttenuationPersistent" : {
+                  "$$ClassName" : "TCastleVector3Persistent",
+                  "Z" : 0.0000000000000000E+000
+                },
+                "CastShadows" : false,
+                "Collides" : false,
+                "ColorPersistent" : {
+                  "$$ClassName" : "TCastleColorRGBPersistent",
+                  "Red" : 9.3725490570068359E-001
+                },
+                "Intensity" : 2.9000000953674316E+000,
+                "Name" : "AmbientLight",
+                "Pickable" : false,
+                "Radius" : 5.0000000000000000E+003,
+                "TranslationPersistent" : {
+                  "$$ClassName" : "TCastleVector3Persistent",
+                  "Y" : 2.0000000000000000E+003,
+                  "Z" : -2.0000000000000000E+003
+                }
+              },
+              {
                 "$$ClassName" : "TCastleTransform",
+                "CastShadows" : false,
+                "Collides" : false,
                 "Name" : "TerrainLayer"
               },
               {
                 "$$ClassName" : "TCastleTransform",
+                "CastShadows" : false,
+                "Collides" : false,
                 "Name" : "WaterLayer"
-              },
-              {
-                "$$ClassName" : "TCastleScene",
-                "ExposeTransforms" : [
-                ],
-                "Name" : "Scene1",
-                "RenderOptions" : {
-                  "$$ClassName" : "TCastleScene.TSceneRenderOptions"
-                }
               },
               {
                 "$$ClassName" : "TCastleTransform",
@@ -1525,6 +1544,7 @@
                     "$$ClassName" : "TCastleColorPersistent",
                     "Alpha" : 1.2156862765550613E-001
                   },
+                  "Exists" : false,
                   "Height" : 8.0000000000000000E+001,
                   "Name" : "WorldOptionsPanel",
                   "TranslationPersistent" : {
@@ -1597,7 +1617,6 @@
                     "$$ClassName" : "TCastleColorPersistent",
                     "Alpha" : 1.2156862765550613E-001
                   },
-                  "Exists" : false,
                   "Height" : 8.0000000000000000E+001,
                   "Name" : "ViewOptionsPanel",
                   "TranslationPersistent" : {
@@ -1661,6 +1680,38 @@
                       },
                       "Value" : 1,
                       "Width" : 1.0000000000000000E+002
+                    },
+                    {
+                      "$$ClassName" : "TCastleLabel",
+                      "FontScale" : 5.0000000000000000E-001,
+                      "Name" : "Label5",
+                      "Text" : [
+                        "Shadows"
+                      ],
+                      "TranslationPersistent" : {
+                        "$$ClassName" : "TCastleVector2Persistent",
+                        "X" : 2.7000000000000000E+001,
+                        "Y" : 4.0000000000000000E+001
+                      }
+                    },
+                    {
+                      "$$ClassName" : "TCastleCheckbox",
+                      "AutoSize" : false,
+                      "CheckboxColorPersistent" : {
+                        "$$ClassName" : "TCastleColorPersistent",
+                        "Blue" : 1.8431372940540314E-001
+                      },
+                      "CheckboxSize" : 1.8000000000000000E+001,
+                      "Checked" : true,
+                      "FontSize" : 1.0000000000000000E+001,
+                      "Height" : 2.0000000000000000E+001,
+                      "Name" : "CheckboxShadows",
+                      "TranslationPersistent" : {
+                        "$$ClassName" : "TCastleVector2Persistent",
+                        "X" : 7.8000000000000000E+001,
+                        "Y" : 3.5000000000000000E+001
+                      },
+                      "Width" : 3.0000000000000000E+001
                     }
                   ]
                 },
@@ -1959,20 +2010,20 @@
             },
             "RotationPersistent" : {
               "$$ClassName" : "TCastleVector4RotationPersistent",
-              "W" : 2.0966482162475586E+000,
-              "X" : -1.3337739510461688E-003,
-              "Y" : 9.9999791383743286E-001,
-              "Z" : 1.5560318715870380E-003
+              "W" : 1.6197946071624756E+000,
+              "X" : -3.6951787769794464E-002,
+              "Y" : 9.9859428405761719E-001,
+              "Z" : 3.8002375513315201E-002
             },
             "ScalePersistent" : {
               "$$ClassName" : "TCastleVector3Persistent",
-              "Y" : 1.0000002384185791E+000
+              "Y" : 1.0000001192092896E+000
             },
             "TranslationPersistent" : {
               "$$ClassName" : "TCastleVector3Persistent",
-              "X" : 1.2144400634765625E+003,
-              "Y" : 1.0247335205078125E+003,
-              "Z" : 9.9996582031250000E+002
+              "X" : 7.6044427490234375E+002,
+              "Y" : 9.9381610107421875E+002,
+              "Z" : 1.0512987060546875E+003
             }
           },
           "InternalDesignNavigations[dnFly]" : {
