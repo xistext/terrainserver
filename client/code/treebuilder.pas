@@ -166,37 +166,41 @@ function TTreeBuilder.initTriangleFanBillboard( aowner : TComponent;
      Shape : TShapeNode;
      TexCoords : TVector2List;
      h, h2 : single;
+     r1 : single;
  begin
    Triangles := TTriangleFanSetNode.Create;
-   Triangles.SetFanCount([9]);
+   Triangles.SetFanCount([10]);
    Triangles.Coord := TCoordinateNode.Create;
    Triangles.TexCoord := TTextureCoordinateNode.Create;
    TexCoords := TVector2List.Create;
-   TexCoords.Count := 9;
+   TexCoords.Count := 10;
    Vertices := TVector3List.Create;
-   Vertices.Count := 9;
+   Vertices.Count := 10;
    h := height;
    h2 := height * 0.3;
 
+   r1 := random*0.1;
    Vertices[0] := vector3( 0, h2, 0 ); // center of trangle fan
-   vertices[1] := vector3( -gtreeedge[0].x * h, gtreeedge[0].y * h, 0 );
-   vertices[2] := vector3( gtreeedge[0].x * h, gtreeedge[0].y * h, 0 );
-   vertices[3] := vector3( gtreeedge[1].x * h, gtreeedge[1].y * h, 0 );
-   vertices[4] := vector3( gtreeedge[2].x * h, gtreeedge[2].y * h, 0 );
-   vertices[5] := vector3( gtreeedge[3].x * h, gtreeedge[3].y * h, 0 );   // peak
-   vertices[6] := vector3( -gtreeedge[2].x * h, gtreeedge[2].y * h, 0 );
-   vertices[7] := vector3( -gtreeedge[1].x * h, gtreeedge[1].y * h, 0 );
-   vertices[8] := vector3( -gtreeedge[0].x * h, gtreeedge[0].y * h, 0 );
+   vertices[1] := vector3( -gtreeedge[0].x * h - r1, gtreeedge[0].y * h, 0 );
+   vertices[2] := vector3( gtreeedge[0].x * h + random*0.1, gtreeedge[0].y, 0 );
+   vertices[3] := vector3( gtreeedge[1].x * h + random*0.1, gtreeedge[1].y * h + random*0.1, 0 );
+   vertices[4] := vector3( gtreeedge[2].x * h + random*0.1, gtreeedge[2].y * h + random*0.1, 0 );
+   vertices[5] := vector3( gtreeedge[3].x * h + random*0.1, gtreeedge[3].y * h - random*0.2*h, 0 );   // peak
+   vertices[6] := vector3( -gtreeedge[3].x * h - random*0.1, gtreeedge[3].y * h -random*0.2, 0 );   // peak
+   vertices[7] := vector3( -gtreeedge[2].x * h - random*0.1, gtreeedge[2].y * h + random*0.1, 0 );
+   vertices[8] := vector3( -gtreeedge[1].x * h - random*0.1, gtreeedge[1].y * h + random*0.1, 0 );
+   vertices[9] := vector3( -gtreeedge[0].x * h - r1, gtreeedge[0].y * h, 0 );
 
-   TexCoords.Items[0] := vector2( 0.5, 0.3 ); // center of trangle fan
-   TexCoords.Items[1] := Vector2( 0.5 + gtreeedge[0].x, gtreeedge[0].y ); // center of triangle fan
-   TexCoords.Items[2] := Vector2( 0.5 - gtreeedge[0].x, gtreeedge[0].y );
-   TexCoords.Items[3] := Vector2( 0.5 - gtreeedge[1].x, gtreeedge[1].y );
-   TexCoords.Items[4] := Vector2( 0.5 - gtreeedge[2].x, gtreeedge[2].y );
-   TexCoords.Items[5] := Vector2( 0.5 - gtreeedge[3].x, gtreeedge[3].y ); // peak
-   TexCoords.Items[6] := Vector2( 0.5 + gtreeedge[2].x, gtreeedge[2].y );
-   TexCoords.Items[7] := Vector2( 0.5 + gtreeedge[1].x, gtreeedge[1].y );
-   TexCoords.Items[8] := Vector2( 0.5 + gtreeedge[0].x, gtreeedge[0].y );
+   TexCoords.Items[0] := vector2( 0.5+random*0.2-0.1, 0.3 ); // center of trangle fan
+   TexCoords.Items[1] := Vector2( 0.5+random*0.2-0.1 + gtreeedge[0].x, gtreeedge[0].y ); // center of triangle fan
+   TexCoords.Items[2] := Vector2( 0.5+random*0.2-0.1 - gtreeedge[0].x, gtreeedge[0].y );
+   TexCoords.Items[3] := Vector2( 0.5+random*0.2-0.1 - gtreeedge[1].x, gtreeedge[1].y );
+   TexCoords.Items[4] := Vector2( 0.5+random*0.2-0.1 - gtreeedge[2].x, gtreeedge[2].y );
+   TexCoords.Items[5] := Vector2( 0.5-random*0.3 - gtreeedge[3].x, gtreeedge[3].y-random*0.2 ); // peak
+   TexCoords.Items[6] := Vector2( 0.5+random*0.3 + gtreeedge[3].x, gtreeedge[3].y-random*0.2 ); // peak
+   TexCoords.Items[7] := Vector2( 0.5+random*0.2-0.1 + gtreeedge[2].x, gtreeedge[2].y );
+   TexCoords.Items[8] := Vector2( 0.5+random*0.2-0.1 + gtreeedge[1].x, gtreeedge[1].y );
+   TexCoords.Items[9] := Vector2( 0.5+random*0.2-0.1 + gtreeedge[0].x, gtreeedge[0].y );
 
    TCoordinateNode( Triangles.coord ).SetPoint( Vertices );
    TTextureCoordinateNode( Triangles.TexCoord ).SetPoint( TexCoords );
@@ -218,6 +222,7 @@ function TTreeBuilder.initTriangleFanBillboard( aowner : TComponent;
    b.AxisOfRotation := vector3( 0, 1, 0 );
    g.AddBehavior( b );
 //   g.RenderOptions.WireframeEffect := weSolidWireframe;
+   g.ReceiveShadowVolumes := false;
    result := g;
  end;
 
