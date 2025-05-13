@@ -191,7 +191,8 @@ function TTreeBuilder.initTriangleFanBillboard( aowner : TComponent;
    vertices[8] := vector3( -gtreeedge[1].x * h - random*0.1, gtreeedge[1].y * h + random*0.1, 0 );
    vertices[9] := vector3( -gtreeedge[0].x * h - r1, gtreeedge[0].y * h, 0 );
 
-   TexCoords.Items[0] := vector2( 0.5+random*0.2-0.1, 0.3 ); // center of trangle fan
+   r1 := random*0.2-0.1;
+   TexCoords.Items[0] := vector2( 0.5+r1, 0.3 ); // center of trangle fan
    TexCoords.Items[1] := Vector2( 0.5+random*0.2-0.1 + gtreeedge[0].x, gtreeedge[0].y ); // center of triangle fan
    TexCoords.Items[2] := Vector2( 0.5+random*0.2-0.1 - gtreeedge[0].x, gtreeedge[0].y );
    TexCoords.Items[3] := Vector2( 0.5+random*0.2-0.1 - gtreeedge[1].x, gtreeedge[1].y );
@@ -200,7 +201,7 @@ function TTreeBuilder.initTriangleFanBillboard( aowner : TComponent;
    TexCoords.Items[6] := Vector2( 0.5+random*0.3 + gtreeedge[3].x, gtreeedge[3].y-random*0.2 ); // peak
    TexCoords.Items[7] := Vector2( 0.5+random*0.2-0.1 + gtreeedge[2].x, gtreeedge[2].y );
    TexCoords.Items[8] := Vector2( 0.5+random*0.2-0.1 + gtreeedge[1].x, gtreeedge[1].y );
-   TexCoords.Items[9] := Vector2( 0.5+random*0.2-0.1 + gtreeedge[0].x, gtreeedge[0].y );
+   TexCoords.Items[9] := Vector2( 0.5+r1+ gtreeedge[0].x, gtreeedge[0].y );
 
    TCoordinateNode( Triangles.coord ).SetPoint( Vertices );
    TTextureCoordinateNode( Triangles.TexCoord ).SetPoint( TexCoords );

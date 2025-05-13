@@ -3,12 +3,12 @@ unit TerrainCommand;
 interface
 
 uses Classes, SysUtils, Collect,
-     IdGlobal,
+     IdGlobal, Math,
      BaseThread, StrTools,
      CastleClientServer, CastleVectors, castleterrain,
      TerServerCommon,
      ClientList,
-     TerrainParams, TerrainData,
+     TerrainParams, TerrainData, TerrainObjects,
      watergrid, waterflow, waterparams, watercolor;
 
 type TCommandCallback = procedure( msg : string ) of object;
@@ -1016,6 +1016,46 @@ function cmdSnowline( client : TTileClient;
       DefaultSnowLine := newsnowline;
  end;
 
+function cmdPlantTree( client : TTileClient;
+                       params : string;
+                       callback : TCommandCallback ) : integer;
+ var worldpos : tvector2;
+     localpos : tvector2;
+     wradius  : single;
+     wcount   : integer;
+     tile : ttertile;
+     i : integer;
+     treex, treey : word;
+     objlist : TTileObjTypeList;
+     objrec : TTileObj_Rec;
+     sn, cs, r : single;
+ begin
+   result := 0;
+   if parseworldxy( params, worldpos.x, worldpos.y ) then
+    begin
+      if gtilelist.findtileatlocation( WorldPos, Tile ) then
+       begin
+         wradius := 0;
+         wcount := 1;
+         parsesingle( params, wradius );
+         parseint( params, wcount );
+         localpos := Tile.WorldToLocal( worldpos );
+         if Tile.GetTypeList( tileobjtype_testtree, objlist ) then
+          begin
+            for i := 0 to wcount - 1 do
+             begin
+               sincos( random * 2 * Pi, sn, cs );
+               r := random * wradius;
+               treex := trunc(( localpos.x + cs * r ));
+               treey := trunc(( localpos.y + sn * r ));
+               init_tileobj_rec( treex, treey,
+                                 random( 65536 ), random( 65536 ), objrec );
+               objlist.addobj( objrec );
+             end;
+          end;
+       end;
+    end;
+ end;
 
 initialization
   GTaskList := TTaskList.Create;
@@ -1027,6 +1067,7 @@ initialization
   GCmdList.RegisterCmd( 'pile', @cmdPile );
   GCmdList.RegisterCmd( 'paint', @cmdPaint );
   GCmdList.RegisterCmd( 'snowline', @cmdSnowline );
+  GCmdList.RegisterCmd( 'addtree', @cmdPlantTree );
 
 //  GCmdList.RegisterCmd( 'save', @cmdSave );
 finalization

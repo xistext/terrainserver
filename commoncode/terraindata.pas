@@ -86,7 +86,6 @@ type PTerTile = ^TTerTile;
         procedure foundterfile( const FileInfo : TFileInfo; var StopSearch : boolean );
         {$endif}
 
-
       end;
 
      TDataLayer = class
@@ -107,6 +106,7 @@ type PTerTile = ^TTerTile;
 
         Info   : TTileHeader;
         datalayers : TDataLayers;
+        objlists   : TTileObjTypeList;
 
         constructor create( const iInfo : TTileHeader );
         destructor destroy; override;
@@ -173,6 +173,8 @@ type PTerTile = ^TTerTile;
         property WaterGrid : TSingleGrid read getWaterGrid write setWaterGrid;
         property FloraGrid : TSingleGrid read getFloraGrid write setFloraGrid;
         property SplatGrid : TIntGrid read getSplatGrid;
+
+        function GetTypeList( atype : dword; objlist : TTileObjTypeList ) : boolean;
       end;
 
 procedure sethxy( var h : TTileHeader; x, y : smallint; sz : word = 1 );
@@ -392,7 +394,6 @@ function TTileList.WaterAtPos( const Pos : TVector2;
              tile.WaterAtPos( Pos, WaterDepth );
  end;
 
-
 function parsetilepos( tilestr : string ) : tpoint;
  begin
    result := Point(0,0);
@@ -475,6 +476,8 @@ constructor TTerTile.create( const iInfo : TTileHeader );
    layer := TDataLayer.create( Info.TileSz );
    datalayers[layer_flora] := layer;
 
+   objlists := TTileObjTypeList.Create;
+
    {$ifdef terserver}
    TSingleGrid( datalayers[layer_water].DataGrid ).setvalue( 0.1 );
    TSingleGrid( datalayers[layer_flora].DataGrid ).setvalue( 0.01 );
@@ -500,6 +503,8 @@ destructor TTerTile.destroy;
    for i := 0 to length( datalayers ) - 1 do
       datalayers[i].Free;
    setlength( datalayers, 0 );
+   ObjLists.Free;
+
    {$ifdef terserver}
    i := 0;
    while i < WaterToFlowList_high.Count do
@@ -783,10 +788,13 @@ procedure TTerTile.Paint( const WorldPos : TVector2; EncodedColor : integer );
 //   LimitMax( SplatPosI.Y, MaxTileIx );
    SplatGrid.setvaluexy( SplatPosI.x, SplatPosI.Y, EncodedColor );
  end;
-
-
-
 {$endif}
+
+function TTerTile.gettypelist( atype : dword; objlist : TTileObjTypeList ) : boolean;
+ begin
+   result := false;
+
+ end;
 
 function TTerTile.GetNeighbors : TTileNeighbors;
  { get tile's neighbors }

@@ -14,7 +14,7 @@ const converttosingle : single = 65536;
       invGridCount : single = 0; { set in initialation }
 
       tileobjtype_undefined = 0;
-      tilebopjtype_testtree = 1;
+      tileobjtype_testtree = 1;
 
 type ttileobj_rec  = packed record
         posx    : word; { 1/65536 per tile size, about 1cm in current 600m per tile scaling  }
@@ -68,13 +68,13 @@ type ttileobj_rec  = packed record
 
      end;
 
-procedure init_tileobj_info( iposx, iposy, iheight, iwidth : word;
-                             out info : ttileobj_rec );
+procedure init_tileobj_rec( iposx, iposy, iheight, iwidth : word;
+                            out info : ttileobj_rec );
 
 implementation //===============================================================
 
-procedure init_tileobj_info( iposx, iposy, iheight, iwidth : word;
-                             out info : ttileobj_rec );
+procedure init_tileobj_rec( iposx, iposy, iheight, iwidth : word;
+                            out info : ttileobj_rec );
  begin
    with info do
     begin
