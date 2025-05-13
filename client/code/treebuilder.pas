@@ -232,6 +232,18 @@ function TTreeBuilder.initTriangleFanBillboard( aowner : TComponent;
  end;
 
 
+{ lod levels
+    lowest
+    1 color triangle billboard, no shadows
+    1 texture triangle billboard, no shadows
+    texture triangle fan strip billboard, no shadows
+    texture triangle fan strip billboard, shadows
+    4 texture triangle fan strips crossed, shadows
+  }
+
+
+
+
 function TTreeBuilder.BuildTree( aowner : TComponent;
                                  var pos : TVector3;
                                  LOD : integer = 1 ) : TCastleTransform;

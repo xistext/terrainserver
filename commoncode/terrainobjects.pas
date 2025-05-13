@@ -4,8 +4,7 @@ unit TerrainObjects;
 
 interface
 
-uses classes,
-     collect,
+uses sysutils, classes,
      basetools,
      CastleVectors,
      TerrainParams;
@@ -14,79 +13,130 @@ const converttosingle : single = 65536;
       converttoword : single = 1/65536;
       invGridCount : single = 0; { set in initialation }
 
-      tertype_undefined = 0;
-      tertype_tree      = 1;
+      tileobjtype_undefined = 0;
+      tilebopjtype_testtree = 1;
 
-type tterobjinfo = packed record
-        id      : word; { 65536 objs of a given type in a tile }
-        posx    : word;
+type ttileobj_rec  = packed record
+        posx    : word; { 1/65536 per tile size, about 1cm in current 600m per tile scaling  }
         posy    : word;
-        height  : word;
+        height  : word; { height and width could be 1/65536 of the max size of the type }
+        width   : word;
       end;
 
-    TTerObject = class
+    { wraps a ttileobj_info to convert to world units and work with or subclass }
+    TTileObject = class
 
-       info : tterobjinfo;
+       info : ttileobj_rec;
 
        private
 
        function getheight : single;
        procedure setheight( h : single );
 
+       function getwidth : single;
+       procedure setwidth( w : single );
+
        function getTilePos : TVector2;
        procedure setTilePos( const iPos : TVector2 );
 
        public
 
-       property height : single read getheight write setheight;
-       property id : word read info.id write info.id;
+       property WorldHeight : single read getheight write setheight;
+       property WorldWidth  : single read getwidth write setwidth;
+
+       property WorldPosition : TVector2 read getTilePos write setTilePos; { gets world position within tile }
 
     end;
 
-    { holds a list of TTerObject by type }
-    TTerObjTypeList = class( TSortedCollection ) { of TTerObject }
+    { holds a list of TTileObj_info of the same }
+    TTileObjTypeList = class
        objtype  : dword;
+       objlist  : array of TTileObj_Rec;
+       constructor create( itype : dword = tileobjtype_undefined;
+                           isize : dword = 1 );
+       function addobj( const info : ttileobj_rec ) : integer;
 
+       private
 
+       function getcount : integer;
 
-       function keyof( item : pointer ) : pointer; override;
-       function compare( item1, item2 : pointer ) : integer; override;
+       public
+
+       property count : integer read getcount;
 
      end;
 
+procedure init_tileobj_info( iposx, iposy, iheight, iwidth : word;
+                             out info : ttileobj_rec );
 
-implementation
+implementation //===============================================================
 
-function TTerObjTypeList.keyof( item : pointer ) : pointer;
+procedure init_tileobj_info( iposx, iposy, iheight, iwidth : word;
+                             out info : ttileobj_rec );
  begin
-   result := @TTerObject( item ).id;
+   with info do
+    begin
+      posx := iposx;
+      posy := iposy;
+      height := iheight;
+      width := iwidth;
+    end;
  end;
 
-function TTerObjTypeList.compare( item1, item2 : pointer ) : integer;
+//----------------------------
+
+constructor TTileObjTypeList.create( itype : dword = tileobjtype_undefined;
+                                     isize : dword = 1 );
  begin
-   result := compareint( pinteger( item1 )^, pinteger( item2 )^ );
+   inherited create;
+   objtype := itype;
+   setlength( objlist, isize );
+   fillchar( objlist[0], isize * sizeof( ttileobj_rec  ), 0 );
  end;
 
+function TTileObjTypeList.getcount : integer;
+ begin
+   result := length( objlist );
+ end;
 
+function TTileObjTypeList.addobj( const info : ttileobj_rec ) : integer;
+ { returns handle, its index in objlist }
+ var c : integer;
+ begin
+   c := length( objlist );
+   result := c + 1;
+   setlength( objlist, result );
+   objlist[c] := info;
+ end;
 
 //---------------------------
 
-function TTerObject.getheight : single;
+function TTileObject.getheight : single;
  begin
    result := converttosingle * info.height;
  end;
 
-procedure TTerObject.setheight( h : single );
+procedure TTileObject.setheight( h : single );
  begin
    info.height := trunc( h * converttoword );
  end;
 
-function TTerObject.getTilePos : TVector2;
+function TTileObject.getwidth : single;
+ begin
+   result := converttosingle * info.width;
+ end;
+
+procedure TTileObject.setwidth( w : single );
+ begin
+   info.height := trunc( w * converttoword );
+ end;
+
+function TTileObject.getTilePos : TVector2;
  begin
    result := Vector2( info.posx * converttoword, info.posy * converttoword ) * GDefGridCellCount;
  end;
 
-procedure TTerObject.setTilePos( const iPos : TVector2 );
+procedure TTileObject.setTilePos( const iPos : TVector2 );
  begin
    info.posx := trunc( iPos.x * converttosingle * invGridCount );
    info.posy := trunc( iPos.y * converttosingle * invGridCount );
