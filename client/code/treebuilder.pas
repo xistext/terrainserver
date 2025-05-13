@@ -9,7 +9,12 @@ uses
    CastleVectors, CastleTransform, CastleBehaviors, CastleScene,
    x3dNodes, x3dtools;
 
-type TTreeBuilder = class
+
+
+
+type TTreeShapeEdge = array of TVector2;
+
+     TTreeBuilder = class
 
         function BuildTree( aowner : TComponent;
                             var pos : TVector3;
@@ -129,7 +134,7 @@ function TTreeBuilder.initColorTriangleBillboard( aowner : TComponent;
    if texurl <> '' then
     begin
       Appearance.Texture := TImageTextureNode.Create;
- //     Appearance.AlphaMode := amOpaque;
+//      Appearance.AlphaMode := amOpaque;
       TImageTextureNode( Appearance.Texture ).SetUrl( ['castle-data:/testtree.png'] );
     end;
 
@@ -148,21 +153,19 @@ function TTreeBuilder.initColorTriangleBillboard( aowner : TComponent;
    result := g;
  end;
 
+var gtreeedge : TTreeShapeEdge;
+
 function TTreeBuilder.initTriangleFanBillboard( aowner : TComponent;
                                                 texurl : string;
                                                 height : single ) : TCastleTransform;
  var g : TCastleScene;
      b : TCastleBillBoard;
      Vertices : TVector3List;
-     Appearance : TAppearanceNode;
      Root : TX3dRootNode;
      Triangles : TTriangleFanSetNode;
      Shape : TShapeNode;
      TexCoords : TVector2List;
-     h2 : single;
-     trunkw : single;
-     trunkh : single;
-     maintreew : single;
+     h, h2 : single;
  begin
    Triangles := TTriangleFanSetNode.Create;
    Triangles.SetFanCount([9]);
@@ -172,30 +175,28 @@ function TTreeBuilder.initTriangleFanBillboard( aowner : TComponent;
    TexCoords.Count := 9;
    Vertices := TVector3List.Create;
    Vertices.Count := 9;
+   h := height;
    h2 := height * 0.3;
-   trunkw := height / 40;
-   trunkh := height / 6;
-   maintreew := height / 3;
 
-   Vertices[0] := vector3( 0, h2, 0 ); // center
-   vertices[1] := vector3( -trunkw, 0, 0 );
-   vertices[2] := vector3( trunkw, 0, 0 );
-   vertices[3] := vector3( trunkw, trunkh, 0 );
-   vertices[4] := vector3( maintreew, trunkh, 0 );
-   vertices[5] := vector3( 0, height, 0 );   // peak
-   vertices[6] := vector3( -maintreew, trunkh, 0 );
-   vertices[7] := vector3( -trunkw, trunkh, 0 );
-   vertices[8] := vector3( -trunkw, 0, 0 );
+   Vertices[0] := vector3( 0, h2, 0 ); // center of trangle fan
+   vertices[1] := vector3( -gtreeedge[0].x * h, gtreeedge[0].y * h, 0 );
+   vertices[2] := vector3( gtreeedge[0].x * h, gtreeedge[0].y * h, 0 );
+   vertices[3] := vector3( gtreeedge[1].x * h, gtreeedge[1].y * h, 0 );
+   vertices[4] := vector3( gtreeedge[2].x * h, gtreeedge[2].y * h, 0 );
+   vertices[5] := vector3( gtreeedge[3].x * h, gtreeedge[3].y * h, 0 );   // peak
+   vertices[6] := vector3( -gtreeedge[2].x * h, gtreeedge[2].y * h, 0 );
+   vertices[7] := vector3( -gtreeedge[1].x * h, gtreeedge[1].y * h, 0 );
+   vertices[8] := vector3( -gtreeedge[0].x * h, gtreeedge[0].y * h, 0 );
 
-   TexCoords.Items[0] := Vector2( 0.5, 0.3 ); // center
-   TexCoords.Items[1] := Vector2( 0.52, 0 );
-   TexCoords.Items[2] := Vector2( 0.48, 0 );
-   TexCoords.Items[3] := Vector2( 0.48, 0.02 );
-   TexCoords.Items[4] := Vector2( 0.25, 0.02 );
-   TexCoords.Items[5] := Vector2( 0.5, 1 ); // peak
-   TexCoords.Items[6] := Vector2( 0.75, 0.02 );
-   TexCoords.Items[7] := Vector2( 0.52, 0.02 );
-   TexCoords.Items[8] := Vector2( 0.52, 0 );
+   TexCoords.Items[0] := vector2( 0.5, 0.3 ); // center of trangle fan
+   TexCoords.Items[1] := Vector2( 0.5 + gtreeedge[0].x, gtreeedge[0].y ); // center of triangle fan
+   TexCoords.Items[2] := Vector2( 0.5 - gtreeedge[0].x, gtreeedge[0].y );
+   TexCoords.Items[3] := Vector2( 0.5 - gtreeedge[1].x, gtreeedge[1].y );
+   TexCoords.Items[4] := Vector2( 0.5 - gtreeedge[2].x, gtreeedge[2].y );
+   TexCoords.Items[5] := Vector2( 0.5 - gtreeedge[3].x, gtreeedge[3].y ); // peak
+   TexCoords.Items[6] := Vector2( 0.5 + gtreeedge[2].x, gtreeedge[2].y );
+   TexCoords.Items[7] := Vector2( 0.5 + gtreeedge[1].x, gtreeedge[1].y );
+   TexCoords.Items[8] := Vector2( 0.5 + gtreeedge[0].x, gtreeedge[0].y );
 
    TCoordinateNode( Triangles.coord ).SetPoint( Vertices );
    TTextureCoordinateNode( Triangles.TexCoord ).SetPoint( TexCoords );
@@ -204,18 +205,7 @@ function TTreeBuilder.initTriangleFanBillboard( aowner : TComponent;
 
    Shape := TShapeNode.Create;
    Shape.Geometry := Triangles;
-
-   Appearance := TAppearanceNode.create;
-   Appearance.Material := makePhysicalMaterial( vector3( 0.0, 0.5, 0 ));
-
-   if texurl <> '' then
-    begin
-      Appearance.Texture := TImageTextureNode.Create;
- //     Appearance.AlphaMode := amOpaque;
-      TImageTextureNode( Appearance.Texture ).SetUrl( ['castle-data:/testtree.png'] );
-    end;
-
-   Shape.Appearance := Appearance;
+   addtexture( Shape, 'castle-data:/testtreetexture.png' );
 
    Root := TX3DRootNode.Create;
    Root.AddChildren( Shape );
@@ -239,6 +229,9 @@ function TTreeBuilder.initTriangleFanBillboard( aowner : TComponent;
     texture triangle fan strip billboard, no shadows
     texture triangle fan strip billboard, shadows
     4 texture triangle fan strips crossed, shadows
+    extreme low lod solid model, shadows
+
+
   }
 
 
@@ -261,6 +254,11 @@ function TTreeBuilder.BuildTree( aowner : TComponent;
 
 
 initialization
+  { basic triangular 'pine' tree edge shape }
+  gtreeedge := [vector2(1/28, 0),   { trunk base }
+                vector2(1/28, 0.14), { trunk top }
+                vector2(0.33, 0.33),  { widest part of folliage }
+                vector2(0, 1 )];     { foliage top }
   GTreeBuilder := TTreeBuilder.create;
 finalization
   GTreeBuilder.Free;

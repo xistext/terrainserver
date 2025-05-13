@@ -222,8 +222,7 @@
         <UnitName Value="TerrainObjects"/>
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="7"/>
-        <TopLine Value="58"/>
-        <CursorPos X="33" Y="107"/>
+        <CursorPos X="37" Y="41"/>
         <UsageCount Value="12"/>
         <Loaded Value="True"/>
       </Unit29>
@@ -232,7 +231,7 @@
         <EditorIndex Value="8"/>
         <TopLine Value="750"/>
         <CursorPos X="11" Y="784"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="11"/>
         <Loaded Value="True"/>
       </Unit30>
     </Units>

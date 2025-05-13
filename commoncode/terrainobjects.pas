@@ -48,10 +48,12 @@ type ttileobj_rec  = packed record
 
     end;
 
-    { holds a list of TTileObj_info of the same }
+    { holds a list of TTileObj_info of the same type }
     TTileObjTypeList = class
+
        objtype  : dword;
        objlist  : array of TTileObj_Rec;
+
        constructor create( itype : dword = tileobjtype_undefined;
                            isize : dword = 1 );
        function addobj( const info : ttileobj_rec ) : integer;
