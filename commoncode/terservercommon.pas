@@ -21,6 +21,7 @@ const { message types the terrain server sends for different responses }
       msg_splat     = 6;
       msg_flora     = 7;
       msg_LODUpdate = 8;  { contains terrain + water + flora }
+      msg_trees     = 9;
 
       { tile status }
       tile_built    = 1;
@@ -37,6 +38,13 @@ type TMsgHeader = record
      TTileHeader = packed record
         TileX, TileY : smallint; { position index of tile within world }
         TileSz       : word;     { dimensions of tile in 'cells' }
+      end;
+
+     PTileObjHeader = ^TTileObjHeader;
+     TTileObjHeader = packed record
+        TileX, TileY : smallint; { position index of tile within world }
+        ObjType      : word;     { dimensions of tile in 'cells' }
+        ObjCount     : word;
       end;
 
 { encode splat data into an integer for the glsl }

@@ -15,6 +15,7 @@ const terrainpath = 'data\terrain\';
       waterext    = '.is.water';
       splatext    = '.is.splat';
       floraext    = '.is.flora';
+      treesext    = '.is.trees';
       rootpath = 'e:\terrainserver\';
 
       { defined tile layers }
@@ -134,6 +135,7 @@ type PTerTile = ^TTerTile;
         { server stores all and manages the data }
         Status : TTileStatus;
 
+        procedure InitializeWithDefaults;
         procedure UpdateTerrainGridFromSource( Source : TCastleTerrainNoise );
 
         { calculates distance between tiles in tile ix units }
@@ -148,6 +150,7 @@ type PTerTile = ^TTerTile;
         procedure Paint( const WorldPos : TVector2; EncodedColor : integer );
 
         function getWaterUpdateTime : single;
+        function GetTypeList( atype : dword; objlist : TTileObjList ) : boolean;
         {$endif}
         private
 
@@ -175,7 +178,6 @@ type PTerTile = ^TTerTile;
         property FloraGrid : TSingleGrid read getFloraGrid write setFloraGrid;
         property SplatGrid : TIntGrid read getSplatGrid;
 
-        function GetTypeList( atype : dword; objlist : TTileObjList ) : boolean;
       end;
 
 procedure sethxy( var h : TTileHeader; x, y : smallint; sz : word = 1 );
@@ -457,13 +459,13 @@ procedure TIntLayer.initgrid( igridsz : dword );
  end;
 
 //-------------------------------
+
 constructor TTerTile.create( const iInfo : TTileHeader );
  var layer : TDataLayer;
-     {$ifdef terserver}x, y : integer;{$endif}
  begin
    Info := iInfo;
    {$ifdef terserver}
-   SetLength( datalayers, 4 );
+   SetLength( datalayers, 4 ); { terrain + water + flora + splat }
    {$else}
    SetLength( datalayers, 3 ); { client doesn't store splatmap }
    {$endif}
@@ -478,18 +480,13 @@ constructor TTerTile.create( const iInfo : TTileHeader );
    datalayers[layer_flora] := layer;
 
    {$ifdef terserver}
-   ObjLists := TTileObjTypes.Create;
-
-   TSingleGrid( datalayers[layer_water].DataGrid ).setvalue( 0.1 );
-   TSingleGrid( datalayers[layer_flora].DataGrid ).setvalue( 0.01 );
-   { initialize splat layer with randomized subdued colors and textures }
    layer := TIntLayer.create( 60 );
-   for x := 0 to 59 do for y := 0 to 59 do
-      TIntGrid(layer.DataGrid).setvaluexy( x, y,
-          encodesplatcell( random(6), random(8), random(6), random(6), random(4), random(16)));
    datalayers[layer_splat] := layer;
+
+   ObjLists := TTileObjTypes.Create;
+   InitializeWithDefaults;
    status := 0;
-   WaterToFlowList_high.addtask( TWaterTask.create( self ));
+   WaterToFlowList_high.addtask( TWaterTask.create( self )); {! this shouldn't happen here}
    {$else}
    TerrainGraphics := nil;
    WaterGraphics := nil;
@@ -523,6 +520,31 @@ destructor TTerTile.destroy;
     end;
    {$endif}
  end;
+
+{$ifdef terserver}
+procedure TTerTile.InitializeWithDefaults;
+ var x ,y : integer;
+     layer : TDataLayer;
+     objlist : TTileObjList;
+     rec : ttileobj_rec;
+ begin
+   TSingleGrid( datalayers[layer_water].DataGrid ).setvalue( 0.1 );
+   TSingleGrid( datalayers[layer_flora].DataGrid ).setvalue( 0.01 );
+   { initialize splat layer with randomized subdued colors and textures }
+   layer := datalayers[layer_splat];
+   for x := 0 to 59 do for y := 0 to 59 do
+      TIntGrid(layer.DataGrid).setvaluexy( x, y,
+          encodesplatcell( random(6), random(8), random(6), random(6), random(4), random(16)));
+   { add 100 random trees }
+   objlist := objlists.getobjlisttype( tileobjtype_testtree );
+   for x := 0 to 99 do
+    begin
+      init_tileobj_rec( random(65536), random(65536), random(65536), random(65536), rec );
+      objlist.addobj( rec );
+    end;
+ end;
+{$endif}
+
 
 function zeropad( value : integer; len : integer  = 2 ) : string;
  begin
@@ -702,6 +724,26 @@ end;
      stream.Free;
    end;
 
+  procedure saveobjects( filename : string; objlists : TTileObjTypes );
+   var stream : TStream;
+       objlist : TTileObjList;
+       c : integer;
+   begin
+     { currently just saves trees }
+     if objlists.objlistfortype( tileobjtype_testtree, objlist ) then
+      begin
+        c := objlist.count;
+        if c > 0 then
+         begin
+           stream := TFileStream.Create(filename, fmCreate );
+           stream.Write( objlist.objtype, sizeof( integer ));
+           stream.Write( c, sizeof( integer ));
+           stream.Write( objlist.objlist[0], objlist.count * sizeof( ttileobj_rec ));
+           stream.Free;
+         end;
+      end;
+   end;
+
 
 function TTerTile.SaveToFile : boolean;
  var fileroot : string;
@@ -715,6 +757,7 @@ function TTerTile.SaveToFile : boolean;
       savegrid( fileroot + waterext, getWaterGrid );
       savegrid( fileroot + splatext, getSplatGrid );
       savegrid( fileroot + floraext, getFloraGrid );
+      saveobjects( fileroot + treesext, objlists );
 //      dbgwrite( 'Saved '+tileid+'.  ' );
       if dirty then
          status := status xor tile_dirty;
@@ -790,7 +833,6 @@ procedure TTerTile.Paint( const WorldPos : TVector2; EncodedColor : integer );
 //   LimitMax( SplatPosI.Y, MaxTileIx );
    SplatGrid.setvaluexy( SplatPosI.x, SplatPosI.Y, EncodedColor );
  end;
-{$endif}
 
 function TTerTile.gettypelist( atype : dword; objlist : TTileObjList ) : boolean;
  var i : integer;
@@ -799,6 +841,7 @@ function TTerTile.gettypelist( atype : dword; objlist : TTileObjList ) : boolean
    if result then
       objlist := TTileObjList( objlists.at(i));
  end;
+{$endif}
 
 function TTerTile.GetNeighbors : TTileNeighbors;
  { get tile's neighbors }

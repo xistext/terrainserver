@@ -72,6 +72,10 @@ type ttileobj_rec  = packed record
     { a list of TTileObjList sorted by objtype }
     TTileObjTypes = class( tsortedcollection ) { of TTileObjList }
 
+       function objlistfortype( itype : dword;
+                                var objlist : TTileObjList ) : boolean;
+       function getobjlisttype( itype : dword ) : TTileObjList;
+
        function keyof( item : pointer ) : pointer; override;
        function compare( item1, item2 : pointer ) : integer; override;
 
@@ -95,6 +99,28 @@ procedure init_tileobj_rec( iposx, iposy, iheight, iwidth : word;
  end;
 
 //----------------------------
+
+function TTileObjTypes.objlistfortype( itype : dword;
+                                       var objlist : TTileObjList ) : boolean;
+ var i : integer;
+ begin
+   result := search( @itype, i );
+   objlist := TTileObjList( at( i ));
+ end;
+
+function TTileObjTypes.getobjlisttype( itype : dword ) : TTileObjList;
+ { will get the list for the type if exists, or create it and and it to the tile }
+ var i : integer;
+ begin
+   if search( @itype, i ) then
+      result := TTileObjList( at( i ))
+   else
+    begin
+      result := TTileObjList.create( itype );
+      atinsert( i, result );
+    end;
+ end;
+
 
 function TTileObjTypes.keyof( item : pointer ) : pointer;
  begin

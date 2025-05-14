@@ -60,12 +60,12 @@ type TCommandCallback = procedure( msg : string ) of object;
 
     { parent class for tasks that work with tiles, doesn't do anything }
     TTask_Tile = class( TClientTaskItem )
-        Tile   : TTerTile;
-        LOD    : dword;
-        constructor create( const iClient : TTileClient;
-                            iTile : TTerTile;
-                            iLOD : dword );
-    end;
+       Tile   : TTerTile;
+       LOD    : dword;
+       constructor create( const iClient : TTileClient;
+                           iTile : TTerTile;
+                           iLOD : dword );
+     end;
 
     TTask_SendTile = class( TTask_Tile )
         function runtask : boolean; override;
@@ -84,6 +84,10 @@ type TCommandCallback = procedure( msg : string ) of object;
       end;
 
      TTask_SendLODUpdateTile = class( TTask_Tile )
+        function runtask : boolean; override;
+      end;
+
+     TTask_SendTrees = class( TTask_Tile )
         function runtask : boolean; override;
       end;
 
@@ -751,6 +755,34 @@ function TTask_SendSplat.RunTask : boolean;
 
 //---------------------------------
 
+function TTask_SendTrees.runtask : boolean;
+ var buffer : TIdBytes;
+     buflen : integer;
+     resultheader : TTileObjHeader;
+     objlist : TTileObjList;
+ begin
+   result := inherited Runtask;
+   if not result then
+      exit;
+   if tile.GetTypeList( tileobjtype_testtree, objlist ) then
+    begin
+      buflen := objlist.count;
+      setlength( buffer, buflen );
+      resultHeader.TileX := Tile.TileX;
+      resultHeader.TileY := Tile.TileY;
+      resultHeader.ObjType := tileobjtype_testtree;
+      resultHeader.ObjCount := buflen;
+      buflen := buflen * sizeof( ttileobj_rec );
+      { send message + tile headers }
+      client.SendClientMsgHeader( msg_Trees, buflen + sizeof( TTileObjHeader ));
+      client.Send( resultheader, sizeof( TTileObjHeader ));
+      client.Send( ObjList.ObjList[0], buflen );
+    end;
+ end;
+
+
+//---------------------------------
+
 function TTask_SaveTiles.runtask : boolean;
  var i : integer;
  begin
@@ -810,15 +842,12 @@ function TCmdList.executecommand( client : TTileClient;
       procedure BuildTerrainTile( tx, ty : integer; data : pointer );
        var Tile : TTerTile;
            thisLOD : integer;
-           lastLOD : integer;
-           subscription : TSubscription;
        begin
          with  titeraterec( data^ ) do
           begin
             thisLOD := trunc(sqrt( sqr( tx - CenterX ) + sqr( ty - CenterY )));
             if ( thisLOD <= Radius ) then
              begin
-               lastLOD := -1;
                if UpdateTile( tx, ty, tile ) then { if the tile was created then we have to add a task to build it }
                   GTaskList.AddTask( TTask_BuildTile.create( client, Tile, Params ) )
              end
@@ -1040,6 +1069,7 @@ function cmdPlantTree( client : TTileClient;
          parsesingle( params, wradius );
          parseint( params, wcount );
          localpos := Tile.WorldToLocal( worldpos );
+         objlist := nil;
          if Tile.GetTypeList( tileobjtype_testtree, objlist ) then
             for i := 0 to wcount - 1 do
              begin
@@ -1051,6 +1081,7 @@ function cmdPlantTree( client : TTileClient;
                                  random( 65536 ), random( 65536 ), objrec );
                objlist.addobj( objrec );
              end;
+         GTaskList.AddTask( TTask_SendTrees.create( client, Tile, 1 ) );
        end;
     end;
  end;
