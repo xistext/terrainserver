@@ -19,7 +19,8 @@ uses Classes, SysUtils,
   CastleViewport, CastleCameras, CastleTransform, CastleWindow, CastleImages,
   { terrain client }
   watergrid, WaterParams,
-  TerServerCommon, TerrainData, TerrainParams, TerrainShader, TerrainMesh,
+  TerServerCommon, TerrainData, TerrainParams, TerrainObjects,
+  TerrainShader, TerrainMesh,
   BaseMesh, TerrainClient, watercolor, layermarkup,
   TreeBuilder;
 
@@ -116,6 +117,9 @@ type
                                   tilegrid : TSingleGrid;
                                   watergrid : TSingleGrid;
                                   floragrid : TSingleGrid );
+    procedure HandleTreeReceived( const listinfo : TTileObjHeader;
+                                  objlist :  TTileObj_RecList );
+
     procedure ClickCreateClient(Sender: TObject);
     procedure ClickLayer(Sender: TObject);
     procedure ClickSend(Sender: TObject);
@@ -429,6 +433,19 @@ function CalculateWater( Tile : TTerTile ) : TTexGrid;
       inc( florah );
     end;
  end;
+
+ procedure TViewMain.HandleTreeReceived( const listinfo : TTileObjHeader;
+                                         objlist : TTileObj_RecList );
+  var tile : TTerTile;
+      ix : integer;
+  begin
+    if GTileList.findtile( listinfo.TileX, listinfo.tiley, ix ) then
+     begin
+       tile := TTerTile( GTileList.at( ix ));
+
+
+     end;
+  end;
 
 procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
                                         const tileinfo : TTileHeader;

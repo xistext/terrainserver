@@ -24,6 +24,8 @@ type ttileobj_rec  = packed record
         width   : word;
       end;
 
+    TTileObj_RecList = array of ttileobj_rec;
+
     { wraps a ttileobj_info to convert to world units and work with or subclass }
     TTileObject = class
 
@@ -53,7 +55,7 @@ type ttileobj_rec  = packed record
     TTileObjList = class
 
        objtype  : dword;
-       objlist  : array of TTileObj_Rec;
+       objlist  : TTileObj_RecList;
 
        constructor create( itype : dword = tileobjtype_undefined;
                            isize : dword = 1 );

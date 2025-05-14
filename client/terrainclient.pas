@@ -7,7 +7,7 @@ uses Classes, Generics.Collections,
      CastleClientServer, CastleTransform, CastleControls,
      CastleVectors, watergrid, CastleRenderOptions,
      TerrainData, BaseMesh, x3dnodes, TerrainShader,
-     TerrainMesh,
+     TerrainMesh, TerrainObjects,
      IDTCPClient;
 
 type
@@ -21,13 +21,21 @@ type
         floragrid : TSingleGrid;
       end;
 
+     TTreesRec = record
+        msgInfo  : TTileObjHeader;
+        ObjList  : TTileObj_RecList;
+      end;
+
      TSynchronisedTileList = {$ifdef FPC}specialize{$endif} TThreadList<TTileRec>;
+     TSynchronisedTreeList = {$ifdef FPC}specialize{$endif} TThreadList<TTreesRec>;
 
      TTileReceivedEvent = procedure( const msginfo : TMsgHeader;
                                      const tileinfo : TTileHeader;
                                            tilegrid : TSingleGrid;
                                            watergrid : TSingleGrid;
                                            floragrid : TSingleGrid) of object;
+     TTreeReceivedEvent = procedure( const listinfo : TTileObjHeader;
+                                     objlist :     TTileObj_RecList) of object;
 
      TTerClientThread = class( TCastleTCPClientThread )
         constructor Create(const AClient: TIdTCPClient;
@@ -38,18 +46,25 @@ type
                                  Buffer : TIdBytes ) : boolean; override;
         procedure SendTile( const msgheader : TMsgHeader;
                             const Buffer : TIdBytes; BufLen : dword );
+        procedure SendTrees( const msgheader : TMsgHeader;
+                             const Buffer : TIdBytes; BufLen : dword );
         public
         FOnTileReceived: TProcedureObject;
+        FOnTreeReceived: TProcedureObject;
         FTileList: TSynchronisedTileList;
+        FTreeList: TSynchronisedTreeList;
 
        end;
 
      TTerClient = class( TCastleTCPClient )
         FOnTileReceived : TTileReceivedEvent;
+        FOnTreeReceived : TTreeReceivedEvent;
         protected
         function CreateClientThread : TCastleTCPClientThread; override;
         procedure ClientOnTileReceived;
+        procedure ClientOnTreeReceived;
         property OnTileReceived: TTileReceivedEvent read FOnTileReceived write FOnTileReceived;
+        property OnTreeReceived: TTreeReceivedEvent read FOnTreeReceived write FOnTreeReceived;
         procedure Send(const AMessage: String); override;
 
       end;
@@ -100,12 +115,14 @@ constructor TTerClientThread.Create(const AClient: TIdTCPClient;
  begin
    inherited Create(AClient, AOnMessageReceived, AOnConnected, AOnDisconnected);
    FTileList := TSynchronisedTileList.Create;
+   FTreeList := TSynchronisedTreeList.Create;
  end;
 
 destructor TTerClientThread.Destroy;
  begin
    inherited;
    FTileList.Free;
+   FTreeList.Free;
  end;
 
 function TTerClientThread.ProcessMessage( const msgheader : TmsgHeader;
@@ -126,6 +143,8 @@ function TTerClientThread.ProcessMessage( const msgheader : TmsgHeader;
           case msgheader.msgtype of
               msg_Tile, msg_water, msg_flora, msg_LODUpdate, msg_splat, msg_flora  :
                  sendtile( msgheader, buffer, MsgLen + SizeOf( msgheader ));
+              msg_trees :
+                 sendtrees( msgheader, buffer, msglen + SizeOf( msgheader ));
           end;
         end;
      end;
@@ -165,6 +184,26 @@ procedure TTerClientThread.SendTile( const msgheader : TMsgHeader;
    Queue(FOnTileReceived);
  end;
 
+procedure TTerClientThread.SendTrees( const msgheader : TMsgHeader;
+                                      const Buffer : TIdBytes; BufLen : dword );
+ var treesrec : TTreesRec;
+     header : TTileObjHeader;
+     hdsz : integer;
+     bufpos : integer;
+     treelist : TTileObj_RecList;
+ begin
+   hdsz := sizeof(tmsgheader) + sizeof(ttileheader);
+   assert( BufLen > hdsz );
+   Move( buffer[sizeof(tmsgheader)], header, sizeof( TTileObjHeader ));
+   bufpos := hdsz;
+   SetLength( treelist, header.ObjCount );
+   Move( buffer[bufpos], treelist[0], header.ObjCount * SizeOf( ttileobj_rec ));
+   TreesRec.MsgInfo := Header;
+   TreesRec.ObjList := TreeList;
+   FTreeList.Add( TreesRec );
+   Queue(FOnTreeReceived );
+ end;
+
 //----------------------------------
 
 function TTerClient.CreateClientThread : TCastleTCPClientThread;
@@ -172,6 +211,7 @@ function TTerClient.CreateClientThread : TCastleTCPClientThread;
    FClientThread := TTerClientThread.Create(FClient,
      {$ifdef FPC}@{$endif} ClientOnMessageReceived, FOnConnected, FOnDisconnected);
    TTerClientThread( FClientThread ).FOnTileReceived := {$ifdef FPC}@{$endif} ClientOnTileReceived;
+   TTerClientThread( FClientThread ).FOnTreeReceived := {$ifdef FPC}@{$endif} ClientOnTreeReceived;
    Result := FClientThread;
  end;
 
@@ -191,6 +231,17 @@ procedure TTerClient.ClientOnTileReceived;
     end;
  end;
 
+procedure TTerClient.ClientOnTreeReceived;
+ var TreesRec : TTreesRec;
+ begin
+   if assigned( FOnTreeReceived ) and assigned( FClientThread ) then
+    begin
+      for TreesRec in TTerClientThread( FClientThread ).fTreeList.LockList do
+         FOnTreeReceived( treesrec.msginfo, treesrec.ObjList );
+      TTerClientThread( FClientThread ).fTreeList.Clear;
+      TTerClientThread( FClientThread ).fTreeList.UnlockList;
+    end;
+ end;
 
 procedure TTerClient.Send(const AMessage: String);
  begin
