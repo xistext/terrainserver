@@ -19,12 +19,6 @@ type TTreeShapeEdge = array of TVector2;
         function BuildTree( aowner : TComponent;
                             var pos : TVector3;
                             LOD : integer = 1 ) : TCastleTransform;
-        function init2Plane( aowner : TComponent;
-                             texurl : string;
-                             height : single ) : TCastleTransform;
-        function initPlaneBillboard( aowner : TComponent;
-                                     texurl : string;
-                                     height : single) : TCastleTransform;
         function initColorTriangleBillboard( aowner : TComponent;
                                              texurl : string;
                                              height : single ) : TCastleTransform;
@@ -37,53 +31,6 @@ type TTreeShapeEdge = array of TVector2;
 const GTreeBuilder : TTreeBuilder = nil;
 
 implementation
-
-function TTreeBuilder.initPlaneBillboard( aowner : TComponent;
-                                          texurl : string;
-                                          height : single ) : TCastleTransform;
-
- var g : TCastlePlane;
-     b : TCastleBillBoard;
- begin
-   g := TCastlePlane.Create(aowner);
-   g.DoubleSided := true;
-   g.Texture := 'castle-data:/testtree.png';
-   g.Size := Vector2( height, height);
-   g.Axis := 2;
-   g.translation := vector3( 0, g.Size.Y * 0.5, 0 );
-   result.add( g );
-   b  := TCastleBillboard.Create( g );
-   b.AxisOfRotation := vector3( 0, 1, 0 );
-   g.AddBehavior( b );
-
-   result := g;
- end;
-
-function TTreeBuilder.init2Plane( aowner : TComponent;
-                                  texurl : string;
-                                  height : single ) : TCastleTransform;
-
- var g : TCastlePlane;
-     b : TCastleBillBoard;
- begin
-   Result := TCastleTransform.Create( aowner );
-   g := TCastlePlane.Create(aowner);
-   g.DoubleSided := true;
-   g.Texture := 'castle-data:/testtree.png';
-   g.Size := Vector2( height, height);
-   g.Axis := 2;
-   g.translation := vector3( 0, g.Size.Y * 0.5, 0 );
-   result.add( g );
-
-   g := TCastlePlane.Create(aowner);
-   g.DoubleSided := true;
-   g.Texture := 'castle-data:/testtree.png';
-   g.Size := Vector2( height, height);
-   g.Axis := 2;
-   g.Direction := vector3( 1, 0, 0 );
-   g.translation := vector3( 0, g.Size.Y * 0.5, 0 );
-   result.add( g );
- end;
 
 function TTreeBuilder.initColorTriangleBillboard( aowner : TComponent;
                                                   texurl : string;

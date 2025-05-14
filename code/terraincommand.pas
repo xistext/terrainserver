@@ -1026,7 +1026,7 @@ function cmdPlantTree( client : TTileClient;
      tile : ttertile;
      i : integer;
      treex, treey : word;
-     objlist : TTileObjTypeList;
+     objlist : TTileObjList;
      objrec : TTileObj_Rec;
      sn, cs, r : single;
  begin
@@ -1041,7 +1041,6 @@ function cmdPlantTree( client : TTileClient;
          parseint( params, wcount );
          localpos := Tile.WorldToLocal( worldpos );
          if Tile.GetTypeList( tileobjtype_testtree, objlist ) then
-          begin
             for i := 0 to wcount - 1 do
              begin
                sincos( random * 2 * Pi, sn, cs );
@@ -1052,7 +1051,6 @@ function cmdPlantTree( client : TTileClient;
                                  random( 65536 ), random( 65536 ), objrec );
                objlist.addobj( objrec );
              end;
-          end;
        end;
     end;
  end;

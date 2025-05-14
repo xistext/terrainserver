@@ -416,6 +416,7 @@ function CalculateWater( Tile : TTerTile ) : TTexGrid;
    waterh := watergrid.ptrix(0);
    terrainh := Tile.TerrainGrid.ptrix(0);
    florah := Tile.FloraGrid.ptrix(0);
+   result := [];
    setlength( result, watergrid.wxh );
    for x := 0 to watergrid.wh - 1 do for y := 0 to watergrid.wh - 1 do
     begin

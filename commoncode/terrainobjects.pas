@@ -5,6 +5,7 @@ unit TerrainObjects;
 interface
 
 uses sysutils, classes,
+     collect,
      basetools,
      CastleVectors,
      TerrainParams;
@@ -49,7 +50,7 @@ type ttileobj_rec  = packed record
     end;
 
     { holds a list of TTileObj_info of the same type }
-    TTileObjTypeList = class
+    TTileObjList = class
 
        objtype  : dword;
        objlist  : array of TTileObj_Rec;
@@ -65,6 +66,14 @@ type ttileobj_rec  = packed record
        public
 
        property count : integer read getcount;
+
+     end;
+
+    { a list of TTileObjList sorted by objtype }
+    TTileObjTypes = class( tsortedcollection ) { of TTileObjList }
+
+       function keyof( item : pointer ) : pointer; override;
+       function compare( item1, item2 : pointer ) : integer; override;
 
      end;
 
@@ -87,7 +96,19 @@ procedure init_tileobj_rec( iposx, iposy, iheight, iwidth : word;
 
 //----------------------------
 
-constructor TTileObjTypeList.create( itype : dword = tileobjtype_undefined;
+function TTileObjTypes.keyof( item : pointer ) : pointer;
+ begin
+   result := @TTileObjList( item ).objtype;
+ end;
+
+function TTileObjTypes.compare( item1, item2 : pointer ) : integer;
+ begin
+   result := compareint( pinteger( item1 )^, pinteger( item2 )^ );
+ end;
+
+//----------------------------
+
+constructor TTileObjList.create( itype : dword = tileobjtype_undefined;
                                      isize : dword = 1 );
  begin
    inherited create;
@@ -96,12 +117,12 @@ constructor TTileObjTypeList.create( itype : dword = tileobjtype_undefined;
    fillchar( objlist[0], isize * sizeof( ttileobj_rec  ), 0 );
  end;
 
-function TTileObjTypeList.getcount : integer;
+function TTileObjList.getcount : integer;
  begin
    result := length( objlist );
  end;
 
-function TTileObjTypeList.addobj( const info : ttileobj_rec ) : integer;
+function TTileObjList.addobj( const info : ttileobj_rec ) : integer;
  { returns handle, its index in objlist }
  var c : integer;
  begin

@@ -199,8 +199,11 @@ var sz : single;
       UpdateSize;
       sz := GDefGridCellCount * GDefGridStep;
     end;
+   renderoptions.WholeSceneManifold := true;
    RenderOptions.WireframeEffect := weSilhouette;
-
+   CastShadowVolumes := true;
+   CastShadows := true;
+   ReceiveShadowVolumes := true;
 end;
 
 function TTerrainMesh.offset : TVector2;
@@ -396,8 +399,6 @@ begin
 end;
 
    function GetInputCoord3D(const X, Z: Single): TVector3;
-   var
-     InputCoord, IgnoredTexCoord: TVector2;
    begin
      GTileList.WaterAtPos( vector2( x, z ), result.Y );
      Result.X := X;
@@ -435,6 +436,9 @@ constructor TWaterMesh.create2( aowner : TComponent;
  begin
    inherited;
    RenderOptions.WireframeEffect := weNormal;
+   CastShadowVolumes := false;
+   CastShadows := false;
+   ReceiveShadowVolumes := false;
  end;
 
 procedure TWaterMesh.UpdateSize;

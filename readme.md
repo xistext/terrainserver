@@ -51,9 +51,6 @@ If you have too many tiles built in the server, water flow and update will be
    about 10secs between flow updates. <br>
 There are slight gaps in the water mesh between tiles, especially when the
   world is big, since they don't all update at the same time. <br>
-Gaps on the edge of freshly generated tiles that are built before their neighbors
-  have been generated.  The gaps will go away when the tile updates because you
-  moved far to trigger a rebuild. <br>
 If you stop flow on the server, or delete all the tiles which also stops flow,
   you may not be able to restart flow without restarting the server application.<br>
 Halting the client or server in the middle of a message may cause the ide to
