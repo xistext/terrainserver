@@ -8,6 +8,7 @@ uses Classes, SysUtils, Collect,
      CastleClientServer, CastleVectors, castleterrain,
      TerServerCommon,
      ClientList,
+     basetile,
      TerrainParams, TerrainData, TerrainObjects,
      watergrid, waterflow, waterparams, watercolor;
 

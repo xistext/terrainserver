@@ -19,6 +19,8 @@ type TLockingCollection = class( tsortedcollection )
         function keyof( item : pointer ) : pointer; override;
         function compare( item1, item2 : pointer ) : integer; override;
         function CalculateTileOffset( Pos : TVector2 ) : TPoint;
+        function findtile( x, y : integer;
+                           var ix : integer ) : boolean;
       end;
 
      tbasetile = class
@@ -33,7 +35,20 @@ type TLockingCollection = class( tsortedcollection )
         property GridCellCount : word read Info.TileSz;
       end;
 
+procedure sethxy( var h : TTileHeader; x, y : smallint; sz : word = 1 ); inline;
+
 implementation
+
+procedure sethxy( var h : TTileHeader; x, y : smallint; sz : word = 1 ); inline;
+ begin
+   with h do
+    begin
+      tilex := x;
+      tiley := y;
+      tilesz := sz;
+    end;
+ end;
+
 
 constructor TLockingCollection.Create;
  begin
@@ -98,6 +113,15 @@ function TBaseTileList.CalculateTileOffset( Pos : TVector2 ) : TPoint;
    sizefactor := 1/tilesz;
    Result := Point( floor( Pos.X * SizeFactor + 0.5 ), floor( Pos.Y * SizeFactor + 0.5 ));
  end;
+
+function TBaseTileList.findtile( x, y : integer;
+                                 var ix : integer ) : boolean;
+ var h : ttileheader;
+ begin
+   sethxy( h, x, y );
+   result := search( @h, ix );
+ end;
+
 
 //----------------------------------
 

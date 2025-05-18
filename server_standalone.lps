@@ -87,8 +87,10 @@
       <Unit11>
         <Filename Value="code\terraincommand.pas"/>
         <UnitName Value="TerrainCommand"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
-        <CursorPos X="31" Y="1081"/>
+        <CursorPos X="15" Y="11"/>
+        <FoldState Value=" TL Hte81n"/>
         <UsageCount Value="101"/>
         <Loaded Value="True"/>
       </Unit11>
@@ -103,10 +105,9 @@
       <Unit13>
         <Filename Value="commoncode\terraindata.pas"/>
         <UnitName Value="TerrainData"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="5"/>
-        <TopLine Value="17"/>
-        <CursorPos Y="53"/>
+        <TopLine Value="20"/>
+        <CursorPos Y="56"/>
         <UsageCount Value="142"/>
         <Loaded Value="True"/>
       </Unit13>
@@ -217,7 +218,7 @@
         <EditorIndex Value="9"/>
         <TopLine Value="52"/>
         <CursorPos X="14" Y="67"/>
-        <UsageCount Value="90"/>
+        <UsageCount Value="91"/>
         <Loaded Value="True"/>
       </Unit29>
       <Unit30>
@@ -317,7 +318,8 @@
       <Unit44>
         <Filename Value="commoncode\basetile.pas"/>
         <EditorIndex Value="6"/>
-        <CursorPos X="39" Y="5"/>
+        <TopLine Value="56"/>
+        <CursorPos X="19" Y="118"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
       </Unit44>
@@ -325,121 +327,121 @@
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
         <Filename Value="commoncode\terraindata.pas"/>
-        <Caret Line="6" Column="51"/>
+        <Caret Line="11" Column="9"/>
       </Position1>
       <Position2>
         <Filename Value="commoncode\terraindata.pas"/>
-        <Caret Line="770" Column="55" TopLine="720"/>
+        <Caret Line="3" Column="56"/>
       </Position2>
       <Position3>
         <Filename Value="commoncode\terraindata.pas"/>
-        <Caret Line="205" Column="25" TopLine="145"/>
+        <Caret Line="39" Column="43"/>
       </Position3>
       <Position4>
-        <Filename Value="commoncode\terrainobjects.pas"/>
-        <Caret Line="138"/>
+        <Filename Value="commoncode\terraindata.pas"/>
       </Position4>
       <Position5>
         <Filename Value="commoncode\terraindata.pas"/>
-        <Caret Line="531" Column="18" TopLine="481"/>
+        <Caret Line="81" Column="50" TopLine="73"/>
       </Position5>
       <Position6>
         <Filename Value="commoncode\terraindata.pas"/>
-        <Caret Line="11" Column="9"/>
+        <Caret Line="98" Column="58" TopLine="94"/>
       </Position6>
       <Position7>
         <Filename Value="commoncode\terraindata.pas"/>
-        <Caret Line="3" Column="56"/>
+        <Caret Column="71"/>
       </Position7>
       <Position8>
         <Filename Value="commoncode\terraindata.pas"/>
-        <Caret Line="39" Column="43"/>
+        <Caret Line="104" TopLine="210"/>
       </Position8>
       <Position9>
         <Filename Value="commoncode\terraindata.pas"/>
+        <Caret Line="117" Column="22" TopLine="76"/>
       </Position9>
       <Position10>
-        <Filename Value="commoncode\terraindata.pas"/>
-        <Caret Line="81" Column="50" TopLine="73"/>
+        <Filename Value="commoncode\terservercommon.pas"/>
+        <Caret Line="11" Column="6"/>
       </Position10>
       <Position11>
         <Filename Value="commoncode\terraindata.pas"/>
-        <Caret Line="98" Column="58" TopLine="94"/>
+        <Caret Line="116" TopLine="79"/>
       </Position11>
       <Position12>
         <Filename Value="commoncode\terraindata.pas"/>
-        <Caret Column="71"/>
+        <Caret Line="418" Column="4" TopLine="382"/>
       </Position12>
       <Position13>
         <Filename Value="commoncode\terraindata.pas"/>
-        <Caret Line="104" TopLine="210"/>
+        <Caret Line="582" Column="4" TopLine="546"/>
       </Position13>
       <Position14>
         <Filename Value="commoncode\terraindata.pas"/>
-        <Caret Line="117" Column="22" TopLine="76"/>
+        <Caret Column="27"/>
       </Position14>
       <Position15>
-        <Filename Value="commoncode\terservercommon.pas"/>
-        <Caret Line="11" Column="6"/>
+        <Filename Value="commoncode\terraindata.pas"/>
+        <Caret Line="582" Column="20" TopLine="517"/>
       </Position15>
       <Position16>
         <Filename Value="commoncode\terraindata.pas"/>
-        <Caret Line="116" TopLine="79"/>
+        <Caret Line="440" Column="44" TopLine="414"/>
       </Position16>
       <Position17>
         <Filename Value="commoncode\terraindata.pas"/>
-        <Caret Line="418" Column="4" TopLine="382"/>
+        <Caret Line="77" Column="38" TopLine="37"/>
       </Position17>
       <Position18>
         <Filename Value="commoncode\terraindata.pas"/>
-        <Caret Line="582" Column="4" TopLine="546"/>
       </Position18>
       <Position19>
         <Filename Value="commoncode\terraindata.pas"/>
-        <Caret Column="27"/>
+        <Caret Line="7" Column="50"/>
       </Position19>
       <Position20>
         <Filename Value="commoncode\terraindata.pas"/>
-        <Caret Line="582" Column="20" TopLine="517"/>
+        <Caret Line="26" Column="24"/>
       </Position20>
       <Position21>
         <Filename Value="commoncode\terraindata.pas"/>
-        <Caret Line="440" Column="44" TopLine="414"/>
+        <Caret Line="11" Column="14" TopLine="10"/>
       </Position21>
       <Position22>
         <Filename Value="commoncode\terraindata.pas"/>
-        <Caret Line="77" Column="38" TopLine="37"/>
+        <Caret Line="51" Column="61" TopLine="10"/>
       </Position22>
       <Position23>
         <Filename Value="commoncode\terraindata.pas"/>
+        <Caret Line="53" Column="37" TopLine="10"/>
       </Position23>
       <Position24>
-        <Filename Value="commoncode\terraindata.pas"/>
-        <Caret Line="7" Column="50"/>
+        <Filename Value="commoncode\basetile.pas"/>
+        <Caret Line="21" Column="18"/>
       </Position24>
       <Position25>
-        <Filename Value="commoncode\terraindata.pas"/>
-        <Caret Line="26" Column="24"/>
+        <Filename Value="commoncode\basetile.pas"/>
+        <Caret Line="5" Column="39"/>
       </Position25>
       <Position26>
         <Filename Value="commoncode\terraindata.pas"/>
-        <Caret Line="11" Column="14" TopLine="10"/>
+        <Caret Line="37" Column="23" TopLine="17"/>
       </Position26>
       <Position27>
         <Filename Value="commoncode\terraindata.pas"/>
-        <Caret Line="51" Column="61" TopLine="10"/>
+        <Caret Line="53" Column="26" TopLine="17"/>
       </Position27>
       <Position28>
         <Filename Value="commoncode\terraindata.pas"/>
-        <Caret Line="53" Column="37" TopLine="10"/>
+        <Caret Line="56" Column="26" TopLine="17"/>
       </Position28>
       <Position29>
         <Filename Value="commoncode\basetile.pas"/>
-        <Caret Line="21" Column="18"/>
+        <Caret Line="118" Column="19" TopLine="56"/>
       </Position29>
       <Position30>
-        <Filename Value="commoncode\basetile.pas"/>
-        <Caret Line="5" Column="39"/>
+        <Filename Value="commoncode\terraindata.pas"/>
+        <Caret Line="56" TopLine="20"/>
       </Position30>
     </JumpHistory>
     <RunParams>
@@ -461,7 +463,7 @@
         <WatchScope Value="wpsLocal"/>
         <WatchKind Value="wpkWrite"/>
         <Source Value="code\terraincommand.pas"/>
-        <Line Value="703"/>
+        <Line Value="704"/>
       </Item>
     </BreakPoints>
   </Debugging>

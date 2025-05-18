@@ -53,9 +53,6 @@ type TTileStatus = byte;
         function findtileatlocation( const Pos : TVector2;
                                      var tile : TTerTile ) : boolean;
 
-        function findtile( x, y : integer;
-                           var ix : integer ) : boolean;
-
         procedure iteratetiles( tileproc : TIterateTilesProc; data : pointer );
 
         function ElevationAtPos( const Pos : TVector2;
@@ -156,26 +153,12 @@ type TTileStatus = byte;
 
       end;
 
-procedure sethxy( var h : TTileHeader; x, y : smallint; sz : word = 1 );
-
 const GTileList : TTileList = nil;
 
 implementation
 {$ifdef terserver}
 uses waterflow;
 {$endif}
-
-procedure sethxy( var h : TTileHeader; x, y : smallint; sz : word = 1 ); inline;
- begin
-   with h do
-    begin
-      tilex := x;
-      tiley := y;
-      tilesz := sz;
-    end;
- end;
-
-//----------------------------------
 
 procedure TTileList.iteratetiles( tileproc : TIterateTilesProc;
                                   data : pointer );
@@ -193,14 +176,6 @@ procedure TTileList.iteratetiles( tileproc : TIterateTilesProc;
       else
          inc( i );
     end;
- end;
-
-function TTileList.findtile( x, y : integer;
-                             var ix : integer ) : boolean;
- var h : ttileheader;
- begin
-   sethxy( h, x, y );
-   result := search( @h, ix );
  end;
 
 function TTileList.tilexy( x, y : integer ) : TTerTile;
