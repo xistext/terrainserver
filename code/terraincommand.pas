@@ -1078,9 +1078,10 @@ function cmdPlantTree( client : TTileClient;
                r := random * wradius;
                treex := trunc(( localpos.x + cs * r ));
                treey := trunc(( localpos.y + sn * r ));
-               init_tileobj_rec( treex, treey,
+               assert( false, 'use geobase' );
+(*               init_tileobj_rec( treex, treey,
                                  random( 65536 ), random( 65536 ), objrec );
-               objlist.addobj( objrec );
+               objlist.addobj( objrec );*)
              end;
          GTaskList.AddTask( TTask_SendTrees.create( client, Tile, 1 ) );
        end;

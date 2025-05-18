@@ -3,7 +3,7 @@ unit terrainparams;
 interface
 
 uses classes, collect, sysutils,
-     castleterrain,
+     castleterrain, castlevectors,
      terservercommon;
 
 const buildradius : integer = 4; //4
@@ -44,6 +44,7 @@ type TTerrainNoiseParams = record
       end;
 
 function divofLOD( LOD : dword ) : dword;
+function worldtotile( wpos : tvector2 ) : tvector2;
 
 const TerrainTypes : TTerrainTypeList = nil;
 
@@ -68,6 +69,15 @@ function divofLOD( LOD : dword ) : dword;
       13 : result := 30;
       14 : result := 40;
     end;
+ end;
+
+function worldtotile( wpos : tvector2 ) : tvector2;
+ var sizefactor : single;
+     tilesz : single;
+ begin
+   tilesz := GDefGridCellCount * GDefGridStep;
+   sizefactor := 1/tilesz;
+   result := vector2( frac( wPos.X * SizeFactor + 0.5 ), frac( wPos.Y * SizeFactor + 0.5 ));
  end;
 
 //-----------------------------

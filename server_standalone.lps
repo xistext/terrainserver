@@ -4,7 +4,7 @@
     <PathDelim Value="\"/>
     <Version Value="12"/>
     <BuildModes Active="Debug"/>
-    <Units Count="43">
+    <Units Count="45">
       <Unit0>
         <Filename Value="server_standalone.dpr"/>
         <IsPartOfProject Value="True"/>
@@ -53,25 +53,25 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="1669"/>
         <CursorPos Y="1703"/>
-        <UsageCount Value="4"/>
+        <UsageCount Value="3"/>
       </Unit6>
       <Unit7>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\System\IdGlobal.pas"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="60" Y="3090"/>
-        <UsageCount Value="83"/>
+        <UsageCount Value="82"/>
       </Unit7>
       <Unit8>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\System\IdWinsock2.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="6033"/>
         <CursorPos Y="6067"/>
-        <UsageCount Value="12"/>
+        <UsageCount Value="11"/>
       </Unit8>
       <Unit9>
         <Filename Value="commoncode\terservercommon.pas"/>
         <EditorIndex Value="3"/>
-        <CursorPos X="20" Y="44"/>
+        <CursorPos X="6" Y="11"/>
         <UsageCount Value="110"/>
         <Loaded Value="True"/>
       </Unit9>
@@ -88,8 +88,7 @@
         <Filename Value="code\terraincommand.pas"/>
         <UnitName Value="TerrainCommand"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="719"/>
-        <CursorPos X="24" Y="759"/>
+        <CursorPos X="31" Y="1081"/>
         <UsageCount Value="101"/>
         <Loaded Value="True"/>
       </Unit11>
@@ -99,21 +98,24 @@
         <EditorIndex Value="-1"/>
         <WindowIndex Value="-1"/>
         <CursorPos Y="3"/>
-        <UsageCount Value="2"/>
+        <UsageCount Value="1"/>
       </Unit12>
       <Unit13>
         <Filename Value="commoncode\terraindata.pas"/>
         <UnitName Value="TerrainData"/>
-        <EditorIndex Value="6"/>
-        <CursorPos X="21" Y="866"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="17"/>
+        <CursorPos Y="53"/>
         <UsageCount Value="142"/>
         <Loaded Value="True"/>
       </Unit13>
       <Unit14>
         <Filename Value="commoncode\terrainparams.pas"/>
-        <EditorIndex Value="-1"/>
-        <CursorPos X="2" Y="13"/>
+        <EditorIndex Value="7"/>
+        <CursorPos X="75" Y="21"/>
         <UsageCount Value="111"/>
+        <Loaded Value="True"/>
       </Unit14>
       <Unit15>
         <Filename Value="commoncode\watergrid.pas"/>
@@ -128,7 +130,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="21"/>
         <CursorPos Y="74"/>
-        <UsageCount Value="27"/>
+        <UsageCount Value="26"/>
       </Unit16>
       <Unit17>
         <Filename Value="commoncode\collect.pas"/>
@@ -136,144 +138,141 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="493"/>
         <CursorPos Y="543"/>
-        <UsageCount Value="47"/>
+        <UsageCount Value="45"/>
       </Unit17>
       <Unit18>
         <Filename Value="E:\wyrdforest\code\water_low.pas"/>
         <EditorIndex Value="-1"/>
         <CursorPos Y="132"/>
-        <UsageCount Value="30"/>
+        <UsageCount Value="29"/>
       </Unit18>
       <Unit19>
         <Filename Value="code\waterflow.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="439"/>
         <CursorPos X="70" Y="446"/>
-        <UsageCount Value="99"/>
+        <UsageCount Value="98"/>
       </Unit19>
       <Unit20>
         <Filename Value="commoncode\livetime.pas"/>
         <EditorIndex Value="-1"/>
         <CursorPos Y="27"/>
-        <UsageCount Value="5"/>
+        <UsageCount Value="4"/>
       </Unit20>
       <Unit21>
         <Filename Value="commoncode\waterparams.pas"/>
-        <EditorIndex Value="5"/>
+        <EditorIndex Value="-1"/>
         <UsageCount Value="116"/>
-        <Loaded Value="True"/>
       </Unit21>
       <Unit22>
         <Filename Value="commoncode\basetools.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="484"/>
         <CursorPos Y="549"/>
-        <UsageCount Value="134"/>
+        <UsageCount Value="133"/>
       </Unit22>
       <Unit23>
         <Filename Value="code\clientlist.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="111"/>
         <CursorPos X="65" Y="128"/>
-        <UsageCount Value="103"/>
+        <UsageCount Value="102"/>
       </Unit23>
       <Unit24>
         <Filename Value="client\code\terrainmesh.pas"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="79" Y="6"/>
-        <UsageCount Value="37"/>
+        <UsageCount Value="36"/>
       </Unit24>
       <Unit25>
         <Filename Value="E:\cge\src\base\castlelog.pas"/>
         <UnitName Value="CastleLog"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="106" Y="14"/>
-        <UsageCount Value="28"/>
+        <UsageCount Value="27"/>
       </Unit25>
       <Unit26>
         <Filename Value="C:\lazarus\fpc\3.2.2\source\rtl\objpas\classes\classesh.inc"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="3" Y="298"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="7"/>
       </Unit26>
       <Unit27>
         <Filename Value="commoncode\terrainobjects.pas"/>
         <UnitName Value="TerrainObjects"/>
-        <EditorIndex Value="7"/>
-        <CursorPos X="14" Y="11"/>
+        <EditorIndex Value="8"/>
+        <CursorPos Y="138"/>
         <UsageCount Value="104"/>
         <Loaded Value="True"/>
       </Unit27>
       <Unit28>
         <Filename Value="C:\lazarus\fpc\3.2.2\source\rtl\inc\systemh.inc"/>
-        <EditorIndex Value="9"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="71"/>
         <CursorPos X="3" Y="108"/>
         <UsageCount Value="12"/>
-        <Loaded Value="True"/>
       </Unit28>
       <Unit29>
         <Filename Value="code\GeoBase.pas"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="8"/>
-        <TopLine Value="97"/>
-        <CursorPos Y="170"/>
-        <UsageCount Value="86"/>
+        <EditorIndex Value="9"/>
+        <TopLine Value="52"/>
+        <CursorPos X="14" Y="67"/>
+        <UsageCount Value="90"/>
         <Loaded Value="True"/>
       </Unit29>
       <Unit30>
         <Filename Value="commoncode\fracquad.pas"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="16" Y="52"/>
-        <UsageCount Value="83"/>
+        <UsageCount Value="81"/>
       </Unit30>
       <Unit31>
         <Filename Value="commoncode\BitCalc.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="285"/>
         <CursorPos Y="269"/>
-        <UsageCount Value="31"/>
+        <UsageCount Value="29"/>
       </Unit31>
       <Unit32>
         <Filename Value="E:\cge\src\files\castlefilesutils.pas"/>
         <UnitName Value="CastleFilesUtils"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="33" Y="144"/>
-        <UsageCount Value="28"/>
+        <UsageCount Value="27"/>
       </Unit32>
       <Unit33>
         <Filename Value="C:\lazarus\fpc\3.2.2\source\rtl\objpas\sysutils\filutilh.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="112"/>
         <CursorPos X="18" Y="151"/>
-        <UsageCount Value="28"/>
+        <UsageCount Value="27"/>
       </Unit33>
       <Unit34>
         <Filename Value="E:\cge\src\base\castleapplicationproperties.pas"/>
         <UnitName Value="CastleApplicationProperties"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="86" Y="30"/>
-        <UsageCount Value="27"/>
+        <UsageCount Value="26"/>
       </Unit34>
       <Unit35>
         <Filename Value="C:\lazarus\fpc\3.2.2\source\rtl\win32\classes.pp"/>
         <UnitName Value="Classes"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="18" Y="7"/>
-        <UsageCount Value="26"/>
+        <UsageCount Value="25"/>
       </Unit35>
       <Unit36>
         <Filename Value="E:\cge\src\base\castlemessaging.pas"/>
         <UnitName Value="CastleMessaging"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="70" Y="44"/>
-        <UsageCount Value="27"/>
+        <UsageCount Value="26"/>
       </Unit36>
       <Unit37>
         <Filename Value="E:\cge\src\base\castleutils_struct_list.inc"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="59" Y="27"/>
-        <UsageCount Value="27"/>
+        <UsageCount Value="26"/>
       </Unit37>
       <Unit38>
         <Filename Value="C:\lazarus\fpc\3.2.2\source\packages\rtl-generics\src\generics.collections.pas"/>
@@ -281,13 +280,13 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="260"/>
         <CursorPos X="3" Y="225"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="7"/>
       </Unit38>
       <Unit39>
         <Filename Value="commoncode\KeyValuePairs.pas"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="9" Y="8"/>
-        <UsageCount Value="25"/>
+        <UsageCount Value="24"/>
       </Unit39>
       <Unit40>
         <Filename Value="E:\CODE\elib\collect.pas"/>
@@ -295,142 +294,152 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="522"/>
         <CursorPos Y="581"/>
-        <UsageCount Value="6"/>
+        <UsageCount Value="5"/>
       </Unit40>
       <Unit41>
         <Filename Value="code\KeyValuePairs.pas"/>
         <EditorIndex Value="-1"/>
-        <CursorPos X="48" Y="29"/>
+        <CursorPos X="15" Y="9"/>
         <UsageCount Value="12"/>
       </Unit41>
       <Unit42>
         <Filename Value="code\BaseFile.pas"/>
-        <EditorIndex Value="10"/>
-        <CursorPos X="38" Y="6"/>
-        <UsageCount Value="11"/>
-        <Loaded Value="True"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="34" Y="36"/>
+        <UsageCount Value="15"/>
       </Unit42>
+      <Unit43>
+        <Filename Value="commoncode\terrainbase.pas"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="14"/>
+        <UsageCount Value="14"/>
+      </Unit43>
+      <Unit44>
+        <Filename Value="commoncode\basetile.pas"/>
+        <EditorIndex Value="6"/>
+        <CursorPos X="39" Y="5"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit44>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="code\GeoBase.pas"/>
-        <Caret Line="105" Column="26" TopLine="32"/>
+        <Filename Value="commoncode\terraindata.pas"/>
+        <Caret Line="6" Column="51"/>
       </Position1>
       <Position2>
-        <Filename Value="code\GeoBase.pas"/>
-        <Caret Line="89" Column="16" TopLine="32"/>
+        <Filename Value="commoncode\terraindata.pas"/>
+        <Caret Line="770" Column="55" TopLine="720"/>
       </Position2>
       <Position3>
-        <Filename Value="code\GeoBase.pas"/>
-        <Caret Line="94" Column="32" TopLine="63"/>
+        <Filename Value="commoncode\terraindata.pas"/>
+        <Caret Line="205" Column="25" TopLine="145"/>
       </Position3>
       <Position4>
-        <Filename Value="code\GeoBase.pas"/>
-        <Caret Line="22" Column="26"/>
+        <Filename Value="commoncode\terrainobjects.pas"/>
+        <Caret Line="138"/>
       </Position4>
       <Position5>
-        <Filename Value="code\GeoBase.pas"/>
-        <Caret Line="63" Column="38" TopLine="25"/>
+        <Filename Value="commoncode\terraindata.pas"/>
+        <Caret Line="531" Column="18" TopLine="481"/>
       </Position5>
       <Position6>
-        <Filename Value="code\GeoBase.pas"/>
-        <Caret Line="74" Column="66" TopLine="38"/>
+        <Filename Value="commoncode\terraindata.pas"/>
+        <Caret Line="11" Column="9"/>
       </Position6>
       <Position7>
-        <Filename Value="code\GeoBase.pas"/>
-        <Caret Line="102" Column="31" TopLine="63"/>
+        <Filename Value="commoncode\terraindata.pas"/>
+        <Caret Line="3" Column="56"/>
       </Position7>
       <Position8>
-        <Filename Value="code\GeoBase.pas"/>
-        <Caret Line="46" Column="21" TopLine="2"/>
+        <Filename Value="commoncode\terraindata.pas"/>
+        <Caret Line="39" Column="43"/>
       </Position8>
       <Position9>
-        <Filename Value="code\GeoBase.pas"/>
-        <Caret Line="55" Column="24" TopLine="2"/>
+        <Filename Value="commoncode\terraindata.pas"/>
       </Position9>
       <Position10>
-        <Filename Value="code\GeoBase.pas"/>
-        <Caret Line="128" TopLine="64"/>
+        <Filename Value="commoncode\terraindata.pas"/>
+        <Caret Line="81" Column="50" TopLine="73"/>
       </Position10>
       <Position11>
-        <Filename Value="code\GeoBase.pas"/>
-        <Caret Line="157" TopLine="84"/>
+        <Filename Value="commoncode\terraindata.pas"/>
+        <Caret Line="98" Column="58" TopLine="94"/>
       </Position11>
       <Position12>
-        <Filename Value="code\GeoBase.pas"/>
-        <Caret Line="58" Column="9"/>
+        <Filename Value="commoncode\terraindata.pas"/>
+        <Caret Column="71"/>
       </Position12>
       <Position13>
-        <Filename Value="code\GeoBase.pas"/>
-        <Caret Line="62"/>
+        <Filename Value="commoncode\terraindata.pas"/>
+        <Caret Line="104" TopLine="210"/>
       </Position13>
       <Position14>
-        <Filename Value="code\GeoBase.pas"/>
-        <Caret Line="129" Column="33" TopLine="93"/>
+        <Filename Value="commoncode\terraindata.pas"/>
+        <Caret Line="117" Column="22" TopLine="76"/>
       </Position14>
       <Position15>
-        <Filename Value="code\GeoBase.pas"/>
-        <Caret Line="142" Column="68" TopLine="105"/>
+        <Filename Value="commoncode\terservercommon.pas"/>
+        <Caret Line="11" Column="6"/>
       </Position15>
       <Position16>
-        <Filename Value="code\GeoBase.pas"/>
-        <Caret Line="154" Column="13" TopLine="117"/>
+        <Filename Value="commoncode\terraindata.pas"/>
+        <Caret Line="116" TopLine="79"/>
       </Position16>
       <Position17>
-        <Filename Value="code\GeoBase.pas"/>
-        <Caret Line="27" Column="9" TopLine="117"/>
+        <Filename Value="commoncode\terraindata.pas"/>
+        <Caret Line="418" Column="4" TopLine="382"/>
       </Position17>
       <Position18>
-        <Filename Value="code\GeoBase.pas"/>
-        <Caret Line="154" Column="24" TopLine="117"/>
+        <Filename Value="commoncode\terraindata.pas"/>
+        <Caret Line="582" Column="4" TopLine="546"/>
       </Position18>
       <Position19>
-        <Filename Value="code\GeoBase.pas"/>
-        <Caret Line="31" Column="50"/>
+        <Filename Value="commoncode\terraindata.pas"/>
+        <Caret Column="27"/>
       </Position19>
       <Position20>
-        <Filename Value="code\GeoBase.pas"/>
-        <Caret Line="108" Column="28"/>
+        <Filename Value="commoncode\terraindata.pas"/>
+        <Caret Line="582" Column="20" TopLine="517"/>
       </Position20>
       <Position21>
-        <Filename Value="code\GeoBase.pas"/>
-        <Caret Line="209" TopLine="140"/>
+        <Filename Value="commoncode\terraindata.pas"/>
+        <Caret Line="440" Column="44" TopLine="414"/>
       </Position21>
       <Position22>
-        <Filename Value="code\GeoBase.pas"/>
-        <Caret Line="46"/>
+        <Filename Value="commoncode\terraindata.pas"/>
+        <Caret Line="77" Column="38" TopLine="37"/>
       </Position22>
       <Position23>
-        <Filename Value="code\GeoBase.pas"/>
-        <Caret Line="67" TopLine="31"/>
+        <Filename Value="commoncode\terraindata.pas"/>
       </Position23>
       <Position24>
-        <Filename Value="code\BaseFile.pas"/>
-        <Caret Line="6" Column="38"/>
+        <Filename Value="commoncode\terraindata.pas"/>
+        <Caret Line="7" Column="50"/>
       </Position24>
       <Position25>
-        <Filename Value="code\GeoBase.pas"/>
-        <Caret Line="13" Column="22"/>
+        <Filename Value="commoncode\terraindata.pas"/>
+        <Caret Line="26" Column="24"/>
       </Position25>
       <Position26>
-        <Filename Value="code\GeoBase.pas"/>
-        <Caret Line="136" Column="60" TopLine="124"/>
+        <Filename Value="commoncode\terraindata.pas"/>
+        <Caret Line="11" Column="14" TopLine="10"/>
       </Position26>
       <Position27>
-        <Filename Value="code\GeoBase.pas"/>
-        <Caret Column="31"/>
+        <Filename Value="commoncode\terraindata.pas"/>
+        <Caret Line="51" Column="61" TopLine="10"/>
       </Position27>
       <Position28>
-        <Filename Value="code\GeoBase.pas"/>
-        <Caret Line="47" Column="28"/>
+        <Filename Value="commoncode\terraindata.pas"/>
+        <Caret Line="53" Column="37" TopLine="10"/>
       </Position28>
       <Position29>
-        <Filename Value="code\GeoBase.pas"/>
-        <Caret Line="59" Column="28"/>
+        <Filename Value="commoncode\basetile.pas"/>
+        <Caret Line="21" Column="18"/>
       </Position29>
       <Position30>
-        <Filename Value="code\GeoBase.pas"/>
-        <Caret Line="22" Column="26"/>
+        <Filename Value="commoncode\basetile.pas"/>
+        <Caret Line="5" Column="39"/>
       </Position30>
     </JumpHistory>
     <RunParams>

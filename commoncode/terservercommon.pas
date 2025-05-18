@@ -8,7 +8,6 @@ interface
 uses idglobal;
 
 type tmsgtype = dword;
-     ttilestatus = byte;
 
 
 const { message types the terrain server sends for different responses }

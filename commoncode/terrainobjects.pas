@@ -8,7 +8,7 @@ interface
 uses sysutils, classes,
      collect,
      basetools,
-     geobase,
+     {$ifdef tersever}geobase,{$endif}
      CastleVectors,
      TerrainParams;
 
@@ -29,11 +29,11 @@ type  tternodetype = word;
 
       { the ids for tiles and nodes are based on their positions.
         tile ids unique per tile, node ids unique within a tile }
-     tternodeid = dword;
-     tternodeid_unpacked = packed record
-        nodetype   : tternodetype;
-        posx, posy : word;   {0..65535 scaled in to the tile dimensions }
-      end;
+      tternodeid = dword;
+      tternodeid_unpacked = packed record
+         nodetype   : tternodetype;
+         posx, posy : word;   {0..65535 scaled in to the tile dimensions }
+       end;
 
 type {! this is used for the tree protyptypes and will be replaced by ttilenode_rec }
      ttileobj_rec  = packed record
@@ -45,32 +45,6 @@ type {! this is used for the tree protyptypes and will be replaced by ttilenode_
 
 type ttersegid = dword; { terrain segments are global, id'ed by their position in a file }
 
-
-    ttilenode_rec = bitpacked record
-       IdPos : tternodeid_unpacked; { 2d position within tile scaled }     {4 bytes}
-       posh  : shortint;   { scaled position above/below terrain }         {1 byte}
-       objw, objh : word; { object width and height scaled }               {4 bytes}
-       seglinkcount : 0..15; { 4bit }
-     end;
-
-    tseglink_rec = bitpacked record
-       ToSegId : ttersegid;
-
-       ToSegEnd    : 0..1;
-       ToDirection : 0..127;
-
-     end;
-
-    tworldnodeid = record { 8 byte }
-      tileid : ttertileid;
-      nodeid : tternodeid;
-    end;
-
-    ttileseg_rec = record
-       segtype : ttersegtype;
-       wnode0 : tworldnodeid;
-       wnode1 : tworldnodeid;
-     end;
 
 type TTileObj_RecList = array of ttileobj_rec;
 
@@ -131,24 +105,7 @@ type TTileObj_RecList = array of ttileobj_rec;
 
      end;
 
-procedure init_tileobj_rec( iposx, iposy, iheight, iwidth : word;
-                            out info : ttileobj_rec );
-
 implementation //===============================================================
-
-procedure init_tileobj_rec( iposx, iposy, iheight, iwidth : word;
-                            out info : ttileobj_rec );
- begin
-   with info do
-    begin
-      idpos.posx := iposx;
-      idpos.posy := iposy;
-      height := iheight;
-      width := iwidth;
-    end;
- end;
-
-//----------------------------
 
 function TTileObjTypes.objlistfortype( itype : dword;
                                        var objlist : TTileObjList ) : boolean;

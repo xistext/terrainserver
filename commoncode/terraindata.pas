@@ -3,28 +3,29 @@ unit TerrainData;
 interface
 
 uses Classes, SysUtils, Collect,
-     CastleVectors, CastleTerrain,
+     CastleVectors, CastleTerrain, castleuriutils,
      {$ifdef terserver}castlefindfiles, castlefilesutils,{$endif}
      livetime,
      math, castletransform, castlewindow,
      watergrid, basetools,
-     TerServerCommon, terrainparams, TerrainObjects;
+     basetile, terrainobjects,
+     TerServerCommon, terrainparams;
 
-const terrainpath = 'data\terrain\';
+const terrainpath = 'castle-data:/terrain/';
       terrainext  = '.is.terra';
       waterext    = '.is.water';
       splatext    = '.is.splat';
       floraext    = '.is.flora';
-      rootpath = '\terrainserver\';
 
       { defined tile layers }
-
       layer_terrain = 0; { height map  120x120 single }
       layer_water   = 1; { water depth 120x120 single }
       layer_flora   = 2; { flora depth 120x120 single }
       layer_splat   = 3; { splat map    60x60 integer }
 
-type PTerTile = ^TTerTile;
+type TTileStatus = byte;
+
+     PTerTile = ^TTerTile;
      TTerTile = class; { forward }
      TTileNeighbors = array[0..7] of TTerTile;
 
@@ -32,22 +33,12 @@ type PTerTile = ^TTerTile;
                                     var doremove : boolean;
                                     data : pointer );
 
-     TLockingCollection = class( tsortedcollection )
-        constructor Create;
-        function lock : boolean;
-        procedure unlock;
-        private
-        locks : integer;
-      end;
-
      { TTilelist manages all the tiles and is essentially the World.
        On the server this stores all the data for all the tiles.
        On the client this indexes the graphics used to represent
          the data received from the server }
 
-     TTileList = class( TLockingCollection )
-
-        destructor destroy; override;
+     TTileList = class( TBaseTileList )
 
         function tilexy( x, y : integer ) : TTerTile;
         function ptrxy( x, y : integer ) : PTerTile;
@@ -56,14 +47,8 @@ type PTerTile = ^TTerTile;
                          tilesz : integer ) : TTerTile;
         function getinittile( const tileinfo : TTileHeader ) : TTerTile;
 
-
-        function keyof( item : pointer ) : pointer; override;
-        function compare( item1, item2 : pointer ) : integer; override;
-
         function getneighbor( tile : TTerTile;
                               dx, dy : integer ) : TTerTile;
-
-        function CalculateTileOffset( Pos : TVector2 ) : TPoint;
 
         function findtileatlocation( const Pos : TVector2;
                                      var tile : TTerTile ) : boolean;
@@ -102,23 +87,14 @@ type PTerTile = ^TTerTile;
 
      TDataLayers = array of TDataLayer;
 
-     TTerTile = class
+     TTerTile = class( tbasetile )
 
-        Info   : TTileHeader;
         datalayers : TDataLayers;
 
         constructor create( const iInfo : TTileHeader );
         destructor destroy; override;
 
-        function getWorldSize : single;
-        function gridStep : single;
-        function tileid : string;
         function GetNeighbors : TTileNeighbors;
-        function WorldToLocal( const pos : TVector2 ) : TVector2;
-
-        property TileX : smallint read Info.TileX;
-        property TileY : smallint read Info.TileY;
-        property GridCellCount : word read Info.TileSz;
 
         function TileDist( const pos : tpoint ) : integer;
 
@@ -199,76 +175,7 @@ procedure sethxy( var h : TTileHeader; x, y : smallint; sz : word = 1 ); inline;
     end;
  end;
 
-function worldtotile( wpos : tvector2 ) : tvector2;
- var sizefactor : single;
-     tilesz : single;
- begin
-   tilesz := GDefGridCellCount * GDefGridStep;
-   sizefactor := 1/tilesz;
-   result := vector2( frac( wPos.X * SizeFactor + 0.5 ), frac( wPos.Y * SizeFactor + 0.5 ));
- end;
-
 //----------------------------------
-
-constructor TLockingCollection.Create;
- begin
-   inherited;
-   locks := 0;
- end;
-
-function TLockingCollection.lock : boolean;
- var timeout : integer;
- begin
-   timeout := 10;
-   while locks > 0 do
-    begin
-      dec( timeout );
-      if timeout > 0 then
-       begin
-         write('.');
-         sleep( 10 ); {!need timeout}
-       end
-      else
-       begin
-         write('!');
-         result := false;
-         break;
-       end;
-    end;
-   inc( locks );
-   {if locks > 1 then
-      assert( locks = 1 );}
-   result := true;
- end;
-
-procedure TLockingCollection.Unlock;
- begin
- {  if locks = 0 then
-      assert( locks > 0 );}
-   dec( locks );
- end;
-
-//----------------------------------
-
-destructor TTileList.destroy;
- begin
-   inherited;
- end;
-
-function TTileList.keyof( item : pointer ) : pointer;
- begin
-   result := @TTerTile( item ).Info;
- end;
-
-function TTileList.compare( item1, item2 : pointer ) : integer;
- var h1, h2 : TTileHeader;
- begin
-   h1 := PTileHeader( item1 )^;
-   h2 := PTileHeader( item2 )^;
-   result := compareint( h1.TileY, h2.TileY );
-   if result = 0 then
-      result := compareint( h1.TileX, h2.TileX );
- end;
 
 procedure TTileList.iteratetiles( tileproc : TIterateTilesProc;
                                   data : pointer );
@@ -361,15 +268,6 @@ function TTileList.getneighbor( tile : TTerTile;
    if findtile( x, y, ix ) then
       result := TTerTile( at( ix ));
    unlock;
- end;
-
-function TTileList.CalculateTileOffset( Pos : TVector2 ) : TPoint;
- var sizefactor : single;
-     tilesz : single;
- begin
-   tilesz := GDefGridCellCount * GDefGridStep;
-   sizefactor := 1/tilesz;
-   Result := Point( floor( Pos.X * SizeFactor + 0.5 ), floor( Pos.Y * SizeFactor + 0.5 ));
  end;
 
 function TTileList.findtileatlocation( const Pos : TVector2;
@@ -535,63 +433,8 @@ procedure TTerTile.InitializeWithDefaults;
    for x := 0 to 59 do for y := 0 to 59 do
       TIntGrid(layer.DataGrid).setvaluexy( x, y,
           encodesplatcell( random(6), random(8), random(6), random(6), random(4), random(16)));
-   { add 100 random trees }
-   objlist := objlists.getobjlisttype( tileobjtype_testtree );
-   for x := 0 to 99 do
-    begin
-      init_tileobj_rec( random(65536), random(65536), random(65536), random(65536), rec );
-      objlist.addobj( rec );
-    end;
  end;
 {$endif}
-
-
-function zeropad( value : integer; len : integer  = 2 ) : string;
- begin
-   result := Inttostr( value );
-   if length( result ) < len then
-      insert( '0', result, 0 );
- end;
-
-function TTerTile.tileid : string;
- var token1, token2 : string;
- begin
-   if TileX < 0 then
-      token1 := 'W'+zeropad( abs( Tilex ))
-   else
-      token1 := 'E'+zeropad( tilex );
-   if TileY < 0 then
-      token2 := 'S'+zeropad( abs( Tiley ))
-   else
-      token2 := 'N'+zeropad( Tiley );
-   result := token1+token2;
- end;
-
-function TTerTile.gridStep : single;
- var loddiv : integer;
- begin
-   { client gets all tiles 1 row+col larger to handle seams, but still same 'cell count' }
-   loddiv := GDefGridCellCount div ( Info.TileSz{$ifndef terserver}-1{$endif} );
-   result := GDefGridStep * loddiv;
- end;
-
-function TTerTile.getWorldSize : single;
- begin
-   result := GDefGridCellCount * GDefGridStep;
- end;
-
-function TTerTile.WorldToLocal( const pos : TVector2 ) : TVector2;
- var factor : single;
-     offset : TVector2;
-     tilesize : single;
- begin
-   factor := 1/GridStep;
-   tilesize := getWorldSize;
-
-   offset := vector2( tilex * tilesize, tiley * tilesize );
-   result := vector2((( pos.x - Offset.x ) + tilesize * 0.5 )*factor,
-                     (( pos.y - Offset.y ) + tilesize * 0.5 )*factor );
- end;
 
 function TTerTile.ElevationAtPos( const Pos : TVector2;
                                   out Elevation : single ) : boolean;
@@ -711,6 +554,7 @@ end;
   procedure savegrid( filename : string; datagrid : TSingleGrid );
    var stream : TStream;
    begin
+     filename := uriToFilenameSafe( filename );
      stream := TFileStream.Create(filename, fmCreate );
      stream.Write( datagrid.Data^, datagrid.datasz);
      stream.Free;
@@ -724,32 +568,11 @@ end;
      stream.Free;
    end;
 
-  procedure saveobjects( filename : string; objlists : TTileObjTypes );
-   var stream : TStream;
-       objlist : TTileObjList;
-       c : integer;
-   begin
-     { currently just saves trees }
-     if objlists.objlistfortype( tileobjtype_testtree, objlist ) then
-      begin
-        c := objlist.count;
-        if c > 0 then
-         begin
-           stream := TFileStream.Create(filename, fmCreate );
-           stream.Write( objlist.objtype, sizeof( integer ));
-           stream.Write( c, sizeof( integer ));
-           stream.Write( objlist.objlist[0], objlist.count * sizeof( ttileobj_rec ));
-           stream.Free;
-         end;
-      end;
-   end;
-
-
 function TTerTile.SaveToFile : boolean;
  var fileroot : string;
      dirty : boolean;
  begin
-   fileroot := rootpath + terrainpath + tileid;
+   fileroot := terrainpath + tileid;
    dirty := ( status and tile_dirty > 0 );
    if dirty then
     begin
@@ -757,7 +580,6 @@ function TTerTile.SaveToFile : boolean;
       savegrid( fileroot + waterext, getWaterGrid );
       savegrid( fileroot + splatext, getSplatGrid );
       savegrid( fileroot + floraext, getFloraGrid );
-//      saveobjects( fileroot + treesext, objlists );
 //      dbgwrite( 'Saved '+tileid+'.  ' );
       if dirty then
          status := status xor tile_dirty;
@@ -768,7 +590,7 @@ function TTerTile.SaveToFile : boolean;
 function TTerTile.LoadfromFile : boolean;
  var filename, fileroot : string;
  begin
-   fileroot := rootpath + terrainpath + tileid;
+   fileroot := terrainpath + tileid;
    filename := fileroot + terrainext;
    result := fileexists( filename );
    if result then
@@ -782,20 +604,20 @@ function TTerTile.LoadfromFile : boolean;
 function TTerTile.DeleteMyFiles : boolean;
  var filename, fileroot : string;
  begin
-   fileroot := rootpath + terrainpath + tileid;
-   filename := fileroot + terrainext;
+   fileroot := terrainpath + tileid;
+   filename := uriToFilenameSafe( fileroot + terrainext );
    result := fileexists( filename );
    if result then
       CheckDeleteFile( filename );
-   filename := fileroot + waterext;
+   filename := uriToFilenameSafe( fileroot + waterext );
    result := fileexists( filename );
    if result then
       CheckDeleteFile( filename );
-   filename := fileroot + floraext;
+   filename := uriToFilenameSafe( fileroot + floraext );
    result := fileexists( filename );
    if result then
       CheckDeleteFile( filename );
-   filename := fileroot + splatext;
+   filename := uriToFilenameSafe( fileroot + splatext );
    result := fileexists( filename );
    if result then
       CheckDeleteFile( filename );
