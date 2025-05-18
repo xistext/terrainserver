@@ -19,6 +19,7 @@ type TTreeShapeEdge = array of TVector2;
         function BuildTree( aowner : TComponent;
                             var pos : TVector3;
                             LOD : integer = 1 ) : TCastleTransform;
+        private
         function initColorTriangleBillboard( aowner : TComponent;
                                              texurl : string;
                                              height : single ) : TCastleTransform;
@@ -77,7 +78,7 @@ function TTreeBuilder.initColorTriangleBillboard( aowner : TComponent;
 
    Appearance := TAppearanceNode.create;
    Appearance.Material := makePhysicalMaterial( vector3( 0.0, 0.5, 0 ));
-
+   TPhysicalMaterialNode( Appearance.Material ).Roughness := 0.9;
    if texurl <> '' then
     begin
       Appearance.Texture := TImageTextureNode.Create;

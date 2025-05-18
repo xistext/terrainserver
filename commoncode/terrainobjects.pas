@@ -1,12 +1,14 @@
 unit TerrainObjects;
 
-{ defines objects that are part of a terrain tile }
+{ defines objects that are part of a terrain tile and do not move
+  like trees, roads, intersections }
 
 interface
 
 uses sysutils, classes,
      collect,
      basetools,
+     geobase,
      CastleVectors,
      TerrainParams;
 
@@ -17,14 +19,60 @@ const converttosingle : single = 65536;
       tileobjtype_undefined = 0;
       tileobjtype_testtree = 1;
 
-type ttileobj_rec  = packed record
-        posx    : word; { 1/65536 per tile size, about 1cm in current 600m per tile scaling  }
-        posy    : word;
-        height  : word; { height and width could be 1/65536 of the max size of the type }
-        width   : word;
+type  tternodetype = word;
+      ttersegtype  = word;
+
+      ttertileid = dword;
+      ttertileid_unpacked = packed record
+         posx, posy : smallint;
+       end;
+
+      { the ids for tiles and nodes are based on their positions.
+        tile ids unique per tile, node ids unique within a tile }
+     tternodeid = dword;
+     tternodeid_unpacked = packed record
+        nodetype   : tternodetype;
+        posx, posy : word;   {0..65535 scaled in to the tile dimensions }
       end;
 
-    TTileObj_RecList = array of ttileobj_rec;
+type {! this is used for the tree protyptypes and will be replaced by ttilenode_rec }
+     ttileobj_rec  = packed record
+       IdPos   : tternodeid_unpacked;
+       height  : word; { height and width could be 1/65536 of the max size of the type }
+       width   : word;
+     end;
+
+
+type ttersegid = dword; { terrain segments are global, id'ed by their position in a file }
+
+
+    ttilenode_rec = bitpacked record
+       IdPos : tternodeid_unpacked; { 2d position within tile scaled }     {4 bytes}
+       posh  : shortint;   { scaled position above/below terrain }         {1 byte}
+       objw, objh : word; { object width and height scaled }               {4 bytes}
+       seglinkcount : 0..15; { 4bit }
+     end;
+
+    tseglink_rec = bitpacked record
+       ToSegId : ttersegid;
+
+       ToSegEnd    : 0..1;
+       ToDirection : 0..127;
+
+     end;
+
+    tworldnodeid = record { 8 byte }
+      tileid : ttertileid;
+      nodeid : tternodeid;
+    end;
+
+    ttileseg_rec = record
+       segtype : ttersegtype;
+       wnode0 : tworldnodeid;
+       wnode1 : tworldnodeid;
+     end;
+
+type TTileObj_RecList = array of ttileobj_rec;
 
     { wraps a ttileobj_info to convert to world units and work with or subclass }
     TTileObject = class
@@ -51,7 +99,7 @@ type ttileobj_rec  = packed record
 
     end;
 
-    { holds a list of TTileObj_info of the same type }
+    { holds a list of TTileObj_rec of the same type }
     TTileObjList = class
 
        objtype  : dword;
@@ -93,8 +141,8 @@ procedure init_tileobj_rec( iposx, iposy, iheight, iwidth : word;
  begin
    with info do
     begin
-      posx := iposx;
-      posy := iposy;
+      idpos.posx := iposx;
+      idpos.posy := iposy;
       height := iheight;
       width := iwidth;
     end;
@@ -184,13 +232,13 @@ procedure TTileObject.setwidth( w : single );
 
 function TTileObject.getTilePos : TVector2;
  begin
-   result := Vector2( info.posx * converttoword, info.posy * converttoword ) * GDefGridCellCount;
+   result := Vector2( info.idpos.posx * converttoword, info.idpos.posy * converttoword ) * GDefGridCellCount;
  end;
 
 procedure TTileObject.setTilePos( const iPos : TVector2 );
  begin
-   info.posx := trunc( iPos.x * converttosingle * invGridCount );
-   info.posy := trunc( iPos.y * converttosingle * invGridCount );
+   info.idpos.posx := trunc( iPos.x * converttosingle * invGridCount );
+   info.idpos.posy := trunc( iPos.y * converttosingle * invGridCount );
  end;
 
 initialization

@@ -1048,6 +1048,7 @@ function cmdSnowline( client : TTileClient;
 function cmdPlantTree( client : TTileClient;
                        params : string;
                        callback : TCommandCallback ) : integer;
+ { addtree( posx, posy, radius : single; count : integer ) }
  var worldpos : tvector2;
      localpos : tvector2;
      wradius  : single;

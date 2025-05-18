@@ -14,6 +14,7 @@ uses Classes,
   CastleVectors, CastleWindow, CastleComponentSerialize, CastleLog, CastleControls,
   CastleUIControls, CastleKeysMouse, CastleClientServer, CastleNotifications,
   ClientList,
+  KeyValuePairs,
   TerServerCommon, TerrainData, TerrainCommand,
   WaterFlow,
   liveTime;

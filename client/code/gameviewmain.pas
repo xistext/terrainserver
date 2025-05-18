@@ -346,6 +346,7 @@ begin
       FClient.OnDisconnected := {$ifdef FPC}@{$endif} HandleDisconnected;
       FClient.OnMessageReceived := {$ifdef FPC}@{$endif} HandleMessageReceived;
       FClient.fOnTileReceived :=  {$ifdef FPC}@{$endif}HandleTileReceived;
+      FClient.fOnTreeReceived :=  {$ifdef FPC}@{$endif}HandleTreeReceived;
       connectiontimeout := 0;
       connectionstatus := status_connecting;
       FClient.Connect;
@@ -438,10 +439,12 @@ function CalculateWater( Tile : TTerTile ) : TTexGrid;
                                          objlist : TTileObj_RecList );
   var tile : TTerTile;
       ix : integer;
+      tilelist : TTileObjList;
   begin
     if GTileList.findtile( listinfo.TileX, listinfo.tiley, ix ) then
      begin
        tile := TTerTile( GTileList.at( ix ));
+
 
 
      end;

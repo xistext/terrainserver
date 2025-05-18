@@ -15,8 +15,7 @@ const terrainpath = 'data\terrain\';
       waterext    = '.is.water';
       splatext    = '.is.splat';
       floraext    = '.is.flora';
-      treesext    = '.is.trees';
-      rootpath = 'e:\terrainserver\';
+      rootpath = '\terrainserver\';
 
       { defined tile layers }
 
@@ -150,7 +149,8 @@ type PTerTile = ^TTerTile;
         procedure Paint( const WorldPos : TVector2; EncodedColor : integer );
 
         function getWaterUpdateTime : single;
-        function GetTypeList( atype : dword; objlist : TTileObjList ) : boolean;
+        function GetTypeList( atype : dword;
+                              out objlist : TTileObjList ) : boolean;
         {$endif}
         private
 
@@ -757,7 +757,7 @@ function TTerTile.SaveToFile : boolean;
       savegrid( fileroot + waterext, getWaterGrid );
       savegrid( fileroot + splatext, getSplatGrid );
       savegrid( fileroot + floraext, getFloraGrid );
-      saveobjects( fileroot + treesext, objlists );
+//      saveobjects( fileroot + treesext, objlists );
 //      dbgwrite( 'Saved '+tileid+'.  ' );
       if dirty then
          status := status xor tile_dirty;
@@ -834,7 +834,7 @@ procedure TTerTile.Paint( const WorldPos : TVector2; EncodedColor : integer );
    SplatGrid.setvaluexy( SplatPosI.x, SplatPosI.Y, EncodedColor );
  end;
 
-function TTerTile.gettypelist( atype : dword; objlist : TTileObjList ) : boolean;
+function TTerTile.gettypelist( atype : dword; out objlist : TTileObjList ) : boolean;
  var i : integer;
  begin
    result := objlists.Search( @atype, i );
@@ -863,5 +863,5 @@ function TTerTile.GetNeighbors : TTileNeighbors;
 initialization
   GTileList := TTileList.create;
 finalization
-  GTileList.Free;   //!! this frees before stop is called!!!
+  GTileList.Free;
 end.
