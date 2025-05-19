@@ -445,7 +445,7 @@ function CalculateWater( Tile : TTerTile ) : TTexGrid;
      begin
        tile := TTerTile( GTileList.at( ix ));
 
-
+       assert( false, 'stub: go through received objects/trees and add them or update them to local objects' );
 
      end;
   end;

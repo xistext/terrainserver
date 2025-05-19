@@ -1,5 +1,10 @@
 unit TerrainData;
 
+{ Connects a basetile to the data a tile contains.
+  Used by both client and server but there are differences,
+    like tiles on client are 1x1 bigger than server because
+    they include the seams to the next tile, which they don't on server. }
+
 interface
 
 uses Classes, SysUtils, Collect,
@@ -34,7 +39,6 @@ type TTileStatus = byte;
                                     data : pointer );
 
      { TTilelist manages all the tiles and is essentially the World.
-       On the server this stores all the data for all the tiles.
        On the client this indexes the graphics used to represent
          the data received from the server }
 
@@ -42,6 +46,8 @@ type TTileStatus = byte;
 
         function tilexy( x, y : integer ) : TTerTile;
         function ptrxy( x, y : integer ) : PTerTile;
+
+        function inittile( const tileinfo : TTileHeader ) : TTerTile; virtual;
 
         function initxy( x, y : integer;
                          tilesz : integer ) : TTerTile;
@@ -92,8 +98,6 @@ type TTileStatus = byte;
         destructor destroy; override;
 
         function GetNeighbors : TTileNeighbors;
-
-        function TileDist( const pos : tpoint ) : integer;
 
         function ElevationAtPos( const Pos : TVector2;
                                  out Elevation : single ) : boolean;
@@ -194,13 +198,19 @@ function TTileList.ptrxy( x, y : integer ) : PTerTile;
    result := nil;
    if findtile( x, y, i ) then
       result := PTerTile( @It^[ i ]);
+ end;
 
+function TTileList.inittile( const tileinfo : TTileHeader ) : TTerTile;
+ { initialize a tile for this list.  Allows subclasses to have different tiles. }
+ begin
+   result := TTerTile.create( tileinfo );
  end;
 
 function TTileList.initxy( x, y : integer;
                            tilesz : integer ) : TTerTile;
- var h : TTileHeader;
-     i : integer;
+ { Find tile at x, y.  If not found initialize and add the tile. }
+ var i : integer;
+     h : TTileHeader;
  begin
    lock;
    if findtile( x, y, i ) then
@@ -211,13 +221,14 @@ function TTileList.initxy( x, y : integer;
    else
     begin
       sethxy( h, x, y, tilesz );
-      result := TTerTile.create( h );
+      result := inittile( h );
       atinsert( i, result );
     end;
    unlock;
  end;
 
 function TTileList.getinittile( const tileinfo : TTileHeader ) : TTerTile;
+ { Find the tile defined by the tileinfo.  If not found initialize and add it. }
  var i : integer;
  begin
    lock;
@@ -225,7 +236,7 @@ function TTileList.getinittile( const tileinfo : TTileHeader ) : TTerTile;
       result := TTerTile( at( i ))
    else
     begin
-      result := TTerTile.create( tileinfo );
+      result := inittile( tileinfo );
       atinsert( i, result );
     end;
    unlock;
@@ -233,8 +244,8 @@ function TTileList.getinittile( const tileinfo : TTileHeader ) : TTerTile;
 
 function TTileList.getneighbor( tile : TTerTile;
                                 dx, dy : integer ) : TTerTile;
- var ix : integer;
-     x, y : integer;
+ { returns the neighbor with the given dx, dy offset. }
+ var ix, x, y : integer;
  begin
    result := nil;
    x := tile.TileX + dx;
@@ -246,7 +257,9 @@ function TTileList.getneighbor( tile : TTerTile;
  end;
 
 function TTileList.findtileatlocation( const Pos : TVector2;
-                                        var tile : TTerTile ) : boolean;
+                                       var tile : TTerTile ) : boolean;
+ { Find the tile at the world location.
+   If not found returns false. }
  var pt : TPoint;
  begin
    pt := CalculateTileOffset( Pos );
@@ -256,6 +269,8 @@ function TTileList.findtileatlocation( const Pos : TVector2;
 
 function TTileList.ElevationAtPos( const Pos : TVector2;
                                    out Elevation : single ) : boolean;
+ { Find elevation at world location from tile's terrain data.
+   If no tile, returns false. }
  var tile : TTerTile;
  begin
    result := FindTileAtLocation( Pos, tile ) and
@@ -264,20 +279,13 @@ function TTileList.ElevationAtPos( const Pos : TVector2;
 
 function TTileList.WaterAtPos( const Pos : TVector2;
                                out WaterDepth : single ) : boolean;
+{ Find water at world location from tile's water data.
+  Server: this is depth.  Client: this is water elevation (terrainh + waterdepth).
+  If no tile, returns false. }
  var tile : TTerTile;
  begin
    result := FindTileAtLocation( Pos, tile ) and
              tile.WaterAtPos( Pos, WaterDepth );
- end;
-
-function parsetilepos( tilestr : string ) : tpoint;
- begin
-   result := Point(0,0);
-   if length( tilestr ) = 6 then
-    begin
-      result.X := strtoint(copy(tilestr,2,2)) * ( 1-2*ord( tilestr[1] = 'W' ));
-      result.Y := strtoint(copy(tilestr,5,2)) * ( 1-2*ord( tilestr[4] = 'S' ));
-    end;
  end;
 
 {$ifdef terserver}
@@ -416,8 +424,8 @@ function TTerTile.ElevationAtPos( const Pos : TVector2;
  var LocalPos : TVector2;
  begin
    LocalPos := worldtolocal( Pos );
-   result := ( LocalPos.x >= 0 ) and ( LocalPos.x < self.GridCellCount ) and
-             ( LocalPos.y >= 0 ) and ( LocalPos.y < self.GridCellCount );
+   result := ( LocalPos.x >= 0 ) and ( LocalPos.x < GridCellCount ) and
+             ( LocalPos.y >= 0 ) and ( LocalPos.y < GridCellCount );
    if result then
       Elevation := TerrainGrid.value_LinearInterpolate( LocalPos.x, LocalPos.y );
  end;
@@ -432,12 +440,6 @@ function TTerTile.WaterAtPos( const Pos : TVector2;
    if result then
       WaterDepth := WaterGrid.value_LinearInterpolate( LocalPos.x, LocalPos.y ) -
                     TerrainGrid.value_LinearInterpolate( LocalPos.x, LocalPos.y );
- end;
-
-
-function TTerTile.TileDist( const pos : tpoint ) : integer;
- begin
-   result := trunc( sqrt( sqr( pos.x - tilex ) + sqr( pos.y - tiley )));
  end;
 
 function TTerTile.getTerrainGrid : TSingleGrid;

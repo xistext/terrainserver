@@ -1,5 +1,9 @@
 unit basetile;
 
+{ Defines a tiles and tilelist to hold them.
+  These are generalized logic without anything app specific
+  other than the tile size parameters defined in terrainparams.  }
+
 interface
 
 uses classes, sysutils, collect, math,
@@ -15,6 +19,7 @@ type TLockingCollection = class( tsortedcollection )
         locks : integer;
       end;
 
+     { logical tist manages/sorts tiles in 2d }
      tbasetilelist = class( TLockingCollection )
         function keyof( item : pointer ) : pointer; override;
         function compare( item1, item2 : pointer ) : integer; override;
@@ -23,13 +28,14 @@ type TLockingCollection = class( tsortedcollection )
                            var ix : integer ) : boolean;
       end;
 
+     { logical tile without app specific data }
      tbasetile = class
         Info   : TTileHeader;
         function tileid : string;
         function getWorldSize : single;
         function gridStep : single;
         function WorldToLocal( const pos : TVector2 ) : TVector2;
-
+        function TileDist( const pos : tpoint ) : integer;
         property TileX : smallint read Info.TileX;
         property TileY : smallint read Info.TileY;
         property GridCellCount : word read Info.TileSz;
@@ -48,7 +54,6 @@ procedure sethxy( var h : TTileHeader; x, y : smallint; sz : word = 1 ); inline;
       tilesz := sz;
     end;
  end;
-
 
 constructor TLockingCollection.Create;
  begin
@@ -170,6 +175,12 @@ function TBaseTile.WorldToLocal( const pos : TVector2 ) : TVector2;
    offset := vector2( tilex * tilesize, tiley * tilesize );
    result := vector2((( pos.x - Offset.x ) + tilesize * 0.5 )*factor,
                      (( pos.y - Offset.y ) + tilesize * 0.5 )*factor );
+ end;
+
+function TBaseTile.TileDist( const pos : tpoint ) : integer;
+ { computes distance between two tiles in tile index coordinates }
+ begin
+   result := trunc( sqrt( sqr( pos.x - tilex ) + sqr( pos.y - tiley )));
  end;
 
 

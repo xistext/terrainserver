@@ -5,7 +5,9 @@ unit terservercommon;
 
 interface
 
-uses idglobal;
+uses classes, sysutils,
+//     idglobal, { indy }
+     basetools;
 
 type tmsgtype = dword;
 
@@ -51,7 +53,19 @@ function encodesplatcell( r, g, b, a : byte;
                           t1, t1a : byte ) : integer;
 function decodesplatcell( v : integer ) : integer;
 
+function parsetilepos( tilestr : string ) : tpoint;
+
 implementation
+
+function parsetilepos( tilestr : string ) : tpoint;
+ begin
+   result := Point(0,0);
+   if length( tilestr ) = 6 then
+    begin
+      result.X := strtoint(copy(tilestr,2,2)) * ( 1-2*ord( tilestr[1] = 'W' ));
+      result.Y := strtoint(copy(tilestr,5,2)) * ( 1-2*ord( tilestr[4] = 'S' ));
+    end;
+ end;
 
 function encodesplatcell( r, g, b, a : byte;
                           t1, t1a : byte ) : integer;
