@@ -22,6 +22,7 @@ const converttosingle : single = 65536;
 type  tternodetype = word;
       ttersegtype  = word;
 
+      { smallints are almost big enough to tile earth at current 600m tilesize }
       ttertileid = dword;
       ttertileid_unpacked = packed record
          posx, posy : smallint;
@@ -37,9 +38,9 @@ type  tternodetype = word;
 
 type {! this is used for the tree protyptypes and will be replaced by ttilenode_rec }
      ttileobj_rec  = packed record
-       IdPos   : tternodeid_unpacked;
+       IdPos   : tternodeid_unpacked;  { position within tile }
        height  : word; { height and width could be 1/65536 of the max size of the type }
-       width   : word;
+       radius  : word;
      end;
 
 
@@ -48,7 +49,7 @@ type ttersegid = dword; { terrain segments are global, id'ed by their position i
 
 type TTileObj_RecList = array of ttileobj_rec;
 
-    { wraps a ttileobj_info to convert to world units and work with or subclass }
+    { wraps a ttileobj_rec to convert to world units and work with or subclass }
     TTileObject = class
 
        info : ttileobj_rec;
@@ -128,7 +129,6 @@ function TTileObjTypes.getobjlisttype( itype : dword ) : TTileObjList;
     end;
  end;
 
-
 function TTileObjTypes.keyof( item : pointer ) : pointer;
  begin
    result := @TTileObjList( item ).objtype;
@@ -179,7 +179,8 @@ procedure TTileObject.setheight( h : single );
 
 function TTileObject.getwidth : single;
  begin
-   result := converttosingle * info.width;
+   assert( false );
+//   result := converttosingle * info.width;
  end;
 
 procedure TTileObject.setwidth( w : single );

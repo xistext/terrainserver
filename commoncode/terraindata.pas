@@ -39,7 +39,7 @@ type TTileStatus = byte;
                                     data : pointer );
 
      { TTilelist manages all the tiles and is essentially the World.
-       On the client this indexes the graphics used to represent
+       On the client this also holds the graphics used to represent
          the data received from the server }
 
      TTileList = class( TBaseTileList )
@@ -66,15 +66,22 @@ type TTileStatus = byte;
         function WaterAtPos( const Pos : TVector2;
                              out WaterDepth : single ) : boolean;
 
-        {$ifdef terserver}
+      end;
+
+     { TileList for use on the server }
+     {$ifdef terserver}
+     TTileList_Server = class( TTileList )
+
         function readallterrainfiles( path : string ) : integer;
+
+//      function inittile( const tileinfo : TTileHeader ) : TTerTile; override;
 
         private
 
         procedure foundterfile( const FileInfo : TFileInfo; var StopSearch : boolean );
-        {$endif}
 
       end;
+     {$endif}
 
      TDataLayer = class
         DataGrid : TBaseDataGrid;
@@ -106,7 +113,7 @@ type TTileStatus = byte;
 
         public
         {$ifdef terserver}
-        objlists   : TTileObjTypes;
+        objlists   : TTileObjTypes; { lists of types that contain lists of objects }
 
         { server stores all and manages the data }
         Status : TTileStatus;
@@ -157,7 +164,8 @@ type TTileStatus = byte;
 
       end;
 
-const GTileList : TTileList = nil;
+
+const GTileList : {$ifdef terserver}TTileList_Server{$else}TTileList{$endif} = nil;
 
 implementation
 {$ifdef terserver}
@@ -288,8 +296,9 @@ function TTileList.WaterAtPos( const Pos : TVector2;
              tile.WaterAtPos( Pos, WaterDepth );
  end;
 
+//-----------------------------------
 {$ifdef terserver}
-procedure TTilelist.FoundTerFile( const FileInfo : TFileInfo; var StopSearch : boolean );
+procedure TTilelist_Server.FoundTerFile( const FileInfo : TFileInfo; var StopSearch : boolean );
  var filename : string;
      dotpos : integer;
      tilepos : tpoint;
@@ -306,12 +315,12 @@ procedure TTilelist.FoundTerFile( const FileInfo : TFileInfo; var StopSearch : b
    Application.ProcessAllMessages;
  end;
 
-function TTileList.ReadAllTerrainFiles( path : string ) : integer;
+function TTileList_Server.ReadAllTerrainFiles( path : string ) : integer;
  begin
    result :=FindFiles( Path, '*'+terrainext, false, {$ifdef fpc}@{$endif} FoundTerFile, [ffReadAllFirst] );
  end;
-{$endif}
 
+{$endif}
 //-------------------------------
 
 constructor TDataLayer.create( igridsz : dword );
@@ -406,8 +415,6 @@ destructor TTerTile.destroy;
 procedure TTerTile.InitializeWithDefaults;
  var x ,y : integer;
      layer : TDataLayer;
-     objlist : TTileObjList;
-     rec : ttileobj_rec;
  begin
    TSingleGrid( datalayers[layer_water].DataGrid ).setvalue( 0.1 );
    TSingleGrid( datalayers[layer_flora].DataGrid ).setvalue( 0.01 );
@@ -660,7 +667,11 @@ function TTerTile.GetNeighbors : TTileNeighbors;
 
 
 initialization
+  {$ifdef terserver}
+  GTileList := TTileList_Server.create;
+  {$else}
   GTileList := TTileList.create;
+  {$endif}
 finalization
   GTileList.Free;
 end.
