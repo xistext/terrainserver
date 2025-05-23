@@ -765,20 +765,17 @@ function TTask_SendTrees.runtask : boolean;
    result := inherited Runtask;
    if not result then
       exit;
-   if tile.GetTypeList( tileobjtype_testtree, objlist ) then
-    begin
-      buflen := objlist.count;
-      setlength( buffer, buflen );
-      resultHeader.TileX := Tile.TileX;
-      resultHeader.TileY := Tile.TileY;
-      resultHeader.ObjType := tileobjtype_testtree;
-      resultHeader.ObjCount := buflen;
-      buflen := buflen * sizeof( ttileobj_rec );
-      { send message + tile headers }
-      client.SendClientMsgHeader( msg_Trees, buflen + sizeof( TTileObjHeader ));
-      client.Send( resultheader, sizeof( TTileObjHeader ));
-      client.Send( ObjList.ObjList[0], buflen );
-    end;
+   buflen := tile.objlist.count;
+   setlength( buffer, buflen );
+   resultHeader.TileX := Tile.TileX;
+   resultHeader.TileY := Tile.TileY;
+   resultHeader.ObjType := tileobjtype_testtree;
+   resultHeader.ObjCount := buflen;
+   buflen := buflen * sizeof( ttileobj_rec );
+   { send message + tile headers }
+   client.SendClientMsgHeader( msg_Trees, buflen + sizeof( TTileObjHeader ));
+   client.Send( resultheader, sizeof( TTileObjHeader ));
+   client.Send( ObjList.ObjList[0], buflen );
  end;
 
 
@@ -1057,7 +1054,6 @@ function cmdPlantTree( client : TTileClient;
      tile : ttertile;
      i : integer;
      treex, treey : word;
-     objlist : TTileObjList;
      objrec : TTileObj_Rec;
      sn, cs, r : single;
  begin
@@ -1071,19 +1067,17 @@ function cmdPlantTree( client : TTileClient;
          parsesingle( params, wradius );
          parseint( params, wcount );
          localpos := Tile.WorldToLocal( worldpos );
-         objlist := nil;
-         if Tile.GetTypeList( tileobjtype_testtree, objlist ) then
-            for i := 0 to wcount - 1 do
-             begin
-               sincos( random * 2 * Pi, sn, cs );
-               r := random * wradius;
-               treex := trunc(( localpos.x + cs * r ));
-               treey := trunc(( localpos.y + sn * r ));
-               assert( false, 'use geobase' );
+         for i := 0 to wcount - 1 do
+          begin
+            sincos( random * 2 * Pi, sn, cs );
+            r := random * wradius;
+            treex := trunc(( localpos.x + cs * r ));
+            treey := trunc(( localpos.y + sn * r ));
+            assert( false, 'use geobase' );
 (*               init_tileobj_rec( treex, treey,
-                                 random( 65536 ), random( 65536 ), objrec );
-               objlist.addobj( objrec );*)
-             end;
+                              random( 65536 ), random( 65536 ), objrec );
+            tile.objlist.addobj( objrec );*)
+          end;
          GTaskList.AddTask( TTask_SendTrees.create( client, Tile, 1 ) );
        end;
     end;

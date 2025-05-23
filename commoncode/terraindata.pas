@@ -113,7 +113,7 @@ type TTileStatus = byte;
 
         public
         {$ifdef terserver}
-        objlists   : TTileObjTypes; { lists of types that contain lists of objects }
+        objlist   : TTileObjList; { lists of types that contain lists of objects }
 
         { server stores all and manages the data }
         Status : TTileStatus;
@@ -133,8 +133,6 @@ type TTileStatus = byte;
         procedure Paint( const WorldPos : TVector2; EncodedColor : integer );
 
         function getWaterUpdateTime : single;
-        function GetTypeList( atype : dword;
-                              out objlist : TTileObjList ) : boolean;
         {$endif}
         private
 
@@ -373,7 +371,7 @@ constructor TTerTile.create( const iInfo : TTileHeader );
    layer := TIntLayer.create( 60 );
    datalayers[layer_splat] := layer;
 
-   ObjLists := TTileObjTypes.Create;
+   ObjList := TTileObjList.Create;
    InitializeWithDefaults;
    status := 0;
    WaterToFlowList_high.addtask( TWaterTask.create( self )); {! this shouldn't happen here}
@@ -393,7 +391,7 @@ destructor TTerTile.destroy;
    setlength( datalayers, 0 );
 
    {$ifdef terserver}
-   ObjLists.Free;
+   ObjList.Free;
 
    i := 0;
    while i < WaterToFlowList_high.Count do
@@ -418,11 +416,12 @@ procedure TTerTile.InitializeWithDefaults;
  begin
    TSingleGrid( datalayers[layer_water].DataGrid ).setvalue( 0.1 );
    TSingleGrid( datalayers[layer_flora].DataGrid ).setvalue( 0.01 );
-   { initialize splat layer with randomized subdued colors and textures }
+   { randomized splat layer with subdued colors and textures }
    layer := datalayers[layer_splat];
    for x := 0 to 59 do for y := 0 to 59 do
       TIntGrid(layer.DataGrid).setvaluexy( x, y,
           encodesplatcell( random(6), random(8), random(6), random(6), random(4), random(16)));
+   { randomized tres }
  end;
 {$endif}
 
@@ -640,13 +639,6 @@ procedure TTerTile.Paint( const WorldPos : TVector2; EncodedColor : integer );
    SplatGrid.setvaluexy( SplatPosI.x, SplatPosI.Y, EncodedColor );
  end;
 
-function TTerTile.gettypelist( atype : dword; out objlist : TTileObjList ) : boolean;
- var i : integer;
- begin
-   result := objlists.Search( @atype, i );
-   if result then
-      objlist := TTileObjList( objlists.at(i));
- end;
 {$endif}
 
 function TTerTile.GetNeighbors : TTileNeighbors;
