@@ -39,6 +39,8 @@ type TLockingCollection = class( tsortedcollection )
         property TileX : smallint read Info.TileX;
         property TileY : smallint read Info.TileY;
         property GridCellCount : word read Info.TileSz;
+
+        function WorldCorner00 : TVector2;
       end;
 
 procedure sethxy( var h : TTileHeader; x, y : smallint; sz : word = 1 ); inline;
@@ -171,7 +173,6 @@ function TBaseTile.WorldToLocal( const pos : TVector2 ) : TVector2;
  begin
    factor := 1/GridStep;
    tilesize := getWorldSize;
-
    offset := vector2( tilex * tilesize, tiley * tilesize );
    result := vector2((( pos.x - Offset.x ) + tilesize * 0.5 )*factor,
                      (( pos.y - Offset.y ) + tilesize * 0.5 )*factor );
@@ -183,5 +184,14 @@ function TBaseTile.TileDist( const pos : tpoint ) : integer;
    result := trunc( sqrt( sqr( pos.x - tilex ) + sqr( pos.y - tiley )));
  end;
 
+function TBaseTile.WorldCorner00 : TVector2;
+ { returns world coordinates for corner that is -y and -x from the tile center }
+ var offset : TVector2;
+     tilesize : single;
+ begin
+   tilesize := getWorldSize;
+   offset := vector2( tilex * tilesize, tiley * tilesize );
+   result := vector2( Offset.x - tilesize * 0.5, Offset.y - tilesize * 0.5 );
+ end;
 
 end.

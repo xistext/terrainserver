@@ -22,7 +22,7 @@ const { message types the terrain server sends for different responses }
       msg_splat     = 6;
       msg_flora     = 7;
       msg_LODUpdate = 8;  { contains terrain + water + flora }
-      msg_trees     = 9;
+      msg_tileobjs  = 9;
 
       { tile status }
       tile_built    = 1;

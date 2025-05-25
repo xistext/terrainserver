@@ -9,6 +9,7 @@ unit GameViewMain;
 interface
 
 uses Classes, SysUtils,
+  Windows, { for allocconsole to view debug }
   { indy }
   idGlobal,
   { cge }
@@ -75,6 +76,7 @@ type
     PointLight1 : TCastlePointLight;
     TerrainLayer : TCastleTransform;
     WaterLayer   : TCastleTransform;
+    TerrainObjectLayer : TCastleTransform;
 
     ButtonBrush : TCastleButton;
     ButtonDig   : TCastleButton;
@@ -117,8 +119,8 @@ type
                                   tilegrid : TSingleGrid;
                                   watergrid : TSingleGrid;
                                   floragrid : TSingleGrid );
-    procedure HandleTreeReceived( const listinfo : TTileObjHeader;
-                                  objlist :  TTileObj_RecList );
+    procedure HandleTileObjReceived( const listinfo : TTileObjHeader;
+                                     objlist :  TTileObj_RecList );
 
     procedure ClickCreateClient(Sender: TObject);
     procedure ClickLayer(Sender: TObject);
@@ -183,7 +185,7 @@ begin
   GParentComponent := Viewport1.Items;
   Viewport1.OnMotion := {$ifdef FPC}@{$endif} HandleMotion;
   Viewport1.OnPress :=   {$ifdef FPC}@{$endif} ViewportPressed;
-;
+
   ButtonCreateClient.OnClick := {$ifdef FPC}@{$endif} ClickCreateClient;
   ButtonGrid.OnClick := {$ifdef FPC}@{$endif} ClickLayer;
   ButtonWater.OnClick := {$ifdef FPC}@{$endif} ClickLayer;
@@ -346,7 +348,7 @@ begin
       FClient.OnDisconnected := {$ifdef FPC}@{$endif} HandleDisconnected;
       FClient.OnMessageReceived := {$ifdef FPC}@{$endif} HandleMessageReceived;
       FClient.fOnTileReceived :=  {$ifdef FPC}@{$endif}HandleTileReceived;
-      FClient.fOnTreeReceived :=  {$ifdef FPC}@{$endif}HandleTreeReceived;
+      FClient.fOnTreeReceived :=  {$ifdef FPC}@{$endif}HandleTileObjReceived;
       connectiontimeout := 0;
       connectionstatus := status_connecting;
       FClient.Connect;
@@ -435,18 +437,55 @@ function CalculateWater( Tile : TTerTile ) : TTexGrid;
     end;
  end;
 
- procedure TViewMain.HandleTreeReceived( const listinfo : TTileObjHeader;
-                                         objlist : TTileObj_RecList );
+ procedure TViewMain.HandleTileObjReceived( const listinfo : TTileObjHeader;
+                                            objlist : TTileObj_RecList );
   var tile : TTerTile;
+      item : ^TTileObj_Rec;
+      existingitem : TTileObj_Rec_Client;
       ix : integer;
+      oix : dword;
       tilelist : TTileObjList;
+      i, c, updatecount : integer;
+      modified : boolean;
   begin
     if GTileList.findtile( listinfo.TileX, listinfo.tiley, ix ) then
      begin
        tile := TTerTile( GTileList.at( ix ));
-
-       assert( false, 'stub: go through received objects/trees and add them or update them to local objects' );
-
+       c := length( objlist );
+       updatecount := 0;
+       for i := 0 to c - 1 do
+        begin
+          item := @objlist[i];
+          modified := false;
+          if Tile.ObjList.Search( dword( item^.IdPos ), oix ) then
+           begin
+             { item already local, change size or type or dbid }
+             existingitem := Tile.ObjList.items[oix];
+             modified := ( item^.size <> existingitem.size ) or
+                         ( item^.ObjType <> existingitem.objtype ) or
+                         ( item^.dbid <> existingitem.dbid );
+             if modified then
+              begin
+                if ( assigned( existingitem.ObjGraphics )) then
+                   FreeAndNil( TCastleTransform( existingitem.ObjGraphics ));
+              end;
+           end
+          else
+           begin
+             existingitem.IdPos := item^.IdPos;
+             existingitem.dbid := item^.dbid;
+             existingitem.ObjGraphics := nil;
+             existingitem.objtype := item^.objtype;
+             existingitem.size := item^.size;
+             Tile.ObjList.atinsert( existingitem, oix );
+             modified := true;
+           end;
+          if modified then
+           begin
+             Tile.BuildTileObjGraphics( TerrainObjectLayer );
+             write('^');
+           end;
+        end;
      end;
   end;
 
@@ -814,7 +853,7 @@ procedure TViewMain.UseTool( var pos : tvector3 );
    case activetool of
       tool_none : begin
                     { place a test tree billboard }
-                    g := GTreeBuilder.BuildTree( Viewport1, pos, 1 );
+                    g := GTreeBuilder.BuildGraphics( Viewport1, pos, 1 );
                     Viewport1.Items.Add( g );
                   end;
       tool_brush : fClient.Send( 'paint '+params+','+
@@ -1040,5 +1079,12 @@ begin
     end;
  end;
 
+
+initialization
+ AllocConsole;
+ {$ifdef fpc}
+ IsConsole := True; // in System unit
+ SysInitStdIO;      // in System unit
+ {$endif}
 
 end.

@@ -7,25 +7,34 @@ interface
 uses
    Classes, SysUtils,
    CastleVectors, CastleTransform, CastleBehaviors, CastleScene,
-   x3dNodes, x3dtools;
+   x3dNodes, x3dtools,
+{   TerrainData,} TerrainObjects;
 
 
 
 
 type TTreeShapeEdge = array of TVector2;
 
-     TTreeBuilder = class
+     TBuilder_TileObj = class
 
-        function BuildTree( aowner : TComponent;
-                            var pos : TVector3;
-                            LOD : integer = 1 ) : TCastleTransform;
+        function BuildGraphics( aowner : TComponent;
+                                var pos : TVector3;
+                                LOD : integer = 1 ) : TCastleTransform; virtual; abstract;
+      end;
+
+
+     TTreeBuilder = class( TBuilder_TileObj )
+
+      function BuildGraphics( aowner : TComponent;
+                                var pos : TVector3;
+                                LOD : integer = 1 ) : TCastleTransform; override;
         private
         function initColorTriangleBillboard( aowner : TComponent;
                                              texurl : string;
                                              height : single ) : TCastleTransform;
         function initTriangleFanBillboard( aowner : TComponent;
                                            texurl : string;
-                                            height : single ) : TCastleTransform;
+                                           height : single ) : TCastleTransform;
       end;
 
 
@@ -191,9 +200,9 @@ function TTreeBuilder.initTriangleFanBillboard( aowner : TComponent;
 
 
 
-function TTreeBuilder.BuildTree( aowner : TComponent;
-                                 var pos : TVector3;
-                                 LOD : integer = 1 ) : TCastleTransform;
+function TTreeBuilder.BuildGraphics( aowner : TComponent;
+                                     var pos : TVector3;
+                                     LOD : integer = 1 ) : TCastleTransform;
  var treesz : single;
  begin
    { plane billboard with transparent texture }

@@ -9,7 +9,11 @@ interface
 
 uses Classes, SysUtils, Collect,
      CastleVectors, CastleTerrain, castleuriutils,
-     {$ifdef terserver}castlefindfiles, castlefilesutils,{$endif}
+     {$ifdef terserver}
+     castlefindfiles, castlefilesutils,
+     {$else}
+     treebuilder,
+     {$endif}
      livetime,
      math, castletransform, castlewindow,
      watergrid, basetools,
@@ -112,9 +116,9 @@ type TTileStatus = byte;
                              out WaterDepth : single ) : boolean;
 
         public
-        {$ifdef terserver}
         objlist   : TTileObjList; { lists of types that contain lists of objects }
 
+        {$ifdef terserver}
         { server stores all and manages the data }
         Status : TTileStatus;
 
@@ -149,6 +153,7 @@ type TTileStatus = byte;
         { client links to graphics }
         TerrainGraphics : TCastleTransform;
         WaterGraphics : TCastleTransform;
+        procedure BuildTileObjGraphics( parentgraphic : TCastleTransform; LOD : integer = 1 );
         {$endif}
 
         procedure setTerrainGrid( aGrid : TSingleGrid );
@@ -367,11 +372,11 @@ constructor TTerTile.create( const iInfo : TTileHeader );
    layer := TDataLayer.create( Info.TileSz );
    datalayers[layer_flora] := layer;
 
+   ObjList := TTileObjList.Create;
    {$ifdef terserver}
    layer := TIntLayer.create( 60 );
    datalayers[layer_splat] := layer;
 
-   ObjList := TTileObjList.Create;
    InitializeWithDefaults;
    status := 0;
    WaterToFlowList_high.addtask( TWaterTask.create( self )); {! this shouldn't happen here}
@@ -389,9 +394,9 @@ destructor TTerTile.destroy;
    for i := 0 to length( datalayers ) - 1 do
       datalayers[i].Free;
    setlength( datalayers, 0 );
+   ObjList.Free;
 
    {$ifdef terserver}
-   ObjList.Free;
 
    i := 0;
    while i < WaterToFlowList_high.Count do
@@ -413,6 +418,8 @@ destructor TTerTile.destroy;
 procedure TTerTile.InitializeWithDefaults;
  var x ,y : integer;
      layer : TDataLayer;
+     treerec : TTileObj_Rec;
+     i : dword;
  begin
    TSingleGrid( datalayers[layer_water].DataGrid ).setvalue( 0.1 );
    TSingleGrid( datalayers[layer_flora].DataGrid ).setvalue( 0.01 );
@@ -422,6 +429,21 @@ procedure TTerTile.InitializeWithDefaults;
       TIntGrid(layer.DataGrid).setvaluexy( x, y,
           encodesplatcell( random(6), random(8), random(6), random(6), random(4), random(16)));
    { randomized tres }
+   treerec.objtype := tileobjtype_testtree;
+   treerec.dbid := 0;
+   if ( self.TileX = 0 ) and ( self.TileY = 0 ) then
+    begin
+      x := 0;
+      repeat
+         treerec.IdPos.posx := random( 65536 );
+         treerec.IdPos.posy := random( 65536 );
+         if not objlist.search( dword( treerec.IdPos ), i )  then
+          begin
+            objlist.atinsert( treerec, i );
+            inc( x );
+          end;
+       until x = 9;
+    end;
  end;
 {$endif}
 
@@ -639,6 +661,40 @@ procedure TTerTile.Paint( const WorldPos : TVector2; EncodedColor : integer );
    SplatGrid.setvaluexy( SplatPosI.x, SplatPosI.Y, EncodedColor );
  end;
 
+{$else}
+procedure TTerTile.BuildTileObjGraphics( parentgraphic : TCastleTransform; LOD : integer = 1 );
+ var i : integer;
+     it : PTileObj_Rec_Client;
+     g : TCastleTransform;
+     pos, anchorpos : tvector2;
+     pos3 : tvector3;
+     factor, tilesz, h : single;
+ begin
+   anchorpos := WorldCorner00;
+   tilesz := ( GridCellCount - 1 ) * GridStep;
+   factor := tilesz/65536;
+   for i := 0 to objlist.count - 1 do
+    begin
+      it := @objlist.items[i];
+      if not assigned( it^.ObjGraphics ) then
+       begin
+         case it^.objtype of
+            tileobjtype_testtree :
+            begin
+{ build the graphics based on the type and size of the object }
+               pos := vector2( anchorpos.x + it^.IdPos.posx * factor,
+                               anchorpos.y + it^.IdPos.posy * factor );
+               if ElevationAtPos( pos, h ) then
+                begin
+                  pos3 := vector3( pos.x, h, pos.y );
+                  g := GTreeBuilder.BuildGraphics( parentgraphic, pos3 );
+                  parentgraphic.Add( g );
+                end;
+             end;
+         end;
+       end;
+    end;
+ end;
 {$endif}
 
 function TTerTile.GetNeighbors : TTileNeighbors;

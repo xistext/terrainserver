@@ -35,10 +35,20 @@ type TTileObj_Rec  = packed record { 12 bytes }
         IdPos    : ttileobjid_unpacked; {4} { position within tile }
         objtype  : ttileobj_type;       {2}
         size     : word;                {2} { object size 1/65536 of the max size of the type }
-        streamid : dword;               {4}
+        dbid     : dword;               {4} { if there is more data for this object }
       end;
 
+    PTileObj_Rec_Client = ^TTileObj_Rec_Client;
+    TTileObj_Rec_Client = packed record { 12 bytes }
+       IdPos    : ttileobjid_unpacked; {4} { position within tile }
+       objtype  : ttileobj_type;       {2}
+       size     : word;                {2} { object size 1/65536 of the max size of the type }
+       dbid     : dword;               {4} { if there is more data for this object }
+       ObjGraphics : pointer;              { on the client the rec is expanded to hold a reference to the graphics }
+     end;
+
     TTileObj_RecList = array of ttileobj_rec;
+    TTileObj_RecList_Client = array of ttileobj_rec_client;
 
     { wraps a ttileobj_rec to convert to world units and work with or subclass }
     TTileObject = class
@@ -56,23 +66,33 @@ type TTileObj_Rec  = packed record { 12 bytes }
        public
 
        property WorldSize : single read getsize write setsize;
-
        property WorldPosition : TVector2 read getTilePos write setTilePos; { gets world position within tile }
 
     end;
 
-    { holds a list of TTileObj_rec of the same type }
+    { holds a list of TTileObj_rec }
     TTileObjList = class
 
-       objlist  : TTileObj_RecList;
+       {$ifdef terserver}
+       items  : TTileObj_RecList;
+       {$else}
+       items : TTileObj_RecList_Client;
+       {$endif}
+
        constructor create( isize : dword = 1 );
+       function search( key : dword;
+                        out index : dword ) : boolean;
+       {$ifdef terserver}
        function addobj( const info : ttileobj_rec ) : boolean;
+       procedure atinsert( const info : ttileobj_rec; i : integer );
+       {$else}
+       function addobj( const info : ttileobj_rec_client ) : boolean;
+       procedure atinsert( const info : ttileobj_rec_client; i : integer );
+       {$endif}
 
        private
 
        function getcount : integer;
-       function search( key : dword;
-                        out index : dword ) : boolean;
 
        public
 
@@ -94,15 +114,15 @@ end;
 constructor TTileObjList.create( isize : dword = 1 );
  begin
    inherited create;
-   setlength( objlist, isize );
-   fillchar( objlist[0], isize * sizeof( ttileobj_rec  ), 0 );
+   setlength( items, isize );
+   fillchar( items[0], isize * sizeof( ttileobj_rec  ), 0 );
  end;
 
 function TTileObjList.getcount : integer;
  begin
-   result := length( objlist );
+   result := length( items );
  end;
-
+{$ifdef terserver}
    function poskeyof( const item : TTileObj_Rec ) : dword;
     begin
       result := dword( item.IdPos );
@@ -115,8 +135,50 @@ function TTileObjList.addobj( const info : ttileobj_rec ) : boolean;
    i := 0;
    result := not search( poskeyof( info ), i );
    if result then
-      insert( info, objlist, i );
+      insert( info, items, i );
  end;
+
+procedure TTileObjList.atinsert( const info : ttileobj_rec; i : integer );
+ var c : integer;
+ begin
+   c := count;
+   if i = c then
+    begin
+      setlength( items, c + 1 );
+      items[c] := info;
+    end
+   else
+      insert( info, items, i );
+ end;
+{$else}
+function poskeyof( const item : TTileObj_Rec_client ) : dword;
+ begin
+   result := dword( item.IdPos );
+ end;
+
+function TTileObjList.addobj( const info : ttileobj_rec_client ) : boolean;
+{ returns false if there is already an object with that id/position }
+var i : dword;
+begin
+i := 0;
+result := not search( poskeyof( info ), i );
+if result then
+   insert( info, items, i );
+end;
+
+procedure TTileObjList.atinsert( const info : ttileobj_rec_client; i : integer );
+var c : integer;
+begin
+c := count;
+if i = c then
+ begin
+   setlength( items, c + 1 );
+   items[c] := info;
+ end
+else
+   insert( info, items, i );
+end;
+{$endif}
 
 function TTileObjList.Search( key : dword;
                               out Index : dword) : boolean;
@@ -130,7 +192,7 @@ begin
   while L <= H do
    begin
      I := (L + H) shr 1; { div 2 }
-     C := CompareKey( poskeyof( objlist[I] ), Key );
+     C := CompareKey( poskeyof( items[I] ), Key );
      if ( c < 0 ) then
         L := I + 1
      else

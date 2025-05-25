@@ -88,7 +88,7 @@ type TCommandCallback = procedure( msg : string ) of object;
         function runtask : boolean; override;
       end;
 
-     TTask_SendTrees = class( TTask_Tile )
+     TTask_SendTileObjs = class( TTask_Tile )
         function runtask : boolean; override;
       end;
 
@@ -756,26 +756,27 @@ function TTask_SendSplat.RunTask : boolean;
 
 //---------------------------------
 
-function TTask_SendTrees.runtask : boolean;
- var buffer : TIdBytes;
-     buflen : integer;
+function TTask_SendTileObjs.runtask : boolean;
+ var buflen : integer;
      resultheader : TTileObjHeader;
-     objlist : TTileObjList;
  begin
    result := inherited Runtask;
    if not result then
       exit;
    buflen := tile.objlist.count;
-   setlength( buffer, buflen );
-   resultHeader.TileX := Tile.TileX;
-   resultHeader.TileY := Tile.TileY;
-   resultHeader.ObjType := tileobjtype_testtree;
-   resultHeader.ObjCount := buflen;
-   buflen := buflen * sizeof( ttileobj_rec );
-   { send message + tile headers }
-   client.SendClientMsgHeader( msg_Trees, buflen + sizeof( TTileObjHeader ));
-   client.Send( resultheader, sizeof( TTileObjHeader ));
-   client.Send( ObjList.ObjList[0], buflen );
+   result := buflen > 0;
+   if result then
+    begin
+      resultHeader.TileX := Tile.TileX;
+      resultHeader.TileY := Tile.TileY;
+      resultHeader.ObjType := tileobjtype_testtree;
+      resultHeader.ObjCount := buflen;
+      buflen := buflen * sizeof( ttileobj_rec );
+      { send message + tile headers }
+      client.SendClientMsgHeader( msg_tileobjs, buflen + sizeof( TTileObjHeader ));
+      client.Send( resultheader, sizeof( TTileObjHeader ));
+      client.Send( tile.ObjList.items[0], buflen );
+    end;
  end;
 
 
@@ -872,6 +873,8 @@ function TCmdList.executecommand( client : TTileClient;
                 Client.setsubscription( Tile, thisLOD );
                 GTaskList.AddTask( TTask_SendLODUpdateTile.create( client, Tile, thisLOD ) );
                 GTaskList.AddTask( TTask_SendSplat.create( client, Tile, 1 ) ); { splatmap is always LOD 1 }
+                GTaskList.AddTask( TTask_SendTileObjs.create( client, Tile, 1 ) );
+
                 Callback('');
               end;
            end
@@ -1078,7 +1081,7 @@ function cmdPlantTree( client : TTileClient;
                               random( 65536 ), random( 65536 ), objrec );
             tile.objlist.addobj( objrec );*)
           end;
-         GTaskList.AddTask( TTask_SendTrees.create( client, Tile, 1 ) );
+         GTaskList.AddTask( TTask_SendTileObjs.create( client, Tile, 1 ) );
        end;
     end;
  end;

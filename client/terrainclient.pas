@@ -70,8 +70,8 @@ type
       end;
 
 const GParentComponent : TComponent = nil;
-     // GDefaultHost     : string = 'localhost';
-      GDefaultHost : string = '192.168.1.100';
+      GDefaultHost     : string = 'localhost';
+     // GDefaultHost : string = '192.168.1.100';
       GDefaultPort     : integer = 10244;
 
       status_disconnected = 0;
@@ -144,7 +144,7 @@ function TTerClientThread.ProcessMessage( const msgheader : TmsgHeader;
           case msgheader.msgtype of
               msg_Tile, msg_water, msg_flora, msg_LODUpdate, msg_splat, msg_flora  :
                  sendtile( msgheader, buffer, MsgLen + SizeOf( msgheader ));
-              msg_trees :
+              msg_tileobjs :
                  sendtrees( msgheader, buffer, msglen + SizeOf( msgheader ));
           end;
         end;
@@ -193,7 +193,7 @@ procedure TTerClientThread.SendTrees( const msgheader : TMsgHeader;
      bufpos : integer;
      treelist : TTileObj_RecList;
  begin
-   hdsz := sizeof(tmsgheader) + sizeof(ttileheader);
+   hdsz := sizeof(tmsgheader) + sizeof(ttileobjheader);
    assert( BufLen > hdsz );
    Move( buffer[sizeof(tmsgheader)], header, sizeof( TTileObjHeader ));
    bufpos := hdsz;

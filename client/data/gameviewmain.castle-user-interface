@@ -33,82 +33,12 @@
             },
             "$Children" : [
               {
-                "$$ClassName" : "TCastleCamera",
-                "CastShadows" : false,
-                "Collides" : false,
-                "Name" : "MainCamera",
-                "Orthographic" : {
-                  "$$ClassName" : "TCastleOrthographic"
-                },
-                "Perspective" : {
-                  "$$ClassName" : "TCastlePerspective"
-                },
-                "RotationPersistent" : {
-                  "$$ClassName" : "TCastleVector4RotationPersistent",
-                  "W" : -1.5000000000000000E+000,
-                  "X" : 1.0000000000000000E+000
-                },
-                "TranslationPersistent" : {
-                  "$$ClassName" : "TCastleVector3Persistent",
-                  "Y" : 5.0000000000000000E+001
-                }
-              },
-              {
-                "$$ClassName" : "TCastlePointLight",
-                "AttenuationPersistent" : {
-                  "$$ClassName" : "TCastleVector3Persistent",
-                  "Z" : 0.0000000000000000E+000
-                },
-                "CastShadows" : false,
-                "Collides" : false,
-                "Intensity" : 5.0000000000000000E+000,
-                "Name" : "PointLight1",
-                "Pickable" : false,
-                "Radius" : 5.0000000000000000E+003,
-                "Shadows" : true,
-                "TranslationPersistent" : {
-                  "$$ClassName" : "TCastleVector3Persistent",
-                  "Y" : 2.0000000000000000E+003,
-                  "Z" : 2.0000000000000000E+003
-                }
-              },
-              {
-                "$$ClassName" : "TCastlePointLight",
-                "AttenuationPersistent" : {
-                  "$$ClassName" : "TCastleVector3Persistent",
-                  "Z" : 0.0000000000000000E+000
-                },
-                "CastShadows" : false,
-                "Collides" : false,
-                "ColorPersistent" : {
-                  "$$ClassName" : "TCastleColorRGBPersistent",
-                  "Red" : 9.3725490570068359E-001
-                },
-                "Intensity" : 2.9000000953674316E+000,
-                "Name" : "AmbientLight",
-                "Pickable" : false,
-                "Radius" : 5.0000000000000000E+003,
-                "TranslationPersistent" : {
-                  "$$ClassName" : "TCastleVector3Persistent",
-                  "Y" : 2.0000000000000000E+003,
-                  "Z" : -2.0000000000000000E+003
-                }
-              },
-              {
-                "$$ClassName" : "TCastleTransform",
-                "CastShadows" : false,
-                "Collides" : false,
-                "Name" : "TerrainLayer"
-              },
-              {
-                "$$ClassName" : "TCastleTransform",
-                "CastShadows" : false,
-                "Collides" : false,
-                "Name" : "WaterLayer"
-              },
-              {
                 "$$ClassName" : "TCastleTransform",
                 "Name" : "GridPlane",
+                "RotationPersistent" : {
+                  "$$ClassName" : "TCastleVector4RotationPersistent",
+                  "Z" : 1.0000000000000000E+000
+                },
                 "$Children" : [
                   {
                     "$$ClassName" : "TCastlePlane",
@@ -219,6 +149,84 @@
                     }
                   }
                 ]
+              },
+              {
+                "$$ClassName" : "TCastleCamera",
+                "CastShadows" : false,
+                "Collides" : false,
+                "Name" : "MainCamera",
+                "Orthographic" : {
+                  "$$ClassName" : "TCastleOrthographic"
+                },
+                "Perspective" : {
+                  "$$ClassName" : "TCastlePerspective"
+                },
+                "RotationPersistent" : {
+                  "$$ClassName" : "TCastleVector4RotationPersistent",
+                  "W" : -1.5000000000000000E+000,
+                  "X" : 1.0000000000000000E+000
+                },
+                "TranslationPersistent" : {
+                  "$$ClassName" : "TCastleVector3Persistent",
+                  "Y" : 5.0000000000000000E+001
+                }
+              },
+              {
+                "$$ClassName" : "TCastlePointLight",
+                "AttenuationPersistent" : {
+                  "$$ClassName" : "TCastleVector3Persistent",
+                  "Z" : 0.0000000000000000E+000
+                },
+                "CastShadows" : false,
+                "Collides" : false,
+                "Intensity" : 5.0000000000000000E+000,
+                "Name" : "PointLight1",
+                "Pickable" : false,
+                "Radius" : 5.0000000000000000E+003,
+                "Shadows" : true,
+                "TranslationPersistent" : {
+                  "$$ClassName" : "TCastleVector3Persistent",
+                  "Y" : 2.0000000000000000E+003,
+                  "Z" : 2.0000000000000000E+003
+                }
+              },
+              {
+                "$$ClassName" : "TCastlePointLight",
+                "AttenuationPersistent" : {
+                  "$$ClassName" : "TCastleVector3Persistent",
+                  "Z" : 0.0000000000000000E+000
+                },
+                "CastShadows" : false,
+                "Collides" : false,
+                "ColorPersistent" : {
+                  "$$ClassName" : "TCastleColorRGBPersistent",
+                  "Red" : 9.3725490570068359E-001
+                },
+                "Intensity" : 2.9000000953674316E+000,
+                "Name" : "AmbientLight",
+                "Pickable" : false,
+                "Radius" : 5.0000000000000000E+003,
+                "TranslationPersistent" : {
+                  "$$ClassName" : "TCastleVector3Persistent",
+                  "Y" : 2.0000000000000000E+003,
+                  "Z" : -2.0000000000000000E+003
+                }
+              },
+              {
+                "$$ClassName" : "TCastleTransform",
+                "CastShadows" : false,
+                "Collides" : false,
+                "Name" : "TerrainLayer"
+              },
+              {
+                "$$ClassName" : "TCastleTransform",
+                "CastShadows" : false,
+                "Collides" : false,
+                "Name" : "WaterLayer"
+              },
+              {
+                "$$ClassName" : "TCastleTransform",
+                "Name" : "TerrainObjectLayer"
               }
             ]
           },
