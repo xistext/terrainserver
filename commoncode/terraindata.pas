@@ -431,7 +431,7 @@ procedure TTerTile.InitializeWithDefaults;
    { randomized tres }
    treerec.objtype := tileobjtype_testtree;
    treerec.dbid := 0;
-   if ( self.TileX = 0 ) and ( self.TileY = 0 ) then
+//   if ( self.TileX = 0 ) and ( self.TileY = 0 ) then
     begin
       x := 0;
       repeat
@@ -442,7 +442,7 @@ procedure TTerTile.InitializeWithDefaults;
             objlist.atinsert( treerec, i );
             inc( x );
           end;
-       until x = 9;
+       until x = 99;
     end;
  end;
 {$endif}
@@ -662,6 +662,8 @@ procedure TTerTile.Paint( const WorldPos : TVector2; EncodedColor : integer );
  end;
 
 {$else}
+const treecount : integer = 0;
+
 procedure TTerTile.BuildTileObjGraphics( parentgraphic : TCastleTransform; LOD : integer = 1 );
  var i : integer;
      it : PTileObj_Rec_Client;
@@ -689,6 +691,9 @@ procedure TTerTile.BuildTileObjGraphics( parentgraphic : TCastleTransform; LOD :
                   pos3 := vector3( pos.x, h, pos.y );
                   g := GTreeBuilder.BuildGraphics( parentgraphic, pos3 );
                   parentgraphic.Add( g );
+                  it^.ObjGraphics := g;
+                  inc( treecount );
+                  writeln( inttostr( treecount ));
                 end;
              end;
          end;

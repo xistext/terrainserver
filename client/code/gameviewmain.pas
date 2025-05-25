@@ -441,7 +441,8 @@ function CalculateWater( Tile : TTerTile ) : TTexGrid;
                                             objlist : TTileObj_RecList );
   var tile : TTerTile;
       item : ^TTileObj_Rec;
-      existingitem : TTileObj_Rec_Client;
+      existingitem : PTileObj_Rec_Client;
+      newitem : TTileObj_Rec_Client;
       ix : integer;
       oix : dword;
       tilelist : TTileObjList;
@@ -450,44 +451,47 @@ function CalculateWater( Tile : TTerTile ) : TTexGrid;
   begin
     if GTileList.findtile( listinfo.TileX, listinfo.tiley, ix ) then
      begin
+       modified := false;
        tile := TTerTile( GTileList.at( ix ));
        c := length( objlist );
        updatecount := 0;
        for i := 0 to c - 1 do
         begin
           item := @objlist[i];
-          modified := false;
           if Tile.ObjList.Search( dword( item^.IdPos ), oix ) then
            begin
              { item already local, change size or type or dbid }
-             existingitem := Tile.ObjList.items[oix];
-             modified := ( item^.size <> existingitem.size ) or
-                         ( item^.ObjType <> existingitem.objtype ) or
-                         ( item^.dbid <> existingitem.dbid );
-             if modified then
+             existingitem := @Tile.ObjList.items[oix];
+             if ( item^.size <> existingitem^.size ) or
+                ( item^.ObjType <> existingitem^.objtype ) or
+                ( item^.dbid <> existingitem^.dbid ) then
               begin
-                if ( assigned( existingitem.ObjGraphics )) then
-                   FreeAndNil( TCastleTransform( existingitem.ObjGraphics ));
+                modified := true;
+                existingitem^.size := item^.size;
+                existingitem^.objtype := item^.objtype;
+                existingitem^.dbid := item^.dbid;
+                if ( assigned( existingitem^.ObjGraphics )) then
+                   FreeAndNil( TCastleTransform( existingitem^.ObjGraphics ));
               end;
            end
           else
            begin
-             existingitem.IdPos := item^.IdPos;
-             existingitem.dbid := item^.dbid;
-             existingitem.ObjGraphics := nil;
-             existingitem.objtype := item^.objtype;
-             existingitem.size := item^.size;
-             Tile.ObjList.atinsert( existingitem, oix );
+             newitem.IdPos := item^.IdPos;
+             newitem.dbid := item^.dbid;
+             newitem.ObjGraphics := nil;
+             newitem.objtype := item^.objtype;
+             newitem.size := item^.size;
+             Tile.ObjList.atinsert( newitem, oix );
              modified := true;
            end;
-          if modified then
-           begin
-             Tile.BuildTileObjGraphics( TerrainObjectLayer );
-             write('^');
-           end;
+        end;
+       if modified then
+        begin
+          Tile.BuildTileObjGraphics( TerrainObjectLayer );
+          write('^');
         end;
      end;
-  end;
+   end;
 
 procedure TViewMain.HandleTileReceived( const msginfo : TMsgHeader;
                                         const tileinfo : TTileHeader;

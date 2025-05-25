@@ -209,8 +209,8 @@ function TTreeBuilder.BuildGraphics( aowner : TComponent;
    treesz := random + random;
 
 //   result := initPlaneBillboard( aowner, 'castle-data:/testtree.png', treesz  );
-//   result := initColorTriangleBillboard( aowner, 'castle-data:/testtree.png', treesz );
-   result := initTriangleFanBillboard( aowner, 'castle-data:/testtree.png', treesz );
+   result := initColorTriangleBillboard( aowner, 'castle-data:/testtree.png', treesz );
+//   result := initTriangleFanBillboard( aowner, 'castle-data:/testtree.png', treesz );
    result.Translation := vector3( pos.x, pos.y + result.translation.y, pos.z );
    result.CastShadows := true;
  end;
