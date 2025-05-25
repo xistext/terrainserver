@@ -232,6 +232,7 @@ procedure addtexture( Shape : TShapeNode;
    Texture.SetUrl([turl]);
    Shape.Appearance.Texture := Texture;
    Shape.Appearance.Material := makePhysicalMaterial( Vector3( 1, 1, 1 ));
+   Shape.Appearance.AlphaMode := amMask;
  end;
 
 function buildcolorline( count : integer;

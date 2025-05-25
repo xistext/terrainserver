@@ -443,10 +443,8 @@ function CalculateWater( Tile : TTerTile ) : TTexGrid;
       item : ^TTileObj_Rec;
       existingitem : PTileObj_Rec_Client;
       newitem : TTileObj_Rec_Client;
-      ix : integer;
+      ix, i, c : integer;
       oix : dword;
-      tilelist : TTileObjList;
-      i, c, updatecount : integer;
       modified : boolean;
   begin
     if GTileList.findtile( listinfo.TileX, listinfo.tiley, ix ) then
@@ -454,7 +452,6 @@ function CalculateWater( Tile : TTerTile ) : TTexGrid;
        modified := false;
        tile := TTerTile( GTileList.at( ix ));
        c := length( objlist );
-       updatecount := 0;
        for i := 0 to c - 1 do
         begin
           item := @objlist[i];

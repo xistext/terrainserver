@@ -428,22 +428,20 @@ procedure TTerTile.InitializeWithDefaults;
    for x := 0 to 59 do for y := 0 to 59 do
       TIntGrid(layer.DataGrid).setvaluexy( x, y,
           encodesplatcell( random(6), random(8), random(6), random(6), random(4), random(16)));
-   { randomized tres }
+   { randomized trees }
    treerec.objtype := tileobjtype_testtree;
    treerec.dbid := 0;
-//   if ( self.TileX = 0 ) and ( self.TileY = 0 ) then
-    begin
-      x := 0;
-      repeat
-         treerec.IdPos.posx := random( 65536 );
-         treerec.IdPos.posy := random( 65536 );
-         if not objlist.search( dword( treerec.IdPos ), i )  then
-          begin
-            objlist.atinsert( treerec, i );
-            inc( x );
-          end;
-       until x = 99;
-    end;
+   x := 0;
+   repeat
+      treerec.IdPos.posx := random( 65536 );
+      treerec.IdPos.posy := random( 65536 );
+      if not objlist.search( dword( treerec.IdPos ), i )  then
+       begin
+         treerec.size := random( 65536 );
+         objlist.atinsert( treerec, i );
+         inc( x );
+       end;
+    until x = 99;
  end;
 {$endif}
 
@@ -662,19 +660,18 @@ procedure TTerTile.Paint( const WorldPos : TVector2; EncodedColor : integer );
  end;
 
 {$else}
-const treecount : integer = 0;
-
 procedure TTerTile.BuildTileObjGraphics( parentgraphic : TCastleTransform; LOD : integer = 1 );
  var i : integer;
      it : PTileObj_Rec_Client;
      g : TCastleTransform;
      pos, anchorpos : tvector2;
      pos3 : tvector3;
-     factor, tilesz, h : single;
+     szfactor, factor, tilesz, h : single;
  begin
    anchorpos := WorldCorner00;
    tilesz := ( GridCellCount - 1 ) * GridStep;
    factor := tilesz/65536;
+   szfactor := 2/65536; { converts to 0..2 world units }
    for i := 0 to objlist.count - 1 do
     begin
       it := @objlist.items[i];
@@ -682,18 +679,16 @@ procedure TTerTile.BuildTileObjGraphics( parentgraphic : TCastleTransform; LOD :
        begin
          case it^.objtype of
             tileobjtype_testtree :
-            begin
-{ build the graphics based on the type and size of the object }
+            begin { build the graphics based on the type and size of the object }
                pos := vector2( anchorpos.x + it^.IdPos.posx * factor,
                                anchorpos.y + it^.IdPos.posy * factor );
                if ElevationAtPos( pos, h ) then
                 begin
+                  { add the build request to a build queue so it doesn't clog the program }
                   pos3 := vector3( pos.x, h, pos.y );
-                  g := GTreeBuilder.BuildGraphics( parentgraphic, pos3 );
+                  g := GTreeBuilder.BuildGraphics( parentgraphic, pos3, it^.size * szfactor, LOD );
                   parentgraphic.Add( g );
                   it^.ObjGraphics := g;
-                  inc( treecount );
-                  writeln( inttostr( treecount ));
                 end;
              end;
          end;

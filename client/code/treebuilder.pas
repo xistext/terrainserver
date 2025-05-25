@@ -5,7 +5,7 @@ unit TreeBuilder;
 interface
 
 uses
-   Classes, SysUtils,
+   Classes, SysUtils, Math,
    CastleVectors, CastleTransform, CastleBehaviors, CastleScene,
    x3dNodes, x3dtools,
 {   TerrainData,} TerrainObjects;
@@ -15,10 +15,20 @@ uses
 
 type TTreeShapeEdge = array of TVector2;
 
+     TBuildRequest = record
+        aparent  : TCastleTransform;
+        worldpos : TVector3;
+        worldsize: single;
+        objtype  : word;
+        LOD      : integer;
+      end;
+
+
      TBuilder_TileObj = class
 
         function BuildGraphics( aowner : TComponent;
                                 var pos : TVector3;
+                                objsize : single;
                                 LOD : integer = 1 ) : TCastleTransform; virtual; abstract;
       end;
 
@@ -26,8 +36,9 @@ type TTreeShapeEdge = array of TVector2;
      TTreeBuilder = class( TBuilder_TileObj )
 
       function BuildGraphics( aowner : TComponent;
-                                var pos : TVector3;
-                                LOD : integer = 1 ) : TCastleTransform; override;
+                              var pos : TVector3;
+                              objsize : single;
+                              LOD : integer = 1 ) : TCastleTransform; override;
         private
         function initColorTriangleBillboard( aowner : TComponent;
                                              texurl : string;
@@ -35,6 +46,9 @@ type TTreeShapeEdge = array of TVector2;
         function initTriangleFanBillboard( aowner : TComponent;
                                            texurl : string;
                                            height : single ) : TCastleTransform;
+        function initRotatedEdgeSolid( aowner : TComponent;
+                                       texurl : string;
+                                       height : single ) : TCastleTransform;
       end;
 
 
@@ -176,11 +190,79 @@ function TTreeBuilder.initTriangleFanBillboard( aowner : TComponent;
 //   g.castshadowvolumes:= true;
    g.RenderOptions.WholeSceneManifold := true;
    g.Load( Root, true );
-  b  := TCastleBillboard.Create( g );
+(*  b  := TCastleBillboard.Create( g );
    b.AxisOfRotation := vector3( 0, 1, 0 );
-   g.AddBehavior( b );
+   g.AddBehavior( b );*)
 //   g.RenderOptions.WireframeEffect := weSolidWireframe;
    g.ReceiveShadowVolumes := false;
+   result := g;
+ end;
+
+function TTreeBuilder.initRotatedEdgeSolid( aowner : TComponent;
+                                            texurl : string;
+                                            height : single ) : TCastleTransform;
+var g : TCastleScene;
+    Vertices : TVector3List;
+    Root : TX3dRootNode;
+    Triangles : TTriangleFanSetNode;
+    Shape : TShapeNode;
+    TexCoords : TVector2List;
+    h, sn, cn : single;
+    r1, a, d : single;
+    i : integer;
+ const sides : integer = 5;
+ begin
+   Triangles := TTriangleFanSetNode.Create;
+   Triangles.SetFanCount([2+sides]);
+   Triangles.Coord := TCoordinateNode.Create;
+   Triangles.TexCoord := TTextureCoordinateNode.Create;
+   TexCoords := TVector2List.Create;
+   TexCoords.Count := 2 + sides;
+   Vertices := TVector3List.Create;
+   Vertices.Count := 2 + sides;
+   h := height;
+   r1 := height / 2;
+
+   Vertices[0] := vector3( 0, h, 0 ); // center of trangle fan
+   a := 0;
+   d := 2 * Pi / sides;
+   for i := 0 to sides - 1 do
+    begin
+      sincos( a, sn, cn );
+      Vertices[i+1] := Vector3( r1 * sn, 0, r1 * cn );
+      a := a + d;
+    end;
+   Vertices[sides+1] := Vertices[1];
+
+   TexCoords.Items[0] := vector2( 0.5, 1 ); // center of trangle fan
+   a := 0;
+   d := 1 / sides;
+   for i := 0 to sides - 1 do
+    begin
+      TexCoords.Items[i+1] := vector2( a, 0 );
+      a := a + d;
+    end;
+   TexCoords[sides+1] := TexCoords[1];
+
+   TCoordinateNode( Triangles.coord ).SetPoint( Vertices );
+   TTextureCoordinateNode( Triangles.TexCoord ).SetPoint( TexCoords );
+   Vertices.Free;
+   TexCoords.Free;
+
+   Shape := TShapeNode.Create;
+   Shape.Geometry := Triangles;
+   addtexture( Shape, 'castle-data:/testtree.png' );
+
+   Root := TX3DRootNode.Create;
+   Root.AddChildren( Shape );
+
+   g := TCastleScene.Create(aowner);
+//   g.castshadowvolumes:= true;
+   g.RenderOptions.WholeSceneManifold := true;
+   g.Load( Root, true );
+//   g.RenderOptions.WireframeEffect := weSolidWireframe;
+   g.ReceiveShadowVolumes := false;
+   g.RenderOptions.Blending := false;
    result := g;
  end;
 
@@ -202,16 +284,15 @@ function TTreeBuilder.initTriangleFanBillboard( aowner : TComponent;
 
 function TTreeBuilder.BuildGraphics( aowner : TComponent;
                                      var pos : TVector3;
+                                     objsize : single;
                                      LOD : integer = 1 ) : TCastleTransform;
- var treesz : single;
  begin
-   { plane billboard with transparent texture }
-   treesz := random + random;
-
-//   result := initPlaneBillboard( aowner, 'castle-data:/testtree.png', treesz  );
-   result := initColorTriangleBillboard( aowner, 'castle-data:/testtree.png', treesz );
-//   result := initTriangleFanBillboard( aowner, 'castle-data:/testtree.png', treesz );
+//   result := initPlaneBillboard( aowner, 'castle-data:/testtree.png', objsize );
+//   result := initColorTriangleBillboard( aowner, 'castle-data:/testtree.png', objsize );
+//   result := initTriangleFanBillboard( aowner, 'castle-data:/testtree.png', objsize );
+   result := initRotatedEdgeSolid( aowner, 'castle-data:/testtree.png', objsize );
    result.Translation := vector3( pos.x, pos.y + result.translation.y, pos.z );
+   result.Rotation := vector4( 0, 1, 0, random * 2 * pi );
    result.CastShadows := true;
  end;
 

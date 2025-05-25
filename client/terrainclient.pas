@@ -70,8 +70,8 @@ type
       end;
 
 const GParentComponent : TComponent = nil;
-      GDefaultHost     : string = 'localhost';
-     // GDefaultHost : string = '192.168.1.100';
+     // GDefaultHost     : string = 'localhost';
+      GDefaultHost : string = '192.168.1.100';
       GDefaultPort     : integer = 10244;
 
       status_disconnected = 0;
