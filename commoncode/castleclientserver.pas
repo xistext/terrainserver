@@ -33,7 +33,7 @@ uses
   {$ifdef ANDROID}
     CastleMessaging, CastleStringUtils
   {$else}
-    IdTCPServer, IdTCPClient, IdContext, IdSocketHandle, IdGlobal
+    IdTCPServer, IdTCPClient, IdContext, IdSocketHandle, IdGlobal, IdException
   {$endif};
 
 type
@@ -438,7 +438,11 @@ uses
 
   procedure TCastleTCPClientThread.Execute;
   begin
-    FClient.Connect;
+    try
+      FClient.Connect;
+    except
+        exit;
+    end;
     FClient.IOHandler.ReadTimeout := 100;
     {$ifdef FPC}
     { Change to use IndyTextEncoding_UTF8,

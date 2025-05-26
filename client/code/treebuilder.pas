@@ -30,6 +30,8 @@ type TTreeShapeEdge = array of TVector2;
                                 var pos : TVector3;
                                 objsize : single;
                                 LOD : integer = 1 ) : TCastleTransform; virtual; abstract;
+        function BuildSceneFromX3DRoot( aowner : TComponent;
+                                        root   : TX3dRootNode ) : TCastleScene;
       end;
 
 
@@ -56,11 +58,20 @@ const GTreeBuilder : TTreeBuilder = nil;
 
 implementation
 
+function TBuilder_TileObj.BuildSceneFromX3DRoot( aowner : TComponent;
+                                                 root   : TX3dRootNode ) : TCastleScene;
+ begin
+   result := TCastleScene.Create(aowner);
+   result.RenderOptions.WholeSceneManifold := true;
+   result.Load( Root, true );
+   result.ReceiveShadowVolumes := false;
+   result.RenderOptions.Blending := false;
+ end;
+
 function TTreeBuilder.initColorTriangleBillboard( aowner : TComponent;
                                                   texurl : string;
                                                   height : single ) : TCastleTransform;
- var g : TCastleScene;
-     b : TCastleBillBoard;
+ var b : TCastleBillBoard;
      Vertices : TVector3List;
      Appearance : TAppearanceNode;
      Root : TX3dRootNode;
@@ -114,14 +125,10 @@ function TTreeBuilder.initColorTriangleBillboard( aowner : TComponent;
    Root := TX3DRootNode.Create;
    Root.AddChildren( Shape );
 
-   g := TCastleScene.Create(aowner);
-//   g.castshadowvolumes:= true;
-   g.RenderOptions.WholeSceneManifold := true;
-   g.Load( Root, true );
-   b  := TCastleBillboard.Create( g );
+   result := BuildSceneFromX3dRoot( aowner, Root );
+   b  := TCastleBillboard.Create( result );
    b.AxisOfRotation := vector3( 0, 1, 0 );
-   g.AddBehavior( b );
-   result := g;
+   result.AddBehavior( b );
  end;
 
 var gtreeedge : TTreeShapeEdge;
@@ -129,8 +136,7 @@ var gtreeedge : TTreeShapeEdge;
 function TTreeBuilder.initTriangleFanBillboard( aowner : TComponent;
                                                 texurl : string;
                                                 height : single ) : TCastleTransform;
- var g : TCastleScene;
-     b : TCastleBillBoard;
+ var b : TCastleBillBoard;
      Vertices : TVector3List;
      Root : TX3dRootNode;
      Triangles : TTriangleFanSetNode;
@@ -186,27 +192,20 @@ function TTreeBuilder.initTriangleFanBillboard( aowner : TComponent;
    Root := TX3DRootNode.Create;
    Root.AddChildren( Shape );
 
-   g := TCastleScene.Create(aowner);
-//   g.castshadowvolumes:= true;
-   g.RenderOptions.WholeSceneManifold := true;
-   g.Load( Root, true );
-(*  b  := TCastleBillboard.Create( g );
+   result := buildSceneFromX3dRoot( aowner, root );
+   b  := TCastleBillboard.Create( result );
    b.AxisOfRotation := vector3( 0, 1, 0 );
-   g.AddBehavior( b );*)
-//   g.RenderOptions.WireframeEffect := weSolidWireframe;
-   g.ReceiveShadowVolumes := false;
-   result := g;
+   result.AddBehavior( b );
  end;
 
 function TTreeBuilder.initRotatedEdgeSolid( aowner : TComponent;
                                             texurl : string;
                                             height : single ) : TCastleTransform;
-var g : TCastleScene;
+var Triangles : TTriangleFanSetNode;
+    TexCoords : TVector2List;
     Vertices : TVector3List;
     Root : TX3dRootNode;
-    Triangles : TTriangleFanSetNode;
     Shape : TShapeNode;
-    TexCoords : TVector2List;
     h, sn, cn : single;
     r1, a, d : single;
     i : integer;
@@ -223,7 +222,7 @@ var g : TCastleScene;
    h := height;
    r1 := height / 2;
 
-   Vertices[0] := vector3( 0, h, 0 ); // center of trangle fan
+   Vertices[0] := vector3( 0, h, 0 ); // center of triangle fan
    a := 0;
    d := 2 * Pi / sides;
    for i := 0 to sides - 1 do
@@ -239,7 +238,7 @@ var g : TCastleScene;
    d := 1 / sides;
    for i := 0 to sides - 1 do
     begin
-      TexCoords.Items[i+1] := vector2( a, 0 );
+      TexCoords.Items[i+1] := vector2( a, 0.1 );
       a := a + d;
     end;
    TexCoords[sides+1] := TexCoords[1];
@@ -256,14 +255,7 @@ var g : TCastleScene;
    Root := TX3DRootNode.Create;
    Root.AddChildren( Shape );
 
-   g := TCastleScene.Create(aowner);
-//   g.castshadowvolumes:= true;
-   g.RenderOptions.WholeSceneManifold := true;
-   g.Load( Root, true );
-//   g.RenderOptions.WireframeEffect := weSolidWireframe;
-   g.ReceiveShadowVolumes := false;
-   g.RenderOptions.Blending := false;
-   result := g;
+   result := buildSceneFromX3dRoot( aowner, root );
  end;
 
 
@@ -280,20 +272,28 @@ var g : TCastleScene;
   }
 
 
-
+const prototree : TCastleTransform = nil;
 
 function TTreeBuilder.BuildGraphics( aowner : TComponent;
                                      var pos : TVector3;
                                      objsize : single;
                                      LOD : integer = 1 ) : TCastleTransform;
+ var g : TCastleTransformReference;
  begin
 //   result := initPlaneBillboard( aowner, 'castle-data:/testtree.png', objsize );
 //   result := initColorTriangleBillboard( aowner, 'castle-data:/testtree.png', objsize );
 //   result := initTriangleFanBillboard( aowner, 'castle-data:/testtree.png', objsize );
-   result := initRotatedEdgeSolid( aowner, 'castle-data:/testtree.png', objsize );
-   result.Translation := vector3( pos.x, pos.y + result.translation.y, pos.z );
-   result.Rotation := vector4( 0, 1, 0, random * 2 * pi );
-   result.CastShadows := true;
+   if not assigned( prototree ) then
+       prototree := initRotatedEdgeSolid( aowner, 'castle-data:/testtree.png', 1 );
+
+   g := TCastleTransformReference.Create( aowner );
+   g.reference := prototree;
+
+   g.Translation := vector3( pos.x, pos.y + g.translation.y, pos.z );
+   g.Scale := Vector3( objsize, objsize, objsize );
+   g.Rotation := vector4( 0, 1, 0, random * 2 * pi );
+   g.CastShadows := true;
+   result := g;
  end;
 
 

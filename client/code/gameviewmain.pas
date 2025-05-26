@@ -780,10 +780,12 @@ procedure TViewMain.UpdateViewAnchor( Pos : TVector2; ForceRebuild : boolean = f
       viewanchor := newanchor;
 
 //      GridPlane.Translation := vector3( viewanchor.X * 60 - 30, 0, viewanchor.Y * 60 - 30 );
-
-      radius := ViewRadiusSlider.Value;
-      cmd := 'build '+IntToStr( viewanchor.x )+','+inttostr(viewanchor.y)+','+inttostr(radius);
-      FClient.Send(cmd);
+      if assigned( FClient ) then
+       begin
+         radius := ViewRadiusSlider.Value;
+         cmd := 'build '+IntToStr( viewanchor.x )+','+inttostr(viewanchor.y)+','+inttostr(radius);
+            FClient.Send(cmd);
+       end;
 
       { remove distant tiles }
       removerec.ViewMain := self;

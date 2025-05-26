@@ -441,7 +441,7 @@ procedure TTerTile.InitializeWithDefaults;
          objlist.atinsert( treerec, i );
          inc( x );
        end;
-    until x = 99;
+    until x = 999;
  end;
 {$endif}
 
@@ -671,7 +671,7 @@ procedure TTerTile.BuildTileObjGraphics( parentgraphic : TCastleTransform; LOD :
    anchorpos := WorldCorner00;
    tilesz := ( GridCellCount - 1 ) * GridStep;
    factor := tilesz/65536;
-   szfactor := 2/65536; { converts to 0..2 world units }
+   szfactor := 1/65536; { converts to 0..1 world units }
    for i := 0 to objlist.count - 1 do
     begin
       it := @objlist.items[i];
