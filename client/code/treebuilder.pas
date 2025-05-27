@@ -6,23 +6,23 @@ interface
 
 uses
    Classes, SysUtils, Math,
-   CastleVectors, CastleTransform, CastleBehaviors, CastleScene,
+   CastleVectors, CastleTransform, CastleBehaviors, CastleScene, CastleColors, CastleRenderOptions,
    x3dNodes, x3dtools,
-{   TerrainData,} TerrainObjects;
+   TerrainObjects;
 
 
 
 
 type TTreeShapeEdge = array of TVector2;
 
-     TBuildRequest = record
-        aparent  : TCastleTransform;
-        worldpos : TVector3;
-        worldsize: single;
-        objtype  : word;
-        LOD      : integer;
+     TTileObj_BuildRec = record
+        objtype       : ttileobj_type;
+        worldposition : tvector3;
+        worldsize     : single;
+        LOD           : integer;
       end;
 
+     TTileObj_BuildList = array of TTileObj_BuildRec;
 
      TBuilder_TileObj = class
 
@@ -37,10 +37,19 @@ type TTreeShapeEdge = array of TVector2;
 
      TTreeBuilder = class( TBuilder_TileObj )
 
+      function BuildGraphicsList( aowner    : TComponent;
+                                  buildlist : TTileObj_BuildList ) : TCastleTransform;
+
+
       function BuildGraphics( aowner : TComponent;
                               var pos : TVector3;
                               objsize : single;
                               LOD : integer = 1 ) : TCastleTransform; override;
+      function buildcolorline( count : integer;
+                               color : TCastleColorRGB;
+                               var Lines : TCoordinateNode;
+                               LineWidth : single = 1;
+                               LineType  : TLineType = ltSolid ) : TShapeNode;
         private
         function initColorTriangleBillboard( aowner : TComponent;
                                              texurl : string;
@@ -48,9 +57,10 @@ type TTreeShapeEdge = array of TVector2;
         function initTriangleFanBillboard( aowner : TComponent;
                                            texurl : string;
                                            height : single ) : TCastleTransform;
-        function initRotatedEdgeSolid( aowner : TComponent;
-                                       texurl : string;
-                                       height : single ) : TCastleTransform;
+        function buildRotatedEdgeSolid( aowner : TComponent;
+                                        texurl : string;
+                                        const pos : tvector3;
+                                        height : single ) : TShapeNode;
       end;
 
 
@@ -198,9 +208,42 @@ function TTreeBuilder.initTriangleFanBillboard( aowner : TComponent;
    result.AddBehavior( b );
  end;
 
-function TTreeBuilder.initRotatedEdgeSolid( aowner : TComponent;
-                                            texurl : string;
-                                            height : single ) : TCastleTransform;
+function TTreeBuilder.buildcolorline( count : integer;
+                                      color : TCastleColorRGB;
+                                      var Lines : TCoordinateNode;
+                                      LineWidth : single = 1;
+                                      LineType  : TLineType = ltSolid ) : TShapeNode;
+ var Material: TUnlitMaterialNode;
+     Appearance: TAppearanceNode;
+     LineSet : TLineSetNode;
+     LineProperties : TLinePropertiesNode;
+ begin
+   Material := makeUnlitMaterial( color );
+   Material.Transparency := 0.5;
+
+   LineProperties := TLinePropertiesNode.Create;
+   LineProperties.LinewidthScaleFactor := LineWidth;
+   LineProperties.LineType := LineType;
+
+   Appearance := TAppearanceNode.Create;
+   Appearance.Material := Material;
+   Appearance.LineProperties := LineProperties;
+
+   LineSet := TLineSetNode.CreateWithShape(Result);
+   LineSet.mode := lmStrip;
+   LineSet.SetVertexCount(count);
+
+   Result.Appearance := Appearance;
+   Lines := TCoordinateNode.Create;
+   Lines.FdPoint.Items.Count := count;
+   LineSet.Coord := Lines;
+ end;
+
+
+function TTreeBuilder.buildRotatedEdgeSolid( aowner : TComponent;
+                                             texurl : string;
+                                             const pos : tvector3;
+                                             height : single ) : TShapeNode;
 var Triangles : TTriangleFanSetNode;
     TexCoords : TVector2List;
     Vertices : TVector3List;
@@ -209,9 +252,12 @@ var Triangles : TTriangleFanSetNode;
     h, sn, cn : single;
     r1, a, d : single;
     i : integer;
+    Lines : TCoordinateNode;
+    trunkshape : TShapeNode;
  const sides : integer = 5;
  begin
    Triangles := TTriangleFanSetNode.Create;
+   Triangles.Solid := false;
    Triangles.SetFanCount([2+sides]);
    Triangles.Coord := TCoordinateNode.Create;
    Triangles.TexCoord := TTextureCoordinateNode.Create;
@@ -222,13 +268,13 @@ var Triangles : TTriangleFanSetNode;
    h := height;
    r1 := height / 2;
 
-   Vertices[0] := vector3( 0, h, 0 ); // center of triangle fan
+   Vertices[0] := vector3( pos.x, pos.y + h, pos.z ); // center of triangle fan
    a := 0;
    d := 2 * Pi / sides;
    for i := 0 to sides - 1 do
     begin
       sincos( a, sn, cn );
-      Vertices[i+1] := Vector3( r1 * sn, 0, r1 * cn );
+      Vertices[i+1] := Vector3( pos.x + r1 * sn, pos.y, pos.z + r1 * cn );
       a := a + d;
     end;
    Vertices[sides+1] := Vertices[1];
@@ -238,7 +284,7 @@ var Triangles : TTriangleFanSetNode;
    d := 1 / sides;
    for i := 0 to sides - 1 do
     begin
-      TexCoords.Items[i+1] := vector2( a, 0.1 );
+      TexCoords.Items[i+1] := vector2( a, 0.15 );
       a := a + d;
     end;
    TexCoords[sides+1] := TexCoords[1];
@@ -251,11 +297,7 @@ var Triangles : TTriangleFanSetNode;
    Shape := TShapeNode.Create;
    Shape.Geometry := Triangles;
    addtexture( Shape, 'castle-data:/testtree.png' );
-
-   Root := TX3DRootNode.Create;
-   Root.AddChildren( Shape );
-
-   result := buildSceneFromX3dRoot( aowner, root );
+   Result := Shape;
  end;
 
 
@@ -272,30 +314,56 @@ var Triangles : TTriangleFanSetNode;
   }
 
 
-const prototree : TCastleTransform = nil;
+
+const clonetrees : boolean = false;
+      prototree : TCastleTransform = nil;
 
 function TTreeBuilder.BuildGraphics( aowner : TComponent;
                                      var pos : TVector3;
                                      objsize : single;
                                      LOD : integer = 1 ) : TCastleTransform;
- var g : TCastleTransformReference;
+ var shape : TShapeNode;
+     root : TX3drootnode;
  begin
 //   result := initPlaneBillboard( aowner, 'castle-data:/testtree.png', objsize );
 //   result := initColorTriangleBillboard( aowner, 'castle-data:/testtree.png', objsize );
 //   result := initTriangleFanBillboard( aowner, 'castle-data:/testtree.png', objsize );
-   if not assigned( prototree ) then
-       prototree := initRotatedEdgeSolid( aowner, 'castle-data:/testtree.png', 1 );
+(*   if clonetrees then
+    begin
+      if not assigned( prototree ) then
+          prototree := buildRotatedEdgeSolid( aowner, 'castle-data:/testtree.png', 1 );
+      g := TCastleTransformReference.Create( aowner );
+      TCastleTransformReference( g ).reference := prototree;
+    end
+   else*)
+(*   shape := buildRotatedEdgeSolid( aowner, 'castle-data:/testtree.png', vector3( 0, 0, 0 ));
+   Root := TX3DRootNode.Create;
+   Root.AddChildren( shape );
 
-   g := TCastleTransformReference.Create( aowner );
-   g.reference := prototree;
-
-   g.Translation := vector3( pos.x, pos.y + g.translation.y, pos.z );
-   g.Scale := Vector3( objsize, objsize, objsize );
-   g.Rotation := vector4( 0, 1, 0, random * 2 * pi );
-   g.CastShadows := true;
-   result := g;
+   result := buildSceneFromX3dRoot( aowner, root );*)
  end;
 
+function TTreeBuilder.BuildGraphicsList( aowner    : TComponent;
+                                         buildlist : TTileObj_BuildList ) : TCastleTransform;
+ var i, c : integer;
+     shape : TShapeNode;
+     BuildRec : TTileObj_BuildRec;
+     Root : TX3dRootNode;
+ begin
+   c := length( buildlist );
+   if c > 0 then
+    begin
+      Root := TX3DRootNode.Create;
+      for i := 0 to c - 1 do
+       begin
+         BuildRec := buildlist[i];
+         shape := buildRotatedEdgeSolid( aowner, 'castle-data:/testtree.png', buildrec.WorldPosition, buildrec.WorldSize );
+         Root.AddChildren( Shape );
+       end;
+      result := buildSceneFromX3dRoot( aowner, root );
+    end;
+
+ end;
 
 initialization
   { basic triangular 'pine' tree edge shape }

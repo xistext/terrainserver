@@ -441,7 +441,7 @@ procedure TTerTile.InitializeWithDefaults;
          objlist.atinsert( treerec, i );
          inc( x );
        end;
-    until x = 999;
+    until x = 99;
  end;
 {$endif}
 
@@ -660,41 +660,37 @@ procedure TTerTile.Paint( const WorldPos : TVector2; EncodedColor : integer );
  end;
 
 {$else}
+
 procedure TTerTile.BuildTileObjGraphics( parentgraphic : TCastleTransform; LOD : integer = 1 );
  var i : integer;
      it : PTileObj_Rec_Client;
      g : TCastleTransform;
      pos, anchorpos : tvector2;
-     pos3 : tvector3;
      szfactor, factor, tilesz, h : single;
+     BuildList : TTileObj_BuildList;
+     BuildRec : TTileObj_BuildRec;
  begin
    anchorpos := WorldCorner00;
    tilesz := ( GridCellCount - 1 ) * GridStep;
    factor := tilesz/65536;
    szfactor := 1/65536; { converts to 0..1 world units }
+   SetLength( BuildList, objlist.count );
+   buildrec.LOD := LOD;
+//   buildrec.parentgraphic := parentgraphic;
    for i := 0 to objlist.count - 1 do
     begin
       it := @objlist.items[i];
-      if not assigned( it^.ObjGraphics ) then
-       begin
-         case it^.objtype of
-            tileobjtype_testtree :
-            begin { build the graphics based on the type and size of the object }
-               pos := vector2( anchorpos.x + it^.IdPos.posx * factor,
-                               anchorpos.y + it^.IdPos.posy * factor );
-               if ElevationAtPos( pos, h ) then
-                begin
-                  { add the build request to a build queue so it doesn't clog the program }
-                  pos3 := vector3( pos.x, h, pos.y );
-                  g := GTreeBuilder.BuildGraphics( parentgraphic, pos3, it^.size * szfactor, LOD );
-                  parentgraphic.Add( g );
-                  it^.ObjGraphics := g;
-                end;
-             end;
-         end;
-       end;
+      buildrec.objtype := it^.objtype;
+      pos := vector2( anchorpos.x + it^.IdPos.posx * factor,
+                      anchorpos.y + it^.IdPos.posy * factor );
+      ElevationAtPos( pos, h );
+      BuildRec.worldposition := vector3( pos.x, h, pos.y );
+      BuildRec.worldsize := it^.size * szfactor;
+      BuildList[i] := BuildRec;
     end;
- end;
+   g := GTreeBuilder.BuildGraphicsList( parentgraphic, buildlist );
+   parentgraphic.Add( g );
+  end;
 {$endif}
 
 function TTerTile.GetNeighbors : TTileNeighbors;
