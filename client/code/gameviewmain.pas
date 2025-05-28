@@ -341,7 +341,7 @@ begin
     begin
 //      InfoWrite( 'Connecting to terrain server at '+GDefaultHost + ':' + IntToStr( GDefaultPort ) +'...');
       FClient := TTerClient.Create;
-      FClient.Hostname := GDefaultHost;
+      FClient.Hostname := EditHostName.text;
       FClient.Port := GDefaultPort;
 
       FClient.OnConnected := {$ifdef FPC}@{$endif} HandleConnected;
@@ -856,8 +856,8 @@ procedure TViewMain.UseTool( var pos : tvector3 );
    case activetool of
       tool_none : begin
                     { place a test tree billboard }
-                    g := GTreeBuilder.BuildGraphics( Viewport1, pos, 1 );
-                    Viewport1.Items.Add( g );
+(*                    g := GTreeBuilder.BuildGraphics( Viewport1, pos, 1 );
+                    Viewport1.Items.Add( g );*)
                   end;
       tool_brush : fClient.Send( 'paint '+params+','+
                                   inttostr( encodesplatcell( RedSlider.Value, GreenSlider.Value, BlueSlider.Value, AlphaSlider.Value, 0, AlphaSlider1.Value ))+','+

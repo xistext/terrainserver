@@ -75,6 +75,8 @@ function TBuilder_TileObj.BuildSceneFromX3DRoot( aowner : TComponent;
    result.RenderOptions.WholeSceneManifold := true;
    result.Load( Root, true );
    result.ReceiveShadowVolumes := false;
+   result.CastShadowVolumes := false;
+   result.CastShadows := true;
    result.RenderOptions.Blending := false;
  end;
 

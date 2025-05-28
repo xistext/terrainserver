@@ -441,7 +441,7 @@ procedure TTerTile.InitializeWithDefaults;
          objlist.atinsert( treerec, i );
          inc( x );
        end;
-    until x = 99;
+    until x = 999;
  end;
 {$endif}
 

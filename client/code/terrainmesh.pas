@@ -184,8 +184,8 @@ constructor TTerrainMesh.create( aowner : TComponent );
  begin
    inherited create( aowner );
    LinkedTile := nil;
-   renderoptions.WholeSceneManifold := true;
-   self.ReceiveShadowVolumes := true;
+//   renderoptions.WholeSceneManifold := true;
+   receiveshadowvolumes := false;
  end;
 
 constructor TTerrainMesh.create2( aowner : TComponent;
@@ -199,11 +199,10 @@ var sz : single;
       UpdateSize;
       sz := GDefGridCellCount * GDefGridStep;
     end;
-   renderoptions.WholeSceneManifold := true;
+//   renderoptions.WholeSceneManifold := true;
    RenderOptions.WireframeEffect := weSilhouette;
-   CastShadowVolumes := true;
-   CastShadows := true;
-   ReceiveShadowVolumes := true;
+//   CastShadows := true;
+   receiveshadowvolumes := false;
 end;
 
 function TTerrainMesh.offset : TVector2;

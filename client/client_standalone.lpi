@@ -22,9 +22,9 @@
             <Filename Value="terclient"/>
           </Target>
           <SearchPaths>
-            <IncludeFiles Value="code;your/path/to/Indy10/Core;your/path/to/Indy10/System;$(ProjOutDir)"/>
-            <OtherUnitFiles Value="code;your/path/to/Indy10/Core;your/path/to/Indy10/System"/>
-            <UnitOutputDirectory Value="castle-engine-output/standalone/lazarus-lib/$(TargetCPU)-$(TargetOS)"/>
+            <IncludeFiles Value="code;$(ProjOutDir);../../cge/src/common_includes;../../cge/src/scene;../commoncode"/>
+            <OtherUnitFiles Value="code;C:/Users/erik/AppData/Local/lazarus/onlinepackagemanager/packages/Indy10/Core/;C:/Users/erik/AppData/Local/lazarus/onlinepackagemanager/packages/Indy10/System/;../../cge/src/common_includes;../commoncode"/>
+            <UnitOutputDirectory Value="/TerrainServer/build/client"/>
           </SearchPaths>
           <CodeGeneration>
             <SmartLinkUnit Value="True"/>
@@ -32,7 +32,7 @@
               <IOChecks Value="True"/>
             </Checks>
             <Optimizations>
-              <OptimizationLevel Value="2"/>
+              <OptimizationLevel Value="3"/>
             </Optimizations>
           </CodeGeneration>
           <Linking>

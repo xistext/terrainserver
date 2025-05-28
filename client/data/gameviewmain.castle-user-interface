@@ -34,6 +34,8 @@
             "$Children" : [
               {
                 "$$ClassName" : "TCastleTransform",
+                "CastShadows" : false,
+                "Collides" : false,
                 "Name" : "GridPlane",
                 "RotationPersistent" : {
                   "$$ClassName" : "TCastleVector4RotationPersistent",
@@ -179,16 +181,54 @@
                 },
                 "CastShadows" : false,
                 "Collides" : false,
+                "Exists" : false,
                 "Intensity" : 5.0000000000000000E+000,
                 "Name" : "PointLight1",
                 "Pickable" : false,
                 "Radius" : 5.0000000000000000E+003,
-                "Shadows" : true,
                 "TranslationPersistent" : {
                   "$$ClassName" : "TCastleVector3Persistent",
                   "Y" : 2.0000000000000000E+003,
                   "Z" : 2.0000000000000000E+003
-                }
+                },
+                "Visible" : false
+              },
+              {
+                "$$ClassName" : "TCastleDirectionalLight",
+                "CastShadows" : false,
+                "Intensity" : 1.0000000000000000E+001,
+                "Name" : "DirectionalLight1",
+                "RotationPersistent" : {
+                  "$$ClassName" : "TCastleVector4RotationPersistent",
+                  "W" : 1.2599999904632568E+000,
+                  "X" : -3.0000001192092896E-001,
+                  "Y" : 9.1000002622604370E-001,
+                  "Z" : 2.8000000119209290E-001
+                },
+                "Shadows" : true
+              },
+              {
+                "$$ClassName" : "TCastleSpotLight",
+                "AttenuationPersistent" : {
+                  "$$ClassName" : "TCastleVector3Persistent",
+                  "Z" : 0.0000000000000000E+000
+                },
+                "CastShadows" : false,
+                "CutOffAngle" : 1.5700000524520874E+000,
+                "Exists" : false,
+                "Intensity" : 1.0000000000000000E+001,
+                "Name" : "SpotLight1",
+                "Radius" : 5.0000000000000000E+003,
+                "RotationPersistent" : {
+                  "$$ClassName" : "TCastleVector4RotationPersistent",
+                  "Z" : 1.0000000000000000E+000
+                },
+                "TranslationPersistent" : {
+                  "$$ClassName" : "TCastleVector3Persistent",
+                  "Y" : 2.0000000000000000E+003,
+                  "Z" : 2.0000000000000000E+003
+                },
+                "Visible" : false
               },
               {
                 "$$ClassName" : "TCastlePointLight",
@@ -202,6 +242,7 @@
                   "$$ClassName" : "TCastleColorRGBPersistent",
                   "Red" : 9.3725490570068359E-001
                 },
+                "Exists" : false,
                 "Intensity" : 2.9000000953674316E+000,
                 "Name" : "AmbientLight",
                 "Pickable" : false,
@@ -210,7 +251,8 @@
                   "$$ClassName" : "TCastleVector3Persistent",
                   "Y" : 2.0000000000000000E+003,
                   "Z" : -2.0000000000000000E+003
-                }
+                },
+                "Visible" : false
               },
               {
                 "$$ClassName" : "TCastleTransform",
@@ -1872,7 +1914,7 @@
                     "Green" : 1.2156862765550613E-001,
                     "Red" : 1.2156862765550613E-001
                   },
-                  "Height" : 2.0000000000000000E+001,
+                  "Height" : 4.0000000000000000E+001,
                   "HorizontalAnchorParent" : "hpRight",
                   "HorizontalAnchorSelf" : "hpRight",
                   "Name" : "ServerPanel",
@@ -1905,6 +1947,31 @@
                         "X" : 2.0000000000000000E+001
                       },
                       "Width" : 1.9000000000000000E+002
+                    },
+                    {
+                      "$$ClassName" : "TCastleEdit",
+                      "AutoOnScreenKeyboard" : true,
+                      "AutoSizeHeight" : false,
+                      "BackgroundColorPersistent" : {
+                        "$$ClassName" : "TCastleColorPersistent",
+                        "Alpha" : 7.4901962280273438E-001
+                      },
+                      "CaptureAllInput" : false,
+                      "FontScale" : 5.0000000000000000E-001,
+                      "Frame" : false,
+                      "Height" : 2.0000000000000000E+001,
+                      "Name" : "EditHostName",
+                      "OutlineColorPersistent" : {
+                        "$$ClassName" : "TCastleColorPersistent",
+                        "Alpha" : 0.0000000000000000E+000
+                      },
+                      "Text" : "localhost",
+                      "TranslationPersistent" : {
+                        "$$ClassName" : "TCastleVector2Persistent",
+                        "X" : 2.0000000000000000E+001,
+                        "Y" : 2.0000000000000000E+001
+                      },
+                      "Width" : 9.0000000000000000E+001
                     },
                     {
                       "$$ClassName" : "TCastleButton",

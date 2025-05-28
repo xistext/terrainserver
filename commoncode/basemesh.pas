@@ -327,20 +327,24 @@ procedure TLiteMesh.initializedata( texture : boolean = false );
      Triangles : TIndexedTriangleSetNode;
      Appearance: TAppearanceNode;
      Shape : TShapeNode;
+     texcoords : TTextureCoordinateNode;
+     coords : TCoordinateNode;
  begin
    inherited;
 
    Triangles := initTriangles;
    if texture then
     begin
-      Triangles.TexCoord := TTextureCoordinateNode.Create;
-      initverticeswithtexture(TCoordinateNode( Triangles.Coord ),
-                              TTextureCoordinateNode(Triangles.TexCoord));
+      texcoords := TTextureCoordinateNode.Create;
+      Triangles.TexCoord := texcoords;
+      coords := TCoordinateNode( Triangles.Coord );
+      initverticeswithtexture( coords, texcoords);
       initnormals( Triangles );
     end
    else
     begin
-      initvertices( TCoordinateNode( Triangles.Coord ));
+      coords := TCoordinateNode( Triangles.Coord );
+      initvertices( coords );
       initnormals( Triangles );
     end;
 
