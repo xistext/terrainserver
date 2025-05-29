@@ -360,6 +360,7 @@ function TTreeBuilder.BuildGraphicsList( aowner    : TComponent;
        begin
          BuildRec := buildlist[i];
          shape := buildRotatedEdgeSolid( aowner, 'castle-data:/testtree.png', buildrec.WorldPosition, buildrec.WorldSize );
+         shape.Appearance.ShadowCaster := true ;
          Root.AddChildren( Shape );
        end;
       result := buildSceneFromX3dRoot( aowner, root );

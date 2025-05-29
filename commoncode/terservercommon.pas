@@ -6,7 +6,6 @@ unit terservercommon;
 interface
 
 uses classes, sysutils,
-//     idglobal, { indy }
      basetools;
 
 type tmsgtype = dword;

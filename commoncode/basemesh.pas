@@ -321,6 +321,7 @@ procedure TAbstractMesh.UpdateNormals( Triangle : TIndexedTriangleSetNode );
 
 
 //-------------------------------------
+const first : boolean = true;
 
 procedure TLiteMesh.initializedata( texture : boolean = false );
  var Root : TX3DRootNode;
@@ -329,6 +330,8 @@ procedure TLiteMesh.initializedata( texture : boolean = false );
      Shape : TShapeNode;
      texcoords : TTextureCoordinateNode;
      coords : TCoordinateNode;
+     light : TSpotLightNode;
+     shadowmap : TGeneratedShadowMapNode;
  begin
    inherited;
 
@@ -351,11 +354,29 @@ procedure TLiteMesh.initializedata( texture : boolean = false );
    Shape := TShapeNode.Create;
    Shape.Geometry := Triangles;
 
+   Light := TSpotLightNode.Create;
+   Light.Attenuation := vector3(0,0,0);
+   Light.Radius := 200;
+   Light.Location := vector3( 0, 10, 0 );
+   Light.direction := vector3( 0, -1, 0 );
+   Light.Shadows := true;
+   Light.Intensity := 20;
+   Light.CutOffAngle := 1;
+
    Appearance := InitAppearance;
+   Appearance.ShadowCaster := true;
+   Appearance.SetReceiveShadows([Light]);
    Shape.Appearance := Appearance;
+
+   shadowmap := TGeneratedShadowMapNode.Create;
+   shadowmap.Update := upNextFrameOnly;
+   shadowmap.Size := 1024;
+   Light.DefaultShadowMap := shadowmap;
 
    Root := TX3DRootNode.Create;
    Root.AddChildren( Shape );
+   Root.AddChildren( Light );
+
 
    Load(Root, true );
    UpdateMeshProperties;
