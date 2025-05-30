@@ -196,17 +196,13 @@
               {
                 "$$ClassName" : "TCastleDirectionalLight",
                 "CastShadows" : false,
-                "Exists" : false,
-                "Intensity" : 1.0000000000000000E+001,
+                "Intensity" : 4.0000000000000000E+000,
                 "Name" : "DirectionalLight1",
                 "RotationPersistent" : {
                   "$$ClassName" : "TCastleVector4RotationPersistent",
-                  "W" : 1.2599999904632568E+000,
-                  "X" : -3.0000001192092896E-001,
-                  "Y" : 9.1000002622604370E-001,
-                  "Z" : 2.8000000119209290E-001
-                },
-                "Shadows" : true
+                  "W" : -7.7999997138977051E-001,
+                  "X" : 1.0000000000000000E+000
+                }
               },
               {
                 "$$ClassName" : "TCastleSpotLight",
@@ -2095,9 +2091,9 @@
             },
             "TranslationPersistent" : {
               "$$ClassName" : "TCastleVector3Persistent",
-              "X" : 7.6044427490234375E+002,
-              "Y" : 9.9381610107421875E+002,
-              "Z" : 1.0512987060546875E+003
+              "X" : 6.5197558593750000E+002,
+              "Y" : 9.8546087646484375E+002,
+              "Z" : 1.0564681396484375E+003
             }
           },
           "InternalDesignNavigations[dnFly]" : {

@@ -333,7 +333,7 @@ procedure TLiteMesh.initializedata( texture : boolean = false;
      Shape : TShapeNode;
      texcoords : TTextureCoordinateNode;
      coords : TCoordinateNode;
-     light : TSpotLightNode;
+     light : TDirectionalLightNode;
      shadowmap : TGeneratedShadowMapNode;
  begin
    inherited;
@@ -361,14 +361,10 @@ procedure TLiteMesh.initializedata( texture : boolean = false;
    Shape.Appearance := Appearance;
    if useshadowmap then
     begin
-      Light := TSpotLightNode.Create;
-      Light.Attenuation := vector3(0,0,0);
-      Light.Radius := 200;
-      Light.Location := vector3( 0, 10, 10 );
+      Light := TDirectionalLightNode.Create;
       Light.direction := vector3( 0, -1, -1 );
       Light.Shadows := true;
-      Light.Intensity := 10;
-      Light.CutOffAngle := 1;
+      Light.Intensity := 5;
 
       shadowmap := TGeneratedShadowMapNode.Create;
       shadowmap.Update := upNextFrameOnly;
