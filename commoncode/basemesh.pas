@@ -14,7 +14,8 @@ TTexCoords = array of TVector2;
 TAbstractMesh = class( TCastleScene )
    public
 
-   procedure InitializeData( texture : boolean = false ); dynamic;
+   procedure InitializeData( texture : boolean = false;
+                             useshadowmap : boolean = false ); dynamic;
    procedure UpdateMeshProperties; dynamic;
 
    function offset : TVector2; dynamic;
@@ -65,7 +66,8 @@ TAbstractMesh = class( TCastleScene )
 TLiteMesh = class( TAbstractMesh )
    public
 
-   procedure InitializeData( texture : boolean = false ); override;
+   procedure InitializeData( texture : boolean = false;
+                             useshadowmap : boolean = false  ); override;
 
    procedure InitVertices( Coord : TCoordinateNode ); override;
    function InitTexture( TextureUrl : string ) : TImageTextureNode;
@@ -251,7 +253,8 @@ function TAbstractMesh.initmaterial : TPhysicalMaterialNode;
    Result := TPhysicalMaterialNode.Create;
  end;
 
-procedure TAbstractMesh.initializedata( texture : boolean = false );
+procedure TAbstractMesh.initializedata( texture : boolean = false;
+                                        useshadowmap : boolean = false  );
  begin
  end;
 
@@ -321,9 +324,9 @@ procedure TAbstractMesh.UpdateNormals( Triangle : TIndexedTriangleSetNode );
 
 
 //-------------------------------------
-const first : boolean = true;
 
-procedure TLiteMesh.initializedata( texture : boolean = false );
+procedure TLiteMesh.initializedata( texture : boolean = false;
+                                    useshadowmap : boolean = false  );
  var Root : TX3DRootNode;
      Triangles : TIndexedTriangleSetNode;
      Appearance: TAppearanceNode;
@@ -351,32 +354,31 @@ procedure TLiteMesh.initializedata( texture : boolean = false );
       initnormals( Triangles );
     end;
 
+   Root := TX3DRootNode.Create;
    Shape := TShapeNode.Create;
    Shape.Geometry := Triangles;
-
-   Light := TSpotLightNode.Create;
-   Light.Attenuation := vector3(0,0,0);
-   Light.Radius := 200;
-   Light.Location := vector3( 0, 10, 0 );
-   Light.direction := vector3( 0, -1, 0 );
-   Light.Shadows := true;
-   Light.Intensity := 20;
-   Light.CutOffAngle := 1;
-
    Appearance := InitAppearance;
-   Appearance.ShadowCaster := true;
-   Appearance.SetReceiveShadows([Light]);
    Shape.Appearance := Appearance;
+   if useshadowmap then
+    begin
+      Light := TSpotLightNode.Create;
+      Light.Attenuation := vector3(0,0,0);
+      Light.Radius := 200;
+      Light.Location := vector3( 0, 10, 10 );
+      Light.direction := vector3( 0, -1, -1 );
+      Light.Shadows := true;
+      Light.Intensity := 10;
+      Light.CutOffAngle := 1;
 
-   shadowmap := TGeneratedShadowMapNode.Create;
-   shadowmap.Update := upNextFrameOnly;
-   shadowmap.Size := 1024;
-   Light.DefaultShadowMap := shadowmap;
+      shadowmap := TGeneratedShadowMapNode.Create;
+      shadowmap.Update := upNextFrameOnly;
+      shadowmap.Size := 1024;
+      Light.DefaultShadowMap := shadowmap;
 
-   Root := TX3DRootNode.Create;
+      Root.AddChildren( Light );
+    end;
+
    Root.AddChildren( Shape );
-   Root.AddChildren( Light );
-
 
    Load(Root, true );
    UpdateMeshProperties;

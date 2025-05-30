@@ -335,7 +335,7 @@ void PLUG_main_texture_apply(inout vec4 fragment_color, const in vec3 normal)
        case 1 : drawcontourstripe( terrain_color, h );
                 break;
     }
-  }	
+  }
   fragment_color.rgb = terrain_color;
 }
 

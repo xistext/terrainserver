@@ -219,7 +219,7 @@ function TTerrainMesh.offset : TVector2;
 
 procedure TTerrainMesh.UpdateSize;
  begin
-   InitializeData;
+   InitializeData( true, true );
  end;
 
 procedure TTerrainMesh.setGridCount( iGridCount : integer );
@@ -366,17 +366,20 @@ var Appearance : TAppearanceNode;
    if assigned( rootnode ) then
     begin
       Appearance := TAppearanceNode( rootnode.FindNode( TAppearanceNode, true ));
-      EffectNode := TEffectNode( Appearance.fdEffects[0] );
+      if Appearance.FdEffects.Count > 0 then
+       begin
+         EffectNode := TEffectNode( Appearance.fdEffects[0] );
 
-      splatmap := TMFLong( EffectNode.Field('splatmap', false ));
-      for x := 0 to splatgrid.wh - 1 do
-         for y := 0 to splatgrid.wh -1 do
-          begin
-            i := pinteger( SplatGrid.ptrxy( x, y ))^;
+         splatmap := TMFLong( EffectNode.Field('splatmap', false ));
+         for x := 0 to splatgrid.wh - 1 do
+            for y := 0 to splatgrid.wh -1 do
+             begin
+               i := pinteger( SplatGrid.ptrxy( x, y ))^;
 
-            Splatmap.Items[x*splatgrid.wh+splatgrid.wh -1-y] := i;
-          end;
-      ChangedAll( true );
+               Splatmap.Items[x*splatgrid.wh+splatgrid.wh -1-y] := i;
+             end;
+         ChangedAll( true );
+       end;
     end;
  end;
 
@@ -442,7 +445,7 @@ constructor TWaterMesh.create2( aowner : TComponent;
 
 procedure TWaterMesh.UpdateSize;
  begin
-   initializedata( true );
+   initializedata( true, false );
  end;
 
 function TWaterMesh.InitAppearance : TAppearanceNode;
