@@ -12,6 +12,38 @@ type
 
 TTexCoords = array of TVector2;
 
+TTriMesh = class( TIndexedTriangleSetNode ) { mirror TAbstractMesh and TLiteMesh based on x3d instead of TCastleScene }
+
+   constructor Create(const AX3DName: string = ''; const ABaseUrl: String = ''); override;
+
+   protected
+
+   function CoordinateNode : TCoordinateNode;
+
+   function initindexes : TInt32List;
+   function InitAppearance : TAppearanceNode; dynamic;
+   function InitMaterial : TPhysicalMaterialNode; dynamic;
+
+   procedure InitNormals;
+
+   private
+
+   procedure setGridCount( iGridCount : integer ); dynamic; abstract;
+   function getGridCount : integer; dynamic; abstract;
+
+   procedure setGridStep( iGridStep : single ); dynamic; abstract;
+   function getGridStep : single; dynamic; abstract;
+
+   function getcellcount : integer;
+
+   public
+
+   property GridCount : integer read getGridCount write setGridCount;
+   property GridStep  : single read getGridStep write setGridStep;
+   property CellCount : integer read getCellCount;
+
+ end;
+
 TAbstractMesh = class( TCastleScene )
    public
 
@@ -87,6 +119,78 @@ TLiteMesh = class( TAbstractMesh )
 end;
 
 implementation
+
+
+constructor TTriMesh.Create(const AX3DName: string = ''; const ABaseUrl: String = '');
+ begin
+   inherited;
+   Coord := TCoordinateNode.Create;
+   SetIndex( InitIndexes );
+
+ end;
+
+function TTriMesh.getcellcount : integer;
+ begin
+   result := GridCount - 1;
+ end;
+
+function TTriMesh.initindexes : TInt32List;
+var X, Z, c : integer;
+begin
+  Result := TInt32List.Create;
+  c := GridCount;
+  for X:= 1 to c - 1 do for Z := 1 to c - 1 do with Result do
+   begin
+     { triangle1 }
+     Add( c * Z + X );
+     Add( c * ( Z - 1 ) + X );
+     Add( c * ( Z - 1 ) + X - 1 );
+     { triangle2 }
+     Add( c * Z + X );
+     Add( c * ( Z - 1 ) + X - 1 );
+     Add( c * Z + X - 1 );
+   end;
+end;
+
+function TTriMesh.CoordinateNode : TCoordinateNode;
+ begin
+   result := TCoordinateNode( Coord );
+ end;
+
+function TTriMesh.InitAppearance : TAppearanceNode;
+ begin
+   result := TAppearanceNode.create;
+     { make the material lit }
+   result.Material := initMaterial;
+ end;
+
+function TTriMesh.initmaterial : TPhysicalMaterialNode;
+ begin
+   Result := TPhysicalMaterialNode.Create;
+ end;
+
+procedure TTriMesh.InitNormals;
+ var normalnode : TNormalNode;
+     Normals : TVector3List;
+     gCount : integer;
+     ix : integer;
+ begin
+   NormalNode := TNormalNode.Create;
+   Normals := TVector3List.Create;
+   gCount := Coord.CoordCount;
+   Normals.Count := gCount;
+   ix := 0;
+   while ix < gcount do
+    begin
+      Normals[ix] := Vector3(0,1,0);
+      inc( ix );
+    end;
+   NormalNode.SetVector(Normals);
+   Normal := NormalNode;
+ end;
+
+
+//----------------------
 
 function TAbstractMesh.getcellcount : integer;
  begin

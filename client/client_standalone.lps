@@ -4,11 +4,11 @@
     <PathDelim Value="\"/>
     <Version Value="12"/>
     <BuildModes Active="Release"/>
-    <Units Count="40">
+    <Units Count="41">
       <Unit0>
         <Filename Value="client_standalone.dpr"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="9"/>
+        <EditorIndex Value="10"/>
         <TopLine Value="9"/>
         <CursorPos Y="70"/>
         <UsageCount Value="203"/>
@@ -45,8 +45,8 @@
         <Filename Value="code\terrainmesh.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="5"/>
-        <TopLine Value="402"/>
-        <CursorPos X="17" Y="463"/>
+        <TopLine Value="27"/>
+        <CursorPos X="28" Y="38"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
       </Unit5>
@@ -54,7 +54,7 @@
         <Filename Value="code\treebuilder.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TreeBuilder"/>
-        <EditorIndex Value="11"/>
+        <EditorIndex Value="12"/>
         <TopLine Value="325"/>
         <CursorPos X="57" Y="357"/>
         <UsageCount Value="263"/>
@@ -94,7 +94,7 @@
       <Unit11>
         <Filename Value="..\commoncode\terraindata.pas"/>
         <UnitName Value="TerrainData"/>
-        <EditorIndex Value="8"/>
+        <EditorIndex Value="9"/>
         <TopLine Value="127"/>
         <CursorPos X="19" Y="156"/>
         <UsageCount Value="106"/>
@@ -116,9 +116,10 @@
       </Unit13>
       <Unit14>
         <Filename Value="..\commoncode\basemesh.pas"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="7"/>
-        <TopLine Value="338"/>
-        <CursorPos X="4" Y="384"/>
+        <TopLine Value="130"/>
+        <CursorPos X="4" Y="189"/>
         <UsageCount Value="103"/>
         <Loaded Value="True"/>
       </Unit14>
@@ -278,151 +279,156 @@
         <EditorIndex Value="6"/>
         <TopLine Value="68"/>
         <CursorPos X="72" Y="84"/>
-        <UsageCount Value="17"/>
+        <UsageCount Value="19"/>
         <Loaded Value="True"/>
       </Unit36>
       <Unit37>
         <Filename Value="E:\cge\src\scene\x3d\x3dnodes_standard_lighting.inc"/>
-        <EditorIndex Value="10"/>
+        <EditorIndex Value="11"/>
         <TopLine Value="236"/>
         <CursorPos X="3" Y="267"/>
-        <UsageCount Value="17"/>
+        <UsageCount Value="19"/>
         <Loaded Value="True"/>
       </Unit37>
       <Unit38>
         <Filename Value="code\baselight.pas"/>
-        <EditorIndex Value="12"/>
+        <EditorIndex Value="13"/>
         <CursorPos X="46" Y="7"/>
-        <UsageCount Value="14"/>
+        <UsageCount Value="16"/>
         <Loaded Value="True"/>
       </Unit38>
       <Unit39>
         <Filename Value="..\commoncode\livetime.pas"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
         <CursorPos X="31" Y="13"/>
-        <UsageCount Value="12"/>
+        <UsageCount Value="14"/>
         <Loaded Value="True"/>
       </Unit39>
+      <Unit40>
+        <Filename Value="E:\cge\src\scene\x3d\x3dnodes_standard_rendering.inc"/>
+        <EditorIndex Value="8"/>
+        <TopLine Value="19"/>
+        <CursorPos Y="74"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit40>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="..\commoncode\livetime.pas"/>
-        <Caret Line="13" Column="32"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="78" Column="28" TopLine="31"/>
       </Position1>
       <Position2>
-        <Filename Value="..\commoncode\livetime.pas"/>
-        <Caret Line="24" Column="50"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="297" Column="39" TopLine="236"/>
       </Position2>
       <Position3>
-        <Filename Value="code\gameviewmain.pas"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Column="35"/>
       </Position3>
       <Position4>
-        <Filename Value="code\gameviewmain.pas"/>
-        <Caret Line="145" Column="26" TopLine="92"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="35" Column="26"/>
       </Position4>
       <Position5>
-        <Filename Value="code\gameviewmain.pas"/>
-        <Caret Line="292" Column="24" TopLine="238"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Column="8"/>
       </Position5>
       <Position6>
-        <Filename Value="code\gameviewmain.pas"/>
-        <Caret Line="297" Column="23" TopLine="243"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="19" Column="24"/>
       </Position6>
       <Position7>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="16" Column="106" TopLine="6"/>
+        <Caret Line="34" Column="24"/>
       </Position7>
       <Position8>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="393" Column="20" TopLine="354"/>
       </Position8>
       <Position9>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Column="20"/>
+        <Caret Line="19" Column="24"/>
       </Position9>
       <Position10>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="324" Column="31" TopLine="270"/>
+        <Caret Line="34" Column="24"/>
       </Position10>
       <Position11>
-        <Filename Value="code\gameviewmain.pas"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="109" Column="35" TopLine="55"/>
       </Position11>
       <Position12>
-        <Filename Value="code\gameviewmain.pas"/>
-        <Caret Line="297" Column="23" TopLine="243"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
       </Position12>
       <Position13>
-        <Filename Value="code\gameviewmain.pas"/>
-        <Caret Line="305" Column="35" TopLine="246"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="40" Column="38"/>
       </Position13>
       <Position14>
-        <Filename Value="code\gameviewmain.pas"/>
-        <Caret Line="256" Column="48" TopLine="246"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="41" Column="25"/>
       </Position14>
       <Position15>
-        <Filename Value="code\gameviewmain.pas"/>
-        <Caret Line="297" Column="23" TopLine="246"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="3" Column="4" TopLine="3"/>
       </Position15>
       <Position16>
-        <Filename Value="code\gameviewmain.pas"/>
-        <Caret Line="310" Column="10" TopLine="251"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="31" Column="25" TopLine="3"/>
       </Position16>
       <Position17>
-        <Filename Value="code\treebuilder.pas"/>
-        <Caret Line="371" Column="57" TopLine="325"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="37" Column="50" TopLine="3"/>
       </Position17>
       <Position18>
-        <Filename Value="code\gameviewmain.pas"/>
-        <Caret Line="512" Column="26" TopLine="482"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="64" Column="25" TopLine="10"/>
       </Position18>
       <Position19>
-        <Filename Value="..\commoncode\terraindata.pas"/>
-        <Caret Line="156" Column="19" TopLine="127"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="76" Column="50" TopLine="22"/>
       </Position19>
       <Position20>
-        <Filename Value="code\gameviewmain.pas"/>
-        <Caret Line="512" TopLine="482"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="122" TopLine="63"/>
       </Position20>
       <Position21>
-        <Filename Value="code\terrainmesh.pas"/>
-        <Caret Column="19"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="23" TopLine="14"/>
       </Position21>
       <Position22>
-        <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="188" Column="17" TopLine="134"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
       </Position22>
       <Position23>
-        <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="204" Column="16" TopLine="150"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="56" Column="27" TopLine="2"/>
       </Position23>
       <Position24>
-        <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="205" Column="17" TopLine="151"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Column="18"/>
       </Position24>
       <Position25>
-        <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="441" Column="14" TopLine="387"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="24" Column="25"/>
       </Position25>
       <Position26>
-        <Filename Value="code\terrainmesh.pas"/>
-        <Caret Line="442" Column="14" TopLine="388"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="25" Column="59"/>
       </Position26>
       <Position27>
-        <Filename Value="code\gameviewmain.pas"/>
-        <Caret Column="46"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Column="4"/>
       </Position27>
       <Position28>
-        <Filename Value="code\gameviewmain.pas"/>
-        <Caret Line="145" Column="35" TopLine="92"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="126" Column="12" TopLine="72"/>
       </Position28>
       <Position29>
-        <Filename Value="code\gameviewmain.pas"/>
-        <Caret Line="297" Column="32" TopLine="243"/>
+        <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="15" Column="42"/>
       </Position29>
       <Position30>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="384" Column="4" TopLine="338"/>
       </Position30>
     </JumpHistory>
     <RunParams>
