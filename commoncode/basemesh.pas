@@ -19,12 +19,16 @@ TTriMesh = class( TIndexedTriangleSetNode ) { mirror TAbstractMesh and TLiteMesh
    protected
 
    function CoordinateNode : TCoordinateNode;
+   function TexCoordinates : TTextureCoordinateNode;
 
    function initindexes : TInt32List;
    function InitAppearance : TAppearanceNode; dynamic;
    function InitMaterial : TPhysicalMaterialNode; dynamic;
+   procedure InitVertices;
+   procedure InitVerticesWithTexture;
 
    procedure InitNormals;
+   function offset : TVector2; dynamic;
 
    private
 
@@ -115,7 +119,6 @@ TLiteMesh = class( TAbstractMesh )
    procedure InitVerticesWithTexture( var Coord : TCoordinateNode;
                                       var TexCoord : TTextureCoordinateNode );
 
-
 end;
 
 implementation
@@ -132,6 +135,11 @@ constructor TTriMesh.Create(const AX3DName: string = ''; const ABaseUrl: String 
 function TTriMesh.getcellcount : integer;
  begin
    result := GridCount - 1;
+ end;
+
+function TTriMesh.offset : TVector2;
+ begin
+   result := vector2(0,0);
  end;
 
 function TTriMesh.initindexes : TInt32List;
@@ -157,6 +165,11 @@ function TTriMesh.CoordinateNode : TCoordinateNode;
    result := TCoordinateNode( Coord );
  end;
 
+function TTriMesh.TexCoordinates : TTextureCoordinateNode;
+ begin
+   result := TTextureCoordinateNode( TexCoord );
+ end;
+
 function TTriMesh.InitAppearance : TAppearanceNode;
  begin
    result := TAppearanceNode.create;
@@ -168,6 +181,79 @@ function TTriMesh.initmaterial : TPhysicalMaterialNode;
  begin
    Result := TPhysicalMaterialNode.Create;
  end;
+
+procedure TTriMesh.InitVertices;
+ var Vertices  : TVector3List;
+     step, sz2 : single;
+     i, j, vcount : integer;
+     VertexPtr : ^TVector3;
+     Vertex : TVector3;
+     GCount : integer;
+     aOffset : TVector2;
+ begin
+   aoffset := offset;
+   step := gridstep;
+   GCount := GridCount;
+   vcount := GCount * GCount;
+   Vertices := TVector3List.Create;
+   Vertices.Count := vcount;
+   VertexPtr := Vertices.Ptr(0);
+   sz2 := CellCount * Step * 0.5;
+   vertex.y := 0;
+   vertex.z := aoffset.y-sz2;
+   for i := 0 to GCount - 1 do
+    begin
+      Vertex.x := aoffset.x-sz2; { world x offset to align tiles }
+      for j := 0 to GCount - 1 do
+       begin
+         VertexPtr^ := Vertex;
+         vertex.x := vertex.x + step;
+         inc( vertexptr );
+       end;
+      vertex.z := vertex.z + step;
+    end;
+   CoordinateNode.SetPoint( Vertices );
+   Vertices.Free;
+ end;
+
+procedure TTriMesh.InitVerticesWithTexture;
+ var Vertices  : TVector3List;
+     step, sz2 : single;
+     i, j, vcount : integer;
+     VertexPtr : ^TVector3;
+     Vertex : TVector3;
+     TexCoords : TVector2List;
+     aOffset : TVector2;
+ begin
+   aoffset := offset;
+   step := gridstep;
+   Vertices := TVector3List.Create;
+   vcount := GridCount * GridCount;
+   Vertices.Count := vcount;
+   VertexPtr := Vertices.Ptr(0);
+   TexCoords := TVector2List.Create;
+   TexCoords.Capacity := vcount;
+   sz2 := CellCount * Step * 0.5;
+   vertex.y := 0;
+   vertex.z := aoffset.y-sz2;
+   for i := 0 to GridCount - 1 do
+    begin
+      Vertex.x := aoffset.x-sz2; { world x offset to align tiles }
+      for j := 0 to GridCount - 1 do
+       begin
+         VertexPtr^ := Vertex;
+         vertex.x := vertex.x + step;
+         TexCoords.Add(Vector2(0,0));
+         inc( vertexptr );
+       end;
+      vertex.z := vertex.z + step;
+    end;
+   CoordinateNode.SetPoint( Vertices );
+   TexCoordinates.SetPoint(TexCoords);
+   Vertices.Free;
+   TexCoords.Free;
+ end;
+
 
 procedure TTriMesh.InitNormals;
  var normalnode : TNormalNode;

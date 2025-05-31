@@ -118,8 +118,8 @@
         <Filename Value="..\commoncode\basemesh.pas"/>
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="7"/>
-        <TopLine Value="130"/>
-        <CursorPos X="4" Y="189"/>
+        <TopLine Value="222"/>
+        <CursorPos X="18" Y="252"/>
         <UsageCount Value="103"/>
         <Loaded Value="True"/>
       </Unit14>
@@ -316,119 +316,123 @@
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="78" Column="28" TopLine="31"/>
+        <Caret Line="93" Column="21" TopLine="65"/>
       </Position1>
       <Position2>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="297" Column="39" TopLine="236"/>
+        <Caret Line="109" Column="27" TopLine="64"/>
       </Position2>
       <Position3>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Column="35"/>
+        <Caret Column="34"/>
       </Position3>
       <Position4>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="35" Column="26"/>
+        <Caret Line="23"/>
       </Position4>
       <Position5>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Column="8"/>
+        <Caret Line="110" Column="27" TopLine="56"/>
       </Position5>
       <Position6>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="19" Column="24"/>
+        <Caret Line="104" Column="49" TopLine="75"/>
       </Position6>
       <Position7>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="34" Column="24"/>
+        <Caret Line="107" Column="26" TopLine="75"/>
       </Position7>
       <Position8>
         <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="116" Column="26" TopLine="75"/>
       </Position8>
       <Position9>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="19" Column="24"/>
+        <Caret Line="460" Column="19" TopLine="406"/>
       </Position9>
       <Position10>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="34" Column="24"/>
+        <Caret Line="466" Column="19" TopLine="412"/>
       </Position10>
       <Position11>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="109" Column="35" TopLine="55"/>
+        <Caret Line="28"/>
       </Position11>
       <Position12>
         <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="64" Column="25" TopLine="10"/>
       </Position12>
       <Position13>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="40" Column="38"/>
+        <Caret Line="21" Column="53"/>
       </Position13>
       <Position14>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="41" Column="25"/>
+        <Caret Line="28" Column="37" TopLine="5"/>
       </Position14>
       <Position15>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="3" Column="4" TopLine="3"/>
+        <Caret Line="118" Column="37" TopLine="64"/>
       </Position15>
       <Position16>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="31" Column="25" TopLine="3"/>
+        <Caret Line="496" Column="30" TopLine="442"/>
       </Position16>
       <Position17>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="37" Column="50" TopLine="3"/>
+        <Caret Line="244" TopLine="190"/>
       </Position17>
       <Position18>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="64" Column="25" TopLine="10"/>
+        <Caret Column="15"/>
       </Position18>
       <Position19>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="76" Column="50" TopLine="22"/>
+        <Caret Line="57" Column="19" TopLine="3"/>
       </Position19>
       <Position20>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="122" TopLine="63"/>
+        <Caret Line="186" Column="13" TopLine="132"/>
       </Position20>
       <Position21>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="23" TopLine="14"/>
+        <Caret Line="188" Column="21" TopLine="134"/>
       </Position21>
       <Position22>
         <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="197" Column="23" TopLine="143"/>
       </Position22>
       <Position23>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="56" Column="27" TopLine="2"/>
+        <Caret Line="200" Column="50" TopLine="146"/>
       </Position23>
       <Position24>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Column="18"/>
+        <Caret Line="220" Column="13" TopLine="166"/>
       </Position24>
       <Position25>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="24" Column="25"/>
+        <Caret Line="222" Column="21" TopLine="168"/>
       </Position25>
       <Position26>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="25" Column="59"/>
+        <Caret Line="232" Column="23" TopLine="178"/>
       </Position26>
       <Position27>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Column="4"/>
+        <Caret Line="235" Column="50" TopLine="181"/>
       </Position27>
       <Position28>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="126" Column="12" TopLine="72"/>
+        <Caret Line="31" Column="40"/>
       </Position28>
       <Position29>
         <Filename Value="..\commoncode\basemesh.pas"/>
-        <Caret Line="15" Column="42"/>
+        <Caret Line="215" Column="18" TopLine="184"/>
       </Position29>
       <Position30>
         <Filename Value="..\commoncode\basemesh.pas"/>
+        <Caret Line="251" Column="18" TopLine="221"/>
       </Position30>
     </JumpHistory>
     <RunParams>
