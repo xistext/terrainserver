@@ -5,7 +5,8 @@ interface
 uses
   Classes, SysUtils,
   CastleUtils, CastleVectors, CastleTransform, CastleScene, CastleTriangles,
-  x3dNodes;
+  x3dNodes,
+  baselight;
 
 type
 
@@ -68,6 +69,7 @@ TLiteMesh = class( TAbstractMesh )
 
    procedure InitializeData( texture : boolean = false;
                              useshadowmap : boolean = false  ); override;
+   procedure UpdateLightDirection( const idirection : TVector3 );
 
    procedure InitVertices( Coord : TCoordinateNode ); override;
    function InitTexture( TextureUrl : string ) : TImageTextureNode;
@@ -337,6 +339,7 @@ procedure TLiteMesh.initializedata( texture : boolean = false;
      shadowmap : TGeneratedShadowMapNode;
  begin
    inherited;
+   useshadowmap := true;
 
    Triangles := initTriangles;
    if texture then
@@ -359,27 +362,39 @@ procedure TLiteMesh.initializedata( texture : boolean = false;
    Shape.Geometry := Triangles;
    Appearance := InitAppearance;
    Shape.Appearance := Appearance;
+   Light := TDirectionalLightNode.Create;
+   Light.direction := GLightDirection;
+   Light.Intensity := 10;
+  // Light.Global := true;
    if useshadowmap then
     begin
-      Light := TDirectionalLightNode.Create;
-      Light.direction := vector3( 0, -1, -1 );
       Light.Shadows := true;
-      Light.Intensity := 5;
 
       shadowmap := TGeneratedShadowMapNode.Create;
       shadowmap.Update := upNextFrameOnly;
       shadowmap.Size := 1024;
       Light.DefaultShadowMap := shadowmap;
 
-      Root.AddChildren( Light );
     end;
-
+   Root.AddChildren( Light );
    Root.AddChildren( Shape );
 
    Load(Root, true );
    UpdateMeshProperties;
+ // CastGlobalLights := true;
  end;
 
+procedure TLiteMesh.UpdateLightDirection( const idirection : TVector3 );
+ var light : TDirectionalLightNode;
+ begin
+   light := TDirectionalLightNode( rootnode.FindNode( TDirectionalLightNode, false ));
+   if assigned( light ) then
+    begin
+      light.Direction := idirection;
+      light.DefaultShadowMap.Update := upNextFrameOnly;
+//      self.RootNode.chang;
+    end;
+ end;
 
 procedure TLiteMesh.InitVertices( Coord : TCoordinateNode );
  var Vertices  : TVector3List;

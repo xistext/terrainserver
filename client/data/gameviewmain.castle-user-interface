@@ -196,6 +196,7 @@
               {
                 "$$ClassName" : "TCastleDirectionalLight",
                 "CastShadows" : false,
+                "Exists" : false,
                 "Intensity" : 4.0000000000000000E+000,
                 "Name" : "DirectionalLight1",
                 "RotationPersistent" : {
@@ -239,8 +240,7 @@
                   "$$ClassName" : "TCastleColorRGBPersistent",
                   "Red" : 9.3725490570068359E-001
                 },
-                "Exists" : false,
-                "Intensity" : 2.9000000953674316E+000,
+                "Intensity" : 5.0000000000000000E-001,
                 "Name" : "AmbientLight",
                 "Pickable" : false,
                 "Radius" : 5.0000000000000000E+003,
@@ -1724,6 +1724,7 @@
                         "X" : 8.0000000000000000E+001,
                         "Y" : 6.0000000000000000E+001
                       },
+                      "Value" : 1,
                       "Width" : 1.0000000000000000E+002
                     },
                     {
@@ -1945,6 +1946,7 @@
                     },
                     {
                       "$$ClassName" : "TCastleEdit",
+                      "Alignment" : "hpMiddle",
                       "AutoOnScreenKeyboard" : true,
                       "AutoSizeHeight" : false,
                       "BackgroundColorPersistent" : {
@@ -2056,7 +2058,7 @@
                         "Red" : 4.9803921580314636E-001
                       },
                       "FontSize" : 1.0000000000000000E+001,
-                      "Height" : 2.0000000000000000E+001,
+                      "Height" : 4.0000000000000000E+001,
                       "Image" : {
                         "$$ClassName" : "TCastleImagePersistent",
                         "URL" : "castle-data:/icon/connecticon.png"

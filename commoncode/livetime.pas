@@ -21,7 +21,7 @@ var PercentOfDay : double;
 
 function UpdateGameTime( GameSeconds : single ) : single; { already multiplid by TimeSpeed }
  begin
-   GameTime := GameTime + GameSeconds;
+   GameTime := GameTime + GameSeconds * TimeSpeed;
    PercentOfDay := frac( GameTime * secondsperdayfactor );
    result := PercentOfDay;
  end;

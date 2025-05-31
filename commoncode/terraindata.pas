@@ -12,7 +12,7 @@ uses Classes, SysUtils, Collect,
      {$ifdef terserver}
      castlefindfiles, castlefilesutils,
      {$else}
-     treebuilder,
+     treebuilder, basemesh,
      {$endif}
      livetime,
      math, castletransform, castlewindow,
@@ -151,9 +151,10 @@ type TTileStatus = byte;
         property WaterUpdateTime : single read getWaterUpdateTime write setWaterUpdateTime;
         {$else}
         { client links to graphics }
-        TerrainGraphics : TCastleTransform;
-        WaterGraphics : TCastleTransform;
+        TerrainGraphics : TLiteMesh;
+        WaterGraphics : TLiteMesh;
         procedure BuildTileObjGraphics( parentgraphic : TCastleTransform; LOD : integer = 1 );
+        procedure UpdateLightDirection( const idirection : TVector3 );
         {$endif}
 
         procedure setTerrainGrid( aGrid : TSingleGrid );
@@ -441,7 +442,7 @@ procedure TTerTile.InitializeWithDefaults;
          objlist.atinsert( treerec, i );
          inc( x );
        end;
-    until x = 999;
+    until x = 99;
  end;
 {$endif}
 
@@ -691,7 +692,18 @@ procedure TTerTile.BuildTileObjGraphics( parentgraphic : TCastleTransform; LOD :
    g := GTreeBuilder.BuildGraphicsList( parentgraphic, buildlist );
    parentgraphic.Add( g );
   end;
+
+procedure TTerTile.UpdateLightDirection( const idirection : TVector3 );
+ begin
+   if assigned( TerrainGraphics ) then
+      TerrainGraphics.UpdateLightDirection( idirection );
+   if assigned( WaterGraphics ) then
+      WaterGraphics.UpdateLightDirection( idirection );
+ end;
+
 {$endif}
+
+
 
 function TTerTile.GetNeighbors : TTileNeighbors;
  { get tile's neighbors }

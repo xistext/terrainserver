@@ -8,7 +8,7 @@ unit GameViewMain;
 
 interface
 
-uses Classes, SysUtils,
+uses Classes, SysUtils, math,
   Windows, { for allocconsole to view debug }
   { indy }
   idGlobal,
@@ -22,8 +22,8 @@ uses Classes, SysUtils,
   watergrid, WaterParams,
   TerServerCommon, TerrainData, TerrainParams, TerrainObjects,
   TerrainShader, TerrainMesh,
-  BaseMesh, TerrainClient, watercolor, layermarkup,
-  TreeBuilder;
+  BaseLight, BaseMesh, TerrainClient, watercolor, layermarkup,
+  liveTime, TreeBuilder;
 
 const
   tool_none  = 0;
@@ -142,6 +142,7 @@ type
     procedure Start; override;
     procedure Stop; override;
     procedure Update(const SecondsPassed: Single; var HandleInput: Boolean); override;
+    procedure UpdateLightDirection( percentofday : single );
     procedure mousewheel( direction : integer );
     function Press(const Event: TInputPressRelease): boolean; override;
     function MoveAllowed(const Sender: TCastleNavigation;
@@ -288,7 +289,29 @@ procedure TViewMain.UpdateFPSLabel;
     end;
  end;
 
+  procedure updatelight( atile : ttertile;
+                         var doremove : boolean;
+                         data : pointer );
+   begin
+     doremove := false;
+     atile.UpdateLightDirection( TVector3( data^ ));
+   end;
+
+procedure TViewMain.UpdateLightDirection( percentofday : single );
+ var sn, cn : single;
+ const lastupdate : single = -2;
+ begin
+   if percentofday - lastupdate > 0.04 then
+    begin
+      sincos( percentofday * 2 * Pi, sn, cn );
+      GLightDirection := Vector3( 0, -sn, cn );
+      GTileList.IterateTiles( {$ifdef fpc}@{$endif}updatelight, @GLightDirection );
+      lastupdate := percentofday;
+    end;
+ end;
+
 procedure TViewMain.Update(const SecondsPassed: Single; var HandleInput: Boolean);
+ { main update loop }
  begin
   inherited;
   if connectionstatus = status_connecting then
@@ -306,6 +329,7 @@ procedure TViewMain.Update(const SecondsPassed: Single; var HandleInput: Boolean
       end;
    end;
   UpdateFPSlabel;
+  UpdateLightDirection( UpdateGameTime( SecondsPassed ));
 
   MainNavigation.MouseLook := {( GActiveDrag = self ) and} ( buttonMiddle in Container.MousePressed );
 end;

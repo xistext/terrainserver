@@ -7,7 +7,7 @@ interface
 uses
    Classes, SysUtils, Math,
    CastleVectors, CastleTransform, CastleBehaviors, CastleScene, CastleColors, CastleRenderOptions,
-   x3dNodes, x3dtools,
+   x3dNodes, x3dtools, baselight,
    TerrainObjects;
 
 
@@ -351,6 +351,7 @@ function TTreeBuilder.BuildGraphicsList( aowner    : TComponent;
      shape : TShapeNode;
      BuildRec : TTileObj_BuildRec;
      Root : TX3dRootNode;
+     Light : TDirectionalLightNode;
  begin
    c := length( buildlist );
    if c > 0 then
@@ -363,6 +364,10 @@ function TTreeBuilder.BuildGraphicsList( aowner    : TComponent;
          shape.Appearance.ShadowCaster := true ;
          Root.AddChildren( Shape );
        end;
+      Light := TDirectionalLightNode.Create;
+      Light.direction := GLightDirection;
+      Light.Intensity := 10;
+      Root.AddChildren( Light );
       result := buildSceneFromX3dRoot( aowner, root );
     end;
 
