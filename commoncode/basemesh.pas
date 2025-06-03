@@ -487,7 +487,7 @@ procedure TAbstractMesh.InitNormals( Triangle : TIndexedTriangleSetNode );
 
 procedure TAbstractMesh.UpdateNormals( Triangle : TIndexedTriangleSetNode );
  var normalnode : TNormalNode;
-     i, gCount : integer;
+     gCount : integer;
      ix, iix : integer;
      p0, p1, p2 : tvector3;
      Coord : TCoordinateNode;

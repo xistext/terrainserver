@@ -4,14 +4,12 @@
     <PathDelim Value="\"/>
     <Version Value="12"/>
     <BuildModes Active="Release"/>
-    <Units Count="32">
+    <Units Count="27">
       <Unit0>
         <Filename Value="server_standalone.dpr"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="10"/>
-        <TopLine Value="9"/>
-        <CursorPos Y="70"/>
+        <CursorPos X="56" Y="32"/>
         <UsageCount Value="212"/>
         <Loaded Value="True"/>
       </Unit0>
@@ -63,7 +61,7 @@
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\System\IdGlobal.pas"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="60" Y="3090"/>
-        <UsageCount Value="44"/>
+        <UsageCount Value="31"/>
       </Unit7>
       <Unit8>
         <Filename Value="commoncode\terservercommon.pas"/>
@@ -78,7 +76,7 @@
         <UnitName Value="CastleClientServer"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="27" Y="420"/>
-        <UsageCount Value="110"/>
+        <UsageCount Value="97"/>
       </Unit9>
       <Unit10>
         <Filename Value="code\terraincommand.pas"/>
@@ -113,131 +111,95 @@
         <Loaded Value="True"/>
       </Unit13>
       <Unit14>
-        <Filename Value="commoncode\collect.pas"/>
-        <UnitName Value="Collect"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="493"/>
-        <CursorPos Y="543"/>
-        <UsageCount Value="7"/>
-      </Unit14>
-      <Unit15>
-        <Filename Value="E:\wyrdforest\code\water_low.pas"/>
-        <EditorIndex Value="-1"/>
-        <CursorPos Y="132"/>
-        <UsageCount Value="1"/>
-      </Unit15>
-      <Unit16>
         <Filename Value="code\waterflow.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="439"/>
         <CursorPos X="70" Y="446"/>
-        <UsageCount Value="60"/>
-      </Unit16>
-      <Unit17>
+        <UsageCount Value="47"/>
+      </Unit14>
+      <Unit15>
         <Filename Value="commoncode\waterparams.pas"/>
         <EditorIndex Value="-1"/>
-        <UsageCount Value="78"/>
-      </Unit17>
-      <Unit18>
+        <UsageCount Value="65"/>
+      </Unit15>
+      <Unit16>
         <Filename Value="commoncode\basetools.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="484"/>
         <CursorPos Y="549"/>
-        <UsageCount Value="95"/>
-      </Unit18>
-      <Unit19>
+        <UsageCount Value="82"/>
+      </Unit16>
+      <Unit17>
         <Filename Value="code\clientlist.pas"/>
         <EditorIndex Value="6"/>
         <TopLine Value="35"/>
         <CursorPos X="29" Y="50"/>
-        <UsageCount Value="64"/>
+        <UsageCount Value="131"/>
         <Loaded Value="True"/>
-      </Unit19>
-      <Unit20>
+      </Unit17>
+      <Unit18>
         <Filename Value="commoncode\terrainobjects.pas"/>
         <UnitName Value="TerrainObjects"/>
         <EditorIndex Value="7"/>
         <CursorPos X="34" Y="28"/>
         <UsageCount Value="104"/>
         <Loaded Value="True"/>
-      </Unit20>
-      <Unit21>
+      </Unit18>
+      <Unit19>
         <Filename Value="code\GeoBase.pas"/>
         <EditorIndex Value="12"/>
         <CursorPos Y="13"/>
         <UsageCount Value="106"/>
         <Loaded Value="True"/>
-      </Unit21>
-      <Unit22>
+      </Unit19>
+      <Unit20>
         <Filename Value="commoncode\fracquad.pas"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="16" Y="52"/>
-        <UsageCount Value="43"/>
-      </Unit22>
-      <Unit23>
-        <Filename Value="commoncode\BitCalc.pas"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="285"/>
-        <CursorPos Y="269"/>
-        <UsageCount Value="1"/>
-      </Unit23>
-      <Unit24>
+        <UsageCount Value="30"/>
+      </Unit20>
+      <Unit21>
         <Filename Value="commoncode\basetile.pas"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="8"/>
         <CursorPos X="65" Y="44"/>
         <UsageCount Value="106"/>
         <Loaded Value="True"/>
-      </Unit24>
-      <Unit25>
+      </Unit21>
+      <Unit22>
         <Filename Value="E:\cge\src\base\castlevectors.pas"/>
         <UnitName Value="CastleVectors"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="121"/>
         <CursorPos X="15" Y="160"/>
-        <UsageCount Value="39"/>
-      </Unit25>
-      <Unit26>
+        <UsageCount Value="26"/>
+      </Unit22>
+      <Unit23>
         <Filename Value="E:\cge\src\base\castlevectors_single.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="70"/>
-        <UsageCount Value="39"/>
-      </Unit26>
-      <Unit27>
+        <UsageCount Value="26"/>
+      </Unit23>
+      <Unit24>
         <Filename Value="E:\cge\src\base\castlevectors_float.inc"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="50" Y="29"/>
-        <UsageCount Value="39"/>
-      </Unit27>
-      <Unit28>
+        <UsageCount Value="26"/>
+      </Unit24>
+      <Unit25>
         <Filename Value="E:\cge\src\base\castlevectors_generic_float_record.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="61"/>
         <CursorPos X="3" Y="190"/>
-        <UsageCount Value="39"/>
-      </Unit28>
-      <Unit29>
-        <Filename Value="E:\cge\examples\deprecated_to_upgrade\fixed_camera_game\code\gameviewplay.pas"/>
-        <UnitName Value="GameViewPlay"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="14"/>
-        <CursorPos X="69" Y="82"/>
-        <UsageCount Value="1"/>
-      </Unit29>
-      <Unit30>
-        <Filename Value="E:\cge\src\files\indy\castleclientserver.pas"/>
-        <UnitName Value="CastleClientServer"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="9"/>
-        <CursorPos X="3" Y="40"/>
-        <UsageCount Value="10"/>
-      </Unit30>
-      <Unit31>
+        <UsageCount Value="26"/>
+      </Unit25>
+      <Unit26>
         <Filename Value="commoncode\livetime.pas"/>
         <EditorIndex Value="9"/>
         <CursorPos X="30" Y="13"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="77"/>
         <Loaded Value="True"/>
-      </Unit31>
+      </Unit26>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>

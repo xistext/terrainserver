@@ -43,11 +43,11 @@ type TLockingCollection = class( tsortedcollection )
         function WorldCorner00 : TVector2;
       end;
 
-procedure sethxy( var h : TTileHeader; x, y : smallint; sz : word = 1 ); inline;
+procedure sethxy( out h : TTileHeader; x, y : smallint; sz : word = 1 ); inline;
 
 implementation
 
-procedure sethxy( var h : TTileHeader; x, y : smallint; sz : word = 1 ); inline;
+procedure sethxy( out h : TTileHeader; x, y : smallint; sz : word = 1 ); inline;
  begin
    with h do
     begin

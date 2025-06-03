@@ -2065,6 +2065,25 @@
                       },
                       "Name" : "ButtonCreateClient",
                       "Width" : 2.0000000000000000E+001
+                    },
+                    {
+                      "$$ClassName" : "TCastleLabel",
+                      "ColorPersistent" : {
+                        "$$ClassName" : "TCastleColorPersistent",
+                        "Green" : 9.3725490570068359E-001,
+                        "Red" : 9.3725490570068359E-001
+                      },
+                      "FontScale" : 5.0000000000000000E-001,
+                      "Name" : "ServerStatus",
+                      "Text" : [
+                        "Server not found"
+                      ],
+                      "TranslationPersistent" : {
+                        "$$ClassName" : "TCastleVector2Persistent",
+                        "X" : 1.1500000000000000E+002,
+                        "Y" : 2.5000000000000000E+001
+                      },
+                      "VerticalAlignment" : "vpTop"
                     }
                   ]
                 }
@@ -2082,14 +2101,14 @@
             },
             "RotationPersistent" : {
               "$$ClassName" : "TCastleVector4RotationPersistent",
-              "W" : 1.6197946071624756E+000,
-              "X" : -3.6951787769794464E-002,
-              "Y" : 9.9859428405761719E-001,
-              "Z" : 3.8002375513315201E-002
+              "W" : 1.6180514097213745E+000,
+              "X" : -3.7018854171037674E-002,
+              "Y" : 9.9859189987182617E-001,
+              "Z" : 3.7998672574758530E-002
             },
             "ScalePersistent" : {
               "$$ClassName" : "TCastleVector3Persistent",
-              "Y" : 1.0000001192092896E+000
+              "Z" : 9.9999994039535522E-001
             },
             "TranslationPersistent" : {
               "$$ClassName" : "TCastleVector3Persistent",

@@ -46,6 +46,7 @@ type
 
     LabelFps: TCastleLabel;
     EditHostname: TCastleEdit;
+    ServerStatus : TCastleLabel;
     EditPort: TCastleIntegerEdit;
     ButtonCreateClient: TCastleButton;
     EditSend: TCastleEdit;
@@ -323,6 +324,7 @@ procedure TViewMain.Update(const SecondsPassed: Single; var HandleInput: Boolean
         if FClient <> nil then
         begin
           connectionstatus := status_disconnected;
+          ServerStatus.Caption := 'Connection Timeout';
           SetCreateClientMode( connectionstatus, ButtonCreateClient );
           FreeAndNil(FClient);
         end
@@ -339,6 +341,7 @@ begin
 //  InfoWrite('Connected to terrain server.');
   UpdateViewAnchor( vector2( 0, 0 ), true );
   connectionstatus := status_connected;
+  ServerStatus.Caption := 'Connected';
   SetCreateClientMode( connectionstatus, ButtonCreateClient );
   ButtonSend.Enabled := FClient <> nil;
 end;
@@ -351,6 +354,7 @@ begin
   SetCreateClientMode( connectionstatus, ButtonCreateClient );
   if assigned( fclient ) then
      FreeAndNil( fClient );
+  ServerStatus.Caption := 'Disconnected';
 end;
 
 procedure TViewMain.HandleMessageReceived(const AMessage: String);
@@ -364,6 +368,7 @@ begin
     status_disconnected :
     begin
 //      InfoWrite( 'Connecting to terrain server at '+GDefaultHost + ':' + IntToStr( GDefaultPort ) +'...');
+      ServerStatus.Caption := 'Connecting';
       FClient := TTerClient.Create;
       FClient.Hostname := EditHostName.text;
       FClient.Port := GDefaultPort;
@@ -380,11 +385,13 @@ begin
     status_connected : if FClient <> nil then
      begin
        connectionstatus := status_disconnected;
+       ServerStatus.Caption := 'Disconnected';
        FClient.Disconnect;
        FreeAndNil(FClient);
      end;
     status_connecting : if FClient <> nil then
      begin
+       ServerStatus.Caption := 'Disconnected';
        connectionstatus := status_disconnected;
        FreeAndNil(FClient);
      end
