@@ -114,6 +114,11 @@ procedure buildwaterArea( client : TTileClient;
                           Radius : integer;
                           LOD : integer;
                           callback : TCommandCallback);
+procedure buildTerrainArea( client : TTileClient;
+                            CenterX, CenterY : integer;
+                            Radius : integer;
+                            const Params : TTerrainParams;
+                            callback : TCommandCallback);
 
 
 implementation
@@ -739,7 +744,6 @@ function TTask_SendSplat.RunTask : boolean;
    resulttileinfo.tilesz := tilesz;
    ResultSplat := BuildResultSplatGrid( tile, resulttileinfo );
 
-
    buflen := tilesz*tilesz*sizeof(integer);
    setlength( buffer, buflen );
    bufpos := 0;
@@ -1076,10 +1080,9 @@ function cmdPlantTree( client : TTileClient;
             r := random * wradius;
             treex := trunc(( localpos.x + cs * r ));
             treey := trunc(( localpos.y + sn * r ));
-            assert( false, 'use geobase' );
-(*               init_tileobj_rec( treex, treey,
-                              random( 65536 ), random( 65536 ), objrec );
-            tile.objlist.addobj( objrec );*)
+            //init_tileobj_rec( treex, treey,
+              //                random( 65536 ), random( 65536 ), objrec );
+            tile.objlist.addobj( objrec );
           end;
          GTaskList.AddTask( TTask_SendTileObjs.create( client, Tile, 1 ) );
        end;

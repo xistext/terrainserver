@@ -10,15 +10,19 @@ uses Classes,
      TerrainData;
 
 type TSubscription = record
-        LOD  : integer;
-        Tile : TTerTile;
-        LastUpdateTime : single;
+        LOD                 : integer;
+        Tile                : TTerTile;
+        LastTerrainUpdateTime : single;
+        LastWaterUpdateTime : single;
+        LastFloraUpdateTime : single;
+        LastSplatUpdateTime : single;
       end;
 
      TTileClient = class; { forward }
 
      TSubscriptionProc = procedure( client : TTileClient;
                                     tile   : TTerTile;
+                                    layer  : integer;
                                     LOD    : integer;
                                     data   : pointer );
 
@@ -104,7 +108,10 @@ procedure TTileClient.setsubscription( atile : ttertile; iLOD : integer );
          if LOD <> iLOD then
           begin
             LOD := iLOD;
-            LastUpdateTime := -1;
+            LastWaterUpdateTime := -1;
+            LastTerrainUpdateTime := -1;
+            LastSplatUpdateTime := -1;
+            LastFloraUpdateTime := -1;
           end;
          exit;
        end;
@@ -114,7 +121,10 @@ procedure TTileClient.setsubscription( atile : ttertile; iLOD : integer );
    with subscriptions[c] do
     begin
       Tile := aTile;
-      LastUpdateTime := -1;
+      LastWaterUpdateTime := -1;
+      LastTerrainUpdateTime := -1;
+      LastSplatUpdateTime := -1;
+      LastFloraUpdateTime := -1;
       LOD := iLOD;
     end;
  end;
@@ -159,18 +169,38 @@ procedure TTileClient.SendString( AString : string );
 
 procedure TTileClient.iteratesubscriptions( callback : tsubscriptionproc; data : pointer );
  var i, c : integer;
-     tileupdatetime : single;
+     updatetime : single;
  begin
    c := length( subscriptions );
    for i := 0 to c - 1 do with subscriptions[i] do
     begin
-      TileUpdateTime := Tile.WaterUpdateTime;
-
-      if (( LastUpdateTime < 0 ) and ( TileUpdateTime > 0 )) or
-         (( LastUpdateTime > 0 ) and ( LastUpdateTime < TileUpdateTime )) then
+      UpdateTime := Tile.TerrainUpdateTime;
+      if (( LastTerrainUpdateTime < 0 ) and ( UpdateTime > 0 )) or
+         (( LastTerrainUpdateTime > 0 ) and ( LastTerrainUpdateTime < UpdateTime )) then
        begin
-         callback( self, Tile, LOD, data );
-         LastUpdateTime := TileUpdateTime;
+         callback( self, Tile, layer_terrain, LOD, data );
+         LastTerrainUpdateTime := UpdateTime;
+       end;
+      UpdateTime := Tile.WaterUpdateTime;
+      if (( LastWaterUpdateTime < 0 ) and ( UpdateTime > 0 )) or
+         (( LastWaterUpdateTime > 0 ) and ( LastWaterUpdateTime < UpdateTime )) then
+       begin
+         callback( self, Tile, layer_water, LOD, data );
+         LastWaterUpdateTime := UpdateTime;
+       end;
+      UpdateTime := Tile.SplatUpdateTime;
+      if (( LastSplatUpdateTime < 0 ) and ( UpdateTime > 0 )) or
+         (( LastSplatUpdateTime > 0 ) and ( LastSplatUpdateTime < UpdateTime )) then
+       begin
+         callback( self, Tile, layer_splat, LOD, data );
+         LastSplatUpdateTime := UpdateTime;
+       end;
+      UpdateTime := Tile.FloraUpdateTime;
+      if (( LastFloraUpdateTime < 0 ) and ( UpdateTime > 0 )) or
+         (( LastFloraUpdateTime > 0 ) and ( LastFloraUpdateTime < UpdateTime )) then
+       begin
+         callback( self, Tile, layer_flora, LOD, data );
+         LastFloraUpdateTime := UpdateTime;
        end;
     end;
  end;

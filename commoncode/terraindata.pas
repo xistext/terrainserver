@@ -136,7 +136,10 @@ type TTileStatus = byte;
         procedure Dig( const WorldPos : TVector2; Amount : single; Radius : integer = 1 );
         procedure Paint( const WorldPos : TVector2; EncodedColor : integer );
 
+        function getTerrainUpdateTime : single;
         function getWaterUpdateTime : single;
+        function getSplatUpdateTime : single;
+        function getFloraUpdateTime : single;
         {$endif}
         private
 
@@ -147,8 +150,14 @@ type TTileStatus = byte;
 
         public
         {$ifdef terserver}
+        procedure setTerrainUpdateTime( updatetime : single );
         procedure setWaterUpdateTime( updatetime : single );
+        procedure setSplatUpdateTime( updatetime : single );
+        procedure setFloraUpdateTime( updatetime : single );
+        property TerrainUpdateTime : single read getTerrainUpdateTime write setTerrainUpdateTime;
         property WaterUpdateTime : single read getWaterUpdateTime write setWaterUpdateTime;
+        property SplatUpdateTime : single read getSplatUpdateTime write setSplatUpdateTime;
+        property FloraUpdateTime : single read getFloraUpdateTime write setFloraUpdateTime;
         {$else}
         { client links to graphics }
         TerrainGraphics : TLiteMesh;
@@ -517,6 +526,16 @@ procedure TTerTile.setFloraGrid( aGrid : TSingleGrid );
  end;
 
 {$ifdef terserver}
+function TTerTile.getTerrainUpdateTime : single;
+ begin
+   result := datalayers[layer_terrain].LastUpdateTime
+ end;
+
+procedure TTerTile.setTerrainUpdateTime( updatetime : single );
+ begin
+   datalayers[layer_terrain].LastUpdateTime := updatetime;
+ end;
+
 function TTerTile.getWaterUpdateTime : single;
  begin
    result := datalayers[layer_water].LastUpdateTime
@@ -525,6 +544,26 @@ function TTerTile.getWaterUpdateTime : single;
 procedure TTerTile.setWaterUpdateTime( updatetime : single );
  begin
    datalayers[layer_water].LastUpdateTime := updatetime;
+ end;
+
+function TTerTile.getSplatUpdateTime : single;
+ begin
+   result := datalayers[layer_splat].LastUpdateTime
+ end;
+
+procedure TTerTile.setSplatUpdateTime( updatetime : single );
+ begin
+   datalayers[layer_splat].LastUpdateTime := updatetime;
+ end;
+
+function TTerTile.getFloraUpdateTime : single;
+ begin
+   result := datalayers[layer_flora].LastUpdateTime
+ end;
+
+procedure TTerTile.setFloraUpdateTime( updatetime : single );
+ begin
+   datalayers[layer_flora].LastUpdateTime := updatetime;
  end;
 
 procedure TTerTile.UpdateTerrainGridFromSource( Source : TCastleTerrainNoise );
@@ -640,8 +679,8 @@ procedure TTerTile.Dig( const WorldPos : TVector2; Amount : single; radius : int
    LimitMax( TilePosI.X, MaxTileIx );
    LimitMax( TilePosI.Y, MaxTileIx );
 
-
    TerrainGrid.addxyvalue( tileposI.x, tileposI.y, amount );
+   datalayers[layer_terrain].LastUpdateTime := gameTime;
  end;
 
 procedure TTerTile.Paint( const WorldPos : TVector2; EncodedColor : integer );
@@ -658,6 +697,7 @@ procedure TTerTile.Paint( const WorldPos : TVector2; EncodedColor : integer );
 //   LimitMax( SplatPosI.X, MaxTileIx );
 //   LimitMax( SplatPosI.Y, MaxTileIx );
    SplatGrid.setvaluexy( SplatPosI.x, SplatPosI.Y, EncodedColor );
+   datalayers[layer_splat].LastUpdateTime := gameTime;
  end;
 
 {$else}

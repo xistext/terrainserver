@@ -13,8 +13,9 @@ uses Classes,
   Windows, { for allocconsole to view debug }
   CastleVectors, CastleWindow, CastleComponentSerialize, CastleLog, CastleControls,
   CastleUIControls, CastleKeysMouse, CastleClientServer, CastleNotifications,
-  ClientList,
   KeyValuePairs,
+  ClientList,
+  PointBase,
   TerServerCommon, TerrainData, TerrainCommand,
   WaterFlow,
   liveTime;
@@ -93,12 +94,15 @@ begin
   EditPort.Enabled := false;
 end;
 
-   procedure updatewaterclient( Client : TTileClient; Tile : TTerTile; LOD : integer; data : pointer );
+   procedure updatelayerclient( Client : TTileClient; Tile : TTerTile;
+                                layer : integer; LOD : integer; data : pointer );
     begin
-     buildwaterArea( Client,
-                     tile.tilex, tile.tiley,
-                     0, LOD, {$ifdef fpc}@{$endif}  TViewMain( data ).HandleCommandCallback );
-
+      case layer of
+        layer_terrain : GTaskList.AddTask( TTask_SendTile.create( client, Tile, LOD ) );
+        layer_water : GTaskList.AddTask( TTask_SendWater.create( client, Tile, LOD ) );
+        layer_splat : GTaskList.AddTask( TTask_SendSplat.create( client, Tile, 1 ) );
+        layer_flora : GTaskList.AddTask( TTask_SendFlora.create( client, Tile, LOD ));
+      end;
     end;
 
 procedure TViewMain.Update(const SecondsPassed: Single; var HandleInput: Boolean);
@@ -157,7 +161,7 @@ procedure TViewMain.Update(const SecondsPassed: Single; var HandleInput: Boolean
      task := GTaskList.Pop;
    end;
 
-  GClientList.IterateSubscriptions( {$ifdef FPC}@{$endif}updatewaterclient, self );
+  GClientList.IterateSubscriptions( {$ifdef FPC}@{$endif}updatelayerclient, self );
 end;
 
 procedure TViewMain.HandleConnected(AClient: TClientConnection);
