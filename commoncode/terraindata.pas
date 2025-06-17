@@ -606,6 +606,7 @@ end;
   procedure readgrid( filename : string; datagrid : TSingleGrid );
    var stream : TStream;
    begin
+     filename := uriToFilenameSafe( filename );
      stream := TFileStream.Create(filename, fmOpenRead);
      stream.Read( datagrid.Data^, datagrid.datasz);
      stream.Free;
@@ -635,7 +636,7 @@ function TTerTile.LoadfromFile : boolean;
  begin
    fileroot := terrainpath + tileid;
    filename := fileroot + terrainext;
-   result := fileexists( filename );
+   result := URIfileexists( filename );
    if result then
     begin
       readgrid( filename, getTerrainGrid );
