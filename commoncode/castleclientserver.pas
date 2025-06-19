@@ -443,7 +443,7 @@ uses
     except
         exit;
     end;
-    FClient.IOHandler.ReadTimeout := 100;
+    FClient.IOHandler.ReadTimeout := IdTimeoutInfinite;
     {$ifdef FPC}
     { Change to use IndyTextEncoding_UTF8,
       see TCastleTCPServer.ServerOnConnect for explanation. }
@@ -695,7 +695,7 @@ end;
     FClientConnectedList.Add(AContext);
     FClientConnectionsList.Add(AContext);
 
-    AContext.Connection.IOHandler.ReadTimeout := 100;
+    AContext.Connection.IOHandler.ReadTimeout := idTimeoutInfinite;
     {$ifdef FPC}
     { Change to use IndyTextEncoding_UTF8, to enable sending/receiving
       UTF-8 encoded strings in FPC (as just String = AnsiString).
@@ -732,7 +732,7 @@ end;
   var
     LMessageClientRecord: TMessageClientRecord;
   begin
-    LMessageClientRecord.Message := AContext.Connection.IOHandler.ReadLn;
+    LMessageClientRecord.Message := AContext.Connection.IOHandler.ReadLn( '', IdTimeoutInfinite );
 
     if LMessageClientRecord.Message <> '' then
     begin
@@ -794,7 +794,7 @@ begin
 
   {$ifndef ANDROID}
     FClient := TIdTCPClient.Create;
-    FClient.ConnectTimeout := 5000;
+    FClient.ConnectTimeout := idTimeoutInfinite;
   {$endif}
 end;
 

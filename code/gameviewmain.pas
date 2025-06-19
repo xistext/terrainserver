@@ -174,6 +174,7 @@ procedure TViewMain.HandleDisconnected(AClient: TClientConnection);
 var success : boolean;
     TileClient : TTileClient;
 begin
+ Writeln( 'disconnected' );
   ShowNotification('Client disconnected');
   TileClient := GClientList.getsubscriber( AClient );
   GTaskList.removeclient( TileClient ); { remove any tasks queued by the client }
