@@ -19,7 +19,7 @@ uses Classes, SysUtils, math,
   CastleKeysMouse, CastleClientServer, CastleTerrain, CastleScene,
   CastleViewport, CastleCameras, CastleTransform, CastleWindow, CastleImages,
   { terrain client }
-  watergrid, WaterParams,
+  watergrid, WaterParams, toolBuild,
   TerServerCommon, TerrainData, TerrainParams, TerrainObjects,
   TerrainShader, TerrainMesh,
   BaseLight, BaseMesh, TerrainClient, watercolor, layermarkup,
@@ -52,7 +52,6 @@ type
     EditSend: TCastleEdit;
     ButtonSend: TCastleButton;
     Viewport1 : TCastleViewport;
-    MainNavigation : TCastleWalkNavigation;
     MainCamera : TCastleCamera;
     FPSLabel : TCastleLabel;
 
@@ -136,15 +135,18 @@ type
                               const Event: TInputPressRelease; var Handled: Boolean);
 
   public
+    MainNavigation : TToolNavigation;
     activetool : integer;
     lockviewtoground : boolean;
     viewanchor : TPoint;
+    ToolEventHandler : TToolEvent;
+    DefaultToolEventHandler : TToolEvent;
+
     constructor Create(AOwner: TComponent); override;
     procedure Start; override;
     procedure Stop; override;
     procedure Update(const SecondsPassed: Single; var HandleInput: Boolean); override;
     procedure UpdateLightDirection( percentofday : single );
-    procedure mousewheel( direction : integer );
     function Press(const Event: TInputPressRelease): boolean; override;
     function MoveAllowed(const Sender: TCastleNavigation;
                          const OldPos, ProposedNewPos: TVector3; out NewPos: TVector3;
@@ -162,10 +164,69 @@ type
     procedure UpdateFog;
    end;
 
+  TDefaultTool = class( TToolEvent ) { when no tool is selected, this is the default behavior }
+     function motion( itemhit : TCastleTransform;
+                      const point : TVector3 ) : boolean; override;
+     function mousewheel( direction : integer ) : boolean; override;
+
+   end;
+
+
 var
   ViewMain: TViewMain;
 
 implementation //===============================================================
+
+function TDefaultTool.motion( itemhit : TCastleTransform;
+                              const point : TVector3 ) : boolean;
+// var outlinepoly : tpoly2;
+ begin
+   result := false;
+  (* if itemhit is TBaseGraphic then
+    begin
+      outlinepoly := TfqItem( TBaseGraphic( itemhit ).LinkedData ).buildpoly2;
+      if assigned( outlinepoly ) then
+       begin
+         GMarkupLayer.addpoly2(outlinepoly, greenRGB );
+         result := true;
+       end;
+    end;*)
+ end;
+
+function TDefaultTool.mousewheel( direction : integer ) : boolean;
+var h, amt : single;
+    delta : single;
+    pos : TVector3;
+    TerrainH : single;
+begin
+(*   if altdown or ( ToolEvent = GDefaultTool ) or not ToolEvent.mousewheel( direction ) then
+   begin*)
+     h := MainCamera.translation.y;
+     pos := Vector3( MainCamera.Translation.X, h, MainCamera.Translation.Z );
+     TerrainHeight( Pos, TerrainH );
+     amt := h - TerrainH;
+     if amt < 1 then
+        amt := 1;
+     { if no tools are taking mousewheel then use it to change view height }
+     delta := direction/3 * amt;
+     h := h + delta;
+     if h - MainNavigation.radius < TerrainH then
+      begin
+        ViewMain.lockviewtoground := true;
+        h := MainNavigation.radius + TerrainH;
+        MainNavigation.MoveHorizontalSpeed := 0.1;
+      end
+     else
+        ViewMain.lockviewtoground := false;
+     pos.Y := h;
+     MainNavigation.MoveHorizontalSpeed := sqrt(amt);
+   MainCamera.Translation := pos;
+   ViewMain.UpdatePositionIndicator;
+   ViewMain.UpdateFog;
+   result := true;
+end;
+
+//-------------------------------------
 
 constructor TViewMain.Create(AOwner: TComponent);
 begin
@@ -187,6 +248,8 @@ begin
   GParentComponent := Viewport1.Items;
   Viewport1.OnMotion := {$ifdef FPC}@{$endif} HandleMotion;
   Viewport1.OnPress :=   {$ifdef FPC}@{$endif} ViewportPressed;
+  MainNavigation := TToolNavigation.Create( self );
+  Viewport1.Navigation := MainNavigation;
 
   ButtonCreateClient.OnClick := {$ifdef FPC}@{$endif} ClickCreateClient;
   ButtonGrid.OnClick := {$ifdef FPC}@{$endif} ClickLayer;
@@ -241,6 +304,10 @@ begin
   ColorPicker.Exists := false;
   ColorSliderChange( self );
   UpdatePositionIndicator;
+
+  DefaultToolEventHandler := TDefaultTool.create( Viewport1.Items, MainCamera, MainNavigation,
+                                                  {$ifdef fpc}@{$endif}HeightAboveTerrain );
+  ToolEventHandler := DefaultToolEventHandler;
 
   WorldOptionsPanel.Translation := ColorPicker.Translation;
   WorldOptionsPanel.Exists := false;
@@ -881,7 +948,7 @@ function TViewMain.HeightAboveTerrain(Pos: TVector3;
 
 procedure TViewMain.UseTool( var pos : tvector3 );
  var params : string;
-     g : TCastleTransform;
+     //g : TCastleTransform;
  begin
    params := FormatFloat( '0.###', pos.x )+','+FormatFloat( '0.###', pos.z );
    case activetool of
@@ -991,42 +1058,6 @@ procedure TViewMain.ViewportPressed(const Sender: TCastleUserInterface;
     end;
  end;
 
-
-
-
-
-procedure TViewMain.Mousewheel( direction : integer );
- var h, amt : single;
-     delta : single;
-     pos : TVector3;
-     TerrainH : single;
- begin
-(*   if altdown or ( ToolEvent = GDefaultTool ) or not ToolEvent.mousewheel( direction ) then
-    begin*)
-      h := MainCamera.translation.y;
-      pos := Vector3( MainCamera.Translation.X, h, MainCamera.Translation.Z );
-      TerrainHeight( Pos, TerrainH );
-      amt := h - TerrainH;
-      if amt < 1 then
-         amt := 1;
-      { if no tools are taking mousewheel then use it to change view height }
-      delta := direction/3 * amt;
-      h := h + delta;
-      if h - MainNavigation.radius < TerrainH then
-       begin
-         lockviewtoground := true;
-         h := MainNavigation.radius + TerrainH;
-         MainNavigation.MoveHorizontalSpeed := 0.1;
-       end
-      else
-         lockviewtoground := false;
-      pos.Y := h;
-      MainNavigation.MoveHorizontalSpeed := sqrt(amt);
-    MainCamera.Translation := pos;
-    UpdatePositionIndicator;
-    UpdateFog;
- end;
-
 function TViewMain.Press(const Event: TInputPressRelease): boolean;
 
   function checkkey( key : TKey; var mainresult : boolean ) : boolean;
@@ -1037,16 +1068,10 @@ function TViewMain.Press(const Event: TInputPressRelease): boolean;
   procedure checkmousewheel;
    begin
      if Event.IsMouseWheel( mwUp ) then
-      begin
-        mousewheel( 1 );
-        result := true;
-      end
+        result := ToolEventHandler.MouseWheel( 1 )
      else
      if Event.IsMouseWheel( mwDown ) then
-      begin
-        mousewheel( -1 );
-        Result := true;
-      end;
+        result := ToolEventHandler.MouseWheel( -1 );
    end;
 begin
   Result := false;
