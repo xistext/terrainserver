@@ -55,6 +55,7 @@
         <CursorPos X="26" Y="1650"/>
         <UsageCount Value="43"/>
         <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit6>
       <Unit7>
         <Filename Value="commoncode\terservercommon.pas"/>
@@ -67,9 +68,7 @@
       <Unit8>
         <Filename Value="commoncode\castleclientserver.pas"/>
         <UnitName Value="CastleClientServer"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="764"/>
         <CursorPos X="31" Y="797"/>
         <UsageCount Value="39"/>
         <Loaded Value="True"/>
@@ -189,6 +188,7 @@
         <CursorPos Y="194"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit24>
       <Unit25>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdTask.pas"/>
@@ -197,6 +197,7 @@
         <CursorPos Y="125"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit25>
       <Unit26>
         <Filename Value="C:\lazarus\fpc\3.2.2\source\packages\rtl-generics\src\generics.collections.pas"/>
@@ -217,11 +218,13 @@
       </Unit27>
       <Unit28>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdCustomTCPServer.pas"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="5"/>
         <TopLine Value="502"/>
-        <CursorPos Y="538"/>
+        <CursorPos Y="535"/>
         <UsageCount Value="11"/>
         <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit28>
       <Unit29>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdThread.pas"/>
@@ -230,6 +233,7 @@
         <CursorPos X="53" Y="440"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit29>
       <Unit30>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdSchedulerOfThreadDefault.pas"/>
@@ -237,6 +241,7 @@
         <CursorPos X="2"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit30>
       <Unit31>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdSchedulerOfThread.pas"/>
@@ -245,6 +250,7 @@
         <CursorPos Y="212"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit31>
       <Unit32>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\System\IdGlobal.pas"/>
@@ -253,6 +259,7 @@
         <CursorPos X="20" Y="800"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit32>
       <Unit33>
         <Filename Value="C:\lazarus\fpc\3.2.2\source\packages\fcl-web\src\base\custfcgi.pp"/>
@@ -269,128 +276,129 @@
         <CursorPos Y="464"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit34>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdIOHandler.pas"/>
-        <Caret Line="2155" TopLine="2123"/>
+        <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdIOHandlerStack.pas"/>
+        <Caret Line="463" Column="60" TopLine="431"/>
       </Position1>
       <Position2>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdIOHandlerStack.pas"/>
-        <Caret Line="463" Column="60" TopLine="431"/>
+        <Caret Line="444" Column="3" TopLine="431"/>
       </Position2>
       <Position3>
-        <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdIOHandlerStack.pas"/>
-        <Caret Line="444" Column="3" TopLine="431"/>
+        <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdIOHandler.pas"/>
+        <Caret Line="1732" TopLine="1699"/>
       </Position3>
       <Position4>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdIOHandler.pas"/>
-        <Caret Line="1732" TopLine="1699"/>
+        <Caret Line="1514" TopLine="1481"/>
       </Position4>
       <Position5>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdIOHandler.pas"/>
-        <Caret Line="1514" TopLine="1481"/>
+        <Caret Line="1732" TopLine="1636"/>
       </Position5>
       <Position6>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdIOHandler.pas"/>
-        <Caret Line="1732" TopLine="1636"/>
+        <Caret Line="1514" TopLine="1435"/>
       </Position6>
       <Position7>
-        <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdIOHandler.pas"/>
-        <Caret Line="1514" TopLine="1435"/>
-      </Position7>
-      <Position8>
         <Filename Value="commoncode\castleclientserver.pas"/>
         <Caret Line="735" TopLine="702"/>
-      </Position8>
-      <Position9>
+      </Position7>
+      <Position8>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdIOHandler.pas"/>
         <Caret Line="1441" Column="80" TopLine="1433"/>
-      </Position9>
-      <Position10>
+      </Position8>
+      <Position9>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\System\IdGlobal.pas"/>
         <Caret Line="800" Column="20" TopLine="765"/>
-      </Position10>
-      <Position11>
+      </Position9>
+      <Position10>
         <Filename Value="commoncode\castleclientserver.pas"/>
         <Caret Line="735" Column="73" TopLine="702"/>
-      </Position11>
-      <Position12>
+      </Position10>
+      <Position11>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdIOHandler.pas"/>
         <Caret Line="1514" TopLine="1482"/>
+      </Position11>
+      <Position12>
+        <Filename Value="commoncode\castleclientserver.pas"/>
+        <Caret Line="735" Column="98" TopLine="702"/>
       </Position12>
       <Position13>
-        <Filename Value="commoncode\castleclientserver.pas"/>
-        <Caret Line="735" Column="98" TopLine="702"/>
-      </Position13>
-      <Position14>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdIOHandler.pas"/>
         <Caret Line="2155" TopLine="2122"/>
-      </Position14>
-      <Position15>
+      </Position13>
+      <Position14>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdIOHandlerStack.pas"/>
         <Caret Line="464" TopLine="431"/>
-      </Position15>
-      <Position16>
+      </Position14>
+      <Position15>
         <Filename Value="commoncode\castleclientserver.pas"/>
         <Caret Line="735" Column="98" TopLine="702"/>
-      </Position16>
-      <Position17>
+      </Position15>
+      <Position16>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdThread.pas"/>
         <Caret Line="440" Column="53" TopLine="419"/>
+      </Position16>
+      <Position17>
+        <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdIOHandler.pas"/>
+        <Caret Line="1707" Column="32" TopLine="1699"/>
       </Position17>
       <Position18>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdIOHandler.pas"/>
-        <Caret Line="1707" Column="32" TopLine="1699"/>
+        <Caret Line="2369" Column="32" TopLine="2311"/>
       </Position18>
       <Position19>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdIOHandler.pas"/>
-        <Caret Line="2369" Column="32" TopLine="2311"/>
+        <Caret Column="28"/>
       </Position19>
       <Position20>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdIOHandler.pas"/>
-        <Caret Column="28"/>
+        <Caret Line="505" Column="35" TopLine="446"/>
       </Position20>
       <Position21>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdIOHandler.pas"/>
-        <Caret Line="505" Column="35" TopLine="446"/>
+        <Caret Line="541" Column="36" TopLine="483"/>
       </Position21>
       <Position22>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdIOHandler.pas"/>
-        <Caret Line="541" Column="36" TopLine="483"/>
+        <Caret Line="555" Column="49" TopLine="497"/>
       </Position22>
       <Position23>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdIOHandler.pas"/>
-        <Caret Line="555" Column="49" TopLine="497"/>
+        <Caret Line="658" Column="71" TopLine="601"/>
       </Position23>
       <Position24>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdIOHandler.pas"/>
-        <Caret Line="658" Column="71" TopLine="601"/>
+        <Caret Line="676" Column="36" TopLine="619"/>
       </Position24>
       <Position25>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdIOHandler.pas"/>
-        <Caret Line="676" Column="36" TopLine="619"/>
+        <Caret Line="752" Column="89" TopLine="695"/>
       </Position25>
       <Position26>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdIOHandler.pas"/>
-        <Caret Line="752" Column="89" TopLine="695"/>
+        <Caret Line="1426" Column="33" TopLine="1367"/>
       </Position26>
       <Position27>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdIOHandler.pas"/>
-        <Caret Line="1426" Column="33" TopLine="1367"/>
+        <Caret Line="1436" Column="42" TopLine="1377"/>
       </Position27>
       <Position28>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdIOHandler.pas"/>
-        <Caret Line="1436" Column="42" TopLine="1377"/>
+        <Caret Line="1441" Column="80" TopLine="1382"/>
       </Position28>
       <Position29>
         <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdIOHandler.pas"/>
-        <Caret Line="1441" Column="80" TopLine="1382"/>
+        <Caret Line="1592" Column="32" TopLine="1534"/>
       </Position29>
       <Position30>
-        <Filename Value="C:\Users\erik\AppData\Local\lazarus\onlinepackagemanager\packages\Indy10\Core\IdIOHandler.pas"/>
-        <Caret Line="1592" Column="32" TopLine="1534"/>
+        <Filename Value="commoncode\castleclientserver.pas"/>
+        <Caret Line="797" Column="31"/>
       </Position30>
     </JumpHistory>
     <RunParams>

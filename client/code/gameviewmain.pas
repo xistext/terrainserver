@@ -137,7 +137,6 @@ type
   public
     MainNavigation : TToolNavigation;
     activetool : integer;
-    lockviewtoground : boolean;
     viewanchor : TPoint;
     ToolEventHandler : TToolEvent;
     DefaultToolEventHandler : TToolEvent;
@@ -194,36 +193,13 @@ function TDefaultTool.motion( itemhit : TCastleTransform;
  end;
 
 function TDefaultTool.mousewheel( direction : integer ) : boolean;
-var h, amt : single;
-    delta : single;
-    pos : TVector3;
-    TerrainH : single;
 begin
-(*   if altdown or ( ToolEvent = GDefaultTool ) or not ToolEvent.mousewheel( direction ) then
-   begin*)
-     h := MainCamera.translation.y;
-     pos := Vector3( MainCamera.Translation.X, h, MainCamera.Translation.Z );
-     TerrainHeight( Pos, TerrainH );
-     amt := h - TerrainH;
-     if amt < 1 then
-        amt := 1;
-     { if no tools are taking mousewheel then use it to change view height }
-     delta := direction/3 * amt;
-     h := h + delta;
-     if h - MainNavigation.radius < TerrainH then
-      begin
-        ViewMain.lockviewtoground := true;
-        h := MainNavigation.radius + TerrainH;
-        MainNavigation.MoveHorizontalSpeed := 0.1;
-      end
-     else
-        ViewMain.lockviewtoground := false;
-     pos.Y := h;
-     MainNavigation.MoveHorizontalSpeed := sqrt(amt);
-   MainCamera.Translation := pos;
-   ViewMain.UpdatePositionIndicator;
-   ViewMain.UpdateFog;
-   result := true;
+   result := inherited mousewheel( direction );
+   if result then
+    begin
+      ViewMain.UpdatePositionIndicator;
+      ViewMain.UpdateFog;
+    end;
 end;
 
 //-------------------------------------
@@ -234,7 +210,6 @@ begin
   DesignUrl := 'castle-data:/gameviewmain.castle-user-interface';
   ConnectionStatus := status_disconnected;
   ConnectionTimeout := 0;
-  lockviewtoground := false;
   activetool := tool_none;
   InitializeLog;
 end;
@@ -923,19 +898,12 @@ procedure TViewMain.ShadowsChange( sender : TObject );
 function TViewMain.MoveAllowed(const Sender: TCastleNavigation;
                                const OldPos, ProposedNewPos: TVector3; out NewPos: TVector3;
                                const Radius: Single; const BecauseOfGravity: Boolean): boolean;
- var terrainh : single;
+ var Nav : TToolNavigation;
  begin
-   TerrainHeight( ProposedNewPos, TerrainH );
-   NewPos := ProposedNewPos;
-   lockviewtoground := ( NewPos.Y - radius < Terrainh ) or lockviewtoground;
-   if lockviewtoground then
-    begin
-      NewPos := Vector3(ProposedNewPos.X, TerrainH + radius, ProposedNewPos.Z );
-      MainNavigation.MoveHorizontalSpeed := sqrt(radius);
-    end;
+   Nav := TToolNavigation( Sender );
+   Result := Nav.MoveAllowed2( {$ifdef fpc} @ {$endif} heightaboveterrain, OldPos, ProposedNewPos, NewPos );
    UpdatePositionIndicator;
-   UpdateViewAnchor( vector2( ProposedNewPos.X, ProposedNewPos.Z ));
-   result := true;
+   UpdateViewAnchor( vector2( NewPos.X, NewPos.Z ));
  end;
 
 function TViewMain.HeightAboveTerrain(Pos: TVector3;

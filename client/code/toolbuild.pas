@@ -16,6 +16,9 @@ type (*TToolContext = record
 
      TToolNavigation = class( TCastleWalkNavigation )
         constructor Create(AOwner: TComponent); override;
+
+        function MoveAllowed2(terrainheight : THeightAboveTerrainEvent;
+                              const OldPos, ProposedNewPos: TVector3; out NewPos: TVector3 ): boolean; virtual;
         public
         LockToGround : boolean;
       end;
@@ -23,12 +26,12 @@ type (*TToolContext = record
      TToolEvent = class
         ParentView     : TCastleTransform;
         MainCamera     : TCastleCamera;
-        MainNavigation : TCastleWalkNavigation;
+        MainNavigation : TToolNavigation;
 
         terrainheight : THeightAboveTerrainEvent;
         constructor create( iParentView : TCastleTransform;
                             iMainCamera : TCastleCamera;
-                            iMainNavigation : TCastleWalkNavigation;
+                            iMainNavigation : TToolNavigation;
                             iterrainheight : THeightAboveTerrainEvent );
         function press(const Event: TInputPressRelease): boolean; virtual;
         function motion( itemhit : TCastleTransform;
@@ -36,6 +39,7 @@ type (*TToolContext = record
         function mousewheel( direction : integer ) : boolean; virtual;
         function release( itemhit : TCastleTransform;
                           const pos : TVector3 ) : boolean; virtual;
+
       end;
 
 implementation //===============================================================
@@ -53,9 +57,25 @@ constructor TToolNavigation.Create(AOwner: TComponent);
    LockToGround := false;
  end;
 
+function TToolNavigation.MoveAllowed2(terrainheight : THeightAboveTerrainEvent;
+                                      const OldPos, ProposedNewPos: TVector3; out NewPos: TVector3 ): boolean;
+ var terrainh : single;
+ begin
+   TerrainHeight( ProposedNewPos, TerrainH );
+   NewPos := ProposedNewPos;
+   locktoground := ( NewPos.Y - radius < Terrainh ) or locktoground;
+   if locktoground then
+    begin
+      NewPos := Vector3(ProposedNewPos.X, TerrainH + radius, ProposedNewPos.Z );
+      MoveHorizontalSpeed := sqrt(radius);
+    end;
+ end;
+
+//------------------------------
+
 constructor TToolEvent.create( iParentView : TCastleTransform;
                                iMainCamera : TCastleCamera;
-                               iMainNavigation : TCastleWalkNavigation;
+                               iMainNavigation : TToolNavigation;
                                iterrainheight : THeightAboveTerrainEvent );
  begin
    assert( assigned( iParentView ));
@@ -66,9 +86,35 @@ constructor TToolEvent.create( iParentView : TCastleTransform;
  end;
 
 function TToolEvent.mousewheel( direction : integer ) : boolean;
- begin
-   result := false;
- end;
+var h, amt : single;
+    delta : single;
+    pos : TVector3;
+    TerrainH : single;
+begin
+(*   if altdown or ( ToolEvent = GDefaultTool ) or not ToolEvent.mousewheel( direction ) then
+   begin*)
+     h := MainCamera.translation.y;
+     pos := Vector3( MainCamera.Translation.X, h, MainCamera.Translation.Z );
+     TerrainHeight( Pos, TerrainH );
+     amt := h - TerrainH;
+     if amt < 1 then
+        amt := 1;
+     { if no tools are taking mousewheel then use it to change view height }
+     delta := direction/3 * amt;
+     h := h + delta;
+     if h - MainNavigation.radius < TerrainH then
+      begin
+        MainNavigation.locktoground := true;
+        h := MainNavigation.radius + TerrainH;
+        MainNavigation.MoveHorizontalSpeed := 0.1;
+      end
+     else
+        MainNavigation.locktoground := false;
+     pos.Y := h;
+     MainNavigation.MoveHorizontalSpeed := sqrt(amt);
+   MainCamera.Translation := pos;
+   result := true;
+end;
 
 function TToolEvent.press(const Event: TInputPressRelease): boolean;
  begin
@@ -86,7 +132,6 @@ function TToolEvent.release( itemhit : TCastleTransform;
  begin
    result := false;
  end;
-
 
 end.
 
